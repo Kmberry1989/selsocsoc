@@ -1,0 +1,7 @@
+{
+  "grass": { "path": "assets/textures/grass.svg", "appliedTo": "village ground" },
+  "path": { "path": "assets/textures/path.svg", "appliedTo": "village central path" },
+  "water": { "path": "assets/textures/water.svg", "appliedTo": "village pond" },
+  "sky": { "path": "assets/textures/sky.svg", "appliedTo": "village scene background" },
+  "soil": { "path": "assets/textures/soil.svg", "appliedTo": "reserved garden-bed material" }
+}

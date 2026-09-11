@@ -1,0 +1,12 @@
+{
+  "name": "snug-society",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/generate-asset-manifests.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

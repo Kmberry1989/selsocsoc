@@ -1,0 +1,14 @@
+{
+  "hairstyles": [
+    { "id": "template-hair", "name": "Template hair", "path": "assets/cosmetics/hairstyles/template-hair.glb" }
+  ],
+  "outfits": [
+    { "id": "template-outfit", "name": "Template outfit", "path": "assets/cosmetics/outfits/template-outfit.glb" }
+  ],
+  "handAccessories": [
+    { "id": "template-hand-accessory", "name": "Template cuff", "path": "assets/cosmetics/hand-accessories/template-hand-accessory.glb" }
+  ],
+  "shoes": [
+    { "id": "template-shoe", "name": "Template shoe", "path": "assets/cosmetics/shoes/template-shoe.glb" }
+  ]
+}

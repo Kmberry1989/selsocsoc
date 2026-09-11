@@ -1,0 +1,36 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "rooms": {
+      "$roomId": {
+        ".read": "auth != null && ($roomId === 'plaza' || !data.child('private').val() || data.child('members').child(auth.uid).val() === true)",
+        ".write": "auth != null && ($roomId === 'plaza' || !data.exists() || data.child('ownerId').val() === auth.uid || data.child('members').child(auth.uid).val() === true)",
+        "members": {
+          "$uid": {
+            ".write": "auth != null && $uid === auth.uid && newData.val() === true"
+          }
+        }
+      }
+    },
+    "presence": {
+      "$roomId": {
+        ".read": "auth != null && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",
+        "$uid": {
+          ".write": "auth != null && $uid === auth.uid && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",
+          ".validate": "!newData.exists() || (newData.hasChildren(['uid','name','x','z','rotation','updatedAt']) && newData.child('uid').val() === auth.uid && newData.child('name').isString() && newData.child('name').val().length <= 18 && newData.child('x').isNumber() && newData.child('z').isNumber() && newData.child('rotation').isNumber() && newData.child('updatedAt').isNumber())"
+        }
+      }
+    },
+    "messages": {
+      "$roomId": {
+        ".read": "auth != null && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",
+        ".indexOn": ["createdAt"],
+        "$messageId": {
+          ".write": "auth != null && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",
+          ".validate": "newData.hasChildren(['uid','name','text','createdAt']) && newData.child('uid').val() === auth.uid && newData.child('name').isString() && newData.child('name').val().length <= 18 && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 240 && newData.child('createdAt').isNumber()"
+        }
+      }
+    }
+  }
+}
