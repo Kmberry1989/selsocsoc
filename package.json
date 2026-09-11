@@ -1,12 +1,8 @@
 {
   "name": "snug-society",
-  "version": "0.1.0",
   "private": true,
-  "type": "module",
+  "version": "0.1.0",
   "scripts": {
-    "build": "node scripts/generate-asset-manifests.mjs"
-  },
-  "engines": {
-    "node": ">=18"
+    "build": "node scripts/generate-cosmetics-manifest.mjs"
   }
 }
