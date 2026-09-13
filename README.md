@@ -1,40 +1,55 @@
-# Snug Society
+# Snug Society — hosting project
 
-A mobile-first 3D social game client backed by Firebase Authentication, Firestore, and Realtime Database.
+This is the complete static project snapshot exported on **September 13, 2026**. Upload the contents of this folder to the root of your GitHub repository, then connect that repository to Vercel.
 
-## Upload to GitHub
+## Deploy with GitHub + Vercel
 
-1. Extract this ZIP.
-2. Upload **the contents of this folder** to the root of your GitHub repository.
+1. Extract the ZIP.
+2. Upload **the contents of the extracted folder** to the root of your GitHub repository.
 3. Commit and push.
-4. In Vercel, import that repository. Vercel will run `npm run build` and publish the project root.
-5. Add the deployed Vercel domain to Firebase Authentication → Settings → Authorized domains.
-6. In Firebase Realtime Database → Rules, replace the current rules with `assets/firebase-realtime-database.rules.json` and publish.
+4. In Vercel, import the repository. The included `vercel.json` runs `npm run build` and publishes the repository root.
+5. Add the deployed Vercel domain in Firebase Authentication → Settings → Authorized domains.
+6. In Firebase Console → Realtime Database → Rules, replace the existing rules with `assets/firebase-realtime-database.rules.json` and publish.
 
-The Firebase web configuration is already embedded in `index.html`. Firebase web configuration is public client configuration; access is controlled by Authentication and database rules.
+The Firebase web configuration is already embedded in `index.html`. Firebase web configuration is public client configuration; access is controlled by Firebase Authentication and database rules.
 
-## Add cosmetics
+## Included game snapshot
+
+See `RELEASE-NOTES.md` for the exact feature inventory. This export includes the current title screen, Solo Practice, multiplayer rooms and voice chat, Snug Board with its 2–4 player lobby and bot filling, the welcoming sequence, shops and economy, weather and wildlife, current asset pipelines, placeholder audio, and the current Realtime Database rules including board events.
+
+## Add cosmetic GLBs
 
 Place Draco-compressed or ordinary `.glb` files in one of these folders:
 
 - `assets/cosmetics/hairstyles/`
+- `assets/cosmetics/head-accessories/`
 - `assets/cosmetics/outfits/`
 - `assets/cosmetics/hand-accessories/`
 - `assets/cosmetics/shoes/`
 
-Commit and push. The build script regenerates `assets/cosmetics/manifest.json`, and the game turns the filename into the catalogue name. For example, `yellow_raincoat.glb` becomes **Yellow Raincoat**.
+Commit and push. The Vercel build regenerates `assets/cosmetics/manifest.json`. Filenames become catalogue labels: `yellow_raincoat.glb` becomes **Yellow Raincoat**.
 
-Before modeling or exporting, read `assets/cosmetics/README.md`. The included template GLBs show the current attachment origins and approximate bounds. Keep the templates until your replacements are tested.
+Read `assets/cosmetics/README.md` before modeling or exporting. The template GLBs show the current attachment origins and approximate bounds.
+
+## Replace placeholder audio
+
+Use the established filenames in:
+
+- `assets/audio/music/`
+- `assets/audio/sfx/`
+
+Read `assets/audio/README.md` for the complete slot list and supported formats. The Vercel build regenerates `assets/audio/manifest.json` automatically.
 
 ## Other asset folders
 
-- `assets/textures/` contains terrain texture slots and notes.
-- `assets/environment-props/` contains the starter prop set and modeling notes.
-- `assets/vendor/` contains the bundled Three.js and Draco loader/decoder files.
+- `assets/textures/` — terrain texture slots and notes.
+- `assets/environment-props/` — starter prop GLBs and modeling notes.
+- `assets/welcome-committee/` — named placeholders for Mayor Mayor, Gideon, and Penny Press.
+- `assets/vendor/` — bundled Three.js module files and Draco decoders.
 
-## Multiplayer
+## Multiplayer and Firebase rules
 
-Read `assets/MULTIPLAYER-SETUP.md`, then publish `assets/firebase-realtime-database.rules.json` in the Realtime Database Rules tab. The bundled rules are the tightened version: ordinary room members cannot rewrite room records, chat messages are append-only, presence is player-scoped, and minigame events are validated.
+Read `assets/MULTIPLAYER-SETUP.md`, then publish `assets/firebase-realtime-database.rules.json`. The rules cover rooms, append-only chat and minigame events, board-game lobby and turn events, and WebRTC presence/signaling.
 
 ## Local preview
 

@@ -3,6 +3,7 @@
 Players do not upload models. These folders are for developer-authored `.glb` files shipped with the game:
 
 - `hairstyles/`
+- `head-accessories/`
 - `outfits/`
 - `hand-accessories/`
 - `shoes/`
@@ -26,16 +27,17 @@ All dimensions are approximate local-space meters.
 | Folder | Attachment origin | Template bounds | Runtime behavior |
 |---|---|---|---|
 | `hairstyles/` | center of the coin head | about 0.92 W × 0.55 H × 0.34 D | follows head bob/tilt; the coin is about 0.80 wide and 0.24 thick |
+| `head-accessories/` | center of the coin head | about 1.00 W × 0.70 H × 0.46 D | follows head bob/tilt; use for glasses, masks, antennae, crowns, and other non-hair head pieces |
 | `outfits/` | center of the body | about 0.78 W × 1.10 H × 0.54 D | scales in X/Z with body mass and in Y with height; always overlays the body |
 | `hand-accessories/` | center of one hand | about 0.26 W × 0.08 H × 0.26 D | loaded on both floating hands and follows each hand independently |
 | `shoes/` | center of one foot | about 0.28 W × 0.16 H × 0.42 D | loaded on both wedge feet and follows the foot-plop motion |
 
 ## Adding a new cosmetic
 
-1. Place the Draco-compressed GLB in the matching folder and push it to the GitHub repository used by GitHub Pages.
-2. Reload the deployed game. It reads those four folders from the repository and adds every `.glb` file to the matching in-game selector automatically.
+1. Place the Draco-compressed GLB in the matching folder and push it to the GitHub repository connected to Vercel.
+2. Vercel runs the included build script, regenerates `manifest.json`, and deploys every `.glb` file into the matching in-game selector automatically.
 3. Check the asset at every body-mass and height extreme on a phone-sized viewport.
 
-Display names come directly from filenames: underscores and hyphens become spaces and each word is capitalized (`yellow_raincoat.glb` becomes **Yellow Raincoat**). No catalogue code or manifest edit is needed for the GitHub Pages build. `manifest.json` remains the bundled fallback for local previews and hosts that cannot expose a repository listing.
+Display names come directly from filenames: underscores and hyphens become spaces and each word is capitalized (`yellow_raincoat.glb` becomes **Yellow Raincoat**). No catalogue code or manual manifest edit is needed for the Vercel build. For GitHub Pages or other hosts without a build step, run `npm run build` before committing the generated manifest.
 
-The shared loader supports Draco-compressed and ordinary GLBs. It mounts hairstyles to the head, hand accessories to each hand, shoes to each foot, and outfits to the avatar root. Missing files fail silently so a broken cosmetic cannot stop the game.
+The shared loader supports Draco-compressed and ordinary GLBs. It mounts hairstyles and head accessories to the coin head, hand accessories to each hand, shoes to each foot, and outfits to the avatar root. Missing files fail silently so a broken cosmetic cannot stop the game.

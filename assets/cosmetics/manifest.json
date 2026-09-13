@@ -1,14 +1,37 @@
 {
   "hairstyles": [
-    { "id": "template-hair", "name": "Template hair", "path": "assets/cosmetics/hairstyles/template-hair.glb" }
+    {
+      "id": "template-hair",
+      "name": "Template Hair",
+      "path": "assets/cosmetics/hairstyles/template-hair.glb"
+    }
+  ],
+  "headAccessories": [
+    {
+      "id": "template-head-accessory",
+      "name": "Template Head Accessory",
+      "path": "assets/cosmetics/head-accessories/template-head-accessory.glb"
+    }
   ],
   "outfits": [
-    { "id": "template-outfit", "name": "Template outfit", "path": "assets/cosmetics/outfits/template-outfit.glb" }
+    {
+      "id": "template-outfit",
+      "name": "Template Outfit",
+      "path": "assets/cosmetics/outfits/template-outfit.glb"
+    }
   ],
   "handAccessories": [
-    { "id": "template-hand-accessory", "name": "Template cuff", "path": "assets/cosmetics/hand-accessories/template-hand-accessory.glb" }
+    {
+      "id": "template-hand-accessory",
+      "name": "Template Hand Accessory",
+      "path": "assets/cosmetics/hand-accessories/template-hand-accessory.glb"
+    }
   ],
   "shoes": [
-    { "id": "template-shoe", "name": "Template shoe", "path": "assets/cosmetics/shoes/template-shoe.glb" }
+    {
+      "id": "template-shoe",
+      "name": "Template Shoe",
+      "path": "assets/cosmetics/shoes/template-shoe.glb"
+    }
   ]
 }

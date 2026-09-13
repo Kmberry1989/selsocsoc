@@ -2,6 +2,7 @@ import { DRACOLoader } from './vendor/three/DRACOLoader.js';
 
 const CATEGORY_FOLDERS = {
   hairstyles: 'hairstyles',
+  headAccessories: 'head-accessories',
   outfits: 'outfits',
   handAccessories: 'hand-accessories',
   shoes: 'shoes'
@@ -9,6 +10,7 @@ const CATEGORY_FOLDERS = {
 
 const EMPTY_OPTIONS = {
   hairstyles: { id: '', name: 'None', path: '' },
+  headAccessories: { id: '', name: 'None', path: '' },
   outfits: { id: '', name: 'Built-in', path: '' },
   handAccessories: { id: '', name: 'None', path: '' },
   shoes: { id: '', name: 'Built-in', path: '' }
@@ -55,40 +57,11 @@ async function loadManifest() {
   }
 }
 
-function githubRepositoryFromPage() {
-  const host = location.hostname.toLowerCase();
-  if (!host.endsWith('.github.io')) return null;
-  const owner = host.slice(0, -'.github.io'.length);
-  const firstPath = location.pathname.split('/').filter(Boolean)[0] || '';
-  const repo = firstPath && !firstPath.includes('.') ? firstPath : `${owner}.github.io`;
-  return { owner, repo };
-}
-
-async function discoverGithubCatalog(repository) {
-  const entries = await Promise.all(Object.entries(CATEGORY_FOLDERS).map(async ([category, folder]) => {
-    const endpoint = `https://api.github.com/repos/${encodeURIComponent(repository.owner)}/${encodeURIComponent(repository.repo)}/contents/assets/cosmetics/${folder}`;
-    const response = await fetch(endpoint, { headers: { Accept: 'application/vnd.github+json' } });
-    if (!response.ok) throw new Error(`GitHub catalogue ${response.status}`);
-    const files = await response.json();
-    return [category, files
-      .filter((item) => item.type === 'file' && /\.glb$/i.test(item.name))
-      .map((item) => ({ name: item.name, path: item.path }))];
-  }));
-  return normalizeCatalog(Object.fromEntries(entries));
-}
-
 export async function loadSnugAssetPipeline() {
-  const fallbackCatalog = await loadManifest();
-  const repository = githubRepositoryFromPage();
-  let catalog = fallbackCatalog;
-
-  if (repository) {
-    try {
-      catalog = await discoverGithubCatalog(repository);
-    } catch (error) {
-      console.warn('Snug Society: using the bundled cosmetic catalogue.', error);
-    }
-  }
+  // The Vercel build regenerates this same-origin manifest from the five
+  // cosmetic folders. Runtime repository discovery is intentionally avoided:
+  // it is slower, exposes repository details, and is unnecessary after build.
+  const catalog = await loadManifest();
 
   const draco = new DRACOLoader();
   draco.setDecoderPath('assets/vendor/draco/');

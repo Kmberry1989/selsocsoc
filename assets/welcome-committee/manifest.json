@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "characters": {
+    "mayor-mayor": {
+      "runtimePrefix": "MayorMayor",
+      "outfit": "mayor-mayor/outfit-placeholder.glb",
+      "headAccessory": "mayor-mayor/head-accessory-placeholder.glb",
+      "handAccessory": "mayor-mayor/hand-accessory-placeholder.glb",
+      "shoes": "mayor-mayor/shoes-placeholder.glb",
+      "faceSlot": "FaceSlot_MayorMayor",
+      "faceArtwork": null
+    },
+    "gideon": {
+      "runtimePrefix": "Gideon",
+      "outfit": "gideon/outfit-placeholder.glb",
+      "headAccessory": "gideon/head-accessory-placeholder.glb",
+      "handAccessory": "gideon/hand-accessory-placeholder.glb",
+      "shoes": "gideon/shoes-placeholder.glb",
+      "faceSlot": "FaceSlot_Gideon",
+      "faceArtwork": null
+    },
+    "penny-press": {
+      "runtimePrefix": "PennyPress",
+      "outfit": "penny-press/outfit-placeholder.glb",
+      "headAccessory": "penny-press/head-accessory-placeholder.glb",
+      "handAccessory": "penny-press/hand-accessory-placeholder.glb",
+      "shoes": "penny-press/shoes-placeholder.glb",
+      "faceSlot": "FaceSlot_PennyPress",
+      "faceArtwork": null
+    }
+  }
+}
