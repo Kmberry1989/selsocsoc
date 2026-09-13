@@ -60,3 +60,7 @@ python3 -m http.server 8080
 ```
 
 Then open `http://localhost:8080`.
+## Custom animated menu wallpaper
+
+Add a looping `menu.mp4` (H.264 recommended), optional `menu.webm`, and optional poster such as `menu.webp` to `assets/menu-wallpaper/`. The normal build auto-generates its manifest. If that folder has no media, the main menu shows the live 3D town framed on the open gate with the animated light shader. See `assets/menu-wallpaper/README.md` for sizing and compression guidance.
+

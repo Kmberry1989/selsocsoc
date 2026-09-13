@@ -1,6 +1,6 @@
 e7813bee0bed340ccade04479a524c420bf2dc91d2ea47acabb481b909099199  ./.gitignore
-5b5a5ec413629d451323785be9012d1c1b76eaccb0d0a96c185e2c01f7af69a1  ./README.md
-a98481aa5408672d2b46b930d3e619734027a427e1f3aeb8b11e8505d8a4fe01  ./RELEASE-NOTES.md
+cc21258e3965dc3f41e362ac37c0a137df05d0c4118f5f3d0264f6de5f1881b4  ./README.md
+fa2f51974b9acc8f3b8c58fa26cac530594531b2bb23e5eb92f5107197766f55  ./RELEASE-NOTES.md
 4092bff457b2e571923f3f18ee88edde37e142cbe0960cf43fabe8201c59ad60  ./assets/MULTIPLAYER-SETUP.md
 7aa4f33ecce5bb9afcd0714435a7129142635cf82a666d1ed1d4e303b3f543bd  ./assets/audio/README.md
 2eda6237847f2e7bb069513de455a1b0231ab40f54435552837f6d12c19107e4  ./assets/audio/generate-manifest.mjs
@@ -37,9 +37,12 @@ fabd7d0f063d949ba8ed8b5533c74f2743b2c70a50f40e11b487a9c26e944707  ./assets/envir
 04105b26d88a9a062359a02aa1add87696e93fbeeb6bdb0548f645707415463c  ./assets/environment-props/rock-cluster.glb
 de339abd492822dc2597f9b0a544b6fae44fff5e0b1c095f6cd25ea2ff6c3f74  ./assets/environment-props/tree-oak.glb
 51db4e55d4daf371c6d919c5e0b75469910f762878c60b482c5b6e3d5a05a8aa  ./assets/firebase-realtime-database.rules.json
+8de71bb9eda9eecd3cda7616f9cf75c11b4f0d82a5ecbeb3a9f401e755d92e7e  ./assets/menu-wallpaper/README.md
+c8a004c6f436581190eb4b0cef71f108742d51258ca3e142a764fda9853d8590  ./assets/menu-wallpaper/generate-manifest.mjs
+4ba13cb477727b61a9da949f2e369b9cdc49379b801125e53202b144928c9e20  ./assets/menu-wallpaper/manifest.json
 6e8799e67a90f3ae25caf04cf1ec7791b2532b69ab85831923085e64b558e58c  ./assets/multiplayer.js
 9adbbc82bdbb2b7af44881188b2d954b71bd100d55f6dfad47cce586b443cb82  ./assets/snug-asset-pipeline.js
-5b541e20814e69e432b306e15f7a134e79d8d481ff696ec6b944420d218b756d  ./assets/snug-audio.js
+182eedb507761cf29676f45b2cea841eea60180c291dce136bac99fc361758f8  ./assets/snug-audio.js
 cc987be5ed9ce9418c47fbab7911ab368a26d3d8d25b5dd1af881113e0c67a3c  ./assets/textures/README.md
 ed5aec0f9f2d967f5f4acd5ec5e0f7e3faae477e92f69ed177c45b73cc7a5f03  ./assets/textures/grass.svg
 3bdc552c77921c5ea6692143f7010ea711c28a52857d35021ae42992f4724034  ./assets/textures/manifest.json
@@ -70,7 +73,7 @@ bf283efa73a7dc13fbdfeee9a464b43284c46da441ee29822ade3bd76c912da5  ./assets/welco
 ee040c7d7416cdcf4c52781fa3999fd68990447e6a3c95ecb255d2c23a8af11a  ./assets/welcome-committee/penny-press/head-accessory-placeholder.glb
 f08793ee4f29141e5e673522ab11a9ef483952fe9f376d53313604bde6506ee4  ./assets/welcome-committee/penny-press/outfit-placeholder.glb
 cf887fdcd1be1629965323793bf59ab3c55c07be5f1fd1c4616b6d2ce3fef05d  ./assets/welcome-committee/penny-press/shoes-placeholder.glb
-2d31db6e32dfd4bf6d7dcf97f23354fcb79e623538841b800c851cf8a4d6aebb  ./index.html
-9be84bbc344ae1263df1a8d86c37605de9beeff5a84c34874d39ce6a2fbce694  ./package.json
+cd26009242519d8698fef65eff71e7440d0ef5bb5b5f96b4a488c68b56d234ea  ./index.html
+5584dc962e337000d390d13aafc41ba09eaa3967ac5bb6407d979118249b2c38  ./package.json
 14be2e757b478e5f901f62c0d0c9383e815968edce7307cae33a3aef79ea644d  ./scripts/generate-cosmetics-manifest.mjs
 b5b960cdbe5719d625129120269ea6b34da5784a29148a9e122f7a54bd418ce2  ./vercel.json

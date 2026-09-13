@@ -1,3 +1,13 @@
+# 0.9.14 — Living town-gate title screen
+
+- Restores the live Three.js village behind the title choices and frames the camera on a new open town gate.
+- Adds a subtle animated WebGL light-wave layer with a CSS/reduced-motion fallback.
+- Adds an auto-generated animated menu-wallpaper slot for MP4/WebM loops and an optional still poster.
+- Adds a returning-player option that restores the browser's existing anonymous Firebase identity and skips the welcoming ceremony when saved records exist.
+- Turns the expression portraits into a Penny Press-directed photo shoot with spoken coaching, camera reactions, and the existing per-photo avatar previews.
+- Speeds up Mayor Mayor's voice and retimes his opening choreography.
+- Keeps the placeholder title music selected until the menu has actually closed.
+
 # Snug Society project snapshot
 
 **Snapshot:** 2026-09-13 hosting export  

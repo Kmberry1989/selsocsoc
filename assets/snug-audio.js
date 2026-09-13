@@ -14,7 +14,7 @@ async function loadManifest() {
 }
 
 function musicContext() {
-  if (document.querySelector(".snug-start-screen:not(.leaving)")) return "title-screen";
+  if (document.querySelector(".snug-start-screen:not(.is-leaving)")) return "title-screen";
   if (document.querySelector(".snug-board-backdrop")) return "board-game";
   if (document.querySelector(".room-game-hud,.party-arena-backdrop,.solo-result-backdrop")) return "minigames";
   const shopTitle = [...document.querySelectorAll(".sheet-head h2")].find((node) => /Meadow Market|Curl & Comb|Pocket Mall|Hearth & Home|Green Nook/.test(node.textContent || ""));
