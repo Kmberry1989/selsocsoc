@@ -1,20 +1,16 @@
-# Snug Society 0.9.23 — welcoming sequence and toon definition
+# Snug Society 0.9.24 — automatic Firebase connection
 
 **Snapshot:** September 15, 2026  
-**Package version:** 0.9.23
+**Package version:** 0.9.24
 
-This refresh brings the downloadable GitHub/Vercel project ZIP up to the current game build, keeps the welcoming committee uninterrupted, and adds a restrained toon-outline pass.
+This refresh makes the supplied Firebase project the automatic default while preserving the Player-profile configuration field as an override.
 
-## New in 0.9.23
+## New in 0.9.24
 
-- The welcoming-committee sequence now owns its active layer until the player intentionally finishes or skips it. A guarded, idempotent cleanup path prevents stray menu state, duplicate transitions, removed overlays, or a 3D scene failure from dropping the player back at the main menu mid-dialogue.
-- The spoken-particle fountain now emits the current speaker's actual dialogue words and letters in white with a crisp black outline, uses dynamically fitted textures so longer words remain legible, and keeps a tighter mobile particle budget.
-- Characters gain subtle silhouette definition and polygonal world geometry gains restrained dark edge lines. The same policy is applied to newly loaded world and cosmetic meshes where practical, while transparent faces, sprites, particles, sky effects, and oversized meshes are excluded for clarity and mobile performance.
-- Mobile and touch-first devices now use Firebase's redirect-based Google sign-in flow; desktop browsers keep the popup flow.
-- Google redirect results are completed on return before the game restores the player's Firebase profile and decides whether to skip the welcoming committee.
-- Sign-in failures now stay visible on the main menu and include the Firebase error code plus a targeted next step instead of silently returning to the menu.
-- Popup-blocked and unsupported popup errors on desktop automatically fall back to redirect sign-in.
-- Cosmetic fit approvals are embedded into the generated cosmetics manifest at build time. A missing optional `assets/cosmetics/fit-reviews.json` silently becomes an empty approval list, so the hosted game no longer requests that missing file or logs its 404.
+- Fresh devices connect to the built-in `spatial-canvas-a9726` Firebase project automatically; no browser-stored configuration is required.
+- A valid Firebase config saved from the Player profile still takes precedence over the built-in default.
+- Removing a saved override immediately reconnects through the built-in project instead of leaving cloud multiplayer waiting for a pasted config.
+- The optional Realtime Database URL is now preserved when a profile override is parsed and saved.
 
 ## Current build included
 

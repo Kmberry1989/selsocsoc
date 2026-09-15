@@ -1,6 +1,6 @@
 e7813bee0bed340ccade04479a524c420bf2dc91d2ea47acabb481b909099199  ./.gitignore
-817058b3d5c5cb202f2cb863569d76d991ddcf89084d60849340939604cc92e3  ./README.md
-edf8da8c282471dbda7127859e8b3b9958d78f4cb5bf94ad19c2a56a0c484285  ./RELEASE-NOTES.md
+6cc2730d7be1fc99cd95a83046df2ddef46656fbf817e1df3d987c10d1d69a25  ./README.md
+71cfce5ac133a0719b4b4ee264a7b5bc5c1d4434348eeaa32535ec39a391d248  ./RELEASE-NOTES.md
 eac3308fdee48f6cab5697ad3aa36043714ef76830286a1bdf7fceec0c4d5dc5  ./assets/MULTIPLAYER-SETUP.md
 4e3b0e39299c985fdbb079756ed7ee67cf2a4311611f325f3d56bc7e159a5e43  ./assets/audio/README.md
 b081d71700b105d26995ab65f465de4c754301564f79486c46d8df09994a6990  ./assets/audio/generate-manifest.mjs
@@ -92,7 +92,7 @@ bf283efa73a7dc13fbdfeee9a464b43284c46da441ee29822ade3bd76c912da5  ./assets/welco
 ee040c7d7416cdcf4c52781fa3999fd68990447e6a3c95ecb255d2c23a8af11a  ./assets/welcome-committee/penny-press/head-accessory-placeholder.glb
 f08793ee4f29141e5e673522ab11a9ef483952fe9f376d53313604bde6506ee4  ./assets/welcome-committee/penny-press/outfit-placeholder.glb
 cf887fdcd1be1629965323793bf59ab3c55c07be5f1fd1c4616b6d2ce3fef05d  ./assets/welcome-committee/penny-press/shoes-placeholder.glb
-b115e0a08f5816e59a03d90754235cfdeccff5b9c23b3edb71ffe32ec93a555f  ./index.html
-a6508c03fb87bea44256d64657b9e5640b699b8283908e5edd423e406a3d0756  ./package.json
+480295c58f29f13bd314a8427413c3ac805c050a84cee796231c11f6a1e86554  ./index.html
+1fd507245977e0369749d17288770683de6ff871121c3c04cab74c233bdea3d7  ./package.json
 7849b2dcc1140163929296bb182bc32c38a160df84f572aae842278d854c9f5d  ./scripts/generate-cosmetics-manifest.mjs
 b5b960cdbe5719d625129120269ea6b34da5784a29148a9e122f7a54bd418ce2  ./vercel.json

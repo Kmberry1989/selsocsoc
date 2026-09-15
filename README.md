@@ -1,6 +1,6 @@
 # Snug Society — hosting project
 
-This is the complete Snug Society **0.9.23** static project snapshot exported on **September 15, 2026**. Upload the contents of this folder to the root of your GitHub repository, then connect that repository to Vercel.
+This is the complete Snug Society **0.9.24** static project snapshot exported on **September 15, 2026**. Upload the contents of this folder to the root of your GitHub repository, then connect that repository to Vercel.
 
 ## Deploy with GitHub + Vercel
 
