@@ -1,6 +1,6 @@
 # Snug Society audio drop-in guide
 
-The included WAV files are lightweight placeholder music and sound effects. Replace them with your own audio before release.
+The included WAV files are lightweight placeholder music and sound effects. The music uses relaxed tempos and longer, changing phrases so each environment can breathe before the loop returns. Replace them with your own audio before release.
 
 ## Music
 

@@ -12,8 +12,9 @@ The included `template-*.glb` files are low-poly sizing guides. Replace their me
 
 ## Shared conventions
 
-- Format: binary glTF 2.0 (`.glb`), Y-up, meters, +Z facing the camera/front of the avatar.
-- Apply/freeze transforms before export. Use scale `1,1,1` and rotation `0,0,0`.
+- Format: binary glTF 2.0 (`.glb`), meters, with the model facing forward in your Blender scene.
+- You can leave the model upright as authored. On load, the game compares its proportions with the category template and automatically corrects a clear Blender Z-up versus glTF Y-up mismatch. Correctly exported Y-up models are left untouched.
+- Apply/freeze transforms before export. Use scale `1,1,1` and rotation `0,0,0`; the automatic orientation correction does not change your attachment origin.
 - Put the model origin at its attachment point.
 - Keep materials and textures embedded in the GLB. Avoid external texture files.
 - Models are overlays. Do not include a body, head, hands, or feet in a cosmetic file.

@@ -1,34 +1,35 @@
-# 0.9.14 — Living town-gate title screen
+# Snug Society 0.9.16 — orientation-ready GitHub/Vercel project refresh
 
-- Restores the live Three.js village behind the title choices and frames the camera on a new open town gate.
-- Adds a subtle animated WebGL light-wave layer with a CSS/reduced-motion fallback.
-- Adds an auto-generated animated menu-wallpaper slot for MP4/WebM loops and an optional still poster.
-- Adds a returning-player option that restores the browser's existing anonymous Firebase identity and skips the welcoming ceremony when saved records exist.
-- Turns the expression portraits into a Penny Press-directed photo shoot with spoken coaching, camera reactions, and the existing per-photo avatar previews.
-- Speeds up Mayor Mayor's voice and retimes his opening choreography.
-- Keeps the placeholder title music selected until the menu has actually closed.
+**Snapshot:** September 14, 2026  
+**Package version:** 0.9.16
 
-# Snug Society project snapshot
+This refresh brings the downloadable GitHub/Vercel project ZIP up to the current hosted build.
 
-**Snapshot:** 2026-09-13 hosting export  
-**Package version:** 0.9.13
+## New in 0.9.16
 
-## Feature versions included
+- Added automatic Blender Z-up to game Y-up orientation correction for GLBs loaded from every cosmetic folder: hairstyles, head accessories, outfits, hand accessories, and shoes.
+- Extended the same automatic orientation check to replacement-world GLBs in the buildings, trees, and props folders.
+- Correctly exported Y-up GLBs stay untouched. The correction is deliberately conservative for ambiguous, nearly square props.
+- Updated the modeling guides: creators can keep models upright in Blender, preserve the documented attachment origin, export, and drop the resulting GLB into its category folder.
+- Rebuilt the complete project archive from the latest game source, asset manifests, audio, templates, vendor files, setup guides, and Firebase rules.
 
-- **Startup and mode selection — 2026-09-13 build:** placeholder title visuals, tap-to-start, and choices for Solo Practice, multiplayer, and Snug Board.
-- **Solo Practice — 2026-09-13 build:** Coin Scramble, Plaza Tag with a practice pal, and Room Quiz with answer buttons. Each round shows balance before, payout, and balance after.
-- **Multiplayer rooms — current hardened build:** public plaza, invite-code family rooms, live movement, room chat, family invite flow, and player-scoped presence.
-- **Room voice chat — current family-group build:** WebRTC microphone opt-in, speaking indicators, and avatar hand/body animation while speaking. Direct peer connections are intended for a small family group; restrictive networks may require a separately chosen TURN/STUN service.
-- **Multiplayer minigames — 2026-09-13 rotation:** Coin Scramble, Plaza Tag, Room Quiz, Tumble Tiles, Four in a Row, and Noughts & Crosses.
-- **Snug Board — 2026-09-13 build:** five rounds; coin, event, minigame, shop, and star spaces; dice boosts, traps, and steals; everyone-plays minigames; Banker and Minigame bonus stars.
-- **Snug Board lobby — 2026-09-13 build:** host selects 2, 3, or 4 total players (default 4), players ready up, and bots fill empty seats. Lobby and board events use the included Realtime Database rules.
-- **Audio placeholders — 2026-09-13 build:** six looping music slots (title, plaza, board, minigames, shops, home) and ten SFX slots (UI, dice, coins, win, footsteps, ready, start, purchase, bot turn), with automatic manifest generation.
-- **Avatar and expression system — current build:** floating coin head, independently buoyant body parts, corrected inward thumbs, nine expression-photo slots, atlas-backed face switching, framing controls, avatar previews, body mass/height/skin options, and expression-linked body gestures.
-- **Welcoming committee — 2026-09-12 cinematic build:** 3D Mayor Mayor, Gideon, and Penny Press sequence with speech synthesis, larger captions, skip/voice options in Pause & Help, and documented replacement slots for faces, outfits, shoes, and accessories.
-- **Cosmetic asset pipeline — current five-category build:** hairstyles, head accessories, outfits, hand accessories, and shoes; ordinary or Draco-compressed GLBs; filename-to-display-name conversion; templates and attachment notes included.
-- **World and economy — current build:** walk-up shops, spendable minigame currency, day/night, seasons and storms, birds/rabbits/varied cats, and collision boundaries.
-- **Firebase Realtime Database rules — 2026-09-13 board-enabled rules:** hardened rooms, self-scoped presence, append-only chat/minigame events, six multiplayer game event types, `boardGames/{roomId}/events` for lobby and board activity, plus WebRTC voice presence/signaling.
+## Current build included
 
-## Hosting notes
+- Compact icon-only mode dock, translucent tap-to-confirm mode overlays, and Google sign-in with the required Firebase setup notes.
+- Higher, farther-back orbiting menu camera around a noticeably globe-shaped world.
+- In-game zoom/orbit camera controls and local occlusion fading for scenery blocking the player.
+- Disabled document-style text selection, dragging, and callouts across the game surface.
+- Larger, more widely spaced terrain; world replacement folders for buildings, trees, and props; texture slots; automatic ordinary/Draco GLB catalogues for hairstyles, head accessories, outfits, hand accessories, and shoes.
+- Slower day/night cycle; gradual weather fades; progressive snow accumulation; varied, evenly scattered clouds; and smoother rain/snow particles.
+- Town Life: Moonlight Footbridge co-op project, adoptable cats, Fireworks Night, Meteor Shower, Costume Parade, and full photo mode.
+- Six longer, slower placeholder music arrangements with changing melodies, rests, varied accompaniment, and gentle crossfades.
+- Current welcoming sequence, multiplayer/family rooms and voice chat, minigames, Snug Board, shops/economy, Firebase rules, templates, vendor files, and setup documentation.
 
-The game is static and expects HTTPS for Firebase and microphone access; Vercel provides HTTPS automatically. Publish the bundled Realtime Database rules separately in Firebase Console after deployment. The ZIP does not deploy Firebase rules for you.
+## Deploy
+
+1. Extract `snug-society-project.zip` and upload the extracted **contents** to the root of the GitHub repository connected to Vercel.
+2. Push so Vercel runs the included manifest generators.
+3. Publish `assets/firebase-realtime-database.rules.json` in Firebase Console.
+4. Enable Google under Firebase Authentication → Sign-in method and add the Vercel domain under Authorized domains.
+
+The full detailed notes are also inside the ZIP, along with `CHECKSUMS.sha256` for file verification.

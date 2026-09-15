@@ -253,6 +253,83 @@
         }
       }
     },
+    "townLife": {
+      "projects": {
+        "$projectId": {
+          "contributions": {
+            ".read": "auth != null",
+            ".indexOn": [
+              "createdAt"
+            ],
+            "$contributionId": {
+              ".write": "auth != null && !data.exists() && newData.exists()",
+              ".validate": "newData.hasChildren(['uid','name','amount','createdAt']) && newData.child('uid').val() === auth.uid && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 18 && newData.child('amount').isNumber() && (newData.child('amount').val() === 5 || newData.child('amount').val() === 10 || newData.child('amount').val() === 25) && newData.child('createdAt').isNumber()",
+              "uid": {
+                ".validate": "newData.isString() && newData.val() === auth.uid"
+              },
+              "name": {
+                ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 18"
+              },
+              "amount": {
+                ".validate": "newData.isNumber() && (newData.val() === 5 || newData.val() === 10 || newData.val() === 25)"
+              },
+              "createdAt": {
+                ".validate": "newData.isNumber()"
+              },
+              "$other": {
+                ".validate": false
+              }
+            }
+          }
+        }
+      },
+      "profiles": {
+        "$uid": {
+          "cat": {
+            ".read": "auth != null && $uid === auth.uid",
+            ".write": "auth != null && $uid === auth.uid",
+            ".validate": "newData.hasChildren(['coat','name','affection','feeds','updatedAt']) && newData.child('coat').isString() && (newData.child('coat').val() === 'OrangeTabby' || newData.child('coat').val() === 'Grey' || newData.child('coat').val() === 'BlackAndWhite' || newData.child('coat').val() === 'Tortoiseshell' || newData.child('coat').val() === 'WhiteLonghair' || newData.child('coat').val() === 'Calico') && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 18 && newData.child('affection').isNumber() && newData.child('affection').val() >= 0 && newData.child('affection').val() <= 100 && newData.child('feeds').isNumber() && newData.child('feeds').val() >= 0 && newData.child('updatedAt').isNumber()",
+            "coat": {
+              ".validate": "newData.isString()"
+            },
+            "name": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 18"
+            },
+            "affection": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+            },
+            "feeds": {
+              ".validate": "newData.isNumber() && newData.val() >= 0"
+            },
+            "updatedAt": {
+              ".validate": "newData.isNumber()"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      },
+      "festival": {
+        "current": {
+          ".read": "auth != null",
+          ".write": "auth != null",
+          ".validate": "newData.hasChildren(['id','startedAt','startedBy']) && newData.child('id').isString() && (newData.child('id').val() === 'fireworks' || newData.child('id').val() === 'meteors' || newData.child('id').val() === 'parade') && newData.child('startedAt').isNumber() && newData.child('startedBy').isString() && newData.child('startedBy').val().length > 0 && newData.child('startedBy').val().length <= 18",
+          "id": {
+            ".validate": "newData.isString()"
+          },
+          "startedAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "startedBy": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 18"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
+    },
     "voicePresence": {
       "$roomId": {
         ".read": "auth != null && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",

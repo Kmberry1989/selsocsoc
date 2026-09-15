@@ -1,10 +1,37 @@
 {
+  "buildings": [],
+  "trees": [
+    {
+      "id": "tree-oak",
+      "name": "Tree Oak",
+      "path": "assets/environment-props/trees/tree-oak.glb"
+    }
+  ],
   "props": [
-    { "id": "tree-oak", "name": "Oak tree placeholder", "path": "assets/environment-props/tree-oak.glb", "represents": "broad-canopy village tree" },
-    { "id": "rock-cluster", "name": "Rock cluster placeholder", "path": "assets/environment-props/rock-cluster.glb", "represents": "small rounded landscape-rock grouping" },
-    { "id": "fence-segment", "name": "Fence segment placeholder", "path": "assets/environment-props/fence-segment.glb", "represents": "modular two-rail wooden fence span" },
-    { "id": "lantern-post", "name": "Lantern post placeholder", "path": "assets/environment-props/lantern-post.glb", "represents": "cozy village path lantern" },
-    { "id": "flower-patch", "name": "Flower patch placeholder", "path": "assets/environment-props/flower-patch.glb", "represents": "low mixed-flower planting patch" },
-    { "id": "bush-round", "name": "Rounded bush placeholder", "path": "assets/environment-props/bush-round.glb", "represents": "low irregular rounded shrub" }
+    {
+      "id": "bush-round",
+      "name": "Bush Round",
+      "path": "assets/environment-props/props/bush-round.glb"
+    },
+    {
+      "id": "fence-segment",
+      "name": "Fence Segment",
+      "path": "assets/environment-props/props/fence-segment.glb"
+    },
+    {
+      "id": "flower-patch",
+      "name": "Flower Patch",
+      "path": "assets/environment-props/props/flower-patch.glb"
+    },
+    {
+      "id": "lantern-post",
+      "name": "Lantern Post",
+      "path": "assets/environment-props/props/lantern-post.glb"
+    },
+    {
+      "id": "rock-cluster",
+      "name": "Rock Cluster",
+      "path": "assets/environment-props/props/rock-cluster.glb"
+    }
   ]
 }

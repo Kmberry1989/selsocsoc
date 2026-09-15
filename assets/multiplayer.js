@@ -277,7 +277,7 @@ async function poll() {
     const cutoff = Date.now() - 20000;
     state.players = Object.values(presence || {}).filter((entry) => entry?.uid && entry.uid !== state.session.uid && Number(entry.updatedAt) > cutoff);
     state.voiceUsers = Object.values(voicePresence || {}).filter((entry) => entry?.uid && Number(entry.updatedAt) > cutoff);
-    state.messages = Object.entries(messages || {}).map(([id, entry]) => ({ id, ...entry })).filter((entry) => entry?.text).sort(byCreatedAt).slice(-50);
+    state.messages = Object.entries(messages || {}).map(([id, entry]) => ({ id, ...entry })).filter((entry) => entry?.text && !String(entry.text).startsWith("§TL§")).sort(byCreatedAt).slice(-50);
     state.minigameEvents = Object.entries(minigames || {}).map(([id, entry]) => ({ id, ...entry })).filter((entry) => entry?.type).sort(byCreatedAt).slice(-50);
     deriveCurrentGame();
     if (state.voiceEnabled) reconcileVoicePeers();
@@ -1723,10 +1723,10 @@ function setupVillageShops() {
     disposeObject(state.shopGroup);
   }
   const definitions = [
-    { id: "salon", name: "Curl & Comb", sign: "SALON", note: "Hairstyles and headwear", x: -4.35, z: -2.8, rotation: Math.PI / 2, wall: 0xf1c9cf, trim: 0xb85f70, signColor: "#a94f63" },
-    { id: "mall", name: "Pocket Mall", sign: "MALL", note: "Accessories and outfits", x: 4.35, z: -2.7, rotation: -Math.PI / 2, wall: 0xc7dfea, trim: 0x4e8194, signColor: "#42788b" },
-    { id: "furniture", name: "Hearth & Home", sign: "HOME", note: "Furniture, rugs, and wallpaper", x: -4.35, z: 2.75, rotation: Math.PI / 2, wall: 0xe7d2a5, trim: 0x9a704a, signColor: "#845d3d" },
-    { id: "garden", name: "Green Nook", sign: "GARDEN", note: "Plants and outdoor decorations", x: 4.35, z: 2.75, rotation: -Math.PI / 2, wall: 0xc9dfb5, trim: 0x5f8555, signColor: "#527747" },
+    { id: "salon", name: "Curl & Comb", sign: "SALON", note: "Hairstyles and headwear", x: -7.15, z: -2.9, rotation: Math.PI / 2, wall: 0xf1c9cf, trim: 0xb85f70, signColor: "#a94f63" },
+    { id: "mall", name: "Pocket Mall", sign: "MALL", note: "Accessories and outfits", x: 7.15, z: -2.9, rotation: -Math.PI / 2, wall: 0xc7dfea, trim: 0x4e8194, signColor: "#42788b" },
+    { id: "furniture", name: "Hearth & Home", sign: "HOME", note: "Furniture, rugs, and wallpaper", x: -7.15, z: 3.05, rotation: Math.PI / 2, wall: 0xe7d2a5, trim: 0x9a704a, signColor: "#845d3d" },
+    { id: "garden", name: "Green Nook", sign: "GARDEN", note: "Plants and outdoor decorations", x: 7.15, z: 3.05, rotation: -Math.PI / 2, wall: 0xc9dfb5, trim: 0x5f8555, signColor: "#527747" },
   ];
   const group = new THREE.Group();
   group.name = "SnugVillageShops";
@@ -1888,6 +1888,20 @@ function setupEnvironment() {
   const sun = new THREE.Mesh(new THREE.SphereGeometry(0.72, 16, 12), new THREE.MeshBasicMaterial({ color: 0xffd66f }));
   const moon = new THREE.Mesh(new THREE.SphereGeometry(0.55, 16, 12), new THREE.MeshBasicMaterial({ color: 0xd9e5ff }));
   group.add(sun, moon);
+  // The walkable village remains level, while this shaded sphere continues below
+  // its edge so the town reads as a tiny, rounded world from the title camera.
+  const globeRadius = 12.8;
+  const globeJoinRadius = 12.4;
+  const globeJoinOffset = Math.sqrt(globeRadius * globeRadius - globeJoinRadius * globeJoinRadius);
+  const globeThetaStart = Math.acos(globeJoinOffset / globeRadius);
+  const globe = new THREE.Mesh(
+    new THREE.SphereGeometry(globeRadius, 64, 40, 0, Math.PI * 2, globeThetaStart, Math.PI - globeThetaStart),
+    new THREE.MeshStandardMaterial({ color: 0x4f8f82, roughness: 0.98, metalness: 0 })
+  );
+  globe.name = "SnugPlanetGlobe";
+  globe.position.y = -0.47 - globeJoinOffset;
+  globe.receiveShadow = true;
+  group.add(globe);
   const starGeometry = new THREE.BufferGeometry();
   const starPositions = [];
   for (let index = 0; index < 110; index += 1) {
@@ -1899,44 +1913,87 @@ function setupEnvironment() {
   const stars = new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0xf6f3d0, size: 0.09, transparent: true, opacity: 0 }));
   group.add(stars);
   const clouds = [];
-  for (let index = 0; index < 5; index += 1) {
+  const cloudPuffGeometry = new THREE.SphereGeometry(1, 10, 7);
+  for (let index = 0; index < 10; index += 1) {
     const cloud = new THREE.Group();
     const material = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1, transparent: true, opacity: 0.82 });
-    [[0, 0, 0, 0.55], [0.48, 0.02, 0.04, 0.38], [-0.43, -0.03, 0.02, 0.34], [0.12, 0.18, 0, 0.42]].forEach(([x, y, z, scale]) => {
-      const puff = new THREE.Mesh(new THREE.SphereGeometry(scale, 9, 6), material);
-      puff.position.set(x, y, z);
-      puff.scale.z = 0.75;
+    const lobeCount = 3 + Math.floor(seeded(index * 7.31 + 2.4) * 4);
+    const overall = 0.66 + seeded(index * 4.17 + 8.2) * 0.64;
+    for (let lobe = 0; lobe < lobeCount; lobe += 1) {
+      const center = (lobeCount - 1) / 2;
+      const size = (0.36 + seeded(index * 17.3 + lobe * 3.7) * 0.34) * overall;
+      const puff = new THREE.Mesh(cloudPuffGeometry, material);
+      puff.position.set((lobe - center) * overall * (0.34 + seeded(lobe * 5.9 + index) * 0.18), (seeded(index * 13.2 + lobe) - 0.35) * overall * 0.34, (seeded(index * 3.4 + lobe * 9.1) - 0.5) * overall * 0.42);
+      puff.scale.set(size * (1.05 + seeded(index + lobe * 2.1) * 0.35), size * (0.68 + seeded(index * 2.2 + lobe) * 0.26), size * (0.72 + seeded(index * 6.8 + lobe) * 0.3));
       cloud.add(puff);
-    });
-    cloud.position.set(-8 + index * 3.7, 6.5 + (index % 2) * 1.1, -4 + (index % 3) * 4.2);
-    cloud.userData.speed = 0.0007 + index * 0.00008;
+    }
+    const angle = index / 10 * Math.PI * 2 + (seeded(index * 9.7) - 0.5) * 0.42;
+    const radius = 9.5 + seeded(index * 11.2 + 1) * 6.5;
+    cloud.position.set(Math.cos(angle) * radius, 6.2 + seeded(index * 5.3 + 4) * 4.4, Math.sin(angle) * radius);
+    cloud.rotation.y = -angle + (seeded(index * 3.9) - 0.5) * 0.6;
+    cloud.userData = { angle, radius, baseY: cloud.position.y, speed: 0.006 + seeded(index * 7.6 + 3) * 0.007, bob: seeded(index * 6.1 + 9) * Math.PI * 2 };
     group.add(cloud);
     clouds.push(cloud);
   }
-  const weatherCount = 320;
+  const weatherCount = 420;
   const weatherGeometry = new THREE.BufferGeometry();
   const weatherPositions = new Float32Array(weatherCount * 3);
+  const weatherData = { baseX: new Float32Array(weatherCount), baseZ: new Float32Array(weatherCount), speed: new Float32Array(weatherCount), phase: new Float32Array(weatherCount) };
   for (let i = 0; i < weatherCount; i += 1) {
-    weatherPositions[i * 3] = (seeded(i * 4.73) - 0.5) * 12;
-    weatherPositions[i * 3 + 1] = seeded(i * 8.17) * 7;
-    weatherPositions[i * 3 + 2] = (seeded(i * 2.41 + 2) - 0.5) * 12;
+    const x = (seeded(i * 4.73) - 0.5) * 26;
+    const z = (seeded(i * 2.41 + 2) - 0.5) * 26;
+    weatherPositions[i * 3] = weatherData.baseX[i] = x;
+    weatherPositions[i * 3 + 1] = -1.4 + seeded(i * 8.17) * 11;
+    weatherPositions[i * 3 + 2] = weatherData.baseZ[i] = z;
+    weatherData.speed[i] = 0.76 + seeded(i * 12.43 + 7) * 0.42;
+    weatherData.phase[i] = seeded(i * 6.77 + 5) * Math.PI * 2;
   }
   weatherGeometry.setAttribute("position", new THREE.BufferAttribute(weatherPositions, 3));
-  const weather = new THREE.Points(weatherGeometry, new THREE.PointsMaterial({ color: 0xaed4e9, size: 0.045, transparent: true, opacity: 0 }));
+  const weather = new THREE.Points(weatherGeometry, new THREE.PointsMaterial({ color: 0xaed4e9, size: 0.045, transparent: true, opacity: 0, depthWrite: false, sizeAttenuation: true }));
+  weather.name = "SnugWeatherParticles";
   group.add(weather);
+  const snowCover = new THREE.Mesh(
+    new THREE.CircleGeometry(12.4, 64),
+    new THREE.MeshStandardMaterial({ color: 0xf4f8f7, roughness: 1, transparent: true, opacity: 0, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 })
+  );
+  snowCover.name = "SnugSnowCover";
+  snowCover.rotation.x = -Math.PI / 2;
+  snowCover.position.y = 0.036;
+  snowCover.renderOrder = 1;
+  group.add(snowCover);
   const wildlife = makeWildlife();
   group.add(wildlife.group);
   world.scene.add(group);
   const ambient = [];
-  world.scene.traverse((node) => { if (node.isAmbientLight || node.isHemisphereLight || node.isDirectionalLight) ambient.push({ node, base: node.intensity }); });
-  state.environment = { group, sun, moon, stars, clouds, weather, wildlife: wildlife.creatures, lights: ambient, lastLightning: 0, lightningUntil: 0 };
+  let terrain = null;
+  world.scene.traverse((node) => {
+    if (node.isAmbientLight || node.isHemisphereLight || node.isDirectionalLight) ambient.push({ node, base: node.intensity });
+    const geometry = node.geometry?.parameters;
+    if (!terrain && node.isMesh && geometry?.radiusTop >= 8 && geometry?.height <= 1) terrain = node;
+  });
+  const terrainBaseColor = terrain?.material?.color?.clone?.() || null;
+  const globeBaseColor = globe.material.color.clone();
+  const startingPhase = environmentPhase();
+  state.environment = {
+    group, sun, moon, stars, clouds, weather, weatherData, snowCover, terrain, terrainBaseColor, globe, globeBaseColor,
+    wildlife: wildlife.creatures, lights: ambient, lastLightning: 0, lightningUntil: 0,
+    displayWeather: startingPhase.weather === "Clear" ? "Rain" : startingPhase.weather,
+    weatherIntensity: 0, snowAccumulation: 0, lastTickTime: performance.now(),
+    colors: {
+      daySky: new THREE.Color(0x9fd3df), nightSky: new THREE.Color(0x17273f), stormSky: new THREE.Color(0x65757c),
+      clearCloud: new THREE.Color(0xffffff), stormCloud: new THREE.Color(0x79878a),
+      snowGround: new THREE.Color(0xf4f8f7), snow: new THREE.Color(0xffffff), rain: new THREE.Color(0x87bbd5),
+      skyTarget: new THREE.Color(), cloudTarget: new THREE.Color()
+    }
+  };
   state.environmentWorld = world;
   const player = world.player?.position;
   if (player) state.lastSafePosition = { x: player.x, y: player.y, z: player.z };
 }
 
 function environmentPhase(now = Date.now()) {
-  const dayFraction = (now % 180000) / 180000;
+  // One complete in-game day lasts an unhurried two real-world hours.
+  const dayFraction = (now % 7200000) / 7200000;
   const hour = Math.floor(dayFraction * 24);
   const minute = Math.floor((dayFraction * 24 - hour) * 60);
   const seasonNames = ["Spring", "Summer", "Autumn", "Winter"];
@@ -1993,8 +2050,21 @@ function tickEnvironment(time = performance.now()) {
     if (pill) pill.hidden = true;
     return;
   }
+  if (document.documentElement.classList.contains("snug-photo-mode")) return;
   const now = Date.now();
   const phase = environmentPhase(now);
+  const elapsed = Math.max(0, Math.min(0.1, (time - env.lastTickTime) / 1000));
+  env.lastTickTime = time;
+  const targetWeatherIntensity = phase.weather === "Clear" ? 0 : 1;
+  const weatherFadeSeconds = targetWeatherIntensity > env.weatherIntensity ? 10 : 8;
+  env.weatherIntensity += (targetWeatherIntensity - env.weatherIntensity) * (1 - Math.exp(-elapsed / weatherFadeSeconds));
+  if (targetWeatherIntensity === 0 && env.weatherIntensity < 0.025) env.weatherIntensity = 0;
+  if (phase.weather !== "Clear" && env.targetWeather !== phase.weather) env.displayWeather = phase.weather;
+  if (phase.weather === "Clear" && env.weatherIntensity === 0) env.displayWeather = "Clear";
+  env.targetWeather = phase.weather;
+  const snowTarget = phase.weather === "Snow" ? 1 : 0;
+  const snowRate = snowTarget > env.snowAccumulation ? elapsed / 18 : elapsed / 22;
+  env.snowAccumulation = THREE.MathUtils.clamp(env.snowAccumulation + Math.sign(snowTarget - env.snowAccumulation) * Math.min(Math.abs(snowTarget - env.snowAccumulation), snowRate), 0, 1);
   const angle = phase.dayFraction * Math.PI * 2 - Math.PI;
   env.sun.position.set(Math.cos(angle) * 10, Math.sin(angle) * 8 + 5, -7);
   env.moon.position.set(-env.sun.position.x, 10 - env.sun.position.y, 7);
@@ -2002,28 +2072,49 @@ function tickEnvironment(time = performance.now()) {
   env.moon.visible = phase.isNight;
   env.stars.material.opacity = phase.isNight ? Math.min(0.9, (1 - phase.daylight) * 1.3) : 0;
   env.lights.forEach(({ node, base }) => { node.intensity = base * (0.28 + phase.daylight * 0.72); });
-  const sky = new THREE.Color(phase.isNight ? 0x17273f : phase.weather === "Thunderstorm" ? 0x65757c : 0x9fd3df);
-  window.__snugWorld.scene.background?.lerp?.(sky, 0.025);
-  if (window.__snugWorld.scene.fog?.color) window.__snugWorld.scene.fog.color.lerp(sky, 0.025);
+  const stormMix = phase.weather === "Thunderstorm" ? env.weatherIntensity : 0;
+  const sky = env.colors.skyTarget.copy(phase.isNight ? env.colors.nightSky : env.colors.daySky).lerp(env.colors.stormSky, stormMix);
+  const skyFade = 1 - Math.exp(-elapsed / 10);
+  window.__snugWorld.scene.background?.lerp?.(sky, skyFade);
+  if (window.__snugWorld.scene.fog?.color) window.__snugWorld.scene.fog.color.lerp(sky, skyFade);
+  const cloudTarget = env.colors.cloudTarget.copy(env.colors.clearCloud).lerp(env.colors.stormCloud, stormMix);
+  const cloudOpacityTarget = 0.72 + env.weatherIntensity * 0.23;
+  const cloudFade = 1 - Math.exp(-elapsed / 9);
   env.clouds.forEach((cloud, index) => {
-    cloud.position.x += cloud.userData.speed * 16;
-    if (cloud.position.x > 9) cloud.position.x = -9;
-    cloud.children[0].material.color.set(phase.weather === "Thunderstorm" ? 0x79878a : 0xffffff);
-    cloud.children[0].material.opacity = phase.weather === "Clear" ? 0.72 : 0.95;
-    cloud.rotation.y = Math.sin(time * 0.00012 + index) * 0.15;
+    cloud.userData.angle = (cloud.userData.angle + cloud.userData.speed * elapsed) % (Math.PI * 2);
+    cloud.position.x = Math.cos(cloud.userData.angle) * cloud.userData.radius;
+    cloud.position.z = Math.sin(cloud.userData.angle) * cloud.userData.radius;
+    cloud.position.y = cloud.userData.baseY + Math.sin(time * 0.00018 + cloud.userData.bob) * 0.18;
+    cloud.children[0].material.color.lerp(cloudTarget, cloudFade);
+    cloud.children[0].material.opacity += (cloudOpacityTarget - cloud.children[0].material.opacity) * cloudFade;
+    cloud.rotation.y = -cloud.userData.angle + Math.sin(time * 0.00009 + index) * 0.12;
   });
+  if (env.terrainBaseColor && env.terrain?.material?.color) {
+    env.terrain.material.color.copy(env.terrainBaseColor).lerp(env.colors.snowGround, env.snowAccumulation * 0.86);
+  }
+  if (env.globeBaseColor && env.globe?.material?.color) {
+    env.globe.material.color.copy(env.globeBaseColor).lerp(env.colors.snowGround, env.snowAccumulation * 0.48);
+  }
+  env.snowCover.material.opacity = Math.max(0, env.snowAccumulation - 0.18) / 0.82 * 0.52;
+  env.snowCover.visible = env.snowAccumulation > 0.002;
   const particles = env.weather.geometry.attributes.position;
-  const falling = phase.weather !== "Clear";
+  const falling = env.weatherIntensity > 0.006;
+  const visibleWeather = phase.weather !== "Clear" ? phase.weather : env.displayWeather;
   env.weather.visible = falling;
-  env.weather.material.opacity = falling ? 0.78 : 0;
-  env.weather.material.color.set(phase.weather === "Snow" ? 0xffffff : 0x87bbd5);
-  env.weather.material.size = phase.weather === "Snow" ? 0.095 : 0.042;
+  env.weather.material.opacity = env.weatherIntensity * 0.78;
+  env.weather.material.color.lerp(visibleWeather === "Snow" ? env.colors.snow : env.colors.rain, 1 - Math.exp(-elapsed / 4));
+  env.weather.material.size += ((visibleWeather === "Snow" ? 0.095 : 0.042) - env.weather.material.size) * (1 - Math.exp(-elapsed / 4));
   if (falling) {
+    const isSnow = visibleWeather === "Snow";
+    const lower = -1.4;
+    const span = 11;
     for (let i = 0; i < particles.count; i += 1) {
-      let y = particles.getY(i) - (phase.weather === "Snow" ? 0.012 : 0.055);
-      if (y < 0.08) y = 6.8;
+      let y = particles.getY(i) - env.weatherData.speed[i] * (isSnow ? 0.92 : 4.15) * elapsed;
+      while (y < lower) y += span;
+      const phaseOffset = time * (isSnow ? 0.00055 : 0.00018) + env.weatherData.phase[i];
       particles.setY(i, y);
-      if (phase.weather === "Snow") particles.setX(i, particles.getX(i) + Math.sin(time * 0.001 + i) * 0.0015);
+      particles.setX(i, env.weatherData.baseX[i] + Math.sin(phaseOffset) * (isSnow ? 0.42 : 0.1));
+      particles.setZ(i, env.weatherData.baseZ[i] + Math.cos(phaseOffset * 0.73) * (isSnow ? 0.28 : 0.06));
     }
     particles.needsUpdate = true;
   }
@@ -2033,7 +2124,7 @@ function tickEnvironment(time = performance.now()) {
     creature.rotation.y = Math.atan2(-Math.sin(t), Math.cos(t * 0.88));
     if (creature.userData.kind === "bunny") creature.position.y = Math.max(0, Math.sin(t * 5) * 0.08);
   });
-  if (phase.weather === "Thunderstorm" && now - env.lastLightning > 6200) {
+  if (phase.weather === "Thunderstorm" && env.weatherIntensity > 0.68 && now - env.lastLightning > 6200) {
     env.lastLightning = now;
     env.lightningUntil = now + 140;
     playThunder();
@@ -2050,7 +2141,7 @@ function tickEnvironment(time = performance.now()) {
 
 function collidesAt(position) {
   if (!position || window.__snugWorld?.mode !== "village") return false;
-  if (Math.abs(position.x) > 5.15 || Math.abs(position.z) > 5.15) return true;
+  if (Math.abs(position.x) > 8.65 || Math.abs(position.z) > 8.25) return true;
   for (const shop of state.shops) {
     const dx = position.x - shop.x;
     const dz = position.z - shop.z;
@@ -2060,7 +2151,7 @@ function collidesAt(position) {
     const localZ = dx * s + dz * c;
     if (Math.abs(localX) < 1.38 && Math.abs(localZ) < 0.92) return true;
   }
-  const fixed = [[-5, 4.5, 0.65], [5.2, 4.8, 0.75], [1.7, -1.45, 0.28], [-1.7, -2.05, 0.42], [4.8, 1.55, 0.52]];
+  const fixed = [[-6.8, 6.2, 0.72], [7.5, 6.5, 0.82], [2.6, -2.25, 0.32], [-2.7, -3.15, 0.48], [7.1, 2.25, 0.58], [-9, -4.8, 0.82], [9.1, -4, 0.76], [-8.6, 3.8, 0.88], [8.9, 4.7, 0.82], [-3.1, 8.7, 0.72], [4.5, -8.7, 0.84]];
   if (fixed.some(([x, z, radius]) => Math.hypot(position.x - x, position.z - z) < radius)) return true;
   if (state.players.some((player) => Math.hypot(Number(player.x) - position.x, Number(player.z) - position.z) < 0.58)) return true;
   if (state.environment?.wildlife.some((creature) => Math.hypot(creature.position.x - position.x, creature.position.z - position.z) < creature.userData.collisionRadius + 0.24)) return true;
@@ -2198,7 +2289,7 @@ function setupPartyArena(game) {
   state.floorEliminated = roundEvents("floor-out").some((event) => event.uid === state.session?.uid);
   if (game.game !== "floor") {
     world.player?.position?.set?.(0, 0, 3.6);
-    state.position = { x: 0, z: 3.6, rotation: 0 };
+    state.position = { x: 0, z: 6.2, rotation: 0 };
   }
   updatePartyArena();
 }

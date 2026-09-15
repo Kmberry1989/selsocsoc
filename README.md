@@ -1,6 +1,6 @@
 # Snug Society — hosting project
 
-This is the complete static project snapshot exported on **September 13, 2026**. Upload the contents of this folder to the root of your GitHub repository, then connect that repository to Vercel.
+This is the complete static project snapshot exported on **September 14, 2026**. Upload the contents of this folder to the root of your GitHub repository, then connect that repository to Vercel.
 
 ## Deploy with GitHub + Vercel
 
@@ -29,7 +29,7 @@ Place Draco-compressed or ordinary `.glb` files in one of these folders:
 
 Commit and push. The Vercel build regenerates `assets/cosmetics/manifest.json`. Filenames become catalogue labels: `yellow_raincoat.glb` becomes **Yellow Raincoat**.
 
-Read `assets/cosmetics/README.md` before modeling or exporting. The template GLBs show the current attachment origins and approximate bounds.
+Read `assets/cosmetics/README.md` before modeling or exporting. The template GLBs show the current attachment origins and approximate bounds. You can leave models upright as authored in Blender: the loader now detects and corrects clear Z-up-to-Y-up mismatches for cosmetic and replacement-world GLBs while leaving correctly exported Y-up assets untouched.
 
 ## Replace placeholder audio
 
