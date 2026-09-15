@@ -1,4 +1,4 @@
-import { readdir, writeFile } from "node:fs/promises";
+import { mkdir, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
@@ -20,6 +20,7 @@ const displayName = (filename) => filename
 const manifest = {};
 for (const [category, folder] of Object.entries(categories)) {
   const directory = path.join(root, "assets", "cosmetics", folder);
+  await mkdir(directory, { recursive: true });
   const files = (await readdir(directory, { withFileTypes: true }))
     .filter((entry) => entry.isFile() && /\.glb$/i.test(entry.name))
     .map((entry) => entry.name)
