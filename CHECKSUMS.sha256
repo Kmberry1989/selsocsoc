@@ -1,10 +1,10 @@
 e7813bee0bed340ccade04479a524c420bf2dc91d2ea47acabb481b909099199  ./.gitignore
-1beccb5c6bf8be715f95abf74437c509556da22ae50482053b65e7e3ed7349f9  ./README.md
-9efee8c4991c465476d6b0f432e17d786c44d72bb8de2d739a09e12242926a5a  ./RELEASE-NOTES.md
+817058b3d5c5cb202f2cb863569d76d991ddcf89084d60849340939604cc92e3  ./README.md
+edf8da8c282471dbda7127859e8b3b9958d78f4cb5bf94ad19c2a56a0c484285  ./RELEASE-NOTES.md
 eac3308fdee48f6cab5697ad3aa36043714ef76830286a1bdf7fceec0c4d5dc5  ./assets/MULTIPLAYER-SETUP.md
 4e3b0e39299c985fdbb079756ed7ee67cf2a4311611f325f3d56bc7e159a5e43  ./assets/audio/README.md
 b081d71700b105d26995ab65f465de4c754301564f79486c46d8df09994a6990  ./assets/audio/generate-manifest.mjs
-baab5eec1be569f2aea78de45d996a00beccc09f00665840adb2650ec85578c6  ./assets/audio/manifest.json
+cc561d5994ff4d0b2beed291f813a66d5b1ddd4eb4302f3dc7814243cbcf7214  ./assets/audio/manifest.json
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./assets/audio/music/.gitkeep
 f7ed743b571afed617b783bb0921cba748f211f7782cbf8cca8abde632bc5c18  ./assets/audio/music/board-game.wav
 5f6d62f5aa2994906e80bc32d4ee020bf32a6bc713512749e29fa9319a5f0639  ./assets/audio/music/home.wav
@@ -23,7 +23,7 @@ ffee3eba56a3c988fdeb0e3f170d173e302d1b59bfb67f9db339915fe4f14e31  ./assets/audio
 889a6d28ef23015a94e37dae7332c54c89753b718c68255472de219e18c83606  ./assets/audio/sfx/ui-click.wav
 c70b7fadc9916dde29db12ff8f514a3b5cd1b8771e6c9dc5ca8ca7a09eef84e9  ./assets/audio/sfx/ui-select.wav
 8301e924eb024e3e1216ecccad1a6573fc11db284ebf148a408ef181fe345081  ./assets/audio/sfx/win.wav
-086669520f248a470c0341c83504966dac59668846cecb2cfe03394fc2314696  ./assets/cosmetics/README.md
+601c6a841d64af15b5e8e1b7b8a09bcae2be2b22548b56ac6e4f82b7068d0e47  ./assets/cosmetics/README.md
 ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356  ./assets/cosmetics/fit-reviews.json
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./assets/cosmetics/hairstyles/.gitkeep
 ee040c7d7416cdcf4c52781fa3999fd68990447e6a3c95ecb255d2c23a8af11a  ./assets/cosmetics/hairstyles/template-hair.glb
@@ -31,7 +31,7 @@ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./assets/cosme
 bf283efa73a7dc13fbdfeee9a464b43284c46da441ee29822ade3bd76c912da5  ./assets/cosmetics/hand-accessories/template-hand-accessory.glb
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./assets/cosmetics/head-accessories/.gitkeep
 ee040c7d7416cdcf4c52781fa3999fd68990447e6a3c95ecb255d2c23a8af11a  ./assets/cosmetics/head-accessories/template-head-accessory.glb
-097aad8619275e43117ba153fc0e75514e3a1c46e6f26f9f3cfbfdabaa785371  ./assets/cosmetics/manifest.json
+edafed6a07198dee6a030e9be17517c36999bf991e5e4afc0dd71b61e2cab861  ./assets/cosmetics/manifest.json
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./assets/cosmetics/outfits/.gitkeep
 f08793ee4f29141e5e673522ab11a9ef483952fe9f376d53313604bde6506ee4  ./assets/cosmetics/outfits/template-outfit.glb
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./assets/cosmetics/shoes/.gitkeep
@@ -55,7 +55,7 @@ de339abd492822dc2597f9b0a544b6fae44fff5e0b1c095f6cd25ea2ff6c3f74  ./assets/envir
 c8a004c6f436581190eb4b0cef71f108742d51258ca3e142a764fda9853d8590  ./assets/menu-wallpaper/generate-manifest.mjs
 4ba13cb477727b61a9da949f2e369b9cdc49379b801125e53202b144928c9e20  ./assets/menu-wallpaper/manifest.json
 c776f1d7d8f488660ec98c10abb0d40de4908fe5a364b10d93079fb4b77d39f2  ./assets/multiplayer.js
-e2936400d52e31182cd5b55b5ddbed24a51fcb4930fa71e7376b62e63be765fc  ./assets/snug-asset-pipeline.js
+2b87bdfb871a1a869b513616c2bbba96bd2f7e2b6290ec88c83dd717a87b9e5e  ./assets/snug-asset-pipeline.js
 423a279adf1d6181cf6b6fc18bb7464c48eb4cfa446fa0f8c26238446f2bfe31  ./assets/snug-audio.js
 cc987be5ed9ce9418c47fbab7911ab368a26d3d8d25b5dd1af881113e0c67a3c  ./assets/textures/README.md
 ed5aec0f9f2d967f5f4acd5ec5e0f7e3faae477e92f69ed177c45b73cc7a5f03  ./assets/textures/grass.svg
@@ -92,7 +92,7 @@ bf283efa73a7dc13fbdfeee9a464b43284c46da441ee29822ade3bd76c912da5  ./assets/welco
 ee040c7d7416cdcf4c52781fa3999fd68990447e6a3c95ecb255d2c23a8af11a  ./assets/welcome-committee/penny-press/head-accessory-placeholder.glb
 f08793ee4f29141e5e673522ab11a9ef483952fe9f376d53313604bde6506ee4  ./assets/welcome-committee/penny-press/outfit-placeholder.glb
 cf887fdcd1be1629965323793bf59ab3c55c07be5f1fd1c4616b6d2ce3fef05d  ./assets/welcome-committee/penny-press/shoes-placeholder.glb
-9123ce114d48cfed76a4733f7ea21ed236ff91da7ed38a49628997aa4a543a41  ./index.html
-a6eabcf35b54459483f9b670d704b437c07e8179338a5abcbae12e1fe92464a7  ./package.json
-2ab5706f35bc54eb73dfd1fafc7e0f8e265b9bc9b927b07dbfd027a6ac02f61c  ./scripts/generate-cosmetics-manifest.mjs
+b115e0a08f5816e59a03d90754235cfdeccff5b9c23b3edb71ffe32ec93a555f  ./index.html
+a6508c03fb87bea44256d64657b9e5640b699b8283908e5edd423e406a3d0756  ./package.json
+7849b2dcc1140163929296bb182bc32c38a160df84f572aae842278d854c9f5d  ./scripts/generate-cosmetics-manifest.mjs
 b5b960cdbe5719d625129120269ea6b34da5784a29148a9e122f7a54bd418ce2  ./vercel.json

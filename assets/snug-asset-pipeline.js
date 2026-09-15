@@ -79,10 +79,13 @@ async function loadJSON(path, fallback = {}) {
 }
 
 async function loadManifest() {
-  const [source, reviews] = await Promise.all([
-    loadJSON('assets/cosmetics/manifest.json'),
-    loadJSON('assets/cosmetics/fit-reviews.json')
-  ]);
+  // Fit approvals are embedded into the generated catalogue. Keeping them in
+  // the manifest means a missing optional fit-reviews.json never causes a
+  // browser request or a visible 404; an absent approvals file is simply {}.
+  const source = await loadJSON('assets/cosmetics/manifest.json', { fitReviews: {} });
+  const reviews = source?.fitReviews && !Array.isArray(source.fitReviews) && typeof source.fitReviews === 'object'
+    ? source.fitReviews
+    : {};
   return normalizeCatalog(source, reviews);
 }
 

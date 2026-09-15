@@ -36,9 +36,11 @@ All dimensions are approximate local-space meters.
 ## Adding a new cosmetic
 
 1. Place the Draco-compressed GLB in the matching folder and push it to the GitHub repository connected to Vercel.
-2. Vercel runs the included build script, regenerates `manifest.json`, and deploys every `.glb` file into the matching in-game selector automatically.
-3. Check the asset at every body-mass and height extreme on a phone-sized viewport.
+2. Vercel runs the included build script, regenerates `manifest.json`, and deploys every `.glb` file into the fit-review queue automatically.
+3. Open the game. Each new GLB appears on the current player's own avatar before it can enter Style. Review the plain-language scale, sit-point, and clipping notes; drag to turn the avatar, adjust size/position if needed, then choose **Approve for Style**.
+4. After the queue is complete, download `fit-reviews.json` and replace `assets/cosmetics/fit-reviews.json` in the repo. The Vercel build embeds these approvals into `manifest.json`; if the optional review file is missing, the build silently uses an empty approval list and the game opens every discovered cosmetic for review.
+5. Check outfits at every body-mass and height extreme on a phone-sized viewport.
 
-Display names come directly from filenames: underscores and hyphens become spaces and each word is capitalized (`yellow_raincoat.glb` becomes **Yellow Raincoat**). No catalogue code or manual manifest edit is needed for the Vercel build. For GitHub Pages or other hosts without a build step, run `npm run build` before committing the generated manifest.
+Display names come directly from filenames: underscores and hyphens become spaces and each word is capitalized (`yellow_raincoat.glb` becomes **Yellow Raincoat**). No catalogue code or manual manifest edit is needed for the Vercel build. Unapproved GLBs stay out of the Style and shop menus until the fit check is approved. For GitHub Pages or other hosts without a build step, run `npm run build` before committing the generated manifest.
 
 The shared loader supports Draco-compressed and ordinary GLBs. It mounts hairstyles and head accessories to the coin head, hand accessories to each hand, shoes to each foot, and outfits to the avatar root. Missing files fail silently so a broken cosmetic cannot stop the game.
