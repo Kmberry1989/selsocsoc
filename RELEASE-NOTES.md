@@ -1,27 +1,31 @@
-# Snug Society 0.9.17 — current GitHub/Vercel project refresh
+# Snug Society 0.9.21 — NPC speaking performance
 
-**Snapshot:** September 14, 2026  
-**Package version:** 0.9.17
+**Snapshot:** September 15, 2026  
+**Package version:** 0.9.21
 
-This refresh brings the downloadable GitHub/Vercel project ZIP up to the current game build and hardens the asset workflow for real repositories.
+This refresh brings the downloadable GitHub/Vercel project ZIP up to the current game build and adds a full-body 3D speaking performance for the welcoming committee.
 
-## New in 0.9.17
+## New in 0.9.21
 
-- Made every generated asset manifest resilient to missing category folders. The environment generator recreates absent `buildings`, `trees`, and `props` directories and treats them as empty instead of stopping a Vercel build.
-- Added tracked `.gitkeep` placeholders to empty asset directories so GitHub preserves the complete folder structure after upload.
-- Reworked the welcoming photo shoot into a compact, step-by-step flow: take one expression photo, refine its placement and size, then move to the next expression. The refinement preview shows only the coin head and fits within one mobile screen without a long scrolling gallery.
-- Suppressed document-style text selection, drag highlighting, and iOS touch callouts across the game surface.
-- Kept Mayor Mayor’s character while switching to a different preferred built-in voice and increasing his speaking rate, with the existing subtitle and gesture timing retained.
-- Opened up the village layout and made collisions more forgiving, leaving wider walking lanes around buildings, trees, and props.
-- Included the current accessory fit-review workflow and its support files, so new GLBs can be previewed, adjusted, and approved before appearing in the Style catalogue.
+- Speaking NPCs now wind up by squishing toward the ground and spinning before each speech performance.
+- The active speaker springs several feet into the air, hovers there, and continues facing the player.
+- While airborne, the speaker gently pulses and wiggles while the hands and feet perform small jumping-jack gestures paced to the character’s voice rate.
+- Speech emits a gentle fountain of bold black `!`, `@`, `#`, `?`, and `%` glyphs that grow from tiny marks into readable particles.
+- Glyph particles use marble-like motion: varied launch trajectories, gravity, randomized ground bounces, rolling slowdown, fade-in, fade-out, and final cleanup.
+- The visual performance remains synchronized to captions when device speech ends early or voices are turned off.
+- Reduced-motion mode keeps the dialogue readable without the wind-up, hover, or particle motion.
 
 ## Current build included
 
+- Visible-viewport sizing and safe-area handling keep screens and overlays inside the usable display area across phones, tablets, and desktop browsers.
+- Fit Check waits until the 3D gameplay world and player avatar are ready, layers above other panels, and remains manually reopenable after dismissal.
+- Primitive-detail pass across avatars, cottages, the town gate, trees, shrubs, pond, and town hall.
+- Compact step-by-step welcoming photo shoot, app-wide text-selection suppression, the faster updated Mayor Mayor voice, roomier village spacing, and forgiving collisions.
 - Automatic Blender Z-up to game Y-up orientation correction for cosmetic and replacement-world GLBs.
 - Compact icon-only mode dock, translucent tap-to-confirm mode overlays, Google sign-in, and returning-player shortcuts.
 - Higher, farther-back orbiting menu camera around a noticeably globe-shaped world.
 - In-game zoom/orbit camera controls and local occlusion fading for scenery blocking the player.
-- Larger, more widely spaced terrain; replaceable building, tree, and prop folders; texture slots; and automatic ordinary/Draco GLB catalogues for hairstyles, head accessories, outfits, hand accessories, and shoes.
+- Replaceable building, tree, and prop folders; texture slots; and automatic ordinary/Draco GLB catalogues for hairstyles, head accessories, outfits, hand accessories, and shoes.
 - Slower day/night cycle; gradual weather fades; progressive snow accumulation; varied clouds; and smooth rain/snow particles.
 - Town Life features, adoptable cats, festivals, photo mode, multiplayer/family rooms, voice chat, minigames, Snug Board, shops, economy, templates, and current Firebase rules.
 - Six longer, slower placeholder music arrangements with changing melodies, rests, varied accompaniment, and gentle crossfades.

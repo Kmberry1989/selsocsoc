@@ -1723,10 +1723,10 @@ function setupVillageShops() {
     disposeObject(state.shopGroup);
   }
   const definitions = [
-    { id: "salon", name: "Curl & Comb", sign: "SALON", note: "Hairstyles and headwear", x: -7.15, z: -2.9, rotation: Math.PI / 2, wall: 0xf1c9cf, trim: 0xb85f70, signColor: "#a94f63" },
-    { id: "mall", name: "Pocket Mall", sign: "MALL", note: "Accessories and outfits", x: 7.15, z: -2.9, rotation: -Math.PI / 2, wall: 0xc7dfea, trim: 0x4e8194, signColor: "#42788b" },
-    { id: "furniture", name: "Hearth & Home", sign: "HOME", note: "Furniture, rugs, and wallpaper", x: -7.15, z: 3.05, rotation: Math.PI / 2, wall: 0xe7d2a5, trim: 0x9a704a, signColor: "#845d3d" },
-    { id: "garden", name: "Green Nook", sign: "GARDEN", note: "Plants and outdoor decorations", x: 7.15, z: 3.05, rotation: -Math.PI / 2, wall: 0xc9dfb5, trim: 0x5f8555, signColor: "#527747" },
+    { id: "salon", name: "Curl & Comb", sign: "SALON", note: "Hairstyles and headwear", x: -9.3, z: -3.6, rotation: Math.PI / 2, wall: 0xf1c9cf, trim: 0xb85f70, signColor: "#a94f63" },
+    { id: "mall", name: "Pocket Mall", sign: "MALL", note: "Accessories and outfits", x: 9.3, z: -3.6, rotation: -Math.PI / 2, wall: 0xc7dfea, trim: 0x4e8194, signColor: "#42788b" },
+    { id: "furniture", name: "Hearth & Home", sign: "HOME", note: "Furniture, rugs, and wallpaper", x: -9.3, z: 3.65, rotation: Math.PI / 2, wall: 0xe7d2a5, trim: 0x9a704a, signColor: "#845d3d" },
+    { id: "garden", name: "Green Nook", sign: "GARDEN", note: "Plants and outdoor decorations", x: 9.3, z: 3.65, rotation: -Math.PI / 2, wall: 0xc9dfb5, trim: 0x5f8555, signColor: "#527747" },
   ];
   const group = new THREE.Group();
   group.name = "SnugVillageShops";
@@ -1890,8 +1890,8 @@ function setupEnvironment() {
   group.add(sun, moon);
   // The walkable village remains level, while this shaded sphere continues below
   // its edge so the town reads as a tiny, rounded world from the title camera.
-  const globeRadius = 12.8;
-  const globeJoinRadius = 12.4;
+  const globeRadius = 14.6;
+  const globeJoinRadius = 14;
   const globeJoinOffset = Math.sqrt(globeRadius * globeRadius - globeJoinRadius * globeJoinRadius);
   const globeThetaStart = Math.acos(globeJoinOffset / globeRadius);
   const globe = new THREE.Mesh(
@@ -1940,8 +1940,8 @@ function setupEnvironment() {
   const weatherPositions = new Float32Array(weatherCount * 3);
   const weatherData = { baseX: new Float32Array(weatherCount), baseZ: new Float32Array(weatherCount), speed: new Float32Array(weatherCount), phase: new Float32Array(weatherCount) };
   for (let i = 0; i < weatherCount; i += 1) {
-    const x = (seeded(i * 4.73) - 0.5) * 26;
-    const z = (seeded(i * 2.41 + 2) - 0.5) * 26;
+    const x = (seeded(i * 4.73) - 0.5) * 30;
+    const z = (seeded(i * 2.41 + 2) - 0.5) * 30;
     weatherPositions[i * 3] = weatherData.baseX[i] = x;
     weatherPositions[i * 3 + 1] = -1.4 + seeded(i * 8.17) * 11;
     weatherPositions[i * 3 + 2] = weatherData.baseZ[i] = z;
@@ -1953,7 +1953,7 @@ function setupEnvironment() {
   weather.name = "SnugWeatherParticles";
   group.add(weather);
   const snowCover = new THREE.Mesh(
-    new THREE.CircleGeometry(12.4, 64),
+    new THREE.CircleGeometry(14, 64),
     new THREE.MeshStandardMaterial({ color: 0xf4f8f7, roughness: 1, transparent: true, opacity: 0, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 })
   );
   snowCover.name = "SnugSnowCover";
@@ -2141,7 +2141,7 @@ function tickEnvironment(time = performance.now()) {
 
 function collidesAt(position) {
   if (!position || window.__snugWorld?.mode !== "village") return false;
-  if (Math.abs(position.x) > 8.65 || Math.abs(position.z) > 8.25) return true;
+  if (Math.abs(position.x) > 11.35 || Math.abs(position.z) > 10.95) return true;
   for (const shop of state.shops) {
     const dx = position.x - shop.x;
     const dz = position.z - shop.z;
@@ -2149,12 +2149,11 @@ function collidesAt(position) {
     const s = Math.sin(-shop.rotation);
     const localX = dx * c - dz * s;
     const localZ = dx * s + dz * c;
-    if (Math.abs(localX) < 1.38 && Math.abs(localZ) < 0.92) return true;
+    if (Math.abs(localX) < 1.08 && Math.abs(localZ) < 0.66) return true;
   }
-  const fixed = [[-6.8, 6.2, 0.72], [7.5, 6.5, 0.82], [2.6, -2.25, 0.32], [-2.7, -3.15, 0.48], [7.1, 2.25, 0.58], [-9, -4.8, 0.82], [9.1, -4, 0.76], [-8.6, 3.8, 0.88], [8.9, 4.7, 0.82], [-3.1, 8.7, 0.72], [4.5, -8.7, 0.84]];
+  const fixed = [[-8.35, 7.65, 0.34], [9.15, 8, 0.38], [3.4, -3.35, 0.16], [-3.7, -4.45, 0.22], [8.45, 2.8, 0.28], [-10.55, -5.8, 0.36], [10.65, -4.9, 0.34], [-10.1, 4.75, 0.38], [10.45, 5.85, 0.36], [-3.75, 10.15, 0.32], [5.45, -10.15, 0.36]];
   if (fixed.some(([x, z, radius]) => Math.hypot(position.x - x, position.z - z) < radius)) return true;
-  if (state.players.some((player) => Math.hypot(Number(player.x) - position.x, Number(player.z) - position.z) < 0.58)) return true;
-  if (state.environment?.wildlife.some((creature) => Math.hypot(creature.position.x - position.x, creature.position.z - position.z) < creature.userData.collisionRadius + 0.24)) return true;
+  if (state.players.some((player) => Math.hypot(Number(player.x) - position.x, Number(player.z) - position.z) < 0.38)) return true;
   return false;
 }
 
@@ -2163,8 +2162,12 @@ function applyPlayerCollision(next) {
   if (!world?.player || !next) return next;
   if (collidesAt(next)) {
     const safe = state.lastSafePosition;
-    world.player.position.set(safe.x, safe.y ?? world.player.position.y, safe.z);
-    return { ...safe };
+    const slideX = { ...next, z: safe.z };
+    const slideZ = { ...next, x: safe.x };
+    const resolved = !collidesAt(slideX) ? slideX : !collidesAt(slideZ) ? slideZ : safe;
+    world.player.position.set(resolved.x, resolved.y ?? world.player.position.y, resolved.z);
+    state.lastSafePosition = { x: Number(resolved.x) || 0, y: Number(resolved.y) || 0, z: Number(resolved.z) || 0 };
+    return { ...resolved };
   }
   state.lastSafePosition = { x: Number(next.x) || 0, y: Number(next.y) || 0, z: Number(next.z) || 0 };
   return next;

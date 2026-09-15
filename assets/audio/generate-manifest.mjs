@@ -1,4 +1,4 @@
-import { readdir, writeFile } from "node:fs/promises";
+import { mkdir, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
@@ -7,6 +7,7 @@ const supported = new Set([".wav", ".mp3", ".ogg", ".m4a"]);
 
 async function scan(group) {
   const folder = path.join(audioRoot, group);
+  await mkdir(folder, { recursive: true });
   const files = (await readdir(folder, { withFileTypes: true }))
     .filter((entry) => entry.isFile() && supported.has(path.extname(entry.name).toLowerCase()))
     .map((entry) => entry.name)

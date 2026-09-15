@@ -1,6 +1,6 @@
 # Snug Society — hosting project
 
-This is the complete static project snapshot exported on **September 14, 2026**. Upload the contents of this folder to the root of your GitHub repository, then connect that repository to Vercel.
+This is the complete Snug Society **0.9.21** static project snapshot exported on **September 15, 2026**. Upload the contents of this folder to the root of your GitHub repository, then connect that repository to Vercel.
 
 ## Deploy with GitHub + Vercel
 
@@ -15,7 +15,7 @@ The Firebase web configuration is already embedded in `index.html`. Firebase web
 
 ## Included game snapshot
 
-See `RELEASE-NOTES.md` for the exact feature inventory. This export includes the current title screen, Solo Practice, multiplayer rooms and voice chat, Snug Board with its 2–4 player lobby and bot filling, the welcoming sequence, shops and economy, weather and wildlife, current asset pipelines, placeholder audio, and the current Realtime Database rules including board events.
+See `RELEASE-NOTES.md` for the exact feature inventory. This export includes the current title screen, Solo Practice, multiplayer rooms and voice chat, Snug Board with its 2–4 player lobby and bot filling, the welcoming sequence with its airborne speech performance and physical glyph fountain, shops and economy, weather and wildlife, the primitive-definition pass for avatars and the town, the visible-viewport sizing across every screen and the responsive Fit Check flow, current asset pipelines, placeholder audio, and the current Realtime Database rules including board events.
 
 ## Add cosmetic GLBs
 
