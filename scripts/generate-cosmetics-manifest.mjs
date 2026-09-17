@@ -7,7 +7,12 @@ const categories = {
   headAccessories: "head-accessories",
   outfits: "outfits",
   handAccessories: "hand-accessories",
-  shoes: "shoes"
+  shoes: "shoes",
+  faceWear: "face-wear",
+  facialHair: "facial-hair",
+  heldItems: "held-items",
+  backItems: "back-items",
+  neckwear: "neckwear"
 };
 
 const displayName = (filename) => filename
@@ -23,8 +28,6 @@ try {
   const parsed = JSON.parse(await readFile(reviewsPath, "utf8"));
   if (parsed && !Array.isArray(parsed) && typeof parsed === "object") fitReviews = parsed;
 } catch (error) {
-  // fit-reviews.json is optional. A missing or unreadable file means that every
-  // discovered cosmetic starts unapproved and appears in Fit Check.
   if (error?.code !== "ENOENT" && error?.name !== "SyntaxError") {
     console.warn(`Fit reviews unavailable; continuing with none (${error.message}).`);
   }

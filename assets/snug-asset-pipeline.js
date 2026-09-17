@@ -6,7 +6,12 @@ const CATEGORY_FOLDERS = {
   headAccessories: 'head-accessories',
   outfits: 'outfits',
   handAccessories: 'hand-accessories',
-  shoes: 'shoes'
+  shoes: 'shoes',
+  faceWear: 'face-wear',
+  facialHair: 'facial-hair',
+  heldItems: 'held-items',
+  backItems: 'back-items',
+  neckwear: 'neckwear'
 };
 
 const ENVIRONMENT_FOLDERS = {
@@ -20,7 +25,12 @@ const EMPTY_OPTIONS = {
   headAccessories: { id: '', name: 'None', path: '', fitPending: false },
   outfits: { id: '', name: 'Built-in', path: '', fitPending: false },
   handAccessories: { id: '', name: 'None', path: '', fitPending: false },
-  shoes: { id: '', name: 'Built-in', path: '', fitPending: false }
+  shoes: { id: '', name: 'Built-in', path: '', fitPending: false },
+  faceWear: { id: '', name: 'None', path: '', fitPending: false },
+  facialHair: { id: '', name: 'None', path: '', fitPending: false },
+  heldItems: { id: '', name: 'Empty hand', path: '', fitPending: false },
+  backItems: { id: '', name: 'None', path: '', fitPending: false },
+  neckwear: { id: '', name: 'None', path: '', fitPending: false }
 };
 
 function displayName(filename) {
@@ -38,7 +48,10 @@ function normalizeFit(fit = {}) {
     scale: Number.isFinite(Number(fit.scale)) ? Number(fit.scale) : 1,
     x: Number.isFinite(Number(fit.x)) ? Number(fit.x) : 0,
     y: Number.isFinite(Number(fit.y)) ? Number(fit.y) : 0,
-    z: Number.isFinite(Number(fit.z)) ? Number(fit.z) : 0
+    z: Number.isFinite(Number(fit.z)) ? Number(fit.z) : 0,
+    rx: Number.isFinite(Number(fit.rx)) ? Number(fit.rx) : 0,
+    ry: Number.isFinite(Number(fit.ry)) ? Number(fit.ry) : 0,
+    rz: Number.isFinite(Number(fit.rz)) ? Number(fit.rz) : 0
   };
 }
 
@@ -110,7 +123,12 @@ const COSMETIC_TEMPLATE_BOUNDS = {
   headAccessories: new Vector3(1.00, 0.70, 0.46),
   outfits: new Vector3(0.78, 1.10, 0.54),
   handAccessories: new Vector3(0.26, 0.08, 0.26),
-  shoes: new Vector3(0.28, 0.16, 0.42)
+  shoes: new Vector3(0.28, 0.16, 0.42),
+  faceWear: new Vector3(0.82, 0.42, 0.28),
+  facialHair: new Vector3(0.62, 0.42, 0.12),
+  heldItems: new Vector3(0.72, 0.92, 0.32),
+  backItems: new Vector3(0.90, 1.15, 0.40),
+  neckwear: new Vector3(0.82, 0.36, 0.42)
 };
 
 function assetCategory(path = '') {
@@ -191,11 +209,31 @@ export function loadSnugAssetPipeline() {
       return item;
     };
 
+    const mergeReviews = (reviews = {}) => {
+      if (!reviews || Array.isArray(reviews) || typeof reviews !== 'object') return {};
+      const merged = {};
+      Object.values(catalog).flat().forEach((item) => {
+        const source = item.path && reviews[item.path];
+        if (!source?.approved) return;
+        const fit = { ...normalizeFit(source), approved: true };
+        item.fitReview = fit;
+        item.fitPending = false;
+        merged[item.path] = fit;
+        const pending = pendingReviews.find((entry) => entry.path === item.path);
+        if (pending) {
+          pending.fitReview = fit;
+          pending.fitPending = false;
+        }
+      });
+      return merged;
+    };
+
     return {
       catalog,
       environment,
       pendingReviews,
       approveReview,
+      mergeReviews,
       templateBounds: COSMETIC_TEMPLATE_BOUNDS,
       draco,
       orientAsset,

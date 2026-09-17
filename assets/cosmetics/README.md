@@ -7,6 +7,11 @@ Players do not upload models. These folders are for developer-authored `.glb` fi
 - `outfits/`
 - `hand-accessories/`
 - `shoes/`
+- `face-wear/`
+- `facial-hair/`
+- `held-items/`
+- `back-items/`
+- `neckwear/`
 
 The included `template-*.glb` files are low-poly sizing guides. Replace their mesh geometry while keeping the same origin, facing direction, and approximate bounds.
 
@@ -32,6 +37,11 @@ All dimensions are approximate local-space meters.
 | `outfits/` | center of the body | about 0.78 W × 1.10 H × 0.54 D | scales in X/Z with body mass and in Y with height; always overlays the body |
 | `hand-accessories/` | center of one hand | about 0.26 W × 0.08 H × 0.26 D | loaded on both floating hands and follows each hand independently |
 | `shoes/` | center of one foot | about 0.28 W × 0.16 H × 0.42 D | loaded on both wedge feet and follows the foot-plop motion |
+| `face-wear/` | center of the coin face | about 0.82 W × 0.42 H × 0.28 D | anchored just in front of the face; use for glasses, goggles, and masks |
+| `facial-hair/` | center-front of the coin face | about 0.62 W × 0.42 H × 0.12 D | sits close to the mouth and chin; use for mustaches, beards, goatees, and sideburns; equips separately so face wear remains available |
+| `held-items/` | center of the right-hand grip | about 0.72 W × 0.92 H × 0.32 D | loaded on one hand only and never mirrored; use for wands, umbrellas, cameras, and tools |
+| `back-items/` | center of the body, on the rear surface | about 0.90 W × 1.15 H × 0.40 D | follows the body; model forward should face away from the avatar's back |
+| `neckwear/` | center of the head/body joint | about 0.82 W × 0.36 H × 0.42 D | follows the body while sitting directly below the floating coin head |
 
 ## Adding a new cosmetic
 
@@ -43,4 +53,4 @@ All dimensions are approximate local-space meters.
 
 Display names come directly from filenames: underscores and hyphens become spaces and each word is capitalized (`yellow_raincoat.glb` becomes **Yellow Raincoat**). No catalogue code or manual manifest edit is needed for the Vercel build. Unapproved GLBs stay out of the Style and shop menus until the fit check is approved. For GitHub Pages or other hosts without a build step, run `npm run build` before committing the generated manifest.
 
-The shared loader supports Draco-compressed and ordinary GLBs. It mounts hairstyles and head accessories to the coin head, hand accessories to each hand, shoes to each foot, and outfits to the avatar root. Missing files fail silently so a broken cosmetic cannot stop the game.
+The shared loader supports Draco-compressed and ordinary GLBs. It mounts hairstyles, head accessories, face wear, and facial hair to the coin head; hand accessories to each hand; shoes to each foot; and outfits to the avatar root. Facial hair has its own slot, so mustaches and beards can be worn at the same time as glasses or other face wear. Missing files fail silently so a broken cosmetic cannot stop the game.

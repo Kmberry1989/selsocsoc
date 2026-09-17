@@ -28,8 +28,8 @@ function fadeOut(audio) {
   const started = performance.now();
   const original = audio.volume;
   const step = (now) => {
-    const ratio = Math.min(1, (now - started) / 1400);
-    audio.volume = original * (1 - ratio);
+    const ratio = Math.max(0, Math.min(1, (now - started) / 1400));
+    audio.volume = Math.max(0, Math.min(1, original * (1 - ratio)));
     if (ratio < 1) requestAnimationFrame(step);
     else { audio.pause(); audio.remove(); }
   };
@@ -53,8 +53,8 @@ function syncMusic(force = false) {
   music.play().then(() => {
     const started = performance.now();
     const step = (now) => {
-      const ratio = Math.min(1, (now - started) / 1800);
-      music.volume = .18 * ratio;
+      const ratio = Math.max(0, Math.min(1, (now - started) / 1800));
+      music.volume = Math.max(0, Math.min(1, .18 * ratio));
       if (ratio < 1 && !music.paused) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);

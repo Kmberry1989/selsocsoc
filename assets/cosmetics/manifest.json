@@ -34,5 +34,40 @@
       "name": "Template Shoe",
       "path": "assets/cosmetics/shoes/template-shoe.glb"
     }
+  ],
+  "faceWear": [
+    {
+      "id": "template-face-wear",
+      "name": "Template Face Wear",
+      "path": "assets/cosmetics/face-wear/template-face-wear.glb"
+    }
+  ],
+  "facialHair": [
+    {
+      "id": "template-facial-hair",
+      "name": "Template Facial Hair",
+      "path": "assets/cosmetics/facial-hair/template-facial-hair.glb"
+    }
+  ],
+  "heldItems": [
+    {
+      "id": "template-held-item",
+      "name": "Template Held Item",
+      "path": "assets/cosmetics/held-items/template-held-item.glb"
+    }
+  ],
+  "backItems": [
+    {
+      "id": "template-back-item",
+      "name": "Template Back Item",
+      "path": "assets/cosmetics/back-items/template-back-item.glb"
+    }
+  ],
+  "neckwear": [
+    {
+      "id": "template-neckwear",
+      "name": "Template Neckwear",
+      "path": "assets/cosmetics/neckwear/template-neckwear.glb"
+    }
   ]
 }

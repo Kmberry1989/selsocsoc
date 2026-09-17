@@ -2,12 +2,19 @@ import * as THREE from 'three';
 import { GLTFLoader } from './vendor/three/GLTFLoader.js';
 import { loadSnugAssetPipeline } from './snug-asset-pipeline.js';
 
+const DEV_EMAIL = 'kylematthewberry@gmail.com';
+
 const labels = {
   hairstyles: 'Hairstyle',
   headAccessories: 'Head accessory',
   outfits: 'Outfit',
   handAccessories: 'Hand accessory',
-  shoes: 'Shoes'
+  shoes: 'Shoes',
+  faceWear: 'Face-wear',
+  facialHair: 'Facial hair',
+  heldItems: 'Held item',
+  backItems: 'Back item',
+  neckwear: 'Neckwear'
 };
 
 const baseOffsets = {
@@ -15,7 +22,12 @@ const baseOffsets = {
   headAccessories: { x: 0, y: 0, z: 0 },
   outfits: { x: 0, y: 0, z: 0 },
   handAccessories: { x: 0, y: 0, z: 0 },
-  shoes: { x: 0, y: 0, z: 0 }
+  shoes: { x: 0, y: 0, z: 0 },
+  faceWear: { x: 0, y: 0, z: 0.24 },
+  facialHair: { x: 0, y: -0.10, z: 0.14 },
+  heldItems: { x: 0, y: -0.08, z: 0.12 },
+  backItems: { x: 0, y: 0.04, z: -0.42 },
+  neckwear: { x: 0, y: 0.48, z: 0.04 }
 };
 
 const pipeline = await loadSnugAssetPipeline();
@@ -40,7 +52,9 @@ let automaticReviewDismissed = false;
 let gameplayReady = Boolean(sourceAvatar && window.__snugWorld?.player);
 let dragStart = null;
 let yaw = 0;
-let currentSettings = { scale: 1, x: 0, y: 0, z: 0 };
+let currentSettings = { scale: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0 };
+let currentSession = window.__snugSession || null;
+let cloudDirty = false;
 
 const launcher = document.createElement('button');
 launcher.type = 'button';
@@ -65,15 +79,21 @@ overlay.innerHTML = `
       <div class="fit-review-copy"><h3></h3><p></p></div>
       <div class="fit-review-notes" aria-live="polite"></div>
       <div class="fit-review-error" role="alert"></div>
+      <div class="fit-review-cloud-status" role="status"></div>
       <div class="fit-review-controls" hidden>
         <label class="fit-review-control"><span>Overall size</span><input data-fit="scale" type="range" min="0.55" max="1.65" value="1" step="0.01"><output>100%</output></label>
         <label class="fit-review-control"><span>Left / right</span><input data-fit="x" type="range" min="-0.6" max="0.6" value="0" step="0.01"><output>Centered</output></label>
         <label class="fit-review-control"><span>Up / down</span><input data-fit="y" type="range" min="-0.7" max="0.7" value="0" step="0.01"><output>Centered</output></label>
         <label class="fit-review-control"><span>Forward / back</span><input data-fit="z" type="range" min="-0.55" max="0.55" value="0" step="0.01"><output>Centered</output></label>
+        <div class="fit-review-control-group" role="group" aria-label="Accessory rotation"><b>Rotate accessory</b><span>Set each axis independently</span></div>
+        <label class="fit-review-control"><span>X axis</span><input data-fit="rx" type="range" min="-180" max="180" value="0" step="1"><output>0°</output></label>
+        <label class="fit-review-control"><span>Y axis</span><input data-fit="ry" type="range" min="-180" max="180" value="0" step="1"><output>0°</output></label>
+        <label class="fit-review-control"><span>Z axis</span><input data-fit="rz" type="range" min="-180" max="180" value="0" step="1"><output>0°</output></label>
       </div>
       <div class="fit-review-actions">
         <button class="fit-review-adjust" type="button">Adjust fit</button>
         <button class="fit-review-approve" type="button">Approve for Style</button>
+        <button class="fit-review-cloud-save" type="button" hidden>Save fits to cloud</button>
         <button class="fit-review-defer" type="button">Keep out for now</button>
       </div>
     </div>
@@ -91,6 +111,42 @@ const progressCount = overlay.querySelector('.fit-review-progress span');
 const title = overlay.querySelector('.fit-review-copy h3');
 const copy = overlay.querySelector('.fit-review-copy p');
 const countBadge = launcher.querySelector('span');
+const cloudStatus = overlay.querySelector('.fit-review-cloud-status');
+const cloudSaveButton = overlay.querySelector('.fit-review-cloud-save');
+
+function developerCanSave() {
+  const configuredEmail = window.__snugFitCloud?.DEV_EMAIL || DEV_EMAIL;
+  return configuredEmail === DEV_EMAIL && window.__snugFitCloud?.canWrite?.(currentSession) === true;
+}
+
+function refreshCloudMode() {
+  const canSave = developerCanSave();
+  cloudStatus.classList.toggle('is-dev', canSave);
+  cloudStatus.textContent = canSave
+    ? (cloudDirty ? 'Developer mode · approved changes are ready to save to the shared cloud fit file.' : 'Developer mode · cloud fit settings are synced for every player.')
+    : 'Session-only mode · only the developer Google account can publish shared fit settings.';
+  cloudSaveButton.hidden = !canSave;
+  cloudSaveButton.disabled = !canSave || !cloudDirty;
+}
+
+async function saveReviewsToCloud(button = cloudSaveButton) {
+  if (!developerCanSave()) return;
+  const original = button.textContent;
+  button.disabled = true;
+  button.textContent = 'Saving…';
+  try {
+    await window.__snugFitCloud.save(currentSession, approved);
+    cloudDirty = false;
+    button.textContent = 'Saved to cloud';
+    refreshCloudMode();
+    setTimeout(() => { if (button.isConnected) button.textContent = original; }, 1100);
+  } catch (error) {
+    cloudStatus.classList.remove('is-dev');
+    cloudStatus.textContent = 'Cloud save was blocked. Publish the bundled Firestore rules, then try again while signed in with the developer Google account.';
+    button.disabled = false;
+    button.textContent = 'Try cloud save again';
+  }
+}
 
 function cloneReference(original, originalRoot, cloneRoot) {
   if (!original || !originalRoot || !cloneRoot) return null;
@@ -108,14 +164,21 @@ function cloneReference(original, originalRoot, cloneRoot) {
 function targetRefs(category) {
   if (!sourceAvatar || !previewRoot) return [];
   const data = sourceAvatar.userData || {};
-  if (category === 'hairstyles' || category === 'headAccessories') {
+  if (category === 'hairstyles' || category === 'headAccessories' || category === 'faceWear' || category === 'facialHair') {
     return [cloneReference(data.coinHead, sourceAvatar, previewRoot)].filter(Boolean);
   }
   if (category === 'handAccessories') {
     return (data.hands || []).map((hand) => cloneReference(hand, sourceAvatar, previewRoot)).filter(Boolean);
   }
+  if (category === 'heldItems') {
+    const hand = (data.hands || [])[1] || (data.hands || [])[0];
+    return [cloneReference(hand, sourceAvatar, previewRoot)].filter(Boolean);
+  }
   if (category === 'shoes') {
     return (data.feet || []).map((foot) => cloneReference(foot, sourceAvatar, previewRoot)).filter(Boolean);
+  }
+  if (category === 'backItems' || category === 'neckwear') {
+    return [cloneReference(data.body, sourceAvatar, previewRoot)].filter(Boolean);
   }
   return [previewRoot];
 }
@@ -145,6 +208,9 @@ function updateControlLabels() {
   controls.querySelector('[data-fit="x"] + output').textContent = formatOffset(currentSettings.x, 'right', 'left');
   controls.querySelector('[data-fit="y"] + output').textContent = formatOffset(currentSettings.y, 'up', 'down');
   controls.querySelector('[data-fit="z"] + output').textContent = formatOffset(currentSettings.z, 'forward', 'back');
+  controls.querySelector('[data-fit="rx"] + output').textContent = `${Math.round(currentSettings.rx)}°`;
+  controls.querySelector('[data-fit="ry"] + output').textContent = `${Math.round(currentSettings.ry)}°`;
+  controls.querySelector('[data-fit="rz"] + output').textContent = `${Math.round(currentSettings.rz)}°`;
 }
 
 function applyFit() {
@@ -158,6 +224,12 @@ function applyFit() {
   mounted.forEach((node) => {
     node.scale.set(baseScale.x * currentSettings.scale, baseScale.y * currentSettings.scale, baseScale.z * currentSettings.scale);
     node.position.set(offset.x + currentSettings.x, offset.y + currentSettings.y, offset.z + currentSettings.z);
+    const baseRotation = node.userData.snugFitBaseRotation || { x: 0, y: 0, z: 0 };
+    node.rotation.set(
+      baseRotation.x + THREE.MathUtils.degToRad(currentSettings.rx),
+      baseRotation.y + THREE.MathUtils.degToRad(currentSettings.ry),
+      baseRotation.z + THREE.MathUtils.degToRad(currentSettings.rz)
+    );
     node.updateMatrixWorld(true);
   });
   updateControlLabels();
@@ -201,15 +273,19 @@ function updateNotes() {
   if (mounted[0] && previewRoot) {
     const assetBox = new THREE.Box3().setFromObject(mounted[0]);
     let target = previewRoot.userData?.body || previewRoot;
-    if (item.category === 'hairstyles' || item.category === 'headAccessories') target = targetRefs(item.category)[0] || target;
-    if (item.category === 'handAccessories') target = targetRefs(item.category)[0] || target;
-    if (item.category === 'shoes') target = targetRefs(item.category)[0] || target;
+    if (item.category === 'hairstyles' || item.category === 'headAccessories' || item.category === 'faceWear' || item.category === 'facialHair') target = targetRefs(item.category)[0] || target;
+    if (item.category === 'handAccessories' || item.category === 'heldItems') target = targetRefs(item.category)[0] || target;
+    if (item.category === 'shoes' || item.category === 'backItems' || item.category === 'neckwear') target = targetRefs(item.category)[0] || target;
     const targetBox = new THREE.Box3().setFromObject(target);
     ratioClip = intersectionRatio(assetBox, targetBox);
   }
-  if (ratioClip > 0.48 && item.category !== 'outfits') addNote('Clipping', 'A noticeable part enters the avatar. Drag to turn, then move it outward.', true);
-  else if (item.category === 'outfits') addNote('Clipping', 'Turn the avatar and check shoulders, sides, and feet at the body extremes.');
-  else addNote('Clipping', 'No heavy overlap is visible from the current fit. Turn the avatar to double-check.');
+  if (ratioClip > 0.48 && item.category !== 'outfits') addNote('Clipping', 'A noticeable part enters the avatar. Turn the preview, then move or rotate the accessory outward.', true);
+  else if (item.category === 'outfits') addNote('Clipping', 'Turn the preview and check shoulders, sides, and feet at the body extremes.');
+  else addNote('Clipping', 'No heavy overlap is visible from the current fit. Turn the preview to double-check.');
+
+  const rotationAmount = Math.max(Math.abs(currentSettings.rx), Math.abs(currentSettings.ry), Math.abs(currentSettings.rz));
+  if (rotationAmount > 0) addNote('Rotation', `Manual X, Y, and Z rotation is included in the approved fit (${Math.round(currentSettings.rx)}°, ${Math.round(currentSettings.ry)}°, ${Math.round(currentSettings.rz)}°).`);
+  else addNote('Rotation', 'Use the X, Y, and Z controls when the accessory needs to turn on its attachment point.');
 }
 
 function setupRenderer() {
@@ -273,9 +349,10 @@ async function loadCurrent() {
   progressCount.textContent = `${index + 1} of ${queue.length}`;
   title.textContent = item.name;
   copy.textContent = `Previewing ${item.name} on your current avatar. It stays out of Style until you approve it.`;
-  currentSettings = { scale: 1, x: 0, y: 0, z: 0 };
+  currentSettings = { scale: 1, x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0 };
   controls.hidden = true;
   overlay.querySelector('.fit-review-adjust').textContent = 'Adjust fit';
+  refreshCloudMode();
   [...controls.querySelectorAll('input')].forEach((input) => { input.value = currentSettings[input.dataset.fit]; });
   setupRenderer();
 
@@ -305,6 +382,11 @@ async function loadCurrent() {
     targets.forEach((target, targetIndex) => {
       const instance = targetIndex === 0 ? asset : asset.clone(true);
       instance.name = 'snug-fit-review-asset';
+      instance.userData.snugFitBaseRotation = {
+        x: instance.rotation.x,
+        y: instance.rotation.y,
+        z: instance.rotation.z
+      };
       instance.traverse((node) => {
         if (node.isMesh) {
           node.castShadow = true;
@@ -387,7 +469,9 @@ function nextPending() {
 function showDone() {
   cleanupPreview();
   refreshLauncher();
-  sheet.innerHTML = `<div class="fit-review-done"><span class="fit-review-done-mark">✓</span><h3>Fit checks complete</h3><p>Approved accessories are available in Style for this session. Download the fit file and keep it in <b>assets/cosmetics/fit-reviews.json</b> so the approvals carry into future builds.</p><button class="fit-review-download" type="button">Download fit settings</button><button class="fit-review-close" type="button">Close</button></div>`;
+  const canSave = developerCanSave();
+  sheet.innerHTML = `<div class="fit-review-done"><span class="fit-review-done-mark">✓</span><h3>Fit checks complete</h3><p>${canSave ? 'Approved transforms include move, scale, and X/Y/Z rotation. Save them to the shared cloud fit file, and keep a JSON backup.' : 'Approved accessories are available in Style for this session. Download the fit file and keep it in <b>assets/cosmetics/fit-reviews.json</b> so the approvals carry into future builds.'}</p>${canSave ? '<button class="fit-review-cloud-save" type="button">Save fits to cloud</button>' : '<div class="fit-review-cloud-status">Session-only mode · only the developer Google account can publish shared fit settings.</div>'}<button class="fit-review-download" type="button">Download fit settings</button><button class="fit-review-close" type="button">Close</button></div>`;
+  sheet.querySelector('.fit-review-cloud-save')?.addEventListener('click', (event) => saveReviewsToCloud(event.currentTarget));
   sheet.querySelector('.fit-review-download').addEventListener('click', downloadReviews);
   sheet.querySelector('.fit-review-close').addEventListener('click', closeReview);
 }
@@ -425,9 +509,12 @@ overlay.querySelector('.fit-review-approve').addEventListener('click', () => {
   window.__snugFitSettings ||= {};
   window.__snugFitSettings[item.path] = saved;
   item.fitPending = false;
+  cloudDirty = true;
+  refreshCloudMode();
   refreshLauncher();
   nextPending();
 });
+cloudSaveButton.addEventListener('click', () => saveReviewsToCloud());
 overlay.querySelector('.fit-review-defer').addEventListener('click', () => {
   const current = queue[index];
   const next = queue.findIndex((item, itemIndex) => itemIndex > index && item.fitPending);
@@ -456,6 +543,16 @@ canvas.addEventListener('pointermove', (event) => {
 canvas.addEventListener('pointerup', () => { dragStart = null; });
 canvas.addEventListener('pointercancel', () => { dragStart = null; });
 window.addEventListener('resize', resizeRenderer);
+window.addEventListener('snug-session', (event) => {
+  currentSession = event.detail || null;
+  refreshCloudMode();
+});
+window.addEventListener('snug-fit-settings-ready', (event) => {
+  const reviews = event.detail?.reviews || {};
+  Object.assign(approved, reviews);
+  refreshLauncher();
+  if (open && queue[index] && !queue[index].fitPending) nextPending();
+});
 window.addEventListener('snug-avatar-ready', (event) => {
   sourceAvatar = event.detail?.avatar || sourceAvatar;
   clearTimeout(reloadTimer);
@@ -471,4 +568,5 @@ window.addEventListener('snug-world-ready', (event) => {
 const gateObserver = new MutationObserver(syncReviewGate);
 gateObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'], childList: true, subtree: true });
 syncReviewGate();
+refreshCloudMode();
 if (gameplayReady && queue.length) scheduleAutomaticReview();

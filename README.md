@@ -1,6 +1,6 @@
 # Snug Society — hosting project
 
-This is the complete Snug Society **0.9.24** static project snapshot exported on **September 15, 2026**. Upload the contents of this folder to the root of your GitHub repository, then connect that repository to Vercel.
+This is the complete Snug Society **0.9.27** static project snapshot exported on **September 17, 2026**. Upload the contents of this folder to the root of your GitHub repository, then connect that repository to Vercel.
 
 ## Deploy with GitHub + Vercel
 
@@ -15,7 +15,11 @@ The Firebase web configuration is already embedded in `index.html`. Firebase web
 
 ## Included game snapshot
 
-See `RELEASE-NOTES.md` for the exact feature inventory. This export includes the current title screen, mobile redirect/desktop popup Google sign-in with visible Firebase errors, resilient fit-review loading, Solo Practice, multiplayer rooms and voice chat, Snug Board with its 2–4 player lobby and bot filling, the welcoming sequence with its airborne speech performance and physical glyph fountain, shops and economy, weather and wildlife, the primitive-definition pass for avatars and the town, the visible-viewport sizing across every screen, current asset pipelines, placeholder audio, and the current Realtime Database rules including board events.
+See `RELEASE-NOTES.md` for the exact feature inventory. This export includes the current title screen, mobile redirect/desktop popup Google sign-in with visible Firebase errors, cloud-saved fit review transforms, accessory tinting across ten cosmetic slots, daily quests and streaks, a rotating market, expanded minigames, reactions, door knocking, gifts, trading, collections, achievements, festival keepsakes, multiplayer rooms and voice chat, Snug Board with its 2–4 player lobby and bot filling, the welcoming sequence with its airborne speech performance and dialogue-word fountain, the expanded village, living sky, shops and economy, weather and wildlife, current asset pipelines, placeholder audio, and current Firebase rules.
+
+## Plush avatar update
+
+This snapshot includes the felt-like matte finish, stitched coin-head and body-hem seams, and soft grounding shadows. The photographic expression faces, toon outlines, buoyant movement, and floating hands remain unchanged. Facial hair now has its own tintable, fit-reviewed slot for mustaches, beards, goatees, and sideburns.
 
 ## Add cosmetic GLBs
 
@@ -26,6 +30,11 @@ Place Draco-compressed or ordinary `.glb` files in one of these folders:
 - `assets/cosmetics/outfits/`
 - `assets/cosmetics/hand-accessories/`
 - `assets/cosmetics/shoes/`
+- `assets/cosmetics/face-wear/`
+- `assets/cosmetics/facial-hair/`
+- `assets/cosmetics/held-items/`
+- `assets/cosmetics/back-items/`
+- `assets/cosmetics/neckwear/`
 
 Commit and push. The Vercel build regenerates `assets/cosmetics/manifest.json`. Filenames become catalogue labels: `yellow_raincoat.glb` becomes **Yellow Raincoat**.
 

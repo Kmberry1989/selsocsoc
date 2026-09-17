@@ -1,0 +1,66 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function isFitDeveloper() {
+      return signedIn()
+        && request.auth.token.email == 'kylematthewberry@gmail.com';
+    }
+
+    // Public configuration: every game client may load the approved fit map.
+    // Only the developer's confirmed Google account may publish changes.
+    match /gameConfig/fitReviews {
+      allow read: if true;
+      allow create, update, delete: if isFitDeveloper();
+    }
+
+    // Player appearance and inventory are readable by signed-in neighbors;
+    // only the owner may change their profile.
+    match /players/{uid} {
+      allow read: if signedIn();
+      allow create, update, delete: if isOwner(uid);
+    }
+
+    // Mail and trade offers are durable player data. Senders may create a
+    // tightly-shaped envelope; only the recipient can read or remove it.
+    match /players/{uid}/mail/{messageId} {
+      allow read: if isOwner(uid);
+      allow create: if signedIn()
+        && request.resource.data.from == request.auth.uid
+        && request.resource.data.to == uid
+        && request.auth.uid != uid
+        && request.resource.data.keys().hasOnly(['type', 'from', 'fromName', 'to', 'item', 'want', 'createdAt'])
+        && request.resource.data.type in ['gift', 'trade', 'trade-accepted']
+        && request.resource.data.fromName is string
+        && request.resource.data.fromName.size() > 0
+        && request.resource.data.fromName.size() <= 18
+        && request.resource.data.item is string
+        && request.resource.data.item.size() > 0
+        && request.resource.data.item.size() <= 120
+        && request.resource.data.createdAt is int
+        && (request.resource.data.type == 'gift'
+          || (request.resource.data.want is string
+            && request.resource.data.want.size() > 0
+            && request.resource.data.want.size() <= 120));
+      allow delete: if isOwner(uid);
+      allow update: if false;
+    }
+
+    // Houses can be visited by signed-in neighbors and edited only by owners.
+    match /houses/{uid} {
+      allow read: if signedIn();
+      allow create, update, delete: if isOwner(uid);
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

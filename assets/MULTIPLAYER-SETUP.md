@@ -7,10 +7,11 @@ The game uses Firebase Realtime Database for room presence, positions, the last 
 1. In Firebase Console, open **Build → Realtime Database** and create the database.
 2. Open the **Rules** tab.
 3. Replace the rules with `firebase-realtime-database.rules.json` from this folder, then publish.
-4. In **Build → Authentication → Sign-in method**, keep **Anonymous** enabled.
-5. In the same Sign-in method list, open **Google**, turn it on, choose the project support email, and save. This is a one-time step; the menu's Google button then uses Firebase Auth's Google provider.
-6. In **Authentication → Settings → Authorized domains**, add every hostname that serves the game (your production Vercel domain and any custom domain). Add preview hostnames only when you intentionally test sign-in from them. Google uses a popup on desktop and a redirect on mobile, so each origin must be authorized.
-7. If your database URL is not the standard `<project-id>-default-rtdb.firebaseio.com` form, add its exact `databaseURL` field to the Firebase config in the game.
+4. Open **Build → Firestore Database → Rules**, replace the rules with `firebase-firestore.rules` from this folder, then publish. The shared accessory-fit document is publicly readable, while writes are locked to `kylematthewberry@gmail.com` through the signed-in Google token.
+5. In **Build → Authentication → Sign-in method**, keep **Anonymous** enabled.
+6. In the same Sign-in method list, open **Google**, turn it on, choose the project support email, and save. This is a one-time step; the menu's Google button then uses Firebase Auth's Google provider.
+7. In **Authentication → Settings → Authorized domains**, add every hostname that serves the game (your production Vercel domain and any custom domain). Add preview hostnames only when you intentionally test sign-in from them. Google uses a popup on desktop and a redirect on mobile, so each origin must be authorized.
+8. If your database URL is not the standard `<project-id>-default-rtdb.firebaseio.com` form, add its exact `databaseURL` field to the Firebase config in the game.
 
 A returning Google player is restored from the Firestore `players/{uid}` and `houses/{uid}` records tied to that Google account, including their saved character, shell balance, inventory, and house progress. Returning players skip the welcoming ceremony; a Google account with no existing save starts as a new neighbor. The existing browser-session restore remains available beside Google sign-in.
 

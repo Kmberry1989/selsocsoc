@@ -90,6 +90,35 @@
         }
       }
     },
+    "social": {
+      "$roomId": {
+        ".read": "auth != null && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",
+        "events": {
+          ".indexOn": ["createdAt"],
+          "$eventId": {
+            ".write": "auth != null && !data.exists() && newData.exists() && newData.child('from').val() === auth.uid",
+            ".validate": "newData.hasChildren(['type','from','fromName','to','createdAt']) && newData.child('from').val() === auth.uid && newData.child('fromName').isString() && newData.child('fromName').val().length > 0 && newData.child('fromName').val().length <= 18 && newData.child('to').isString() && newData.child('to').val() !== auth.uid && newData.child('createdAt').isNumber() && (newData.child('type').val() === 'reaction' || newData.child('type').val() === 'knock')",
+            "type": { ".validate": "newData.isString()" },
+            "from": { ".validate": "newData.isString() && newData.val() === auth.uid" },
+            "fromName": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 18" },
+            "to": { ".validate": "newData.isString() && newData.val() !== auth.uid" },
+            "createdAt": { ".validate": "newData.isNumber()" },
+            "reaction": { ".validate": "newData.isString() && (newData.val() === 'wave' || newData.val() === 'high-five')" },
+            "$other": { ".validate": false }
+          }
+        }
+      }
+    },
+    "mail": {
+      "$uid": {
+        ".read": "auth != null && $uid === auth.uid",
+        ".indexOn": ["createdAt"],
+        "$messageId": {
+          ".write": "auth != null && ((!data.exists() && newData.exists() && newData.child('from').val() === auth.uid && newData.child('to').val() === $uid && $uid !== auth.uid) || (data.exists() && !newData.exists() && $uid === auth.uid))",
+          ".validate": "!newData.exists() || (newData.hasChildren(['type','from','fromName','to','item','createdAt']) && newData.child('type').val() === 'gift' && newData.child('from').val() === auth.uid && newData.child('fromName').isString() && newData.child('fromName').val().length > 0 && newData.child('fromName').val().length <= 18 && newData.child('to').val() === $uid && newData.child('item').isString() && newData.child('item').val().length > 0 && newData.child('item').val().length <= 120 && newData.child('createdAt').isNumber())"
+        }
+      }
+    },
     "minigames": {
       "$roomId": {
         ".read": "auth != null && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",
@@ -99,12 +128,12 @@
           ],
           "$eventId": {
             ".write": "auth != null && !data.exists() && newData.exists() && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",
-            ".validate": "newData.hasChildren(['type','game','uid','name','createdAt']) && newData.child('uid').val() === auth.uid && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 18 && newData.child('createdAt').isNumber() && ((newData.child('type').val() === 'start' && ((newData.child('game').val() === 'coin' && newData.child('duration').val() === 30000) || (newData.child('game').val() === 'tag' && newData.child('duration').val() === 35000) || (newData.child('game').val() === 'quiz' && newData.child('duration').val() === 36000) || (newData.child('game').val() === 'floor' && newData.child('duration').val() === 45000) || (newData.child('game').val() === 'connect4' && newData.child('duration').val() === 90000) || (newData.child('game').val() === 'tictactoe' && newData.child('duration').val() === 60000)) && newData.child('seed').isNumber() && newData.child('itUid').isString() && newData.child('players').hasChildren()) || (newData.child('type').val() !== 'start' && newData.child('roundId').isString() && root.child('minigames').child($roomId).child('events').child(newData.child('roundId').val()).child('type').val() === 'start' && root.child('minigames').child($roomId).child('events').child(newData.child('roundId').val()).child('game').val() === newData.child('game').val() && ((newData.child('type').val() === 'coin' && newData.child('item').isNumber() && newData.child('item').val() >= 0 && newData.child('item').val() <= 11) || (newData.child('type').val() === 'tag' && newData.child('targetUid').isString() && newData.child('targetUid').val() !== auth.uid) || (newData.child('type').val() === 'quiz-answer' && newData.child('question').isNumber() && newData.child('question').val() >= 0 && newData.child('question').val() <= 2) || (newData.child('type').val() === 'floor-out' && newData.child('cell').isNumber() && newData.child('cell').val() >= 0 && newData.child('cell').val() <= 48) || (newData.child('type').val() === 'board-move' && newData.child('cell').isNumber() && newData.child('cell').val() >= 0 && ((newData.child('game').val() === 'connect4' && newData.child('cell').val() <= 6) || (newData.child('game').val() === 'tictactoe' && newData.child('cell').val() <= 8))) || (newData.child('type').val() === 'claim' && newData.child('amount').isNumber() && newData.child('amount').val() >= 0 && newData.child('amount').val() <= 100 && now >= root.child('minigames').child($roomId).child('events').child(newData.child('roundId').val()).child('createdAt').val() + root.child('minigames').child($roomId).child('events').child(newData.child('roundId').val()).child('duration').val()))))",
+            ".validate": "newData.hasChildren(['type','game','uid','name','createdAt']) && newData.child('uid').val() === auth.uid && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 18 && newData.child('createdAt').isNumber() && ((newData.child('type').val() === 'start' && ((newData.child('game').val() === 'coin' && newData.child('duration').val() === 30000) || (newData.child('game').val() === 'tag' && newData.child('duration').val() === 35000) || (newData.child('game').val() === 'quiz' && newData.child('duration').val() === 36000) || (newData.child('game').val() === 'floor' && newData.child('duration').val() === 45000) || (newData.child('game').val() === 'connect4' && newData.child('duration').val() === 90000) || (newData.child('game').val() === 'tictactoe' && newData.child('duration').val() === 60000) || (newData.child('game').val() === 'scavenger' && newData.child('duration').val() === 45000) || (newData.child('game').val() === 'relay' && newData.child('duration').val() === 45000) || (newData.child('game').val() === 'potato' && newData.child('duration').val() === 40000) || (newData.child('game').val() === 'simon' && newData.child('duration').val() === 45000)) && newData.child('seed').isNumber() && newData.child('itUid').isString() && newData.child('players').hasChildren()) || (newData.child('type').val() !== 'start' && newData.child('roundId').isString() && root.child('minigames').child($roomId).child('events').child(newData.child('roundId').val()).child('type').val() === 'start' && root.child('minigames').child($roomId).child('events').child(newData.child('roundId').val()).child('game').val() === newData.child('game').val() && ((newData.child('type').val() === 'coin' && newData.child('item').isNumber() && newData.child('item').val() >= 0 && newData.child('item').val() <= 11) || (newData.child('type').val() === 'tag' && newData.child('targetUid').isString() && newData.child('targetUid').val() !== auth.uid) || (newData.child('type').val() === 'quiz-answer' && newData.child('question').isNumber() && newData.child('question').val() >= 0 && newData.child('question').val() <= 2) || (newData.child('type').val() === 'floor-out' && newData.child('cell').isNumber() && newData.child('cell').val() >= 0 && newData.child('cell').val() <= 48) || (newData.child('type').val() === 'board-move' && newData.child('cell').isNumber() && newData.child('cell').val() >= 0 && ((newData.child('game').val() === 'connect4' && newData.child('cell').val() <= 6) || (newData.child('game').val() === 'tictactoe' && newData.child('cell').val() <= 8))) || (newData.child('type').val() === 'scavenge' && newData.child('game').val() === 'scavenger' && newData.child('item').isNumber() && newData.child('item').val() >= 0 && newData.child('item').val() <= 7) || (newData.child('type').val() === 'relay-checkpoint' && newData.child('game').val() === 'relay' && newData.child('item').isNumber() && newData.child('item').val() >= 0 && newData.child('item').val() <= 5) || (newData.child('type').val() === 'potato-pass' && newData.child('game').val() === 'potato' && newData.child('targetUid').isString() && newData.child('targetUid').val() !== auth.uid) || (newData.child('type').val() === 'simon-step' && newData.child('game').val() === 'simon' && newData.child('item').isNumber() && newData.child('item').val() >= 0 && newData.child('item').val() <= 11 && (newData.child('emote').val() === 'wave' || newData.child('emote').val() === 'clap' || newData.child('emote').val() === 'spin' || newData.child('emote').val() === 'cheer')) || (newData.child('type').val() === 'claim' && newData.child('amount').isNumber() && newData.child('amount').val() >= 0 && newData.child('amount').val() <= 100 && now >= root.child('minigames').child($roomId).child('events').child(newData.child('roundId').val()).child('createdAt').val() + root.child('minigames').child($roomId).child('events').child(newData.child('roundId').val()).child('duration').val()))))",
             "type": {
-              ".validate": "newData.isString() && (newData.val() === 'start' || newData.val() === 'coin' || newData.val() === 'tag' || newData.val() === 'quiz-answer' || newData.val() === 'floor-out' || newData.val() === 'board-move' || newData.val() === 'claim')"
+              ".validate": "newData.isString() && (newData.val() === 'start' || newData.val() === 'coin' || newData.val() === 'tag' || newData.val() === 'quiz-answer' || newData.val() === 'floor-out' || newData.val() === 'board-move' || newData.val() === 'scavenge' || newData.val() === 'relay-checkpoint' || newData.val() === 'potato-pass' || newData.val() === 'simon-step' || newData.val() === 'claim')"
             },
             "game": {
-              ".validate": "newData.isString() && (newData.val() === 'coin' || newData.val() === 'tag' || newData.val() === 'quiz' || newData.val() === 'floor' || newData.val() === 'connect4' || newData.val() === 'tictactoe')"
+              ".validate": "newData.isString() && (newData.val() === 'coin' || newData.val() === 'tag' || newData.val() === 'quiz' || newData.val() === 'floor' || newData.val() === 'connect4' || newData.val() === 'tictactoe' || newData.val() === 'scavenger' || newData.val() === 'relay' || newData.val() === 'potato' || newData.val() === 'simon')"
             },
             "uid": {
               ".validate": "newData.isString() && newData.val() === auth.uid"
@@ -144,6 +173,9 @@
             },
             "amount": {
               ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+            },
+            "emote": {
+              ".validate": "newData.isString() && (newData.val() === 'wave' || newData.val() === 'clap' || newData.val() === 'spin' || newData.val() === 'cheer')"
             },
             "$other": {
               ".validate": false

@@ -7,6 +7,10 @@ const GAME_DEFS = {
   floor: { name: "Tumble Tiles", duration: 45000, note: "Blinking tiles are about to drop. Stay on the floor until the end." },
   connect4: { name: "Four in a Row", duration: 90000, note: "Tap a column on the 3D board. First to connect four wins." },
   tictactoe: { name: "Noughts & Crosses", duration: 60000, note: "Tap a square on the 3D board and make a line of three." },
+  scavenger: { name: "Village Scavenger Hunt", duration: 45000, note: "Search the whole village for eight glowing keepsakes." },
+  relay: { name: "Obstacle Relay", duration: 45000, note: "Run the six checkpoints in order before time runs out." },
+  potato: { name: "Hot Potato", duration: 40000, note: "Get close to a neighbor to pass the glowing potato." },
+  simon: { name: "Mayor Says", duration: 45000, note: "Match the mayor’s emote pattern in the right order." },
 };
 const QUIZ = [
   { q: "Which planet is known as the Red Planet?", a: "mars", choices: ["Mars", "Venus", "Jupiter", "Mercury"] },
@@ -53,6 +57,9 @@ const state = {
   voiceEnabled: false,
   voiceBusy: false,
   voiceError: "",
+  voiceTuned: false,
+  microphoneStream: null,
+  voiceTuneGraph: null,
   voiceUsers: [],
   localStream: null,
   audioContext: null,
@@ -376,6 +383,79 @@ function voiceSupported() {
   return Boolean(navigator.mediaDevices?.getUserMedia && window.RTCPeerConnection);
 }
 
+function makeTunedVoiceStream(inputStream) {
+  const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextCtor || !inputStream) return { stream: inputStream, cleanup: () => {} };
+  state.audioContext ||= new AudioContextCtor();
+  const context = state.audioContext;
+  const source = context.createMediaStreamSource(inputStream);
+  const dry = context.createGain();
+  const wet = context.createGain();
+  const delay = context.createDelay(0.04);
+  const modulation = context.createOscillator();
+  const depth = context.createGain();
+  const compressor = context.createDynamicsCompressor();
+  const destination = context.createMediaStreamDestination();
+  dry.gain.value = 0.78;
+  wet.gain.value = 0.22;
+  delay.delayTime.value = 0.012;
+  modulation.frequency.value = 5.2;
+  depth.gain.value = 0.0015;
+  compressor.threshold.value = -20;
+  compressor.knee.value = 16;
+  compressor.ratio.value = 2.2;
+  compressor.attack.value = 0.008;
+  compressor.release.value = 0.16;
+  source.connect(dry).connect(compressor);
+  source.connect(delay).connect(wet).connect(compressor);
+  modulation.connect(depth).connect(delay.delayTime);
+  compressor.connect(destination);
+  modulation.start();
+  return {
+    stream: destination.stream,
+    cleanup: () => {
+      try { modulation.stop(); } catch {}
+      [source, dry, wet, delay, depth, compressor].forEach((node) => { try { node.disconnect(); } catch {} });
+      destination.stream.getTracks().forEach((track) => track.stop());
+    },
+  };
+}
+
+function rebuildOutgoingVoice() {
+  if (!state.microphoneStream) return;
+  const previousStream = state.localStream;
+  state.voiceTuneGraph?.cleanup?.();
+  state.voiceTuneGraph = null;
+  if (state.voiceTuned) {
+    state.voiceTuneGraph = makeTunedVoiceStream(state.microphoneStream);
+    state.localStream = state.voiceTuneGraph.stream;
+  } else {
+    state.localStream = state.microphoneStream;
+  }
+  const nextTrack = state.localStream.getAudioTracks()[0];
+  state.voicePeers.forEach((record) => {
+    const sender = record.pc.getSenders().find((candidate) => candidate.track?.kind === "audio");
+    if (sender && nextTrack) sender.replaceTrack(nextTrack).catch(() => {});
+  });
+  removeVoiceMonitor(state.session?.uid);
+  attachVoiceMonitor(state.session?.uid, state.localStream);
+  if (previousStream && previousStream !== state.microphoneStream && previousStream !== state.localStream) previousStream.getTracks().forEach((track) => track.stop());
+}
+
+function setVoiceTune(enabled) {
+  state.voiceTuned = Boolean(enabled);
+  if (state.voiceEnabled) rebuildOutgoingVoice();
+  showToast(state.voiceTuned ? "Light voice tune is on" : "Voice tune is off");
+  window.dispatchEvent(new CustomEvent("snug-voice-tune-state", { detail: { enabled: state.voiceTuned } }));
+  renderPanel();
+}
+
+window.__snugVoiceTune = {
+  get enabled() { return state.voiceTuned; },
+  set: setVoiceTune,
+};
+window.addEventListener("snug-voice-tune-request", (event) => setVoiceTune(event.detail?.enabled));
+
 function isVoiceUser(uid) {
   return state.voiceUsers.some((entry) => entry.uid === uid);
 }
@@ -581,7 +661,9 @@ async function enableVoice() {
   renderPanel();
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false });
+    state.microphoneStream = stream;
     state.localStream = stream;
+    if (state.voiceTuned) rebuildOutgoingVoice();
     state.voiceEnabled = true;
     state.inviteArrival = false;
     attachVoiceMonitor(state.session.uid, stream);
@@ -610,7 +692,11 @@ function disableVoice(announce = true) {
   if (state.session && state.voiceEnabled) request(`voicePresence/${state.roomId}/${state.session.uid}`, { method: "DELETE" }).catch(() => {});
   state.voiceEnabled = false;
   state.voiceUsers = state.voiceUsers.filter((entry) => entry.uid !== state.session?.uid);
-  state.localStream?.getTracks().forEach((track) => track.stop());
+  state.voiceTuneGraph?.cleanup?.();
+  state.voiceTuneGraph = null;
+  state.microphoneStream?.getTracks().forEach((track) => track.stop());
+  if (state.localStream && state.localStream !== state.microphoneStream) state.localStream.getTracks().forEach((track) => track.stop());
+  state.microphoneStream = null;
   state.localStream = null;
   closeVoicePeers();
   removeVoiceMonitor(state.session?.uid);
@@ -631,7 +717,7 @@ function toggleVoice() {
 function voicePanelMarkup() {
   const connected = [...state.voicePeers.values()].filter((record) => record.pc.connectionState === "connected").length;
   const detail = !voiceSupported() ? "Unavailable in this browser" : state.voiceEnabled ? `${connected} connected · microphone live` : state.isPrivate ? "Talk together when family arrives" : "Off until you choose to join";
-  return `<div class="voice-row"><span><b>${state.isPrivate ? "Family voice chat" : "Room voice chat"}</b><small>${escapeHtml(detail)}</small></span><button type="button" class="${state.voiceEnabled ? "leave" : ""}" data-action="voice" ${state.voiceBusy || !state.session ? "disabled" : ""}>${state.voiceBusy ? "Starting…" : state.voiceEnabled ? "Leave" : "Join voice"}</button></div>${state.voiceError ? `<div class="voice-error" role="status">${escapeHtml(state.voiceError)}</div>` : ""}`;
+  return `<div class="voice-row"><span><b>${state.isPrivate ? "Family voice chat" : "Room voice chat"}</b><small>${escapeHtml(detail)}</small></span><button type="button" class="${state.voiceEnabled ? "leave" : ""}" data-action="voice" ${state.voiceBusy || !state.session ? "disabled" : ""}>${state.voiceBusy ? "Starting…" : state.voiceEnabled ? "Leave" : "Join voice"}</button></div><div class="voice-row voice-tune-row"><span><b>Light voice tune</b><small>Optional musical polish for your microphone. ${state.voiceTuned ? "Your outgoing voice is tuned." : "Your natural voice is unchanged."}</small></span><button type="button" role="switch" aria-checked="${state.voiceTuned}" class="${state.voiceTuned ? "" : "leave"}" data-action="voice-tune">${state.voiceTuned ? "Tune on" : "Off"}</button></div>${state.voiceError ? `<div class="voice-error" role="status">${escapeHtml(state.voiceError)}</div>` : ""}`;
 }
 
 function voicePersonMarkup(uid, fallback) {
@@ -1210,6 +1296,7 @@ function renderPanel() {
   panel.querySelectorAll("[data-quiz-answer]").forEach((button) => button.addEventListener("click", () => answerSoloQuiz(button.dataset.quizAnswer)));
   $("[data-action='close-practice']", panel)?.addEventListener("click", closePanel);
   $("[data-action='voice']", panel)?.addEventListener("click", toggleVoice);
+  $("[data-action='voice-tune']", panel)?.addEventListener("click", () => setVoiceTune(!state.voiceTuned));
   $("[data-action='arrival-voice']", panel)?.addEventListener("click", toggleVoice);
   $("[data-action='open-chat']", panel)?.addEventListener("click", () => { panel.dataset.view = "chat"; renderPanel(); });
   $("[data-action='copy']", panel)?.addEventListener("click", copyCode);
@@ -1418,6 +1505,7 @@ function deriveCurrentGame() {
     teardownCoins();
     teardownPracticeTag();
     teardownPartyArena();
+    document.querySelector(".simon-controls")?.remove();
     renderShopEntrance();
     return;
   }
@@ -1479,6 +1567,30 @@ function scores() {
   } else if (["connect4", "tictactoe"].includes(state.currentGame.game)) {
     const winner = validBoardState().winner;
     (state.currentGame.players || []).forEach((uid) => { result[uid] = uid === winner ? 1 : 0; });
+  } else if (state.currentGame.game === "scavenger") {
+    const found = new Set();
+    roundEvents("scavenge").forEach((event) => {
+      const key = Number(event.item);
+      if (found.has(key)) return;
+      found.add(key);
+      result[event.uid] = (result[event.uid] || 0) + 1;
+    });
+  } else if (state.currentGame.game === "relay") {
+    roundEvents("relay-checkpoint").forEach((event) => { result[event.uid] = Math.max(result[event.uid] || 0, Number(event.item) + 1); });
+  } else if (state.currentGame.game === "potato") {
+    const holder = currentPotatoUid();
+    (state.currentGame.players || []).forEach((uid) => { result[uid] = uid === holder ? 0 : 1; });
+  } else if (state.currentGame.game === "simon") {
+    const sequence = simonSequence(state.currentGame);
+    (state.currentGame.players || []).forEach((uid) => {
+      const attempts = roundEvents("simon-step").filter((event) => event.uid === uid);
+      let score = 0;
+      for (const event of attempts) {
+        if (Number(event.item) !== score || String(event.emote) !== sequence[score]) break;
+        score += 1;
+      }
+      result[uid] = score;
+    });
   }
   return result;
 }
@@ -1497,6 +1609,18 @@ function currentItUid() {
   let uid = state.currentGame?.itUid || "";
   roundEvents("tag").forEach((event) => { uid = event.targetUid || uid; });
   return uid;
+}
+
+function currentPotatoUid() {
+  let uid = state.currentGame?.itUid || "";
+  roundEvents("potato-pass").forEach((event) => { uid = event.targetUid || uid; });
+  return uid;
+}
+
+const SIMON_EMOTES = ["wave", "clap", "spin", "cheer"];
+function simonSequence(game) {
+  const order = seededOrder(12, Number(game?.seed || 1));
+  return order.map((value) => SIMON_EMOTES[value % SIMON_EMOTES.length]);
 }
 
 function currentQuizIndex() {
@@ -1556,7 +1680,7 @@ function seededPositions(seed) {
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
-  return Array.from({ length: 12 }, () => ({ x: -4.4 + next() * 8.8, z: -3.8 + next() * 7.6 }));
+  return Array.from({ length: 16 }, () => ({ x: -13.5 + next() * 27, z: -12 + next() * 24 }));
 }
 
 function setupCoins(game) {
@@ -1603,7 +1727,8 @@ function updateCoinVisibility() {
 }
 
 const SOLO_TAG_SPOTS = [
-  [-2.7, -0.8], [2.65, 0.35], [-1.4, 2.9], [1.8, -2.8], [0.2, 2.2], [-2.25, -2.25], [3.05, 2.05], [0.4, -1.5],
+  [-7.5, -2.4], [7.4, 1.1], [-4.2, 8.2], [5.8, -8.1], [0.6, 6.4], [-6.8, -6.5], [9.2, 6.1], [1.4, -4.7],
+  [-12.2, 3.6], [12.6, -2.8], [-3.5, 12.4], [4.8, -12.2],
 ];
 
 function setupPracticeTag(game) {
@@ -1723,10 +1848,10 @@ function setupVillageShops() {
     disposeObject(state.shopGroup);
   }
   const definitions = [
-    { id: "salon", name: "Curl & Comb", sign: "SALON", note: "Hairstyles and headwear", x: -9.3, z: -3.6, rotation: Math.PI / 2, wall: 0xf1c9cf, trim: 0xb85f70, signColor: "#a94f63" },
-    { id: "mall", name: "Pocket Mall", sign: "MALL", note: "Accessories and outfits", x: 9.3, z: -3.6, rotation: -Math.PI / 2, wall: 0xc7dfea, trim: 0x4e8194, signColor: "#42788b" },
-    { id: "furniture", name: "Hearth & Home", sign: "HOME", note: "Furniture, rugs, and wallpaper", x: -9.3, z: 3.65, rotation: Math.PI / 2, wall: 0xe7d2a5, trim: 0x9a704a, signColor: "#845d3d" },
-    { id: "garden", name: "Green Nook", sign: "GARDEN", note: "Plants and outdoor decorations", x: 9.3, z: 3.65, rotation: -Math.PI / 2, wall: 0xc9dfb5, trim: 0x5f8555, signColor: "#527747" },
+    { id: "salon", name: "Curl & Comb", sign: "SALON", note: "Hairstyles and headwear", x: -17.5, z: -7.5, rotation: Math.PI / 2, wall: 0xf1c9cf, trim: 0xb85f70, signColor: "#a94f63" },
+    { id: "mall", name: "Pocket Mall", sign: "MALL", note: "Accessories and outfits", x: 17.5, z: -7.5, rotation: -Math.PI / 2, wall: 0xc7dfea, trim: 0x4e8194, signColor: "#42788b" },
+    { id: "furniture", name: "Hearth & Home", sign: "HOME", note: "Furniture, rugs, and wallpaper", x: -17.5, z: 8.2, rotation: Math.PI / 2, wall: 0xe7d2a5, trim: 0x9a704a, signColor: "#845d3d" },
+    { id: "garden", name: "Green Nook", sign: "GARDEN", note: "Plants and outdoor decorations", x: 17.5, z: 8.2, rotation: -Math.PI / 2, wall: 0xc9dfb5, trim: 0x5f8555, signColor: "#527747" },
   ];
   const group = new THREE.Group();
   group.name = "SnugVillageShops";
@@ -1862,18 +1987,281 @@ function makeWildlife() {
     group.add(bunny);
     creatures.push(bunny);
   };
-  addBird(0xd67c55, 2.2, 0.4);
-  addBird(0x5f88a7, 3.1, 1.8);
-  addCat({ name: "OrangeTabby", base: 0xd9873b, stripes: 0x9b4f23 }, 2.8, 2.9);
-  addCat({ name: "Grey", base: 0x777b80 }, 3.6, 4.1);
-  addCat({ name: "BlackAndWhite", base: 0x292929, whiteChest: true, patches: [0xf4f0e8] }, 1.7, 0.9);
-  addCat({ name: "Tortoiseshell", base: 0x3d2b27, patches: [0xcf7839, 0xd9ad62, 0x171515] }, 3.25, 5.5);
-  addCat({ name: "WhiteLonghair", base: 0xf4f2eb, fluffy: true }, 2.35, 3.8);
-  addCat({ name: "BlackLonghair", base: 0x202329, fluffy: true, whiteChest: true }, 4.05, 1.4);
-  addCat({ name: "Calico", base: 0xf4eee1, patches: [0xd77a38, 0x302b29, 0xd77a38] }, 1.95, 4.65);
-  addCat({ name: "BrownTabby", base: 0x8a715a, stripes: 0x4d3b31, whiteChest: true }, 3.9, 6.0);
-  addBunny(0xd8d1c6, 2.45, 5.25);
+  addBird(0xd67c55, 9.2, 0.4);
+  addBird(0x5f88a7, 15.1, 1.8);
+  addCat({ name: "OrangeTabby", base: 0xd9873b, stripes: 0x9b4f23 }, 8.8, 2.9);
+  addCat({ name: "Grey", base: 0x777b80 }, 13.6, 4.1);
+  addCat({ name: "BlackAndWhite", base: 0x292929, whiteChest: true, patches: [0xf4f0e8] }, 6.7, 0.9);
+  addCat({ name: "Tortoiseshell", base: 0x3d2b27, patches: [0xcf7839, 0xd9ad62, 0x171515] }, 17.25, 5.5);
+  addCat({ name: "WhiteLonghair", base: 0xf4f2eb, fluffy: true }, 11.35, 3.8);
+  addCat({ name: "BlackLonghair", base: 0x202329, fluffy: true, whiteChest: true }, 19.05, 1.4);
+  addCat({ name: "Calico", base: 0xf4eee1, patches: [0xd77a38, 0x302b29, 0xd77a38] }, 7.95, 4.65);
+  addCat({ name: "BrownTabby", base: 0x8a715a, stripes: 0x4d3b31, whiteChest: true }, 15.9, 6.0);
+  addBunny(0xd8d1c6, 12.45, 5.25);
   return { group, creatures };
+}
+
+function clamp01(value) {
+  return Math.max(0, Math.min(1, value));
+}
+
+function smoothstep01(value) {
+  const amount = clamp01(value);
+  return amount * amount * (3 - 2 * amount);
+}
+
+function makeSkyDome() {
+  const material = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    depthWrite: false,
+    depthTest: false,
+    fog: false,
+    uniforms: {
+      topColor: { value: new THREE.Color(0x78bdd8) },
+      horizonColor: { value: new THREE.Color(0xd8edf0) },
+      lowerColor: { value: new THREE.Color(0xa6d6df) },
+    },
+    vertexShader: `
+      varying float vSkyHeight;
+      void main() {
+        vSkyHeight = normalize(position).y;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 topColor;
+      uniform vec3 horizonColor;
+      uniform vec3 lowerColor;
+      varying float vSkyHeight;
+      void main() {
+        float upper = smoothstep(0.0, 0.78, max(vSkyHeight, 0.0));
+        float lower = smoothstep(0.0, 0.7, max(-vSkyHeight, 0.0));
+        vec3 color = mix(horizonColor, topColor, upper);
+        color = mix(color, lowerColor, lower);
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `,
+  });
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(150, 40, 24), material);
+  dome.name = "SnugGradientSky";
+  dome.frustumCulled = false;
+  dome.renderOrder = -1000;
+  return dome;
+}
+
+function makeRainbow() {
+  const group = new THREE.Group();
+  group.name = "SnugAfterRainRainbow";
+  const colors = [0xf46b62, 0xf6a64b, 0xf5d65d, 0x71bf78, 0x64a9dc, 0x8874cb, 0xb86fb2];
+  colors.forEach((color, index) => {
+    const radius = 6.35 - index * 0.25;
+    const arc = new THREE.Mesh(
+      new THREE.TorusGeometry(radius, 0.14, 10, 80, Math.PI),
+      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide, toneMapped: false })
+    );
+    arc.renderOrder = -20 + index;
+    group.add(arc);
+  });
+  group.visible = false;
+  return group;
+}
+
+function makeShootingStarTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 64;
+  const context = canvas.getContext("2d");
+  const trail = context.createLinearGradient(0, 0, canvas.width, 0);
+  trail.addColorStop(0, "rgba(255,255,255,0)");
+  trail.addColorStop(0.72, "rgba(225,240,255,.34)");
+  trail.addColorStop(0.94, "rgba(255,252,222,.92)");
+  trail.addColorStop(1, "rgba(255,255,255,1)");
+  context.fillStyle = trail;
+  context.fillRect(0, 22, canvas.width, 20);
+  const head = context.createRadialGradient(492, 32, 0, 492, 32, 20);
+  head.addColorStop(0, "rgba(255,255,255,1)");
+  head.addColorStop(0.35, "rgba(255,246,203,.95)");
+  head.addColorStop(1, "rgba(255,255,255,0)");
+  context.fillStyle = head;
+  context.fillRect(470, 10, 42, 44);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+function makeShootingStars() {
+  const texture = makeShootingStarTexture();
+  return Array.from({ length: 3 }, (_, index) => {
+    const material = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false, rotation: -0.18 - index * 0.05 });
+    const sprite = new THREE.Sprite(material);
+    sprite.name = `SnugShootingStar_${index + 1}`;
+    sprite.scale.set(6.2, 0.62, 1);
+    sprite.visible = false;
+    sprite.userData.active = false;
+    sprite.raycast = () => {};
+    return sprite;
+  });
+}
+
+function ensureLensFlareOverlay() {
+  let overlay = document.getElementById("snug-lens-flare");
+  if (overlay) return overlay;
+  if (!document.getElementById("snug-lens-flare-style")) {
+    const style = document.createElement("style");
+    style.id = "snug-lens-flare-style";
+    style.textContent = `
+      #snug-lens-flare{position:absolute;z-index:3;inset:0;overflow:hidden;pointer-events:none;opacity:0;mix-blend-mode:screen;transition:opacity .18s linear}
+      #snug-lens-flare span{position:absolute;display:block;border-radius:50%;transform:translate(-50%,-50%);will-change:left,top,opacity}
+      #snug-lens-flare .flare-core{width:clamp(64px,12vw,132px);aspect-ratio:1;background:radial-gradient(circle,rgba(255,255,238,.98) 0 4%,rgba(255,224,130,.52) 22%,rgba(255,190,92,.16) 48%,transparent 72%);filter:blur(.5px)}
+      #snug-lens-flare .flare-ghost{width:var(--flare-size);aspect-ratio:1;border:1px solid rgba(255,245,196,.17);background:radial-gradient(circle,rgba(255,244,198,.2),rgba(244,130,93,.09) 42%,transparent 70%)}
+      #snug-lens-flare .flare-streak{width:clamp(90px,18vw,220px);height:2px;background:linear-gradient(90deg,transparent,rgba(255,241,191,.42),transparent);transform:translate(-50%,-50%) rotate(-16deg)}
+      @media(prefers-reduced-motion:reduce){#snug-lens-flare{transition:none}#snug-lens-flare .flare-ghost,#snug-lens-flare .flare-streak{display:none}}
+    `;
+    document.head.appendChild(style);
+  }
+  overlay = document.createElement("div");
+  overlay.id = "snug-lens-flare";
+  overlay.setAttribute("aria-hidden", "true");
+  overlay.innerHTML = `<span class="flare-core"></span><span class="flare-ghost" data-factor="0.62" style="--flare-size:52px"></span><span class="flare-ghost" data-factor="0.18" style="--flare-size:24px"></span><span class="flare-ghost" data-factor="-0.34" style="--flare-size:78px"></span><span class="flare-streak"></span>`;
+  (document.querySelector(".app-shell") || document.body).appendChild(overlay);
+  return overlay;
+}
+
+function updateSkyGradient(env, phase, stormMix, elapsed) {
+  if (!env.skyDome || !window.__snugWorld?.camera) return;
+  env.skyDome.position.copy(window.__snugWorld.camera.position);
+  const sunHeight = Math.sin((phase.dayFraction - 0.25) * Math.PI * 2);
+  const twilight = smoothstep01(1 - Math.abs(sunHeight) / 0.44) * (1 - stormMix * 0.82);
+  const daylight = smoothstep01(phase.daylight);
+  const targetTop = env.colors.skyTopTarget.copy(env.colors.nightSkyTop).lerp(env.colors.daySkyTop, daylight).lerp(env.colors.twilightTop, twilight);
+  const targetHorizon = env.colors.skyHorizonTarget.copy(env.colors.nightHorizon).lerp(env.colors.dayHorizon, daylight).lerp(env.colors.twilightHorizon, twilight);
+  const targetLower = env.colors.skyLowerTarget.copy(env.colors.nightSky).lerp(env.colors.daySky, daylight).lerp(env.colors.twilightLower, twilight * 0.86);
+  targetTop.lerp(env.colors.stormSky, stormMix);
+  targetHorizon.lerp(env.colors.stormHorizon, stormMix);
+  targetLower.lerp(env.colors.stormSky, stormMix);
+  const fade = 1 - Math.exp(-elapsed / 14);
+  env.skyDome.material.uniforms.topColor.value.lerp(targetTop, fade);
+  env.skyDome.material.uniforms.horizonColor.value.lerp(targetHorizon, fade);
+  env.skyDome.material.uniforms.lowerColor.value.lerp(targetLower, fade);
+}
+
+function updateRainbow(env, phase, now, elapsed) {
+  if (!env.rainbow) return;
+  if (env.lastWeather && env.lastWeather !== phase.weather && env.lastWeather === "Rain" && phase.weather === "Clear") env.rainbowUntil = now + 18000;
+  env.lastWeather = phase.weather;
+  const target = now < env.rainbowUntil && phase.weather === "Clear" ? 1 : 0;
+  env.rainbowOpacity += (target - env.rainbowOpacity) * (1 - Math.exp(-elapsed / (target ? 3.5 : 4.8)));
+  env.rainbow.visible = env.rainbowOpacity > 0.008;
+  env.rainbow.children.forEach((arc, index) => { arc.material.opacity = env.rainbowOpacity * (0.58 - index * 0.025); });
+  if (!env.rainbow.visible || !window.__snugWorld?.camera) return;
+  const camera = window.__snugWorld.camera;
+  const direction = env.effectScratch.forward;
+  camera.getWorldDirection(direction);
+  direction.y = 0;
+  if (direction.lengthSq() < 0.001) direction.set(0, 0, -1);
+  direction.normalize();
+  const wanted = env.effectScratch.rainbowTarget.copy(camera.position).addScaledVector(direction, 42);
+  wanted.y = 1.3;
+  env.rainbow.position.lerp(wanted, 1 - Math.exp(-elapsed / 2.4));
+  const towardCameraX = camera.position.x - env.rainbow.position.x;
+  const towardCameraZ = camera.position.z - env.rainbow.position.z;
+  env.rainbow.rotation.y = Math.atan2(towardCameraX, towardCameraZ);
+}
+
+function spawnShootingStar(env, time) {
+  const sprite = env.shootingStars.find((item) => !item.userData.active);
+  const camera = window.__snugWorld?.camera;
+  if (!sprite || !camera) return;
+  const forward = env.effectScratch.forward;
+  const right = env.effectScratch.right;
+  const up = env.effectScratch.up;
+  camera.getWorldDirection(forward).normalize();
+  right.crossVectors(forward, camera.up).normalize();
+  up.crossVectors(right, forward).normalize();
+  const start = sprite.userData.start ||= new THREE.Vector3();
+  const velocity = sprite.userData.velocity ||= new THREE.Vector3();
+  start.copy(camera.position).addScaledVector(forward, 54).addScaledVector(right, (Math.random() - 0.5) * 28).addScaledVector(up, 7 + Math.random() * 13);
+  velocity.copy(right).multiplyScalar(8 + Math.random() * 5).addScaledVector(up, -2.1 - Math.random() * 2.2);
+  sprite.position.copy(start);
+  sprite.userData.active = true;
+  sprite.userData.startedAt = time;
+  sprite.userData.duration = 900 + Math.random() * 650;
+  sprite.visible = true;
+}
+
+function updateShootingStars(env, time) {
+  if (!env.latestPhase || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+    env.shootingStars?.forEach((sprite) => { sprite.visible = false; sprite.userData.active = false; });
+    return;
+  }
+  if (!env.latestPhase.isNight) {
+    env.shootingStars.forEach((sprite) => { sprite.visible = false; sprite.userData.active = false; });
+    env.nextShootingStarAt = Math.max(env.nextShootingStarAt || 0, time + 5500);
+    return;
+  }
+  if (time >= env.nextShootingStarAt) {
+    spawnShootingStar(env, time);
+    env.nextShootingStarAt = time + 11000 + Math.random() * 17000;
+  }
+  env.shootingStars.forEach((sprite) => {
+    if (!sprite.userData.active) return;
+    const progress = (time - sprite.userData.startedAt) / sprite.userData.duration;
+    if (progress >= 1) {
+      sprite.userData.active = false;
+      sprite.visible = false;
+      return;
+    }
+    sprite.position.copy(sprite.userData.start).addScaledVector(sprite.userData.velocity, progress);
+    sprite.material.opacity = Math.sin(progress * Math.PI) * Math.min(1, (1 - env.latestPhase.daylight) * 1.8);
+  });
+}
+
+function updateLensFlare(env) {
+  const world = window.__snugWorld;
+  const overlay = env.lensFlare;
+  if (!overlay || !world?.camera || !world?.renderer || !env.latestPhase) return;
+  const camera = world.camera;
+  const sunWorld = env.effectScratch.sunWorld;
+  const projected = env.effectScratch.projected;
+  const cameraDirection = env.effectScratch.cameraDirection;
+  const toSun = env.effectScratch.toSun;
+  env.sun.getWorldPosition(sunWorld);
+  camera.getWorldDirection(cameraDirection);
+  toSun.copy(sunWorld).sub(camera.position);
+  const facing = cameraDirection.dot(toSun.normalize());
+  projected.copy(sunWorld).project(camera);
+  const inside = facing > 0 && projected.z > -1 && projected.z < 1 && Math.abs(projected.x) < 1.15 && Math.abs(projected.y) < 1.15;
+  const edgeFade = clamp01(1 - Math.max(Math.abs(projected.x), Math.abs(projected.y)) / 1.15);
+  const altitudeFade = smoothstep01((env.sun.position.y + 2) / 12);
+  const stormFade = 1 - (env.latestStormMix || 0) * 0.9;
+  const opacity = inside && env.sun.visible ? edgeFade * altitudeFade * stormFade * 0.92 : 0;
+  overlay.style.opacity = String(opacity);
+  if (opacity <= 0.004) return;
+  const canvasRect = world.renderer.domElement.getBoundingClientRect();
+  const overlayRect = overlay.getBoundingClientRect();
+  const sunX = canvasRect.left - overlayRect.left + (projected.x * 0.5 + 0.5) * canvasRect.width;
+  const sunY = canvasRect.top - overlayRect.top + (-projected.y * 0.5 + 0.5) * canvasRect.height;
+  const centerX = canvasRect.left - overlayRect.left + canvasRect.width * 0.5;
+  const centerY = canvasRect.top - overlayRect.top + canvasRect.height * 0.5;
+  const core = overlay.querySelector(".flare-core");
+  const streak = overlay.querySelector(".flare-streak");
+  [core, streak].forEach((node) => { node.style.left = `${sunX}px`; node.style.top = `${sunY}px`; });
+  overlay.querySelectorAll(".flare-ghost").forEach((node) => {
+    const factor = Number(node.dataset.factor || 0);
+    node.style.left = `${centerX + (sunX - centerX) * factor}px`;
+    node.style.top = `${centerY + (sunY - centerY) * factor}px`;
+    node.style.opacity = String(clamp01(opacity * (0.65 + Math.abs(factor) * 0.25)));
+  });
+}
+
+function tickCelestialEffects(time) {
+  const env = state.environment;
+  if (!env || window.__snugWorld?.mode !== "village") {
+    if (env?.lensFlare) env.lensFlare.style.opacity = "0";
+    return;
+  }
+  updateShootingStars(env, time);
+  updateLensFlare(env);
 }
 
 function setupEnvironment() {
@@ -1885,13 +2273,17 @@ function setupEnvironment() {
   }
   const group = new THREE.Group();
   group.name = "SnugLivingWorld";
-  const sun = new THREE.Mesh(new THREE.SphereGeometry(0.72, 16, 12), new THREE.MeshBasicMaterial({ color: 0xffd66f }));
-  const moon = new THREE.Mesh(new THREE.SphereGeometry(0.55, 16, 12), new THREE.MeshBasicMaterial({ color: 0xd9e5ff }));
-  group.add(sun, moon);
+  const sun = new THREE.Mesh(new THREE.SphereGeometry(0.78, 48, 32), new THREE.MeshBasicMaterial({ color: 0xffd66f, toneMapped: false }));
+  sun.name = "SnugRoundSun";
+  const moon = new THREE.Mesh(new THREE.SphereGeometry(0.55, 24, 18), new THREE.MeshBasicMaterial({ color: 0xd9e5ff, toneMapped: false }));
+  const skyDome = makeSkyDome();
+  const rainbow = makeRainbow();
+  const shootingStars = makeShootingStars();
+  group.add(skyDome, sun, moon, rainbow, ...shootingStars);
   // The walkable village remains level, while this shaded sphere continues below
   // its edge so the town reads as a tiny, rounded world from the title camera.
-  const globeRadius = 14.6;
-  const globeJoinRadius = 14;
+  const globeRadius = 53;
+  const globeJoinRadius = 52;
   const globeJoinOffset = Math.sqrt(globeRadius * globeRadius - globeJoinRadius * globeJoinRadius);
   const globeThetaStart = Math.acos(globeJoinOffset / globeRadius);
   const globe = new THREE.Mesh(
@@ -1904,17 +2296,17 @@ function setupEnvironment() {
   group.add(globe);
   const starGeometry = new THREE.BufferGeometry();
   const starPositions = [];
-  for (let index = 0; index < 110; index += 1) {
+  for (let index = 0; index < 180; index += 1) {
     const angle = seeded(index * 31.7 + 4.2) * Math.PI * 2;
-    const radius = 10 + seeded(index * 17.9) * 11;
-    starPositions.push(Math.cos(angle) * radius, 7 + seeded(index * 8.4) * 9, Math.sin(angle) * radius);
+    const radius = 28 + seeded(index * 17.9) * 34;
+    starPositions.push(Math.cos(angle) * radius, 14 + seeded(index * 8.4) * 18, Math.sin(angle) * radius);
   }
   starGeometry.setAttribute("position", new THREE.Float32BufferAttribute(starPositions, 3));
   const stars = new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0xf6f3d0, size: 0.09, transparent: true, opacity: 0 }));
   group.add(stars);
   const clouds = [];
   const cloudPuffGeometry = new THREE.SphereGeometry(1, 10, 7);
-  for (let index = 0; index < 10; index += 1) {
+  for (let index = 0; index < 24; index += 1) {
     const cloud = new THREE.Group();
     const material = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1, transparent: true, opacity: 0.82 });
     const lobeCount = 3 + Math.floor(seeded(index * 7.31 + 2.4) * 4);
@@ -1927,21 +2319,21 @@ function setupEnvironment() {
       puff.scale.set(size * (1.05 + seeded(index + lobe * 2.1) * 0.35), size * (0.68 + seeded(index * 2.2 + lobe) * 0.26), size * (0.72 + seeded(index * 6.8 + lobe) * 0.3));
       cloud.add(puff);
     }
-    const angle = index / 10 * Math.PI * 2 + (seeded(index * 9.7) - 0.5) * 0.42;
-    const radius = 9.5 + seeded(index * 11.2 + 1) * 6.5;
-    cloud.position.set(Math.cos(angle) * radius, 6.2 + seeded(index * 5.3 + 4) * 4.4, Math.sin(angle) * radius);
+    const angle = index / 24 * Math.PI * 2 + (seeded(index * 9.7) - 0.5) * 0.42;
+    const radius = 22 + seeded(index * 11.2 + 1) * 31;
+    cloud.position.set(Math.cos(angle) * radius, 10.5 + seeded(index * 5.3 + 4) * 8.5, Math.sin(angle) * radius);
     cloud.rotation.y = -angle + (seeded(index * 3.9) - 0.5) * 0.6;
     cloud.userData = { angle, radius, baseY: cloud.position.y, speed: 0.006 + seeded(index * 7.6 + 3) * 0.007, bob: seeded(index * 6.1 + 9) * Math.PI * 2 };
     group.add(cloud);
     clouds.push(cloud);
   }
-  const weatherCount = 420;
+  const weatherCount = 720;
   const weatherGeometry = new THREE.BufferGeometry();
   const weatherPositions = new Float32Array(weatherCount * 3);
   const weatherData = { baseX: new Float32Array(weatherCount), baseZ: new Float32Array(weatherCount), speed: new Float32Array(weatherCount), phase: new Float32Array(weatherCount) };
   for (let i = 0; i < weatherCount; i += 1) {
-    const x = (seeded(i * 4.73) - 0.5) * 30;
-    const z = (seeded(i * 2.41 + 2) - 0.5) * 30;
+    const x = (seeded(i * 4.73) - 0.5) * 92;
+    const z = (seeded(i * 2.41 + 2) - 0.5) * 88;
     weatherPositions[i * 3] = weatherData.baseX[i] = x;
     weatherPositions[i * 3 + 1] = -1.4 + seeded(i * 8.17) * 11;
     weatherPositions[i * 3 + 2] = weatherData.baseZ[i] = z;
@@ -1953,7 +2345,7 @@ function setupEnvironment() {
   weather.name = "SnugWeatherParticles";
   group.add(weather);
   const snowCover = new THREE.Mesh(
-    new THREE.CircleGeometry(14, 64),
+    new THREE.CircleGeometry(52, 96),
     new THREE.MeshStandardMaterial({ color: 0xf4f8f7, roughness: 1, transparent: true, opacity: 0, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 })
   );
   snowCover.name = "SnugSnowCover";
@@ -1975,15 +2367,25 @@ function setupEnvironment() {
   const globeBaseColor = globe.material.color.clone();
   const startingPhase = environmentPhase();
   state.environment = {
-    group, sun, moon, stars, clouds, weather, weatherData, snowCover, terrain, terrainBaseColor, globe, globeBaseColor,
+    group, skyDome, sun, moon, stars, shootingStars, rainbow, clouds, weather, weatherData, snowCover, terrain, terrainBaseColor, globe, globeBaseColor,
     wildlife: wildlife.creatures, lights: ambient, lastLightning: 0, lightningUntil: 0,
     displayWeather: startingPhase.weather === "Clear" ? "Rain" : startingPhase.weather,
     weatherIntensity: 0, snowAccumulation: 0, lastTickTime: performance.now(),
+    lastWeather: startingPhase.weather, rainbowUntil: 0, rainbowOpacity: 0,
+    nextShootingStarAt: performance.now() + 7000 + Math.random() * 9000,
+    lensFlare: ensureLensFlareOverlay(), latestPhase: startingPhase, latestStormMix: 0,
+    effectScratch: {
+      forward: new THREE.Vector3(), right: new THREE.Vector3(), up: new THREE.Vector3(), rainbowTarget: new THREE.Vector3(),
+      sunWorld: new THREE.Vector3(), projected: new THREE.Vector3(), cameraDirection: new THREE.Vector3(), toSun: new THREE.Vector3()
+    },
     colors: {
-      daySky: new THREE.Color(0x9fd3df), nightSky: new THREE.Color(0x17273f), stormSky: new THREE.Color(0x65757c),
+      daySky: new THREE.Color(0x9fd3df), nightSky: new THREE.Color(0x17273f), stormSky: new THREE.Color(0x65757c), stormHorizon: new THREE.Color(0x89959a),
+      daySkyTop: new THREE.Color(0x74bdd8), dayHorizon: new THREE.Color(0xdaf0ed),
+      nightSkyTop: new THREE.Color(0x101a36), nightHorizon: new THREE.Color(0x2e405d),
+      twilightTop: new THREE.Color(0xc777a0), twilightHorizon: new THREE.Color(0xff9b62), twilightLower: new THREE.Color(0xf0a277),
       clearCloud: new THREE.Color(0xffffff), stormCloud: new THREE.Color(0x79878a),
       snowGround: new THREE.Color(0xf4f8f7), snow: new THREE.Color(0xffffff), rain: new THREE.Color(0x87bbd5),
-      skyTarget: new THREE.Color(), cloudTarget: new THREE.Color()
+      skyTarget: new THREE.Color(), cloudTarget: new THREE.Color(), skyTopTarget: new THREE.Color(), skyHorizonTarget: new THREE.Color(), skyLowerTarget: new THREE.Color()
     }
   };
   state.environmentWorld = world;
@@ -2053,6 +2455,7 @@ function tickEnvironment(time = performance.now()) {
   if (document.documentElement.classList.contains("snug-photo-mode")) return;
   const now = Date.now();
   const phase = environmentPhase(now);
+  env.latestPhase = phase;
   const elapsed = Math.max(0, Math.min(0.1, (time - env.lastTickTime) / 1000));
   env.lastTickTime = time;
   const targetWeatherIntensity = phase.weather === "Clear" ? 0 : 1;
@@ -2066,17 +2469,22 @@ function tickEnvironment(time = performance.now()) {
   const snowRate = snowTarget > env.snowAccumulation ? elapsed / 18 : elapsed / 22;
   env.snowAccumulation = THREE.MathUtils.clamp(env.snowAccumulation + Math.sign(snowTarget - env.snowAccumulation) * Math.min(Math.abs(snowTarget - env.snowAccumulation), snowRate), 0, 1);
   const angle = phase.dayFraction * Math.PI * 2 - Math.PI;
-  env.sun.position.set(Math.cos(angle) * 10, Math.sin(angle) * 8 + 5, -7);
-  env.moon.position.set(-env.sun.position.x, 10 - env.sun.position.y, 7);
+  env.sun.position.set(Math.cos(angle) * 38, Math.sin(angle) * 24 + 17, -28);
+  env.moon.position.set(-env.sun.position.x, 34 - env.sun.position.y, 28);
   env.sun.visible = !phase.isNight;
   env.moon.visible = phase.isNight;
   env.stars.material.opacity = phase.isNight ? Math.min(0.9, (1 - phase.daylight) * 1.3) : 0;
   env.lights.forEach(({ node, base }) => { node.intensity = base * (0.28 + phase.daylight * 0.72); });
   const stormMix = phase.weather === "Thunderstorm" ? env.weatherIntensity : 0;
-  const sky = env.colors.skyTarget.copy(phase.isNight ? env.colors.nightSky : env.colors.daySky).lerp(env.colors.stormSky, stormMix);
+  env.latestStormMix = stormMix;
+  const sunHeight = Math.sin((phase.dayFraction - 0.25) * Math.PI * 2);
+  const twilightMix = smoothstep01(1 - Math.abs(sunHeight) / 0.44) * (1 - stormMix * 0.82);
+  const sky = env.colors.skyTarget.copy(phase.isNight ? env.colors.nightSky : env.colors.daySky).lerp(env.colors.twilightLower, twilightMix * 0.52).lerp(env.colors.stormSky, stormMix);
   const skyFade = 1 - Math.exp(-elapsed / 10);
   window.__snugWorld.scene.background?.lerp?.(sky, skyFade);
   if (window.__snugWorld.scene.fog?.color) window.__snugWorld.scene.fog.color.lerp(sky, skyFade);
+  updateSkyGradient(env, phase, stormMix, elapsed);
+  updateRainbow(env, phase, now, elapsed);
   const cloudTarget = env.colors.cloudTarget.copy(env.colors.clearCloud).lerp(env.colors.stormCloud, stormMix);
   const cloudOpacityTarget = 0.72 + env.weatherIntensity * 0.23;
   const cloudFade = 1 - Math.exp(-elapsed / 9);
@@ -2141,7 +2549,7 @@ function tickEnvironment(time = performance.now()) {
 
 function collidesAt(position) {
   if (!position || window.__snugWorld?.mode !== "village") return false;
-  if (Math.abs(position.x) > 11.35 || Math.abs(position.z) > 10.95) return true;
+  if (Math.abs(position.x) > 36.25 || Math.abs(position.z) > 34.25) return true;
   for (const shop of state.shops) {
     const dx = position.x - shop.x;
     const dz = position.z - shop.z;
@@ -2274,8 +2682,26 @@ function makeTicTacToeArena(group) {
   return { clickTargets, pieces: new Map() };
 }
 
+function makeCourseArena(game, group) {
+  const scavengerSpots = [[-25,-18],[24,-20],[-31,8],[30,15],[-12,27],[10,-29],[0,19],[18,2]];
+  const relaySpots = [[0,5],[8,9],[15,2],[10,-8],[-2,-13],[-12,-4]];
+  const points = game.game === "scavenger" ? scavengerSpots : relaySpots;
+  const markers = points.map(([x,z], index) => {
+    const material = new THREE.MeshStandardMaterial({ color: game.game === "scavenger" ? 0xf2c84e : 0x64b1a4, roughness: .58, emissive: game.game === "scavenger" ? 0x4c2c00 : 0x123c37, emissiveIntensity: .2 });
+    const marker = game.game === "scavenger"
+      ? new THREE.Mesh(new THREE.OctahedronGeometry(.32, 0), material)
+      : new THREE.Mesh(new THREE.TorusGeometry(.55, .09, 10, 24), material);
+    marker.position.set(x, game.game === "scavenger" ? .62 : .7, z);
+    marker.rotation.x = game.game === "relay" ? Math.PI / 2 : 0;
+    marker.userData.item = index;
+    group.add(marker);
+    return marker;
+  });
+  return { markers, points, clickTargets: [] };
+}
+
 function setupPartyArena(game) {
-  if (!["floor", "connect4", "tictactoe"].includes(game?.game)) {
+  if (!["floor", "connect4", "tictactoe", "scavenger", "relay"].includes(game?.game)) {
     teardownPartyArena();
     return;
   }
@@ -2285,12 +2711,12 @@ function setupPartyArena(game) {
   teardownPartyArena();
   const group = new THREE.Group();
   group.name = `snug-${game.game}-arena`;
-  const parts = game.game === "floor" ? makeFloorArena(game, group) : game.game === "connect4" ? makeConnectFourArena(group) : makeTicTacToeArena(group);
+  const parts = game.game === "floor" ? makeFloorArena(game, group) : game.game === "connect4" ? makeConnectFourArena(group) : game.game === "tictactoe" ? makeTicTacToeArena(group) : makeCourseArena(game, group);
   world.scene.add(group);
   state.partyArena = { group, type: game.game, ...parts };
   state.arenaRoundId = game.id;
   state.floorEliminated = roundEvents("floor-out").some((event) => event.uid === state.session?.uid);
-  if (game.game !== "floor") {
+  if (["connect4", "tictactoe"].includes(game.game)) {
     world.player?.position?.set?.(0, 0, 3.6);
     state.position = { x: 0, z: 6.2, rotation: 0 };
   }
@@ -2373,6 +2799,13 @@ function updatePartyArena() {
         tile.material.emissive.setHex(Math.floor(untilDrop / 180) % 2 ? 0x8a2c20 : 0x000000);
       }
     });
+  } else if (game.game === "scavenger") {
+    const found = new Set(roundEvents("scavenge").map((event) => Number(event.item)));
+    arena.markers.forEach((marker) => { marker.visible = !found.has(marker.userData.item); marker.rotation.y += .025; });
+  } else if (game.game === "relay") {
+    const mine = roundEvents("relay-checkpoint").filter((event) => event.uid === state.session?.uid);
+    const next = mine.length;
+    arena.markers.forEach((marker) => { marker.visible = marker.userData.item === next; marker.rotation.z += .02; });
   } else {
     const board = validBoardState();
     board.moves.forEach((move) => {
@@ -2382,6 +2815,68 @@ function updatePartyArena() {
       arena.pieces.set(move.id, piece);
     });
   }
+}
+
+async function detectCourseProgress() {
+  const game = state.currentGame;
+  const arena = state.partyArena;
+  if (state.actionBusy || !arena || gameExpired() || !["scavenger", "relay"].includes(game?.game)) return;
+  if (game.game === "scavenger") {
+    const found = new Set(roundEvents("scavenge").map((event) => Number(event.item)));
+    const marker = arena.markers.find((entry) => entry.visible && !found.has(entry.userData.item) && Math.hypot(entry.position.x - state.position.x, entry.position.z - state.position.z) < .8);
+    if (!marker) return;
+    state.actionBusy = true;
+    try { await postGameEvent("scavenge", { item: marker.userData.item }); showToast(`Keepsake found · ${found.size + 1}/8`); updatePartyArena(); }
+    catch (error) { state.error = friendlyError(error); }
+    finally { state.actionBusy = false; }
+  } else {
+    const mine = roundEvents("relay-checkpoint").filter((event) => event.uid === state.session?.uid);
+    const next = mine.length;
+    const marker = arena.markers[next];
+    if (!marker || Math.hypot(marker.position.x - state.position.x, marker.position.z - state.position.z) >= .95) return;
+    state.actionBusy = true;
+    try { await postGameEvent("relay-checkpoint", { item: next }); showToast(next === 5 ? "Relay finished" : `Checkpoint ${next + 1}/6`); updatePartyArena(); }
+    catch (error) { state.error = friendlyError(error); }
+    finally { state.actionBusy = false; }
+  }
+}
+
+async function detectPotatoPass() {
+  if (state.actionBusy || gameExpired() || state.currentGame?.game !== "potato" || currentPotatoUid() !== state.session?.uid || Date.now() < state.tagCooldownUntil) return;
+  const target = state.players.find((player) => Math.hypot(Number(player.x) - state.position.x, Number(player.z) - state.position.z) < .85);
+  if (!target) return;
+  state.actionBusy = true;
+  state.tagCooldownUntil = Date.now() + 1200;
+  try { await postGameEvent("potato-pass", { targetUid: target.uid, targetName: String(target.name || "Player").slice(0,18) }); showToast(`Potato passed to ${target.name || "Player"}`); }
+  catch (error) { state.error = friendlyError(error); }
+  finally { state.actionBusy = false; }
+}
+
+async function submitSimonStep(emote) {
+  if (state.actionBusy || gameExpired() || state.currentGame?.game !== "simon") return;
+  const mine = roundEvents("simon-step").filter((event) => event.uid === state.session?.uid);
+  const index = mine.length;
+  const expected = simonSequence(state.currentGame)[index];
+  if (emote !== expected) return showToast("Not that one — watch the pattern");
+  state.actionBusy = true;
+  try { await postGameEvent("simon-step", { item: index, emote }); showToast(index === 11 ? "Mayor Says complete" : `${index + 1}/12`); }
+  catch (error) { state.error = friendlyError(error); }
+  finally { state.actionBusy = false; }
+}
+
+function renderSimonControls() {
+  let controls = document.querySelector(".simon-controls");
+  const game = state.currentGame;
+  if (!game || game.game !== "simon" || gameExpired()) { controls?.remove(); return; }
+  if (!controls) {
+    controls = document.createElement("div");
+    controls.className = "simon-controls";
+    controls.addEventListener("click", (event) => { const button = event.target.closest("[data-emote]"); if (button) submitSimonStep(button.dataset.emote); });
+    document.body.appendChild(controls);
+  }
+  const score = scoreFor(state.session?.uid);
+  const expected = simonSequence(game)[score] || "cheer";
+  controls.innerHTML = `<small>Mayor says ${escapeHtml(expected)}</small><div>${SIMON_EMOTES.map((emote) => `<button type="button" data-emote="${emote}">${emote}</button>`).join("")}</div>`;
 }
 
 async function detectFloorDrop() {
@@ -2520,8 +3015,8 @@ function showSoloResult(game, amount, before) {
 function awardForCurrentGame() {
   const score = scoreFor(state.session.uid);
   const won = winnerUid() === state.session.uid && score > 0;
-  const base = state.currentGame.game === "coin" ? 8 : state.currentGame.game === "tag" ? 9 : state.currentGame.game === "floor" ? 12 : 10;
-  const each = state.currentGame.game === "coin" ? 2 : state.currentGame.game === "tag" ? 3 : ["connect4", "tictactoe"].includes(state.currentGame.game) ? 12 : 4;
+  const base = state.currentGame.game === "coin" ? 8 : state.currentGame.game === "tag" ? 9 : state.currentGame.game === "floor" ? 12 : state.currentGame.game === "potato" ? 12 : 10;
+  const each = state.currentGame.game === "coin" ? 2 : state.currentGame.game === "tag" ? 3 : ["connect4", "tictactoe", "potato"].includes(state.currentGame.game) ? 12 : state.currentGame.game === "scavenger" ? 3 : state.currentGame.game === "relay" ? 4 : 2;
   return base + score * each + (won ? 10 : 0);
 }
 
@@ -2573,6 +3068,10 @@ function renderGameHud() {
   if (game.game === "tag") detail = game.practice ? `${score} tag${score === 1 ? "" : "s"}` : currentItUid() === state.session?.uid ? "YOU’RE IT" : `${score} tag${score === 1 ? "" : "s"}`;
   if (game.game === "quiz") detail = `Q${currentQuizIndex() + 1} · ${score} pt`;
   if (game.game === "floor") detail = state.floorEliminated ? "OUT" : "STILL UP";
+  if (game.game === "scavenger") detail = `${score}/8 found`;
+  if (game.game === "relay") detail = `${score}/6 gates`;
+  if (game.game === "potato") detail = currentPotatoUid() === state.session?.uid ? "PASS IT!" : "KEEP AWAY";
+  if (game.game === "simon") detail = `${score}/12 moves`;
   if (["connect4", "tictactoe"].includes(game.game)) {
     const board = validBoardState();
     if (board.winner) detail = board.winner === state.session?.uid ? "YOU WON" : "ROUND WON";
@@ -2602,7 +3101,10 @@ function tickGame() {
     if (game.practice) updatePracticeTag();
   }
   if (game.game === "floor") detectFloorDrop();
-  if (["floor", "connect4", "tictactoe"].includes(game.game)) updatePartyArena();
+  if (["scavenger", "relay"].includes(game.game)) detectCourseProgress();
+  if (game.game === "potato") detectPotatoPass();
+  if (["floor", "connect4", "tictactoe", "scavenger", "relay"].includes(game.game)) updatePartyArena();
+  renderSimonControls();
   if (gameExpired()) {
     teardownCoins();
     claimReward();
@@ -2641,7 +3143,7 @@ window.addEventListener("snug-world-ready", () => {
   updateNearbyShop();
   if (state.currentGame?.game === "coin" && !gameExpired()) setupCoins(state.currentGame);
   if (state.currentGame?.practice && state.currentGame?.game === "tag" && !gameExpired()) setupPracticeTag(state.currentGame);
-  if (["floor", "connect4", "tictactoe"].includes(state.currentGame?.game) && !gameExpired()) setupPartyArena(state.currentGame);
+  if (["floor", "connect4", "tictactoe", "scavenger", "relay"].includes(state.currentGame?.game) && !gameExpired()) setupPartyArena(state.currentGame);
 });
 window.addEventListener("pointerdown", (event) => {
   state.audioUnlocked = true;
@@ -2665,6 +3167,7 @@ function environmentFrame(time) {
     state.lastEnvironmentFrame = time;
     tickEnvironment(time);
   }
+  tickCelestialEffects(time);
   requestAnimationFrame(environmentFrame);
 }
 requestAnimationFrame(environmentFrame);

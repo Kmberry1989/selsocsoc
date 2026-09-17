@@ -1,7 +1,7 @@
 {
   "name": "snug-society",
   "private": true,
-  "version": "0.9.24",
+  "version": "0.9.27",
   "scripts": {
     "build": "node scripts/generate-cosmetics-manifest.mjs && node assets/audio/generate-manifest.mjs && node assets/menu-wallpaper/generate-manifest.mjs && node assets/environment-props/generate-manifest.mjs"
   }
