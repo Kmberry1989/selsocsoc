@@ -339,6 +339,19 @@
             "$other": {
               ".validate": false
             }
+          },
+          "garden": {
+            ".read": "auth != null && $uid === auth.uid",
+            "$slot": {
+              ".write": "auth != null && $uid === auth.uid && $slot.matches(/^[0-5]$/)",
+              ".validate": "newData.hasChildren(['kind','plantedAt','waterings','wateredStage','updatedAt']) && newData.child('kind').isString() && (newData.child('kind').val() === 'moonflower' || newData.child('kind').val() === 'fern' || newData.child('kind').val() === 'oak') && newData.child('plantedAt').isNumber() && newData.child('plantedAt').val() > 0 && newData.child('waterings').isNumber() && newData.child('waterings').val() >= 0 && newData.child('waterings').val() <= 20 && newData.child('wateredStage').isNumber() && newData.child('wateredStage').val() >= -1 && newData.child('wateredStage').val() <= 3 && newData.child('updatedAt').isNumber()",
+              "kind": { ".validate": "newData.isString()" },
+              "plantedAt": { ".validate": "newData.isNumber()" },
+              "waterings": { ".validate": "newData.isNumber()" },
+              "wateredStage": { ".validate": "newData.isNumber()" },
+              "updatedAt": { ".validate": "newData.isNumber()" },
+              "$other": { ".validate": false }
+            }
           }
         }
       },

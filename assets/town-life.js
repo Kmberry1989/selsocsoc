@@ -15,6 +15,13 @@ const FESTIVALS = {
   meteors: { name: "Meteor Shower", note: "Watch bright trails skim the little planet." },
   parade: { name: "Costume Parade", note: "Neighbors loop the plaza in handmade hats." },
 };
+const PLANT_TYPES = {
+  moonflower: { name: "Moonflower", kind: "Flower", color: 0xe7d8ff, leaf: 0x5f9364, stages: [["Seed", 0], ["Sprout", 2 * 60000], ["Bud", 10 * 60000], ["Bloom", 25 * 60000]] },
+  fern: { name: "Button fern", kind: "Plant", color: 0x71a964, leaf: 0x4f8d58, stages: [["Seed", 0], ["Shoot", 3 * 60000], ["Young fern", 15 * 60000], ["Full fern", 45 * 60000]] },
+  oak: { name: "Cozy oak", kind: "Tree", color: 0x6e9b59, leaf: 0x5a8c50, stages: [["Acorn", 0], ["Sapling", 10 * 60000], ["Young tree", 60 * 60000], ["Mature tree", 4 * 60 * 60000]] },
+};
+const GARDEN_PLOTS = [[4.1, 6.7], [6.55, 6.7], [9, 6.7], [4.1, 9.5], [6.55, 9.5], [9, 9.5]];
+const WATERING_BONUS = 5 * 60000;
 
 const town = {
   session: null,
@@ -32,6 +39,11 @@ const town = {
   festivalGroup: null,
   festivalKind: "",
   festivalStartedAt: 0,
+  garden: [],
+  gardenGroup: null,
+  gardenSignature: "",
+  gardenBusySlot: -1,
+  gardenLastTick: 0,
   backend: "direct",
   loading: false,
   busy: false,
@@ -98,26 +110,50 @@ async function loadJournal() {
   const contributions = [];
   let cat = null;
   let festival = null;
+  const garden = [];
   entries.forEach((entry) => {
     try {
       const value = JSON.parse(entry.text.slice(MARKER.length));
       if (value.t === "project" && [5, 10, 25].includes(Number(value.a))) contributions.push({ uid: entry.uid, name: value.n || entry.name, amount: Number(value.a), createdAt: entry.createdAt });
       if (value.t === "cat" && entry.uid === town.session.uid && CAT_COATS[value.coat]) cat = { coat: value.coat, name: safeName(value.name) || "Marmalade", affection: Math.max(0, Math.min(100, Number(value.affection) || 0)), feeds: Math.max(0, Number(value.feeds) || 0), updatedAt: entry.createdAt };
       if (value.t === "festival" && FESTIVALS[value.id]) festival = { id: value.id, startedAt: Number(value.startedAt) || Number(entry.createdAt), startedBy: value.startedBy || entry.name };
+      if (value.t === "garden" && entry.uid === town.session.uid && Number.isInteger(value.slot) && value.slot >= 0 && value.slot < GARDEN_PLOTS.length) garden[value.slot] = value.clear ? null : normalizePlant(value);
     } catch {}
   });
-  applyLoadedData(contributions, cat, festival);
+  applyLoadedData(contributions, cat, festival, garden);
 }
 
-function applyLoadedData(contributions, cat, festival) {
+function normalizePlant(value) {
+  if (!value || !PLANT_TYPES[value.kind]) return null;
+  return {
+    kind: value.kind,
+    plantedAt: Math.max(0, Number(value.plantedAt) || Date.now()),
+    waterings: Math.max(0, Math.min(20, Number(value.waterings) || 0)),
+    wateredStage: Math.max(-1, Math.min(3, Number(value.wateredStage ?? -1))),
+    updatedAt: Math.max(0, Number(value.updatedAt) || Date.now()),
+  };
+}
+
+function normalizeGarden(value) {
+  const garden = [];
+  Object.entries(value || {}).forEach(([slot, plant]) => {
+    const index = Number(slot);
+    if (Number.isInteger(index) && index >= 0 && index < GARDEN_PLOTS.length) garden[index] = normalizePlant(plant);
+  });
+  return garden;
+}
+
+function applyLoadedData(contributions, cat, festival, garden = []) {
   town.projectTotal = contributions.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
   const people = new Map();
   contributions.forEach((entry) => people.set(entry.uid || entry.name, { name: entry.name || "Neighbor", amount: (people.get(entry.uid || entry.name)?.amount || 0) + Number(entry.amount || 0) }));
   town.projectContributors = [...people.values()].sort((a, b) => b.amount - a.amount).slice(0, 4);
   town.cat = cat;
   town.festival = festival && Date.now() - Number(festival.startedAt) < 600000 ? festival : null;
+  town.garden = normalizeGarden(garden);
   syncCatFollower();
   syncFestival();
+  syncGardenVisuals(true);
   renderPanel();
 }
 
@@ -126,14 +162,15 @@ async function loadTownLife() {
   town.loading = true;
   town.error = "";
   try {
-    const [projectRaw, cat, festival] = await Promise.all([
+    const [projectRaw, cat, festival, garden] = await Promise.all([
       request(`townLife/projects/${PROJECT.id}/contributions?orderBy=%22createdAt%22&limitToLast=300`),
       request(`townLife/profiles/${town.session.uid}/cat`),
       request("townLife/festival/current"),
+      request(`townLife/profiles/${town.session.uid}/garden`),
     ]);
     town.backend = "direct";
     const contributions = Object.values(projectRaw || {});
-    applyLoadedData(contributions, cat, festival);
+    applyLoadedData(contributions, cat, festival, garden);
   } catch {
     town.backend = "journal";
     try {
@@ -246,6 +283,96 @@ async function startFestival(id) {
 
 function scheduledFestivalId() {
   return Object.keys(FESTIVALS)[Math.floor(Date.now() / 3600000) % 3];
+}
+
+function plantStage(plant, now = Date.now()) {
+  const type = PLANT_TYPES[plant?.kind];
+  if (!type) return { index: 0, name: "Empty", progress: 0, nextMs: 0 };
+  const age = Math.max(0, now - Number(plant.plantedAt || now)) + Math.max(0, Number(plant.waterings || 0)) * WATERING_BONUS;
+  let index = 0;
+  type.stages.forEach((stage, candidate) => { if (age >= stage[1]) index = candidate; });
+  const next = type.stages[index + 1];
+  const currentAt = type.stages[index][1];
+  const progress = next ? Math.max(0, Math.min(1, (age - currentAt) / (next[1] - currentAt))) : 1;
+  return { index, name: type.stages[index][0], progress, nextMs: next ? Math.max(0, next[1] - age) : 0 };
+}
+
+function durationLabel(milliseconds) {
+  if (milliseconds <= 0) return "Ready";
+  const minutes = Math.max(1, Math.ceil(milliseconds / 60000));
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  const remainder = minutes % 60;
+  return remainder ? `${hours} hr ${remainder} min` : `${hours} hr`;
+}
+
+async function persistGardenSlot(slot, plant) {
+  if (town.backend === "direct") {
+    await request(`townLife/profiles/${town.session.uid}/garden/${slot}`, { method: plant ? "PUT" : "DELETE", body: plant ? JSON.stringify(plant) : undefined });
+  } else {
+    await journalWrite(plant ? { t: "garden", slot, ...plant } : { t: "garden", slot, clear: true });
+  }
+}
+
+async function plantGarden(slot, kind) {
+  const index = Number(slot);
+  if (!town.session || town.gardenBusySlot >= 0 || !Number.isInteger(index) || index < 0 || index >= GARDEN_PLOTS.length || town.garden[index] || !PLANT_TYPES[kind]) return;
+  const plant = { kind, plantedAt: Date.now(), waterings: 0, wateredStage: -1, updatedAt: Date.now() };
+  town.gardenBusySlot = index;
+  renderPanel();
+  try {
+    await persistGardenSlot(index, plant);
+    town.garden[index] = plant;
+    syncGardenVisuals(true);
+    showToast(`${PLANT_TYPES[kind].name} planted in plot ${index + 1}`);
+    window.dispatchEvent(new CustomEvent("snug-sfx", { detail: { id: "select" } }));
+  } catch {
+    town.error = "That seed could not be planted yet.";
+  } finally {
+    town.gardenBusySlot = -1;
+    renderPanel();
+  }
+}
+
+async function waterGarden(slot) {
+  const index = Number(slot);
+  const current = town.garden[index];
+  if (!current || town.gardenBusySlot >= 0) return;
+  const stage = plantStage(current);
+  if (current.wateredStage === stage.index) return showToast("This plot is already watered for this stage");
+  const next = { ...current, waterings: Number(current.waterings || 0) + 1, wateredStage: stage.index, updatedAt: Date.now() };
+  town.gardenBusySlot = index;
+  renderPanel();
+  try {
+    await persistGardenSlot(index, next);
+    town.garden[index] = next;
+    syncGardenVisuals(true);
+    showToast(`Plot ${index + 1} watered · growth moved ahead 5 minutes`);
+    window.dispatchEvent(new CustomEvent("snug-sfx", { detail: { id: "select" } }));
+  } catch {
+    town.error = "The watering did not save yet.";
+  } finally {
+    town.gardenBusySlot = -1;
+    renderPanel();
+  }
+}
+
+async function clearGarden(slot) {
+  const index = Number(slot);
+  if (!town.garden[index] || town.gardenBusySlot >= 0) return;
+  town.gardenBusySlot = index;
+  renderPanel();
+  try {
+    await persistGardenSlot(index, null);
+    town.garden[index] = null;
+    syncGardenVisuals(true);
+    showToast(`Plot ${index + 1} is ready for a new seed`);
+  } catch {
+    town.error = "That plot could not be cleared yet.";
+  } finally {
+    town.gardenBusySlot = -1;
+    renderPanel();
+  }
 }
 
 function renderDock() {
@@ -424,6 +551,19 @@ function festivalMarkup() {
   return `<div class="festival-banner"><span class="festival-sparks" aria-hidden="true"><i></i><i></i><i></i></span><div><small>Rotating town events</small><h3>${active ? FESTIVALS[active].name : "Pick tonight’s celebration"}</h3><p>${active ? `Started by ${escapeHtml(town.festival.startedBy || "a neighbor")}. It runs for ten minutes.` : `${FESTIVALS[scheduled].name} is next in the town rotation.`}</p></div></div><div class="festival-list">${Object.entries(FESTIVALS).map(([id, festival]) => `<button type="button" data-festival="${id}" class="${active === id ? "active" : ""}" ${town.busy ? "disabled" : ""}><span class="festival-mark ${id}" aria-hidden="true"><i></i></span><span><b>${festival.name}</b><small>${festival.note}</small></span><strong>${active === id ? "Live" : scheduled === id ? "Next" : "Start"}</strong></button>`).join("")}</div>`;
 }
 
+function gardenMarkup() {
+  const options = Object.entries(PLANT_TYPES).map(([id, plant]) => `<option value="${id}">${plant.name} · ${plant.kind}</option>`).join("");
+  const plots = GARDEN_PLOTS.map((_, index) => {
+    const plant = town.garden[index];
+    if (!plant) return `<article class="garden-plot empty"><span class="garden-stage-mark seed" aria-hidden="true"><i></i></span><div><small>Plot ${index + 1}</small><b>Fresh soil</b><span>Choose a seed and start something new.</span></div><button type="button" data-plant-slot="${index}" ${town.gardenBusySlot >= 0 ? "disabled" : ""}>Plant</button></article>`;
+    const type = PLANT_TYPES[plant.kind];
+    const stage = plantStage(plant);
+    const watered = plant.wateredStage === stage.index;
+    return `<article class="garden-plot"><span class="garden-stage-mark ${plant.kind} stage-${stage.index}" aria-hidden="true"><i></i></span><div><small>Plot ${index + 1} · ${type.kind}</small><b>${type.name}</b><span>${stage.name}${stage.nextMs ? ` · next phase in ${durationLabel(stage.nextMs)}` : " · fully grown"}</span><div class="garden-progress" role="progressbar" aria-label="${escapeHtml(type.name)} growth" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(stage.progress * 100)}"><i style="width:${Math.round(stage.progress * 100)}%"></i></div></div><div class="garden-actions"><button type="button" data-water-slot="${index}" ${watered || town.gardenBusySlot >= 0 ? "disabled" : ""}>${watered ? "Watered" : "Water"}</button><button type="button" data-clear-slot="${index}" ${town.gardenBusySlot >= 0 ? "disabled" : ""}>Clear</button></div></article>`;
+  }).join("");
+  return `<div class="garden-intro"><span class="garden-intro-mark" aria-hidden="true"><i></i></span><div><small>Community garden</small><h3>Plant, water, and watch it grow</h3><p>Flowers, leafy plants, and trees develop through visible phases over real time. Water once per phase to move growth ahead by five minutes.</p></div></div><label class="garden-seed-picker"><span>Seed for the next empty plot</span><select name="garden-seed">${options}</select></label><div class="garden-plots">${plots}</div>`;
+}
+
 function photoMarkup() {
   return `<div class="photo-intro"><div class="photo-frame-mark" aria-hidden="true"><i></i></div><div><small>Photo mode</small><h3>Hold the whole world still</h3><p>Pose your avatar, circle the camera, then keep a clean picture of the plaza.</p></div></div><ul class="photo-notes"><li><i aria-hidden="true"></i><span><b>Freeze the moment</b><small>Walking, wildlife, and festival motion pause while you frame the shot.</small></span></li><li><i aria-hidden="true"></i><span><b>Direct the pose</b><small>Choose a calm stance, a wave, a cheer, or a laugh.</small></span></li><li><i aria-hidden="true"></i><span><b>Save or share</b><small>Your picture stays on this device unless you choose Share.</small></span></li></ul><button type="button" class="town-primary" data-action="photo-start">Open photo mode</button>`;
 }
@@ -431,8 +571,8 @@ function photoMarkup() {
 function renderPanel() {
   const panel = $(".town-life-sheet");
   if (!panel) return;
-  const views = [["projects","Projects"],["cat","My Cat"],["festivals","Festivals"],["photo","Photos"]];
-  const content = town.view === "projects" ? projectMarkup() : town.view === "cat" ? catMarkup() : town.view === "festivals" ? festivalMarkup() : photoMarkup();
+  const views = [["projects","Projects"],["garden","Garden"],["cat","My Cat"],["festivals","Festivals"],["photo","Photos"]];
+  const content = town.view === "projects" ? projectMarkup() : town.view === "garden" ? gardenMarkup() : town.view === "cat" ? catMarkup() : town.view === "festivals" ? festivalMarkup() : photoMarkup();
   panel.innerHTML = `<div class="town-grabber"></div><header class="town-head"><div><small>Village activities</small><h2>Town Life</h2></div><button type="button" class="town-close" aria-label="Close Town Life">×</button></header><nav class="town-tabs" aria-label="Town Life sections">${views.map(([id,label]) => `<button type="button" data-town-view="${id}" class="${town.view === id ? "active" : ""}">${label}</button>`).join("")}</nav>${town.error ? `<div class="town-error" role="status">${escapeHtml(town.error)}</div>` : ""}<div class="town-content">${town.loading ? `<div class="town-loading">Checking the notice board…</div>` : content}</div>`;
   panel.querySelector(".town-close")?.addEventListener("click", closePanel);
   panel.querySelectorAll("[data-town-view]").forEach((button) => button.addEventListener("click", () => { town.view = button.dataset.townView; renderPanel(); }));
@@ -441,6 +581,9 @@ function renderPanel() {
   panel.querySelector("[data-action='feed']")?.addEventListener("click", feedCat);
   panel.querySelector("[data-action='cat-wave']")?.addEventListener("click", () => { reactCat(); showToast(`${town.cat?.name || "Your cat"} hops in reply`); });
   panel.querySelectorAll("[data-festival]").forEach((button) => button.addEventListener("click", () => startFestival(button.dataset.festival)));
+  panel.querySelectorAll("[data-plant-slot]").forEach((button) => button.addEventListener("click", () => plantGarden(button.dataset.plantSlot, panel.querySelector("[name='garden-seed']")?.value || "moonflower")));
+  panel.querySelectorAll("[data-water-slot]").forEach((button) => button.addEventListener("click", () => waterGarden(button.dataset.waterSlot)));
+  panel.querySelectorAll("[data-clear-slot]").forEach((button) => button.addEventListener("click", () => clearGarden(button.dataset.clearSlot)));
   panel.querySelector("[data-action='photo-start']")?.addEventListener("click", enterPhotoMode);
 }
 
@@ -456,6 +599,122 @@ function showToast(text) {
   toast.classList.add("show");
   clearTimeout(showToast.timer);
   showToast.timer = setTimeout(() => toast.classList.remove("show"), 2200);
+}
+
+function disposeGroup(group) {
+  group?.traverse?.((node) => {
+    if (!node.isMesh) return;
+    node.geometry?.dispose?.();
+    const materials = Array.isArray(node.material) ? node.material : [node.material];
+    materials.forEach((material) => material?.dispose?.());
+  });
+}
+
+function plantMesh(geometry, color, x, y, z) {
+  const object = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color, roughness: 0.9 }));
+  object.position.set(x, y, z);
+  object.castShadow = true;
+  return object;
+}
+
+function makeGardenPlant(plant, stageIndex) {
+  const type = PLANT_TYPES[plant.kind];
+  const group = new THREE.Group();
+  group.userData.stage = stageIndex;
+  const soilColor = 0x6b4934;
+  if (stageIndex === 0) {
+    group.add(plantMesh(new THREE.SphereGeometry(0.09, 8, 6), soilColor, 0, 0.07, 0));
+    return group;
+  }
+  if (plant.kind === "oak") {
+    const height = [0, 0.42, 0.95, 1.75][stageIndex];
+    const trunk = plantMesh(new THREE.CylinderGeometry(0.06 + stageIndex * 0.035, 0.09 + stageIndex * 0.04, height, 7), 0x76513b, 0, height / 2, 0);
+    group.add(trunk);
+    const crownCount = stageIndex === 1 ? 1 : stageIndex === 2 ? 3 : 5;
+    for (let index = 0; index < crownCount; index += 1) {
+      const angle = index / crownCount * Math.PI * 2;
+      const radius = stageIndex === 1 ? 0 : 0.2 + stageIndex * 0.055;
+      const crown = plantMesh(new THREE.IcosahedronGeometry(0.18 + stageIndex * 0.14, 1), type.leaf, Math.cos(angle) * radius, height + (index % 2) * 0.12, Math.sin(angle) * radius);
+      group.add(crown);
+    }
+    return group;
+  }
+  if (plant.kind === "fern") {
+    const leafCount = 2 + stageIndex * 2;
+    for (let index = 0; index < leafCount; index += 1) {
+      const angle = index / leafCount * Math.PI * 2;
+      const length = 0.18 + stageIndex * 0.16;
+      const leaf = plantMesh(new THREE.SphereGeometry(0.12, 8, 5), type.leaf, Math.cos(angle) * length * 0.55, 0.12 + length * 0.45, Math.sin(angle) * length * 0.55);
+      leaf.scale.set(0.52, 1.65 + stageIndex * 0.16, 0.38);
+      leaf.rotation.set(Math.cos(angle) * 0.42, -angle, Math.sin(angle) * 0.42);
+      group.add(leaf);
+    }
+    return group;
+  }
+  const stemHeight = 0.18 + stageIndex * 0.21;
+  group.add(plantMesh(new THREE.CylinderGeometry(0.025, 0.035, stemHeight, 7), type.leaf, 0, stemHeight / 2, 0));
+  if (stageIndex >= 1) {
+    [-1, 1].forEach((side) => {
+      const leaf = plantMesh(new THREE.SphereGeometry(0.095, 8, 5), type.leaf, side * 0.1, stemHeight * 0.52, 0);
+      leaf.scale.set(1.4, 0.5, 0.65);
+      leaf.rotation.z = side * 0.45;
+      group.add(leaf);
+    });
+  }
+  if (stageIndex >= 2) group.add(plantMesh(new THREE.SphereGeometry(stageIndex === 2 ? 0.12 : 0.09, 10, 7), stageIndex === 2 ? 0x8f72ae : 0xf3c55e, 0, stemHeight + 0.08, 0));
+  if (stageIndex >= 3) {
+    for (let index = 0; index < 7; index += 1) {
+      const angle = index / 7 * Math.PI * 2;
+      const petal = plantMesh(new THREE.SphereGeometry(0.1, 9, 6), type.color, Math.cos(angle) * 0.16, stemHeight + 0.08, Math.sin(angle) * 0.16);
+      petal.scale.set(1.25, 0.48, 0.72);
+      petal.rotation.y = -angle;
+      group.add(petal);
+    }
+  }
+  return group;
+}
+
+function syncGardenVisuals(force = false) {
+  const world = town.world;
+  if (!world?.scene || world.mode !== "village") return;
+  const signature = town.garden.map((plant) => plant ? `${plant.kind}:${plantStage(plant).index}` : "-").join("|");
+  if (!force && signature === town.gardenSignature && town.gardenGroup?.parent) return;
+  if (town.gardenGroup) {
+    town.gardenGroup.parent?.remove(town.gardenGroup);
+    disposeGroup(town.gardenGroup);
+  }
+  const garden = new THREE.Group();
+  garden.name = "PlayerGardenGrowth";
+  town.garden.forEach((plant, index) => {
+    if (!plant || !GARDEN_PLOTS[index]) return;
+    const stage = plantStage(plant);
+    const growth = makeGardenPlant(plant, stage.index);
+    growth.name = `Growing_${plant.kind}_${index + 1}`;
+    growth.position.set(GARDEN_PLOTS[index][0], 0.22, GARDEN_PLOTS[index][1]);
+    growth.userData.plot = index;
+    growth.userData.baseScale = 0.86 + stage.progress * 0.14;
+    growth.scale.setScalar(growth.userData.baseScale);
+    garden.add(growth);
+  });
+  world.scene.add(garden);
+  town.gardenGroup = garden;
+  town.gardenSignature = signature;
+}
+
+function tickGarden(time) {
+  if (time - town.gardenLastTick < 1000) return;
+  town.gardenLastTick = time;
+  const previousSignature = town.gardenSignature;
+  syncGardenVisuals();
+  if (town.gardenSignature !== previousSignature && town.open && town.view === "garden") renderPanel();
+  town.gardenGroup?.children.forEach((plantGroup) => {
+    const plant = town.garden[plantGroup.userData.plot];
+    if (!plant) return;
+    const stage = plantStage(plant);
+    const base = 0.86 + stage.progress * 0.14;
+    plantGroup.userData.baseScale = base;
+    plantGroup.scale.set(base * (1 + Math.sin(time * 0.0014 + plantGroup.userData.plot) * 0.012), base, base);
+  });
 }
 
 function makeHeartGeometry() {
@@ -765,6 +1024,7 @@ function frame(time) {
     syncFestival();
     tickCat(time);
     tickFestival(time);
+    tickGarden(time);
     if (town.festivalKind === "fireworks" && town.world.scene?.background) {
       town.world.scene.background.set(0x14233a);
       if (town.world.scene.fog?.color) town.world.scene.fog.color.set(0x14233a);
@@ -792,6 +1052,7 @@ window.addEventListener("snug-world-ready", (event) => {
   town.world = event.detail || window.__snugWorld;
   syncCatFollower(true);
   syncFestival();
+  syncGardenVisuals(true);
   renderDock();
 });
 window.addEventListener("pagehide", () => { if (town.photoPreviewUrl) URL.revokeObjectURL(town.photoPreviewUrl); });

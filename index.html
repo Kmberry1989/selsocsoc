@@ -4824,15 +4824,15 @@ version 0.8.2
     import * as THREE from "three";
     (() => {
       const portraitCues = Object.fromEntries([
-        ["calm / idle", "All right, neighbor—chin level and eyes right here. Give me your calm, everyday face. No smile for the state ID; we want the real you at rest."],
-        ["blinking", "For this one, close your eyes and hold them there. On my count: three, two, one—open! Perfect, I’ll catch the blink between."],
-        ["yawning", "Loosen your shoulders. Imagine the Town Clerk reading all 804 pages of the citizenship code. Let that yawn arrive naturally… and hold it."],
-        ["angry", "Now give the camera your fiercest glare. Picture somebody stamping another cease-and-desist letter. Brows down, jaw set—yes, that’s the front page."],
-        ["laughter", "Shake that glare away. Gideon just requested a landslide recount. Let the laugh out—bigger, brighter, don’t look away from the lens!"],
-        ["sad", "Bring it quiet now. The welcome pie was left out in the rain. Let your eyes soften, shoulders down… beautiful, stay there."],
-        ["side-eye / eyeroll", "Gideon says he has one more fascinating fact. Keep your head still and send only your eyes to the side. Excellent—hold that look."],
-        ["cheeky", "You’ve been handed the ceremonial scissors and nobody checked your qualifications. Give me the look that says you might use them anyway."],
-        ["happy", "Final frame! Square those shoulders, look straight into the lens, and say CHEESE—open wide, biggest smile you’ve got!"],
+        ["calm / idle", "Whenever you’re ready, neighbor, look toward the camera and settle into your calm, everyday face. No need to smile for the state ID—we simply want you as you are at rest."],
+        ["blinking", "For this one, gently close your eyes. Take your time. When you’re comfortable, open them again and I’ll catch the blink between."],
+        ["yawning", "Let your shoulders relax. If it helps, imagine the Town Clerk reading all 804 pages of the citizenship code. Allow the yawn to arrive naturally—there’s no rush."],
+        ["angry", "When you’re ready, try your fiercest glare. You might picture somebody stamping another cease-and-desist letter. Whatever feels convincing to you will work."],
+        ["laughter", "Now let that glare go. Gideon just requested a landslide recount. If that brings out a laugh, follow it—we’ll wait for the real one."],
+        ["sad", "Let’s bring it quiet now. The welcome pie was left out in the rain. Soften your eyes and lower your shoulders if that feels natural; we can take a moment."],
+        ["side-eye / eyeroll", "Gideon says he has one more fascinating fact. Keep your head comfortable and let your eyes drift to the side whenever you’re ready."],
+        ["cheeky", "Imagine you’ve been handed the ceremonial scissors and nobody checked your qualifications. Give me whatever mischievous look comes naturally."],
+        ["happy", "Last frame, and no pressure—look toward the lens and give us the smile that feels like you. If you feel like saying CHEESE, Penny is ready."],
       ].map(([expression, direction]) => [expression, ["Penny Press · Snug Gazette", direction]]));
       const portraitReactions = {
         "calm / idle":"That’s it—steady and unmistakably you. State ID frame secured.",
@@ -4855,7 +4855,7 @@ version 0.8.2
         {speaker:"Mayor Mayor",kind:"mayor",gesture:"interrupt",line:"Dad, would you give our guest some space, please? Now, there will be plenty of time for chitchat and chances for carrying on and cutting up in the very near future, but first we have to take care of some business…"}
       ];
       const closingSlides = [
-        {speaker:"Penny Press · Snug Gazette",kind:"press",gesture:"camera",line:"Hold the front page! The magnificent occasion is nearly complete. One last photograph for tomorrow's paper—say CHEESE and open wide. Big smiles!"}
+        {speaker:"Penny Press · Snug Gazette",kind:"press",gesture:"camera",line:"Hold the front page—the magnificent occasion is nearly complete. We have one last photograph for tomorrow's paper. Take your time, and when you’re comfortable, give us the smile that feels like you. CHEESE is welcome, but never required."}
       ];
       let welcomeShown = false;
       let closingShown = false;
@@ -4870,7 +4870,7 @@ version 0.8.2
       const voiceProfiles = {
         mayor: { rate: .95, pitch: .78, voiceIndex: 0, voiceNames: ["Daniel","Arthur","Alex","David"] },
         gideon: { rate: 1, pitch: .98, voiceIndex: 1, voiceNames: ["Samantha","Karen","Moira","Tessa","Ava","Serena"] },
-        press: { rate: 1.08, pitch: 1.28, voiceIndex: 1 },
+        press: { rate: .98, pitch: 1.04, voiceIndex: 1, voiceNames: ["Samantha","Ava","Serena","Karen","Moira","Tessa"] },
         clerk: { rate: .98, pitch: .96, voiceIndex: 3 },
         committee: { rate: 1.04, pitch: 1.18, voiceIndex: 1 }
       };

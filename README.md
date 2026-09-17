@@ -1,6 +1,6 @@
 # Snug Society — hosting project
 
-This is the complete Snug Society **0.9.27** static project snapshot exported on **September 17, 2026**. Upload the contents of this folder to the root of your GitHub repository, then connect that repository to Vercel.
+This is the complete Snug Society **0.9.29** static project snapshot exported on **September 17, 2026**. Upload the contents of this folder to the root of your GitHub repository, then connect that repository to Vercel.
 
 ## Deploy with GitHub + Vercel
 
@@ -9,17 +9,17 @@ This is the complete Snug Society **0.9.27** static project snapshot exported on
 3. Commit and push.
 4. In Vercel, import the repository. The included `vercel.json` runs `npm run build` and publishes the repository root.
 5. Add the deployed Vercel domain in Firebase Authentication → Settings → Authorized domains.
-6. In Firebase Console → Realtime Database → Rules, replace the existing rules with `assets/firebase-realtime-database.rules.json` and publish.
+6. In Firebase Console, publish both bundled rule files: `assets/firebase-realtime-database.rules.json` and `assets/firebase-firestore.rules`.
 
 The Firebase web configuration is already embedded in `index.html`. Firebase web configuration is public client configuration; access is controlled by Firebase Authentication and database rules.
 
 ## Included game snapshot
 
-See `RELEASE-NOTES.md` for the exact feature inventory. This export includes the current title screen, mobile redirect/desktop popup Google sign-in with visible Firebase errors, cloud-saved fit review transforms, accessory tinting across ten cosmetic slots, daily quests and streaks, a rotating market, expanded minigames, reactions, door knocking, gifts, trading, collections, achievements, festival keepsakes, multiplayer rooms and voice chat, Snug Board with its 2–4 player lobby and bot filling, the welcoming sequence with its airborne speech performance and dialogue-word fountain, the expanded village, living sky, shops and economy, weather and wildlife, current asset pipelines, placeholder audio, and current Firebase rules.
+See `RELEASE-NOTES.md` for the exact release changes. This export includes the current title screen, mobile redirect/desktop popup Google sign-in with visible Firebase errors, cloud-saved fit review transforms, accessory tinting across ten cosmetic slots, daily quests and streaks, a rotating market, expanded minigames, reactions, door knocking, gifts, trading, collections, achievements, festival keepsakes, multiplayer rooms and voice chat, Snug Board with its 2–4 player lobby and bot filling, the welcoming sequence with its airborne speech performance and dialogue-word fountain, the expanded village with its connected destination paths and community garden, living sky, shops and economy, weather and wildlife, current asset pipelines, placeholder audio, and current Firebase rules.
 
-## Plush avatar update
+## Welcoming committee and plush avatars
 
-This snapshot includes the felt-like matte finish, stitched coin-head and body-hem seams, and soft grounding shadows. The photographic expression faces, toon outlines, buoyant movement, and floating hands remain unchanged. Facial hair now has its own tintable, fit-reviewed slot for mustaches, beards, goatees, and sideburns.
+Penny Press uses a warmer, more understanding photographer voice profile. Town Life now includes six persistent garden plots for Moonflowers, Button ferns, and Cozy oaks, each growing through four visibly larger real-time phases. The expanded countryside also uses connected, destination-led paths with protected clearances that keep water and procedural scenery off the walkways. Players and welcoming-committee characters share the felt-like matte finish, stitched coin-head and body-hem seams, soft grounding shadows, photographic expression faces, toon outlines, buoyant movement, and floating hands. Facial hair has its own tintable, fit-reviewed slot for mustaches, beards, goatees, and sideburns.
 
 ## Add cosmetic GLBs
 
@@ -38,7 +38,7 @@ Place Draco-compressed or ordinary `.glb` files in one of these folders:
 
 Commit and push. The Vercel build regenerates `assets/cosmetics/manifest.json`. Filenames become catalogue labels: `yellow_raincoat.glb` becomes **Yellow Raincoat**.
 
-Read `assets/cosmetics/README.md` before modeling or exporting. The template GLBs show the current attachment origins and approximate bounds. You can leave models upright as authored in Blender: the loader now detects and corrects clear Z-up-to-Y-up mismatches for cosmetic and replacement-world GLBs while leaving correctly exported Y-up assets untouched.
+Read `assets/cosmetics/README.md` before modeling or exporting. The template GLBs show the current attachment origins and approximate bounds. You can leave models upright as authored in Blender: the loader detects and corrects clear Z-up-to-Y-up mismatches for cosmetic and replacement-world GLBs while leaving correctly exported Y-up assets untouched.
 
 ## Replace placeholder audio
 
@@ -58,7 +58,7 @@ Read `assets/audio/README.md` for the complete slot list and supported formats. 
 
 ## Multiplayer and Firebase rules
 
-Read `assets/MULTIPLAYER-SETUP.md`, then publish `assets/firebase-realtime-database.rules.json`. The rules cover rooms, append-only chat and minigame events, board-game lobby and turn events, and WebRTC presence/signaling.
+Read `assets/MULTIPLAYER-SETUP.md`, then publish the bundled Realtime Database and Firestore rules. They cover rooms, append-only chat and minigame events, board-game lobby and turn events, WebRTC presence/signaling, and authorized fit-review saves.
 
 ## Local preview
 
@@ -69,7 +69,7 @@ python3 -m http.server 8080
 ```
 
 Then open `http://localhost:8080`.
+
 ## Custom animated menu wallpaper
 
 Add a looping `menu.mp4` (H.264 recommended), optional `menu.webm`, and optional poster such as `menu.webp` to `assets/menu-wallpaper/`. The normal build auto-generates its manifest. If that folder has no media, the main menu shows the live 3D town framed on the open gate with the animated light shader. See `assets/menu-wallpaper/README.md` for sizing and compression guidance.
-
