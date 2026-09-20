@@ -4,5 +4,8 @@
   "version": "0.9.29",
   "scripts": {
     "build": "node scripts/generate-cosmetics-manifest.mjs && node assets/audio/generate-manifest.mjs && node assets/menu-wallpaper/generate-manifest.mjs && node assets/environment-props/generate-manifest.mjs"
+  },
+  "dependencies": {
+    "archiver": "^8.0.0"
   }
 }
