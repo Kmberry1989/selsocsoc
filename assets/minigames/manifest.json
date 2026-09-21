@@ -1,0 +1,101 @@
+{
+  "generatedAt": "2026-09-19T14:36:11.783Z",
+  "games": {
+    "coin-scramble": {
+      "name": "Coin Scramble",
+      "props": []
+    },
+    "plaza-tag": {
+      "name": "Plaza Tag",
+      "props": []
+    },
+    "room-quiz": {
+      "name": "Room Quiz",
+      "props": []
+    },
+    "balloon-pop": {
+      "name": "Balloon Pop",
+      "props": []
+    },
+    "plaza-sprint": {
+      "name": "Plaza Sprint",
+      "props": []
+    },
+    "pond-fishing": {
+      "name": "Pond Fishing",
+      "props": []
+    },
+    "hot-potato": {
+      "name": "Hot Potato",
+      "props": []
+    },
+    "hide-and-seek": {
+      "name": "Hide & Seek",
+      "props": []
+    },
+    "musical-statues": {
+      "name": "Musical Statues",
+      "props": []
+    },
+    "memory-match": {
+      "name": "Memory Match",
+      "props": []
+    },
+    "pattern-parade": {
+      "name": "Pattern Parade",
+      "props": []
+    },
+    "draw-and-guess": {
+      "name": "Draw & Guess",
+      "props": []
+    },
+    "cat-herding": {
+      "name": "Cat Herding",
+      "props": []
+    },
+    "bridge-builders": {
+      "name": "Bridge Builders",
+      "props": []
+    },
+    "coin-curling": {
+      "name": "Coin Curling",
+      "props": []
+    },
+    "emote-charades": {
+      "name": "Emote Charades",
+      "props": []
+    },
+    "sneaky-snug": {
+      "name": "Sneaky Snug",
+      "props": []
+    },
+    "scavenger-snap": {
+      "name": "Scavenger Snap",
+      "props": []
+    },
+    "dodge-puffs": {
+      "name": "Dodge Puffs",
+      "props": []
+    },
+    "freeze-tag": {
+      "name": "Freeze Tag",
+      "props": []
+    },
+    "treasure-dig": {
+      "name": "Treasure Dig",
+      "props": []
+    },
+    "snowball-toss": {
+      "name": "Snowball Toss",
+      "props": []
+    },
+    "lantern-hunt": {
+      "name": "Lantern Hunt",
+      "props": []
+    },
+    "petal-catch": {
+      "name": "Petal Catch",
+      "props": []
+    }
+  }
+}

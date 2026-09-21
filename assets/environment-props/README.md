@@ -1,6 +1,6 @@
-# Snug Society replaceable world assets
+# Selfie Social Society replaceable world assets
 
-This is the developer-authored GLB pipeline for the village. Players never upload models. The build scans the three category folders and rewrites `manifest.json`; the game then discovers every listed GLB automatically.
+This is the developer-authored GLB pipeline for Cyclical City. Players never upload models. The build scans the three category folders and rewrites `manifest.json`; the game then discovers every listed GLB automatically.
 
 ## Folder structure
 
@@ -27,7 +27,7 @@ Use these exact filenames when a model should replace a built-in placeholder at 
 - `cottage-blue.glb`
 - `cottage-lilac.glb`
 
-When one of these files is present, the matching primitive cottage is omitted and the GLB takes its place. Other building filenames are auto-discovered and placed on available outer village plots.
+When one of these files is present, the matching primitive cottage is omitted and the GLB takes its place. Other building filenames are auto-discovered and placed on available outer Cyclical City plots.
 
 ### Trees
 
@@ -45,7 +45,7 @@ The included replaceable slots are:
 - `flower-patch.glb`
 - `bush-round.glb`
 
-Additional prop filenames are discovered and placed on open scenery points around the expanded village.
+Additional prop filenames are discovered and placed on open scenery points around expanded Cyclical City.
 
 ## Export and naming guide
 
@@ -59,4 +59,4 @@ Additional prop filenames are discovered and placed on open scenery points aroun
 - Mobile target: preferably under 25k triangles and 2 MB per asset, with textures no larger than 1024px.
 - Draco-compressed meshes are supported through the bundled decoder.
 
-If a GLB cannot load, the rest of the village still renders. Named cottages keep their primitive fallback unless the replacement path is present in the generated manifest.
+If a GLB cannot load, the rest of Cyclical City still renders. Named cottages keep their primitive fallback unless the replacement path is present in the generated manifest.

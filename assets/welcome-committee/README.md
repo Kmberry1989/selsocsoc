@@ -8,7 +8,7 @@ The onboarding trio starts with procedural placeholder bodies and faces, but eac
 |---|---|---|
 | Mayor Mayor | `mayor-mayor` | `MayorMayor` |
 | Gideon | `gideon` | `Gideon` |
-| Penny Press, newspaper photographer | `penny-press` | `PennyPress` |
+| Lyla Lens, newspaper photographer | `lyla-lens` | `LylaLens` |
 
 ## Runtime slots
 

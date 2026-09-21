@@ -19,13 +19,13 @@
       "faceSlot": "FaceSlot_Gideon",
       "faceArtwork": null
     },
-    "penny-press": {
-      "runtimePrefix": "PennyPress",
-      "outfit": "penny-press/outfit-placeholder.glb",
-      "headAccessory": "penny-press/head-accessory-placeholder.glb",
-      "handAccessory": "penny-press/hand-accessory-placeholder.glb",
-      "shoes": "penny-press/shoes-placeholder.glb",
-      "faceSlot": "FaceSlot_PennyPress",
+    "lyla-lens": {
+      "runtimePrefix": "LylaLens",
+      "outfit": "lyla-lens/outfit-placeholder.glb",
+      "headAccessory": "lyla-lens/head-accessory-placeholder.glb",
+      "handAccessory": "lyla-lens/hand-accessory-placeholder.glb",
+      "shoes": "lyla-lens/shoes-placeholder.glb",
+      "faceSlot": "FaceSlot_LylaLens",
       "faceArtwork": null
     }
   }

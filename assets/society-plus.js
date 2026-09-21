@@ -98,11 +98,36 @@ function award(amount, message) {
 }
 
 const QUESTS = [
-  { id: "wander", label: "Wander the village", goal: 180, unit: "steps", reward: 18 },
-  { id: "play", label: "Finish two minigames", goal: 2, unit: "rounds", reward: 24 },
-  { id: "emote", label: "Use four expressions", goal: 4, unit: "emotes", reward: 15 },
-  { id: "friend", label: "Greet three neighbors", goal: 3, unit: "social", reward: 20 },
-  { id: "explore", label: "Take the long way around", goal: 320, unit: "steps", reward: 28 },
+  { id: "coin-collector", label: "Gather 8 coins in Coin Scramble", game: "coin", goal: 8, reward: 18 },
+  { id: "tag-two", label: "Make 2 tags in Plaza Tag", game: "tag", goal: 2, reward: 20 },
+  { id: "quiz-four", label: "Score 4 points in Room Quiz", game: "quiz", goal: 4, reward: 20 },
+  { id: "balloon-eight", label: "Pop 8 balloons", game: "balloon", goal: 8, reward: 24 },
+  { id: "race-winner", label: "Win a race", games: ["sprint", "relay"], goal: 1, reward: 30, requireWin: true },
+  { id: "fish-three", label: "Catch 3 fish", game: "fishing", goal: 3, reward: 24 },
+  { id: "tiles-winner", label: "Win a Tumble Tiles round", game: "floor", goal: 1, reward: 22, requireWin: true },
+  { id: "four-row-winner", label: "Win at Four in a Row", game: "connect4", goal: 1, reward: 28, requireWin: true },
+  { id: "noughts-winner", label: "Win at Noughts & Crosses", game: "tictactoe", goal: 1, reward: 24, requireWin: true },
+  { id: "keepsake-five", label: "Find 5 village keepsakes", game: "scavenger", goal: 5, reward: 22 },
+  { id: "relay-six", label: "Clear 6 relay gates", game: "relay", goal: 6, reward: 22 },
+  { id: "potato-three", label: "Make 3 hot-potato passes", game: "potato", goal: 3, reward: 26 },
+  { id: "mayor-eight", label: "Match 8 Mayor Says moves", game: "simon", goal: 8, reward: 22 },
+  { id: "hide-four", label: "Score 4 points in Hide & Seek", game: "hide", goal: 4, reward: 28 },
+  { id: "statues-three", label: "Hold 3 musical-statue freezes", game: "statues", goal: 3, reward: 24 },
+  { id: "memory-three", label: "Match 3 memory pairs", game: "memory", goal: 3, reward: 26 },
+  { id: "pattern-six", label: "Repeat 6 parade steps", game: "pattern", goal: 6, reward: 24 },
+  { id: "draw-two", label: "Make 2 sketch guesses", game: "draw", goal: 2, reward: 28 },
+  { id: "cats-three", label: "Herd 3 cats", game: "cats", goal: 3, reward: 26 },
+  { id: "bridge-five", label: "Gather 5 bridge supplies", game: "bridge", goal: 5, reward: 28 },
+  { id: "curling-one", label: "Land a scoring curl", game: "curling", goal: 1, reward: 24 },
+  { id: "charades-two", label: "Guess 2 emote charades", game: "charades", goal: 2, reward: 26 },
+  { id: "sneaky-one", label: "Catch 1 sneaky bluff", game: "sneaky", goal: 1, reward: 28 },
+  { id: "snap-three", label: "Frame 3 scavenger sights", game: "snap", goal: 3, reward: 26 },
+  { id: "puffs-three", label: "Dodge 3 puffs", game: "puffs", goal: 3, reward: 24 },
+  { id: "freeze-two", label: "Make 2 Freeze Tag saves", game: "freeze", goal: 2, reward: 26 },
+  { id: "treasure-three", label: "Dig up 3 treasures", game: "treasure", goal: 3, reward: 26 },
+  { id: "snowball-four", label: "Hit 4 snowball targets", game: "snowball", goal: 4, reward: 24 },
+  { id: "lantern-five", label: "Find 5 lanterns", game: "lantern", goal: 5, reward: 26 },
+  { id: "petal-five", label: "Catch 5 golden petals", game: "petal", goal: 5, reward: 24 },
 ];
 const ACHIEVEMENTS = [
   { id: "first-round", name: "Game Night", note: "Finish a minigame", reward: 20, test: g => (g.totals?.rounds || 0) >= 1 },
@@ -137,9 +162,21 @@ function dailyQuests() { return (state.gameplay.daily?.questIds || []).map(id =>
 function progress(unit, amount = 1) {
   if (!state.session) return;
   ensureDaily();
-  const daily = state.gameplay.daily;
-  dailyQuests().filter(q => q.unit === unit).forEach(q => { daily.progress[q.id] = Math.min(q.goal, Number(daily.progress[q.id] || 0) + amount); });
   state.gameplay.totals[unit] = Number(state.gameplay.totals[unit] || 0) + amount;
+  queueSave();
+  renderPanel();
+}
+function recordMinigame(detail = {}) {
+  if (!state.session || !detail.game) return;
+  ensureDaily();
+  const score = Math.max(0, Number(detail.score || 0));
+  const daily = state.gameplay.daily;
+  dailyQuests().forEach(quest => {
+    const games = quest.games || [quest.game];
+    if (!games.includes(detail.game) || (quest.requireWin && !detail.won)) return;
+    const earned = quest.requireWin ? 1 : score;
+    if (earned > 0) daily.progress[quest.id] = Math.min(quest.goal, Number(daily.progress[quest.id] || 0) + earned);
+  });
   queueSave();
   renderPanel();
 }
@@ -149,15 +186,30 @@ function claimLogin() {
   const reward = 5 + Math.min(6, daily.streak - 1) * 3;
   daily.loginClaimed = true; queueSave(); award(reward, `${daily.streak}-day welcome · +${reward} shells`); renderPanel();
 }
+function showQuestReceipt(quest, amount, before) {
+  document.querySelector(".solo-result-backdrop")?.remove();
+  const backdrop = document.createElement("div");
+  backdrop.className = "solo-result-backdrop society-reward-backdrop";
+  backdrop.innerHTML = `<section class="solo-result" role="dialog" aria-modal="true" aria-labelledby="quest-result-title"><small>Daily quest complete</small><h2 id="quest-result-title">${esc(quest.label)}</h2><div class="solo-balance"><span><small>Before</small><b>${before}</b></span><i aria-hidden="true">+</i><span class="solo-payout"><small>Bonus</small><b>${amount}</b></span><i aria-hidden="true">=</i><span><small>After</small><b>${before + amount}</b></span></div><p>Dottie’s bonus is now in your shell balance.</p><div class="solo-result-actions"><button type="button" data-quest-done>Done</button><button type="button" class="multi-primary" data-quest-today>Today’s quests</button></div></section>`;
+  const close = () => backdrop.remove();
+  backdrop.addEventListener("pointerdown", event => { if (event.target === backdrop) close(); });
+  $("[data-quest-done]", backdrop)?.addEventListener("click", close);
+  $("[data-quest-today]", backdrop)?.addEventListener("click", () => { close(); openPanel("today"); });
+  document.body.appendChild(backdrop);
+}
 function claimQuest(id) {
   const quest = QUESTS.find(q => q.id === id); const daily = state.gameplay.daily;
   if (!quest || daily.claimed[id] || Number(daily.progress[id] || 0) < quest.goal) return;
+  const before = Number(state.profile.coinBalance || 0);
   daily.claimed[id] = true; queueSave(); award(quest.reward, `${quest.label} · +${quest.reward} shells`); renderPanel();
+  showQuestReceipt(quest, quest.reward, before);
 }
 function claimAchievement(id) {
   const achievement = ACHIEVEMENTS.find(a => a.id === id);
   if (!achievement || state.gameplay.achievements[id] || !achievement.test(state.gameplay)) return;
-  state.gameplay.achievements[id] = Date.now(); queueSave(); award(achievement.reward, `${achievement.name} · +${achievement.reward} shells`); renderPanel();
+  state.gameplay.achievements[id] = Date.now(); queueSave(); award(achievement.reward, `${achievement.name} · +${achievement.reward} shells`);
+  window.dispatchEvent(new CustomEvent("snug-achievement-unlocked", { detail: { id: achievement.id } }));
+  renderPanel();
 }
 function activeFestival() {
   const scene = window.__snugWorld?.scene;
@@ -338,6 +390,7 @@ window.addEventListener("snug-player-move", event => {
   state.lastPosition = { x:Number(p.x)||0, z:Number(p.z)||0 };
 });
 window.addEventListener("snug-award-coins", event => { if (/Round complete/i.test(event.detail?.message || "")) progress("rounds", 1); });
+window.addEventListener("snug-minigame-achievement", event => recordMinigame(event.detail));
 window.addEventListener("pointerdown", event => { if (/^(Happy|Calm|Cheeky|Angry|Sad|Laughter|Laugh|Yawn|Side-eye|Wave)$/i.test(event.target.closest?.("button")?.textContent?.trim() || "")) progress("emotes", 1); }, true);
 if (window.__snugSession) window.dispatchEvent(new CustomEvent("snug-session", { detail: window.__snugSession }));
 renderDock();

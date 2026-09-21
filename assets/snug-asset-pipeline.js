@@ -1,5 +1,6 @@
 import { Box3, Vector3 } from './vendor/three/three.module.js';
 import { DRACOLoader } from './vendor/three/DRACOLoader.js';
+import { GLTFLoader } from './vendor/three/GLTFLoader.js';
 
 const CATEGORY_FOLDERS = {
   hairstyles: 'hairstyles',
@@ -118,6 +119,16 @@ async function loadEnvironmentManifest() {
   return normalizeEnvironment(await loadJSON('assets/environment-props/manifest.json'));
 }
 
+async function loadMinigameManifest() {
+  const source = await loadJSON('assets/minigames/manifest.json', { games: {} });
+  const games = source?.games && typeof source.games === 'object' ? source.games : {};
+  return Object.fromEntries(Object.entries(games).map(([id, entry]) => [id, {
+    id,
+    name: String(entry?.name || id),
+    props: (Array.isArray(entry?.props) ? entry.props : []).filter((item) => typeof item?.path === 'string' && /\.glb$/i.test(item.path)),
+  }]));
+}
+
 const COSMETIC_TEMPLATE_BOUNDS = {
   hairstyles: new Vector3(0.92, 0.55, 0.34),
   headAccessories: new Vector3(1.00, 0.70, 0.46),
@@ -188,13 +199,31 @@ let pipelinePromise;
 export function loadSnugAssetPipeline() {
   if (pipelinePromise) return pipelinePromise;
   pipelinePromise = (async () => {
-    const [catalog, environment] = await Promise.all([loadManifest(), loadEnvironmentManifest()]);
+    const [catalog, environment, minigames] = await Promise.all([loadManifest(), loadEnvironmentManifest(), loadMinigameManifest()]);
     const pendingReviews = Object.entries(catalog).flatMap(([category, items]) =>
       items.filter((item) => item.id && item.fitPending).map((item) => ({ ...item, category }))
     );
 
     const draco = new DRACOLoader();
     draco.setDecoderPath('assets/vendor/draco/');
+    const gltf = new GLTFLoader();
+    gltf.setDRACOLoader(draco);
+    const minigamePropCache = new Map();
+    const loadMinigameProps = async (gameId) => {
+      const entries = minigames[gameId]?.props || [];
+      if (!minigamePropCache.has(gameId)) {
+        minigamePropCache.set(gameId, Promise.all(entries.map(async (entry) => {
+          try {
+            const loaded = await gltf.loadAsync(entry.path);
+            return { ...entry, scene: loaded.scene };
+          } catch {
+            return null;
+          }
+        })).then((items) => items.filter(Boolean)));
+      }
+      const loaded = await minigamePropCache.get(gameId);
+      return loaded.map((item) => ({ ...item, scene: item.scene.clone(true) }));
+    };
 
     const approveReview = (category, id, fit) => {
       const item = catalog[category]?.find((entry) => entry.id === id);
@@ -231,6 +260,8 @@ export function loadSnugAssetPipeline() {
     return {
       catalog,
       environment,
+      minigames,
+      loadMinigameProps,
       pendingReviews,
       approveReview,
       mergeReviews,

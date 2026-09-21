@@ -1,7 +1,8 @@
-import * as THREE from 'three';
+import * as THREE from './vendor/three/three.module.js';
 import { GLTFLoader } from './vendor/three/GLTFLoader.js';
 import { loadSnugAssetPipeline } from './snug-asset-pipeline.js';
 
+(async () => {
 const DEV_EMAIL = 'kylematthewberry@gmail.com';
 
 const labels = {
@@ -570,3 +571,4 @@ gateObserver.observe(document.documentElement, { attributes: true, attributeFilt
 syncReviewGate();
 refreshCloudMode();
 if (gameplayReady && queue.length) scheduleAutomaticReview();
+})();

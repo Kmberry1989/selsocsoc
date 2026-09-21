@@ -1,0 +1,139 @@
+{
+  "version": 1,
+  "game": "Selfie Social Society",
+  "town": "Cyclical City",
+  "characters": {
+    "lyla-lens": {
+      "name": "Lyla Lens",
+      "role": "newspaper photographer",
+      "runtimePrefix": "LL",
+      "outfit": "lyla-lens/outfit-placeholder.glb",
+      "headAccessory": "lyla-lens/head-accessory-placeholder.glb",
+      "handAccessory": "lyla-lens/hand-accessory-placeholder.glb",
+      "shoes": "lyla-lens/shoes-placeholder.glb",
+      "heldItem": "lyla-lens/held-item-placeholder.glb",
+      "faceSlot": "FaceSlot_LL",
+      "faceArtwork": null
+    },
+    "chip-chance": {
+      "name": "Chip Chance",
+      "role": "minigame host",
+      "runtimePrefix": "CC",
+      "outfit": "chip-chance/outfit-placeholder.glb",
+      "headAccessory": "chip-chance/head-accessory-placeholder.glb",
+      "handAccessory": "chip-chance/hand-accessory-placeholder.glb",
+      "shoes": "chip-chance/shoes-placeholder.glb",
+      "heldItem": "chip-chance/held-item-placeholder.glb",
+      "faceSlot": "FaceSlot_CC",
+      "faceArtwork": null
+    },
+    "barnaby-bargain": {
+      "name": "Barnaby Bargain",
+      "role": "shopkeeper",
+      "runtimePrefix": "BB",
+      "outfit": "barnaby-bargain/outfit-placeholder.glb",
+      "headAccessory": "barnaby-bargain/head-accessory-placeholder.glb",
+      "handAccessory": "barnaby-bargain/hand-accessory-placeholder.glb",
+      "shoes": "barnaby-bargain/shoes-placeholder.glb",
+      "heldItem": "barnaby-bargain/held-item-placeholder.glb",
+      "faceSlot": "FaceSlot_BB",
+      "faceArtwork": null
+    },
+    "pip-parade": {
+      "name": "Pip Parade",
+      "role": "festival organizer",
+      "runtimePrefix": "PP",
+      "outfit": "pip-parade/outfit-placeholder.glb",
+      "headAccessory": "pip-parade/head-accessory-placeholder.glb",
+      "handAccessory": "pip-parade/hand-accessory-placeholder.glb",
+      "shoes": "pip-parade/shoes-placeholder.glb",
+      "heldItem": "pip-parade/held-item-placeholder.glb",
+      "faceSlot": "FaceSlot_PP",
+      "faceArtwork": null
+    },
+    "agnes-alley": {
+      "name": "Agnes Alley",
+      "role": "cat shelter keeper",
+      "runtimePrefix": "AA",
+      "outfit": "agnes-alley/outfit-placeholder.glb",
+      "headAccessory": "agnes-alley/head-accessory-placeholder.glb",
+      "handAccessory": "agnes-alley/hand-accessory-placeholder.glb",
+      "shoes": "agnes-alley/shoes-placeholder.glb",
+      "heldItem": "agnes-alley/held-item-placeholder.glb",
+      "faceSlot": "FaceSlot_AA",
+      "faceArtwork": null
+    },
+    "dottie-daly": {
+      "name": "Dottie Daly",
+      "role": "quest giver",
+      "runtimePrefix": "DD",
+      "outfit": "dottie-daly/outfit-placeholder.glb",
+      "headAccessory": "dottie-daly/head-accessory-placeholder.glb",
+      "handAccessory": "dottie-daly/hand-accessory-placeholder.glb",
+      "shoes": "dottie-daly/shoes-placeholder.glb",
+      "heldItem": "dottie-daly/held-item-placeholder.glb",
+      "faceSlot": "FaceSlot_DD",
+      "faceArtwork": null
+    },
+    "peggy-plank": {
+      "name": "Peggy Plank",
+      "role": "bridge foreman",
+      "runtimePrefix": "PG",
+      "outfit": "peggy-plank/outfit-placeholder.glb",
+      "headAccessory": "peggy-plank/head-accessory-placeholder.glb",
+      "handAccessory": "peggy-plank/hand-accessory-placeholder.glb",
+      "shoes": "peggy-plank/shoes-placeholder.glb",
+      "heldItem": "peggy-plank/held-item-placeholder.glb",
+      "faceSlot": "FaceSlot_PG",
+      "faceArtwork": null
+    },
+    "mr-buck-coinsworth": {
+      "name": "Mr. Buck Coinsworth",
+      "role": "banker",
+      "runtimePrefix": "BC",
+      "outfit": "mr-buck-coinsworth/outfit-placeholder.glb",
+      "headAccessory": "mr-buck-coinsworth/head-accessory-placeholder.glb",
+      "handAccessory": "mr-buck-coinsworth/hand-accessory-placeholder.glb",
+      "shoes": "mr-buck-coinsworth/shoes-placeholder.glb",
+      "heldItem": "mr-buck-coinsworth/held-item-placeholder.glb",
+      "faceSlot": "FaceSlot_BC",
+      "faceArtwork": null
+    },
+    "fern-bramble": {
+      "name": "Fern Bramble",
+      "role": "gardener",
+      "runtimePrefix": "FB",
+      "outfit": "fern-bramble/outfit-placeholder.glb",
+      "headAccessory": "fern-bramble/head-accessory-placeholder.glb",
+      "handAccessory": "fern-bramble/hand-accessory-placeholder.glb",
+      "shoes": "fern-bramble/shoes-placeholder.glb",
+      "heldItem": "fern-bramble/held-item-placeholder.glb",
+      "faceSlot": "FaceSlot_FB",
+      "faceArtwork": null
+    },
+    "stanley-stamp": {
+      "name": "Stanley Stamp",
+      "role": "mail carrier",
+      "runtimePrefix": "SS",
+      "outfit": "stanley-stamp/outfit-placeholder.glb",
+      "headAccessory": "stanley-stamp/head-accessory-placeholder.glb",
+      "handAccessory": "stanley-stamp/hand-accessory-placeholder.glb",
+      "shoes": "stanley-stamp/shoes-placeholder.glb",
+      "heldItem": "stanley-stamp/held-item-placeholder.glb",
+      "faceSlot": "FaceSlot_SS",
+      "faceArtwork": null
+    },
+    "bobby-gill": {
+      "name": "Bobby Gill",
+      "role": "fishing mentor",
+      "runtimePrefix": "BG",
+      "outfit": "bobby-gill/outfit-placeholder.glb",
+      "headAccessory": "bobby-gill/head-accessory-placeholder.glb",
+      "handAccessory": "bobby-gill/hand-accessory-placeholder.glb",
+      "shoes": "bobby-gill/shoes-placeholder.glb",
+      "heldItem": "bobby-gill/held-item-placeholder.glb",
+      "faceSlot": "FaceSlot_BG",
+      "faceArtwork": null
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "./vendor/three/three.module.js";
 
 const MARKER = "§TL§";
 const PROJECT = { id: "moonlight-footbridge", name: "Moonlight Footbridge", goal: 240 };
@@ -35,6 +35,13 @@ const town = {
   catHearts: null,
   catReactUntil: 0,
   catFeedBusy: false,
+  catWasNear: false,
+  catGreetingAt: 0,
+  catAttentionAt: 0,
+  catChatterAt: 0,
+  catLastPlayerPosition: null,
+  catLastPlayerMoveAt: 0,
+  catBehaviorCheckAt: 0,
   festival: null,
   festivalGroup: null,
   festivalKind: "",
@@ -75,6 +82,7 @@ const coinBalance = () => {
   const parsed = Number(String($(".coin-chip b")?.textContent || "0").replace(/[^0-9.-]/g, ""));
   return Number.isFinite(parsed) ? parsed : 0;
 };
+const catVocal = (id, options = {}) => window.dispatchEvent(new CustomEvent("snug-cat-vocal", { detail: { id: `cat-${id}`, ...options } }));
 
 function databaseBase() {
   const options = town.session?.app?.options || {};
@@ -232,6 +240,7 @@ async function adoptCat() {
     town.cat = next;
     syncCatFollower(true);
     reactCat();
+    catVocal(Math.random() < 0.65 ? "trill" : "meow", { force: true, reason: "adoption" });
     showToast(`${name} is coming home with you`);
   } catch {
     town.error = "The adoption could not be saved yet.";
@@ -253,6 +262,7 @@ async function feedCat() {
     town.cat = next;
     window.dispatchEvent(new CustomEvent("snug-award-coins", { detail: { amount: -cost, message: `${town.cat.name} enjoyed a snack · −3 shells` } }));
     reactCat();
+    catVocal("purr", { reason: "snack" });
     showToast(`${town.cat.name} is purring`);
   } catch {
     town.error = "The snack was not saved. Your shells were not spent.";
@@ -542,7 +552,7 @@ function catMarkup() {
   const coatOptions = Object.entries(CAT_COATS).map(([id, coat]) => `<label class="cat-coat" style="--coat:${coat.color};--patch:${coat.accent || coat.color}"><input type="radio" name="cat-coat" value="${id}" ${selected === id ? "checked" : ""}><span aria-hidden="true"><i></i></span><b>${coat.name}</b></label>`).join("");
   if (!cat) return `<div class="cat-intro"><div class="cat-silhouette" aria-hidden="true"><i></i></div><div><small>Stray at the garden gate</small><h3>Choose a companion</h3><p>A village cat has decided you look interesting.</p></div></div><div class="cat-coats">${coatOptions}</div><label class="town-field"><span>What will you call them?</span><input name="cat-name" maxlength="18" placeholder="Marmalade" autocomplete="off"></label><button type="button" class="town-primary" data-action="adopt" ${town.busy ? "disabled" : ""}>Adopt this cat</button>`;
   const affection = Math.max(0, Math.min(100, Number(cat.affection || 0)));
-  return `<div class="cat-family"><div class="cat-portrait" style="--coat:${CAT_COATS[cat.coat].color};--patch:${CAT_COATS[cat.coat].accent || CAT_COATS[cat.coat].color}" aria-hidden="true"><i></i><span></span></div><div><small>Your companion</small><h3>${escapeHtml(cat.name)}</h3><p>${affection >= 80 ? "Completely devoted" : affection >= 45 ? "Trusting and playful" : "Still getting to know you"}</p></div></div><div class="affection-row"><span><b>Bond</b><small>${affection}/100</small></span><div class="affection-meter"><i style="width:${affection}%"></i></div></div><div class="cat-actions"><button type="button" data-action="feed" ${town.catFeedBusy ? "disabled" : ""}><span aria-hidden="true" class="bowl-mark"></span><span><b>${town.catFeedBusy ? "Saving…" : "Give a snack"}</b><small>3 shells · +12 bond</small></span></button><button type="button" data-action="cat-wave"><span aria-hidden="true" class="paw-mark"></span><span><b>Wave hello</b><small>${escapeHtml(cat.name)} reacts</small></span></button></div><details class="cat-rename"><summary>Change name or coat</summary><div class="cat-coats">${coatOptions}</div><label class="town-field"><span>Name</span><input name="cat-name" maxlength="18" value="${escapeHtml(name)}" autocomplete="off"></label><button type="button" class="town-secondary" data-action="adopt" ${town.busy ? "disabled" : ""}>Save changes</button></details>`;
+  return `<div class="cat-family"><div class="cat-portrait" style="--coat:${CAT_COATS[cat.coat].color};--patch:${CAT_COATS[cat.coat].accent || CAT_COATS[cat.coat].color}" aria-hidden="true"><i></i><span></span></div><div><small>Your companion</small><h3>${escapeHtml(cat.name)}</h3><p>${affection >= 80 ? "Completely devoted" : affection >= 45 ? "Trusting and playful" : "Still getting to know you"}</p></div></div><div class="affection-row"><span><b>Bond</b><small>${affection}/100</small></span><div class="affection-meter"><i style="width:${affection}%"></i></div></div><div class="cat-actions"><button type="button" data-action="feed" ${town.catFeedBusy ? "disabled" : ""}><span aria-hidden="true" class="bowl-mark"></span><span><b>${town.catFeedBusy ? "Saving…" : "Give a snack"}</b><small>3 shells · +12 bond</small></span></button><button type="button" data-action="cat-pet"><span aria-hidden="true" class="paw-mark"></span><span><b>Pet & say hello</b><small>${escapeHtml(cat.name)} purrs</small></span></button></div><details class="cat-rename"><summary>Change name or coat</summary><div class="cat-coats">${coatOptions}</div><label class="town-field"><span>Name</span><input name="cat-name" maxlength="18" value="${escapeHtml(name)}" autocomplete="off"></label><button type="button" class="town-secondary" data-action="adopt" ${town.busy ? "disabled" : ""}>Save changes</button></details>`;
 }
 
 function festivalMarkup() {
@@ -573,13 +583,18 @@ function renderPanel() {
   if (!panel) return;
   const views = [["projects","Projects"],["garden","Garden"],["cat","My Cat"],["festivals","Festivals"],["photo","Photos"]];
   const content = town.view === "projects" ? projectMarkup() : town.view === "garden" ? gardenMarkup() : town.view === "cat" ? catMarkup() : town.view === "festivals" ? festivalMarkup() : photoMarkup();
-  panel.innerHTML = `<div class="town-grabber"></div><header class="town-head"><div><small>Village activities</small><h2>Town Life</h2></div><button type="button" class="town-close" aria-label="Close Town Life">×</button></header><nav class="town-tabs" aria-label="Town Life sections">${views.map(([id,label]) => `<button type="button" data-town-view="${id}" class="${town.view === id ? "active" : ""}">${label}</button>`).join("")}</nav>${town.error ? `<div class="town-error" role="status">${escapeHtml(town.error)}</div>` : ""}<div class="town-content">${town.loading ? `<div class="town-loading">Checking the notice board…</div>` : content}</div>`;
+  panel.innerHTML = `<div class="town-grabber"></div><header class="town-head"><div><small>Cyclical City activities</small><h2>Town Life</h2></div><button type="button" class="town-close" aria-label="Close Town Life">×</button></header><nav class="town-tabs" aria-label="Town Life sections">${views.map(([id,label]) => `<button type="button" data-town-view="${id}" class="${town.view === id ? "active" : ""}">${label}</button>`).join("")}</nav>${town.error ? `<div class="town-error" role="status">${escapeHtml(town.error)}</div>` : ""}<div class="town-content">${town.loading ? `<div class="town-loading">Checking the notice board…</div>` : content}</div>`;
   panel.querySelector(".town-close")?.addEventListener("click", closePanel);
-  panel.querySelectorAll("[data-town-view]").forEach((button) => button.addEventListener("click", () => { town.view = button.dataset.townView; renderPanel(); }));
+  panel.querySelectorAll("[data-town-view]").forEach((button) => button.addEventListener("click", () => {
+    town.view = button.dataset.townView;
+    renderPanel();
+    if (town.view === "cat" && !town.cat) catVocal(Math.random() < 0.65 ? "trill" : "meow", { reason: "agnes-shelter" });
+  }));
   panel.querySelectorAll("[data-contribute]").forEach((button) => button.addEventListener("click", () => saveContribution(button.dataset.contribute)));
   panel.querySelectorAll("[data-action='adopt']").forEach((button) => button.addEventListener("click", adoptCat));
   panel.querySelector("[data-action='feed']")?.addEventListener("click", feedCat);
-  panel.querySelector("[data-action='cat-wave']")?.addEventListener("click", () => { reactCat(); showToast(`${town.cat?.name || "Your cat"} hops in reply`); });
+  panel.querySelector("[data-action='cat-pet']")?.addEventListener("click", () => { reactCat(); catVocal("purr", { reason: "pet" }); showToast(`${town.cat?.name || "Your cat"} leans into your hand`); });
+  panel.querySelectorAll("[name='cat-coat']").forEach((input) => input.addEventListener("change", () => { if (!town.cat) catVocal(Math.random() < 0.65 ? "trill" : "meow", { reason: "shelter-greeting" }); }));
   panel.querySelectorAll("[data-festival]").forEach((button) => button.addEventListener("click", () => startFestival(button.dataset.festival)));
   panel.querySelectorAll("[data-plant-slot]").forEach((button) => button.addEventListener("click", () => plantGarden(button.dataset.plantSlot, panel.querySelector("[name='garden-seed']")?.value || "moonflower")));
   panel.querySelectorAll("[data-water-slot]").forEach((button) => button.addEventListener("click", () => waterGarden(button.dataset.waterSlot)));
@@ -876,6 +891,32 @@ function tickCat(time) {
   const distance = cat.position.distanceTo(behind);
   cat.position.lerp(behind, distance > 3 ? 0.2 : 0.055);
   cat.rotation.y += (Math.atan2(player.position.x - cat.position.x, player.position.z - cat.position.z) - cat.rotation.y) * 0.12;
+
+  if (!town.catLastPlayerPosition) {
+    town.catLastPlayerPosition = player.position.clone();
+    town.catLastPlayerMoveAt = time;
+  } else if (town.catLastPlayerPosition.distanceToSquared(player.position) > 0.0025) {
+    town.catLastPlayerPosition.copy(player.position);
+    town.catLastPlayerMoveAt = time;
+  }
+  const nearPlayer = cat.position.distanceTo(player.position) < 1.6;
+  if (nearPlayer && !town.catWasNear && time - town.catGreetingAt > 30000) {
+    town.catGreetingAt = time;
+    catVocal(Math.random() < 0.68 ? "trill" : "meow", { reason: "approach" });
+  }
+  town.catWasNear = nearPlayer;
+  if (time - town.catBehaviorCheckAt > 3000) {
+    town.catBehaviorCheckAt = time;
+    const butterflies = town.world.scene?.getObjectByName("DayButterflies");
+    const nearButterflies = Math.hypot(cat.position.x - 6.5, cat.position.z - 8.2) < 5.2 || Math.hypot(cat.position.x + 18, cat.position.z - 7.5) < 5.2;
+    if (butterflies?.visible && nearButterflies && time - town.catChatterAt > 45000 && Math.random() < 0.22) {
+      town.catChatterAt = time;
+      catVocal("chatter", { reason: "prey-excitement" });
+    } else if (nearPlayer && time - town.catLastPlayerMoveAt > 22000 && time - town.catAttentionAt > 75000 && Math.random() < 0.14) {
+      town.catAttentionAt = time;
+      catVocal("question", { reason: "attention" });
+    }
+  }
   cat.position.y = Math.max(0, Math.sin(time * 0.009) * (distance > 0.25 ? 0.045 : 0.012));
   const reacting = time < town.catReactUntil;
   if (reacting) {
@@ -976,14 +1017,14 @@ function capturePhoto() {
     town.photoPreviewUrl = URL.createObjectURL(blob);
     const backdrop = document.createElement("div");
     backdrop.className = "photo-preview-backdrop";
-    backdrop.innerHTML = `<section class="photo-preview" role="dialog" aria-modal="true" aria-labelledby="photo-preview-title"><div class="photo-preview-head"><div><small>Photo ready</small><h2 id="photo-preview-title">A moment in the plaza</h2></div><button type="button" data-preview="close" aria-label="Close photo preview">×</button></div><img src="${town.photoPreviewUrl}" alt="Captured Snug Society plaza scene"><div class="photo-preview-actions"><a download="snug-society-photo.png" href="${town.photoPreviewUrl}">Download</a>${navigator.share && typeof File !== "undefined" ? `<button type="button" data-preview="share">Share</button>` : ""}</div></section>`;
+    backdrop.innerHTML = `<section class="photo-preview" role="dialog" aria-modal="true" aria-labelledby="photo-preview-title"><div class="photo-preview-head"><div><small>Photo ready</small><h2 id="photo-preview-title">A moment in the plaza</h2></div><button type="button" data-preview="close" aria-label="Close photo preview">×</button></div><img src="${town.photoPreviewUrl}" alt="Captured Cyclical City plaza scene"><div class="photo-preview-actions"><a download="cylindric-social-photo.png" href="${town.photoPreviewUrl}">Download</a>${navigator.share && typeof File !== "undefined" ? `<button type="button" data-preview="share">Share</button>` : ""}</div></section>`;
     backdrop.addEventListener("pointerdown", (event) => { if (event.target === backdrop) backdrop.remove(); });
     backdrop.querySelector("[data-preview='close']")?.addEventListener("click", () => backdrop.remove());
     backdrop.querySelector("[data-preview='share']")?.addEventListener("click", async () => {
       try {
         const file = new File([blob], "snug-society-photo.png", { type: "image/png" });
         if (navigator.canShare && !navigator.canShare({ files: [file] })) throw new Error("unsupported");
-        await navigator.share({ files: [file], title: "Snug Society photo" });
+        await navigator.share({ files: [file], title: "Cyclical City photo" });
       } catch (error) {
         if (error?.name !== "AbortError") showToast("Sharing is not available here. You can download instead.");
       }
@@ -1016,6 +1057,11 @@ window.addEventListener("pointerdown", (event) => {
   const label = button?.textContent?.trim() || "";
   if (/^(Happy|Calm|Cheeky|Angry|Sad|Laughter|Laugh|Yawn|Side-eye|Wave)$/i.test(label)) reactCat();
 }, true);
+window.addEventListener("snug-cat-scared", () => { if (town.cat) catVocal("yowl", { reason: "scared" }); });
+window.addEventListener("snug-cat-threat", (event) => {
+  if (!town.cat) return;
+  catVocal(event.detail?.severity === "high" ? "growl" : "hiss", { reason: "threat" });
+});
 
 function frame(time) {
   town.world = window.__snugWorld || town.world;

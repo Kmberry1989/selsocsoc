@@ -10,17 +10,17 @@ import {
 	InterleavedBuffer,
 	InterleavedBufferAttribute,
 	LoaderUtils
-} from 'three';
+} from './three.module.js';
 
 const _taskCache = new WeakMap();
 
-const WASM_BIN_URL = new URL( '../libs/draco/draco_decoder.wasm', import.meta.url ).toString();
-const WASM_JS_URL = new URL( '../libs/draco/draco_wasm_wrapper.js', import.meta.url ).toString();
-const JS_URL = new URL( '../libs/draco/draco_decoder.js', import.meta.url ).toString();
+const WASM_BIN_URL = 'assets/vendor/draco/draco_decoder.wasm';
+const WASM_JS_URL = 'assets/vendor/draco/draco_wasm_wrapper.js';
+const JS_URL = 'assets/vendor/draco/draco_decoder.js';
 
 const DRACO_GLTF_CONFIG = {
-	js: new URL( '../libs/draco/gltf/draco_wasm_wrapper.js', import.meta.url ).toString(),
-	wasm: new URL( '../libs/draco/gltf/draco_decoder.wasm', import.meta.url ).toString(),
+	js: 'assets/vendor/draco/draco_wasm_wrapper.js',
+	wasm: 'assets/vendor/draco/draco_decoder.wasm',
 };
 
 /**

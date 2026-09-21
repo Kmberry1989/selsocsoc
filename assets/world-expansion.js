@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from './vendor/three/three.module.js';
 
 const WORLD_RADIUS = 52;
 const WALK_BOUNDS = { x: 36, z: 34 };
@@ -32,6 +32,15 @@ function mesh(geometry, material, x, y, z) {
   object.castShadow = true;
   object.receiveShadow = true;
   return object;
+}
+
+function centerRoofOver(roof, support, name) {
+  roof.position.x = support.position.x;
+  roof.position.z = support.position.z;
+  roof.name = name;
+  roof.userData.centeredRoof = true;
+  roof.userData.centeredOver = support.name || support.geometry.type;
+  return roof;
 }
 
 function pointSegmentDistance(x, z, segment) {
@@ -92,7 +101,12 @@ function addCottage(group, x, z, color, rotation = 0) {
   const wall = new THREE.MeshStandardMaterial({ color, roughness: 0.9 });
   const trim = new THREE.MeshStandardMaterial({ color: 0x6f5146, roughness: 0.82 });
   const body = mesh(new THREE.BoxGeometry(2.8, 1.85, 2.45), wall, 0, 0.93, 0);
-  const roof = mesh(new THREE.ConeGeometry(2.02, 1.15, 4), trim, 0, 2.43, 0);
+  body.name = 'CottageBody';
+  const roof = centerRoofOver(
+    mesh(new THREE.ConeGeometry(2.02, 1.15, 4), trim, 0, 2.43, 0),
+    body,
+    'CenteredCottageRoof'
+  );
   roof.rotation.y = Math.PI / 4;
   roof.scale.z = 0.76;
   const door = mesh(new THREE.BoxGeometry(0.62, 1.15, 0.09), new THREE.MeshStandardMaterial({ color: 0x42666c, roughness: 0.75 }), 0, 0.58, 1.27);
@@ -114,11 +128,21 @@ function addTownHall(group) {
   const trim = new THREE.MeshStandardMaterial({ color: 0x684e43, roughness: 0.84 });
   const roofMaterial = new THREE.MeshStandardMaterial({ color: 0x78908a, roughness: 0.82 });
   const body = mesh(new THREE.BoxGeometry(6.2, 2.9, 4.7), wall, 0, 1.45, 0);
-  const roof = mesh(new THREE.ConeGeometry(4.2, 1.55, 4), roofMaterial, 0, 3.75, 0);
+  body.name = 'TownHallBody';
+  const roof = centerRoofOver(
+    mesh(new THREE.ConeGeometry(4.2, 1.55, 4), roofMaterial, 0, 3.75, 0),
+    body,
+    'CenteredTownHallRoof'
+  );
   roof.rotation.y = Math.PI / 4;
   roof.scale.z = 0.78;
   const tower = mesh(new THREE.BoxGeometry(1.55, 1.7, 1.55), wall, 0, 4.35, 0.15);
-  const towerRoof = mesh(new THREE.ConeGeometry(1.25, 1.25, 4), roofMaterial, 0, 5.65, 0.15);
+  tower.name = 'TownHallTower';
+  const towerRoof = centerRoofOver(
+    mesh(new THREE.ConeGeometry(1.25, 1.25, 4), roofMaterial, 0, 5.65, 0.15),
+    tower,
+    'CenteredTownHallTowerRoof'
+  );
   towerRoof.rotation.y = Math.PI / 4;
   const door = mesh(new THREE.BoxGeometry(1.12, 1.65, 0.12), trim, 0, 0.83, 2.39);
   const step = mesh(new THREE.BoxGeometry(2.15, 0.14, 0.72), new THREE.MeshStandardMaterial({ color: 0xb6a485, roughness: 1 }), 0, 0.07, 2.7);
@@ -265,7 +289,12 @@ function buildExpansion(world) {
   pavilion.position.set(17, 0, 5);
   pavilion.name = 'TownPavilion';
   const platform = mesh(new THREE.CylinderGeometry(3.1, 3.35, 0.35, 10), new THREE.MeshStandardMaterial({ color: 0xd4bd8c, roughness: 0.95 }), 0, 0.1, 0);
-  const roof = mesh(new THREE.ConeGeometry(3.4, 1.2, 8), new THREE.MeshStandardMaterial({ color: 0xb96050, roughness: 0.8 }), 0, 3.2, 0);
+  platform.name = 'TownPavilionPlatform';
+  const roof = centerRoofOver(
+    mesh(new THREE.ConeGeometry(3.4, 1.2, 8), new THREE.MeshStandardMaterial({ color: 0xb96050, roughness: 0.8 }), 0, 3.2, 0),
+    platform,
+    'CenteredTownPavilionRoof'
+  );
   pavilion.add(platform, roof);
   for (let i = 0; i < 8; i += 1) {
     const angle = i / 8 * Math.PI * 2;

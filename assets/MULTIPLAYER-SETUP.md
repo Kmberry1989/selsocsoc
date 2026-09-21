@@ -1,6 +1,6 @@
-# Snug Society multiplayer setup
+# Selfie Social Society multiplayer setup
 
-The game uses Firebase Realtime Database for room presence, positions, the last 50 chat messages, and the last 50 minigame events in the current room. Firestore remains the source of truth for profiles, inventory, currency, minigame winnings, and houses.
+The game uses Firebase Realtime Database for room presence, positions, the last 50 chat messages, the last 50 minigame events in the current room, FCM tokens, and short-lived family-room ping requests. Firestore remains the source of truth for profiles, inventory, currency, minigame winnings, and houses.
 
 ## One-time Firebase setup
 
@@ -56,6 +56,41 @@ WebRTC works best over HTTPS (including Vercel previews and production deploymen
 
 Private room codes are random bearer invitations: anyone with the code may join, and room data is otherwise hidden from non-members. Do not post an invite code publicly.
 
+## Family room push notifications
+
+Push notifications are opt-in. The game asks for permission only after the player turns on **Notify me about family pings** in Pause & Help.
+
+1. In Firebase Console, open **Project settings → Cloud Messaging → Web configuration → Web Push certificates**.
+2. Choose **Generate key pair**, copy the public key, and replace `PASTE_FIREBASE_WEB_PUSH_CERTIFICATE_KEY_PAIR_HERE` in `assets/push-notifications.js`.
+3. Copy `functions/.env.example` to `functions/.env` and set `SITE_URL` to the deployed HTTPS origin, without a path or trailing slash—for example, `https://your-game.example`. The function adds `?room=room-…` itself.
+4. Install the function dependencies with `npm --prefix functions install`.
+5. Deploy with `firebase deploy --only functions`.
+6. Publish the updated `assets/firebase-realtime-database.rules.json`.
+7. Deploy the site. `firebase-messaging-sw.js` must stay at the repository and deployment root so notification taps can open `/?room=room-…`.
+
+Blaze billing note: Cloud Functions require the Blaze plan; normal charges depend on actual function invocations and outbound messaging work, so review the Firebase pricing page and set budget alerts for the project.
+
+On iPhone and iPad, web push works only after the player adds the site to the Home Screen and opens it from that installed icon. The browser may also require notification permission to be enabled in system settings.
+
+The function reads `rooms/{roomId}/members`, excludes the sender, sends one multicast to the remaining members’ tokens, removes tokens Firebase reports as invalid, and deletes the processed `pings/{roomId}/{pingId}` request.
+
 ## Production boundary
 
 These rules stop ordinary room edits, message replacement/deletion, cross-user presence writes, malformed events, and early reward claims. They do not make a browser client an authoritative anti-cheat server: a determined player can still automate valid-looking movement or game events. Before prizes have real-world value or the game opens at large scale, move scoring and reward issuance into trusted Cloud Functions with App Check and rate limits.
+
+
+## Wave 0 shared minigame framework
+
+The room-scoped minigame feed now exposes a shared contract through `window.CylindricMinigames`. Every released game uses the same lifecycle (`lobby → countdown → play → results → payout`), derives a room snapshot with `phase`, `players`, `scores`, and `timer`, and uses placement payout bands. Shared rounds accept 2–4 players and fill an undersized roster with deterministic bot archetypes; a disconnected player keeps their earned score while the round finishes.
+
+Solo Practice uses the same start, score, claim, cloud-award, and visible `before + payout = after` receipt path. The framework dispatches `snug-minigame-achievement` events for participation, wins, and new in-session personal bests, while the existing `snug-award-coins` event continues to advance the daily-round hook.
+
+Optional authored GLBs live under `assets/minigames/<game>/props/`. Run `node assets/minigames/generate-manifest.mjs` before publishing; the shared asset pipeline exposes the manifest as `minigames` and built-in primitives remain the fallback.
+
+## Wave 1 games
+
+- **Balloon Pop** (`balloon`) — tap drifting balloons; collector bots score against the same clock.
+- **Plaza Sprint** (`sprint`) — use tap-to-move through eight ordered 3D gates; racer bots advance by deterministic waypoint timing.
+- **Pond Fishing** (`fishing`) — tap **Cast** while the ripple is inside the golden timing ring; bot timing varies by seed.
+
+All three appear in Solo Practice and in the shared released-game rotation. Publish the matching `firebase-realtime-database.rules.json` before testing Wave 1 against Firebase; it adds the three game IDs and their bounded `balloon-pop`, `sprint-checkpoint`, and `fishing-catch` events.

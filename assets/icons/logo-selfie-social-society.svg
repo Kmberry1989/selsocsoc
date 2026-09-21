@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 250" role="img" aria-labelledby="title desc">
+  <title id="title">Selfie Social Society</title>
+  <desc id="desc">A warm playful three-line Selfie Social Society wordmark with a coin-headed neighbor forming the O in Social and Cyclical City beneath.</desc>
+  <g stroke="#26383b" stroke-linejoin="round">
+    <text x="260" y="64" text-anchor="middle" fill="#fffdf8" stroke-width="10" paint-order="stroke" font-family="Avenir Next Rounded,Avenir Next,Segoe UI,sans-serif" font-size="78" font-weight="900" letter-spacing="1">SELFIE</text>
+    <text x="172" y="139" text-anchor="middle" fill="#e76854" stroke-width="10" paint-order="stroke" font-family="Avenir Next Rounded,Avenir Next,Segoe UI,sans-serif" font-size="68" font-weight="900" letter-spacing="-2">S</text>
+    <g transform="translate(207 87)">
+      <path fill="#5c8d65" stroke-width="8" d="M-22 52c2-24 12-34 27-34s25 10 27 34z"/>
+      <circle fill="#f2c86f" stroke-width="8" cx="5" cy="8" r="27"/>
+      <circle fill="#26383b" stroke="none" cx="-4" cy="5" r="3.5"/>
+      <circle fill="#26383b" stroke="none" cx="14" cy="5" r="3.5"/>
+      <path fill="none" stroke-width="4" stroke-linecap="round" d="M-5 16c7 6 14 6 21 0"/>
+    </g>
+    <text x="350" y="139" text-anchor="middle" fill="#e76854" stroke-width="10" paint-order="stroke" font-family="Avenir Next Rounded,Avenir Next,Segoe UI,sans-serif" font-size="68" font-weight="900" letter-spacing="-2">CIAL</text>
+    <text x="260" y="202" text-anchor="middle" fill="#fffdf8" stroke-width="9" paint-order="stroke" font-family="Avenir Next Rounded,Avenir Next,Segoe UI,sans-serif" font-size="54" font-weight="900" letter-spacing="1">SOCIETY</text>
+  </g>
+  <text x="260" y="236" text-anchor="middle" fill="#fffdf8" font-family="Avenir Next,Segoe UI,sans-serif" font-size="17" font-weight="800" letter-spacing="5">CYCLICAL CITY</text>
+</svg>

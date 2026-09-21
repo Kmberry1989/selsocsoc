@@ -7,16 +7,5 @@
     {"id":"shops","file":"assets/audio/music/shops.wav"},
     {"id":"home","file":"assets/audio/music/home.wav"}
   ],
-  "sfx": [
-    {"id":"ui-click","file":"assets/audio/sfx/ui-click.wav"},
-    {"id":"ui-select","file":"assets/audio/sfx/ui-select.wav"},
-    {"id":"dice-roll","file":"assets/audio/sfx/dice-roll.wav"},
-    {"id":"coin-pickup","file":"assets/audio/sfx/coin-pickup.wav"},
-    {"id":"win","file":"assets/audio/sfx/win.wav"},
-    {"id":"footsteps","file":"assets/audio/sfx/footsteps.wav"},
-    {"id":"ready","file":"assets/audio/sfx/ready.wav"},
-    {"id":"game-start","file":"assets/audio/sfx/game-start.wav"},
-    {"id":"shop-buy","file":"assets/audio/sfx/shop-buy.wav"},
-    {"id":"bot-turn","file":"assets/audio/sfx/bot-turn.wav"}
-  ]
+  "sfx": []
 }
