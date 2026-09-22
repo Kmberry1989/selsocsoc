@@ -1,4 +1,4 @@
-# Snug Society cosmetic GLB guide
+# Selfie Social Society cosmetic GLB guide
 
 Players do not upload models. These folders are for developer-authored `.glb` files shipped with the game:
 
@@ -22,6 +22,9 @@ The included `template-*.glb` files are low-poly sizing guides. Replace their me
 - Apply/freeze transforms before export. Use scale `1,1,1` and rotation `0,0,0`; the automatic orientation correction does not change your attachment origin.
 - Put the model origin at its attachment point.
 - Keep materials and textures embedded in the GLB. Avoid external texture files.
+- Author colorable fabric, hair, and accessory surfaces with a white or neutral albedo. The game multiplies the player's chosen tint over the material color and embedded maps, so woven texture, painted shading, normal maps, roughness, metallic response, transparency, and alpha cutouts remain intact.
+- Split details that must keep their original color—eyes, buckles, buttons, lenses, metal trim, logos—into a separate material or mesh. Name that material or mesh with `NoTint` (for example, `GoldBuckle_NoTint`) or set the glTF extras value `snugTint` to `false`. Those parts are copied without tinting.
+- A non-white base color also multiplies with the player's tint. Use it intentionally for shaded variation; use `NoTint` when an exact authored color must never change.
 - Models are overlays. Do not include a body, head, hands, or feet in a cosmetic file.
 - Keep each asset light enough for mobile: aim below 25k triangles and 2 MB; use 1024px textures or smaller.
 - Give meshes stable names and avoid cameras, lights, and unused animation clips.
