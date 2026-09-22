@@ -2,16 +2,61 @@
   "buildings": [],
   "trees": [
     {
+      "id": "tree-apple",
+      "name": "Tree Apple",
+      "path": "assets/environment-props/trees/tree-apple.glb"
+    },
+    {
+      "id": "tree-birch",
+      "name": "Tree Birch",
+      "path": "assets/environment-props/trees/tree-birch.glb"
+    },
+    {
+      "id": "tree-maple",
+      "name": "Tree Maple",
+      "path": "assets/environment-props/trees/tree-maple.glb"
+    },
+    {
       "id": "tree-oak",
       "name": "Tree Oak",
       "path": "assets/environment-props/trees/tree-oak.glb"
+    },
+    {
+      "id": "tree-pine",
+      "name": "Tree Pine",
+      "path": "assets/environment-props/trees/tree-pine.glb"
+    },
+    {
+      "id": "tree-willow",
+      "name": "Tree Willow",
+      "path": "assets/environment-props/trees/tree-willow.glb"
     }
   ],
   "props": [
     {
+      "id": "barrel-stack",
+      "name": "Barrel Stack",
+      "path": "assets/environment-props/props/barrel-stack.glb"
+    },
+    {
+      "id": "birdbath",
+      "name": "Birdbath",
+      "path": "assets/environment-props/props/birdbath.glb"
+    },
+    {
       "id": "bush-round",
       "name": "Bush Round",
       "path": "assets/environment-props/props/bush-round.glb"
+    },
+    {
+      "id": "crate-stack",
+      "name": "Crate Stack",
+      "path": "assets/environment-props/props/crate-stack.glb"
+    },
+    {
+      "id": "fence-gate",
+      "name": "Fence Gate",
+      "path": "assets/environment-props/props/fence-gate.glb"
     },
     {
       "id": "fence-segment",
@@ -29,9 +74,59 @@
       "path": "assets/environment-props/props/lantern-post.glb"
     },
     {
+      "id": "mailbox",
+      "name": "Mailbox",
+      "path": "assets/environment-props/props/mailbox.glb"
+    },
+    {
+      "id": "market-cart",
+      "name": "Market Cart",
+      "path": "assets/environment-props/props/market-cart.glb"
+    },
+    {
+      "id": "park-bench",
+      "name": "Park Bench",
+      "path": "assets/environment-props/props/park-bench.glb"
+    },
+    {
+      "id": "picket-fence",
+      "name": "Picket Fence",
+      "path": "assets/environment-props/props/picket-fence.glb"
+    },
+    {
+      "id": "picnic-table",
+      "name": "Picnic Table",
+      "path": "assets/environment-props/props/picnic-table.glb"
+    },
+    {
+      "id": "planter-box",
+      "name": "Planter Box",
+      "path": "assets/environment-props/props/planter-box.glb"
+    },
+    {
       "id": "rock-cluster",
       "name": "Rock Cluster",
       "path": "assets/environment-props/props/rock-cluster.glb"
+    },
+    {
+      "id": "signpost",
+      "name": "Signpost",
+      "path": "assets/environment-props/props/signpost.glb"
+    },
+    {
+      "id": "stepping-stones",
+      "name": "Stepping Stones",
+      "path": "assets/environment-props/props/stepping-stones.glb"
+    },
+    {
+      "id": "stone-wall",
+      "name": "Stone Wall",
+      "path": "assets/environment-props/props/stone-wall.glb"
+    },
+    {
+      "id": "well",
+      "name": "Well",
+      "path": "assets/environment-props/props/well.glb"
     }
   ]
 }

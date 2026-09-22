@@ -1,11 +1,29 @@
 {
   "music": [
-    {"id":"title-screen","file":"assets/audio/music/title-screen.wav"},
-    {"id":"plaza","file":"assets/audio/music/plaza.wav"},
-    {"id":"board-game","file":"assets/audio/music/board-game.wav"},
-    {"id":"minigames","file":"assets/audio/music/minigames.wav"},
-    {"id":"shops","file":"assets/audio/music/shops.wav"},
-    {"id":"home","file":"assets/audio/music/home.wav"}
+    {
+      "id": "board-game",
+      "file": "assets/audio/music/board-game.wav"
+    },
+    {
+      "id": "home",
+      "file": "assets/audio/music/home.wav"
+    },
+    {
+      "id": "minigames",
+      "file": "assets/audio/music/minigames.wav"
+    },
+    {
+      "id": "plaza",
+      "file": "assets/audio/music/plaza.wav"
+    },
+    {
+      "id": "shops",
+      "file": "assets/audio/music/shops.wav"
+    },
+    {
+      "id": "title-screen",
+      "file": "assets/audio/music/title-screen.wav"
+    }
   ],
   "sfx": []
 }

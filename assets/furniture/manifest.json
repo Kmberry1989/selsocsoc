@@ -1,0 +1,59 @@
+{
+  "furniture": [
+    {
+      "id": "bookcase",
+      "name": "Bookcase",
+      "path": "assets/furniture/bookcase.glb"
+    },
+    {
+      "id": "coffee-table",
+      "name": "Coffee Table",
+      "path": "assets/furniture/coffee-table.glb"
+    },
+    {
+      "id": "cozy-sofa",
+      "name": "Cozy Sofa",
+      "path": "assets/furniture/cozy-sofa.glb"
+    },
+    {
+      "id": "dining-chair",
+      "name": "Dining Chair",
+      "path": "assets/furniture/dining-chair.glb"
+    },
+    {
+      "id": "dining-table",
+      "name": "Dining Table",
+      "path": "assets/furniture/dining-table.glb"
+    },
+    {
+      "id": "dresser",
+      "name": "Dresser",
+      "path": "assets/furniture/dresser.glb"
+    },
+    {
+      "id": "floor-lamp",
+      "name": "Floor Lamp",
+      "path": "assets/furniture/floor-lamp.glb"
+    },
+    {
+      "id": "panel-bed",
+      "name": "Panel Bed",
+      "path": "assets/furniture/panel-bed.glb"
+    },
+    {
+      "id": "reading-armchair",
+      "name": "Reading Armchair",
+      "path": "assets/furniture/reading-armchair.glb"
+    },
+    {
+      "id": "sideboard",
+      "name": "Sideboard",
+      "path": "assets/furniture/sideboard.glb"
+    },
+    {
+      "id": "woven-rug",
+      "name": "Woven Rug",
+      "path": "assets/furniture/woven-rug.glb"
+    }
+  ]
+}

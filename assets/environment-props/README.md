@@ -31,13 +31,18 @@ When one of these files is present, the matching primitive cottage is omitted an
 
 ### Trees
 
-- `tree-oak.glb` — replaces the repeated primitive trees. The included stand-in is intentionally simple and may be overwritten in place.
+- `tree-oak.glb` — replaces the repeated primitive trees.
+- `tree-birch.glb`
+- `tree-pine.glb`
+- `tree-maple.glb`
+- `tree-willow.glb`
+- `tree-apple.glb`
 
 Additional uniquely named tree GLBs are discovered and distributed among the village's tree plots.
 
 ### Props
 
-The included replaceable slots are:
+The environment library includes rocks and stepping stones, multiple fence pieces, a park bench, picnic table, planter, birdbath, market cart, barrels, crates, mailbox, signpost, well, lantern, flowers, and shrubs. The original replaceable filenames remain supported:
 
 - `rock-cluster.glb`
 - `fence-segment.glb`

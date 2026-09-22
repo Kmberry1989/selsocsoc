@@ -119,6 +119,16 @@ async function loadEnvironmentManifest() {
   return normalizeEnvironment(await loadJSON('assets/environment-props/manifest.json'));
 }
 
+async function loadFurnitureManifest() {
+  const source = await loadJSON('assets/furniture/manifest.json', { furniture: [] });
+  const seen = new Set();
+  return (Array.isArray(source.furniture) ? source.furniture : [])
+    .map((item) => normalizeItem(item, 'furniture', ''))
+    .filter((item) => item && !seen.has(item.id) && seen.add(item.id))
+    .map((item) => ({ ...item, category: 'Furniture' }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
 async function loadMinigameManifest() {
   const source = await loadJSON('assets/minigames/manifest.json', { games: {} });
   const games = source?.games && typeof source.games === 'object' ? source.games : {};
@@ -150,7 +160,9 @@ function assetCategory(path = '') {
 
   const environment = Object.entries(ENVIRONMENT_FOLDERS)
     .find(([, folder]) => normalized.includes(`/environment-props/${folder}/`));
-  return environment ? { kind: 'environment', category: environment[0] } : null;
+  if (environment) return { kind: 'environment', category: environment[0] };
+  if (normalized.includes('/furniture/')) return { kind: 'furniture', category: 'furniture' };
+  return null;
 }
 
 function proportionScore(size, template) {
@@ -173,7 +185,10 @@ function shouldCorrectZUp(size, type) {
     return zUpScore + 0.22 < yUpScore;
   }
 
-  if (type?.kind === 'environment') return size.z > size.y * 1.22;
+  if (type?.kind === 'environment') {
+    if (type.category === 'trees') return size.z > size.y * 1.22;
+    return size.z > Math.max(size.x, size.y) * 1.22;
+  }
   return false;
 }
 
@@ -199,7 +214,7 @@ let pipelinePromise;
 export function loadSnugAssetPipeline() {
   if (pipelinePromise) return pipelinePromise;
   pipelinePromise = (async () => {
-    const [catalog, environment, minigames] = await Promise.all([loadManifest(), loadEnvironmentManifest(), loadMinigameManifest()]);
+    const [catalog, environment, furniture, minigames] = await Promise.all([loadManifest(), loadEnvironmentManifest(), loadFurnitureManifest(), loadMinigameManifest()]);
     const pendingReviews = Object.entries(catalog).flatMap(([category, items]) =>
       items.filter((item) => item.id && item.fitPending).map((item) => ({ ...item, category }))
     );
@@ -260,6 +275,7 @@ export function loadSnugAssetPipeline() {
     return {
       catalog,
       environment,
+      furniture,
       minigames,
       loadMinigameProps,
       pendingReviews,

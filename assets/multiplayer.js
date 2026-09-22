@@ -2650,6 +2650,108 @@ function makeRainbow() {
   return group;
 }
 
+function makeSnowMaskTexture() {
+  const size = 128;
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = size;
+  const context = canvas.getContext("2d", { alpha: false });
+  const image = context.createImageData(size, size);
+  const hash = (x, y) => seeded(x * 127.1 + y * 311.7 + 19.37);
+  const fade = (value) => value * value * (3 - 2 * value);
+  const valueNoise = (x, y, cells) => {
+    const scaledX = x / size * cells;
+    const scaledY = y / size * cells;
+    const x0 = Math.floor(scaledX);
+    const y0 = Math.floor(scaledY);
+    const tx = fade(scaledX - x0);
+    const ty = fade(scaledY - y0);
+    const x1 = (x0 + 1) % cells;
+    const y1 = (y0 + 1) % cells;
+    const a = hash(x0 % cells, y0 % cells);
+    const b = hash(x1, y0 % cells);
+    const c = hash(x0 % cells, y1);
+    const d = hash(x1, y1);
+    return THREE.MathUtils.lerp(THREE.MathUtils.lerp(a, b, tx), THREE.MathUtils.lerp(c, d, tx), ty);
+  };
+  for (let y = 0; y < size; y += 1) {
+    for (let x = 0; x < size; x += 1) {
+      const broad = valueNoise(x, y, 7);
+      const detail = valueNoise(x, y, 19);
+      const value = Math.round(255 * THREE.MathUtils.clamp(broad * 0.72 + detail * 0.28, 0, 1));
+      const offset = (y * size + x) * 4;
+      image.data[offset] = image.data[offset + 1] = image.data[offset + 2] = value;
+      image.data[offset + 3] = 255;
+    }
+  }
+  context.putImageData(image, 0, 0);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.colorSpace = THREE.NoColorSpace;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = true;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function isDescendantOf(node, root) {
+  for (let current = node; current; current = current.parent) if (current === root) return true;
+  return false;
+}
+
+function makeSnowBlendMaterial(source, env, isGround) {
+  const material = source.clone();
+  const priorCompile = material.onBeforeCompile;
+  const priorKey = material.customProgramCacheKey?.bind(material);
+  material.onBeforeCompile = (shader, renderer) => {
+    priorCompile?.(shader, renderer);
+    shader.uniforms.snugSnowAmount = env.snowUniform;
+    shader.uniforms.snugSnowMask = { value: env.snowMaskTexture };
+    shader.vertexShader = shader.vertexShader
+      .replace("#include <common>", `#include <common>\nvarying vec3 vSnugSnowWorldPosition;\nvarying vec3 vSnugSnowWorldNormal;`)
+      .replace("#include <worldpos_vertex>", `#include <worldpos_vertex>\nvec4 snugSnowWorldPosition = vec4(transformed, 1.0);\nvec3 snugSnowObjectNormal = objectNormal;\n#ifdef USE_INSTANCING\n  snugSnowWorldPosition = instanceMatrix * snugSnowWorldPosition;\n  mat3 snugSnowInstanceMatrix = mat3(instanceMatrix);\n  snugSnowObjectNormal /= vec3(dot(snugSnowInstanceMatrix[0], snugSnowInstanceMatrix[0]), dot(snugSnowInstanceMatrix[1], snugSnowInstanceMatrix[1]), dot(snugSnowInstanceMatrix[2], snugSnowInstanceMatrix[2]));\n  snugSnowObjectNormal = snugSnowInstanceMatrix * snugSnowObjectNormal;\n#endif\nvSnugSnowWorldPosition = (modelMatrix * snugSnowWorldPosition).xyz;\nvSnugSnowWorldNormal = normalize(mat3(modelMatrix) * snugSnowObjectNormal);`);
+    shader.fragmentShader = shader.fragmentShader
+      .replace("#include <common>", `#include <common>\nuniform float snugSnowAmount;\nuniform sampler2D snugSnowMask;\nvarying vec3 vSnugSnowWorldPosition;\nvarying vec3 vSnugSnowWorldNormal;`)
+      .replace("#include <map_fragment>", `#include <map_fragment>\nfloat snugSnowNoise = texture2D(snugSnowMask, vSnugSnowWorldPosition.xz * 0.034).r;\nfloat snugSnowThreshold = ${isGround ? "1.04 - snugSnowAmount * 0.82" : "1.08 - snugSnowAmount * 0.68"};\nfloat snugSnowPatch = smoothstep(snugSnowThreshold - 0.11, snugSnowThreshold + 0.11, snugSnowNoise);\nfloat snugSnowUp = ${isGround ? "1.0" : "smoothstep(0.48, 0.84, normalize(vSnugSnowWorldNormal).y)"};\nfloat snugSnowMix = snugSnowPatch * snugSnowUp * smoothstep(0.0, 0.12, snugSnowAmount) * ${isGround ? "0.94" : "0.52"};\ndiffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.955, 0.977, 0.99), snugSnowMix);`);
+  };
+  material.customProgramCacheKey = () => `${priorKey?.() || ""}|snug-snow-v2-${isGround ? "ground" : "surface"}`;
+  material.userData = { ...material.userData, snugSnowBlend: true, snugSnowGround: isGround };
+  material.needsUpdate = true;
+  return material;
+}
+
+function installSnowSurfaceMaterials(env) {
+  const world = window.__snugWorld;
+  if (!world?.scene) return;
+  env.snowMaterialCache ||= { ground: new WeakMap(), surface: new WeakMap() };
+  const playerRoots = [world.player, ...(world.remotes instanceof Map ? world.remotes.values() : [])].filter(Boolean);
+  world.scene.traverse((node) => {
+    if (!node.isMesh || node.isSkinnedMesh || node.userData?.snugSnowPrepared) return;
+    const isGround = node === env.terrain;
+    const named = `${node.name || ""} ${node.parent?.name || ""}`;
+    const excluded = !isGround && (
+      isDescendantOf(node, env.group) ||
+      playerRoots.some((root) => isDescendantOf(node, root)) ||
+      /avatar|player|remote|water|pond|window|glass|outline|marker|particle|heart|wildlife|cat|bunny|bird/i.test(named)
+    );
+    if (excluded) return;
+    const sourceMaterials = Array.isArray(node.material) ? node.material : [node.material];
+    if (!sourceMaterials.some((material) => material?.isMeshStandardMaterial || material?.isMeshLambertMaterial || material?.isMeshPhongMaterial)) return;
+    const cache = isGround ? env.snowMaterialCache.ground : env.snowMaterialCache.surface;
+    const prepared = sourceMaterials.map((source) => {
+      if (!source || source.userData?.snugSnowBlend || !(source.isMeshStandardMaterial || source.isMeshLambertMaterial || source.isMeshPhongMaterial)) return source;
+      let material = cache.get(source);
+      if (!material) {
+        material = makeSnowBlendMaterial(source, env, isGround);
+        cache.set(source, material);
+      }
+      return material;
+    });
+    node.material = Array.isArray(node.material) ? prepared : prepared[0];
+    node.userData.snugSnowPrepared = true;
+  });
+}
+
 function makeShootingStarTexture() {
   const canvas = document.createElement("canvas");
   canvas.width = 512;
@@ -2851,6 +2953,7 @@ function setupEnvironment() {
   if (state.environment?.group) {
     state.environment.group.parent?.remove(state.environment.group);
     disposeObject(state.environment.group);
+    state.environment.snowMaskTexture?.dispose?.();
   }
   const group = new THREE.Group();
   group.name = "SnugLivingWorld";
@@ -2925,15 +3028,8 @@ function setupEnvironment() {
   const weather = new THREE.Points(weatherGeometry, new THREE.PointsMaterial({ color: 0xaed4e9, size: 0.045, transparent: true, opacity: 0, depthWrite: false, sizeAttenuation: true }));
   weather.name = "SnugWeatherParticles";
   group.add(weather);
-  const snowCover = new THREE.Mesh(
-    new THREE.CircleGeometry(52, 96),
-    new THREE.MeshStandardMaterial({ color: 0xf4f8f7, roughness: 1, transparent: true, opacity: 0, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 })
-  );
-  snowCover.name = "SnugSnowCover";
-  snowCover.rotation.x = -Math.PI / 2;
-  snowCover.position.y = 0.036;
-  snowCover.renderOrder = 1;
-  group.add(snowCover);
+  const snowMaskTexture = makeSnowMaskTexture();
+  const snowUniform = { value: 0 };
   const wildlife = makeWildlife();
   group.add(wildlife.group);
   world.scene.add(group);
@@ -2948,7 +3044,8 @@ function setupEnvironment() {
   const globeBaseColor = globe.material.color.clone();
   const startingPhase = environmentPhase();
   state.environment = {
-    group, skyDome, sun, moon, stars, shootingStars, rainbow, clouds, weather, weatherData, snowCover, terrain, terrainBaseColor, globe, globeBaseColor,
+    group, skyDome, sun, moon, stars, shootingStars, rainbow, clouds, weather, weatherData, terrain, terrainBaseColor, globe, globeBaseColor,
+    snowMaskTexture, snowUniform, snowVisualAmount: 0, snowSurfaceRefreshAt: 0,
     wildlife: wildlife.creatures, lights: ambient, lastLightning: 0, lightningUntil: 0,
     displayWeather: startingPhase.weather === "Clear" ? "Rain" : startingPhase.weather,
     weatherIntensity: 0, snowAccumulation: 0, lastTickTime: performance.now(),
@@ -2970,6 +3067,7 @@ function setupEnvironment() {
     }
   };
   state.environmentWorld = world;
+  installSnowSurfaceMaterials(state.environment);
   const player = world.player?.position;
   if (player) state.lastSafePosition = { x: player.x, y: player.y, z: player.z };
 }
@@ -3047,8 +3145,17 @@ function tickEnvironment(time = performance.now()) {
   if (phase.weather === "Clear" && env.weatherIntensity === 0) env.displayWeather = "Clear";
   env.targetWeather = phase.weather;
   const snowTarget = phase.weather === "Snow" ? 1 : 0;
-  const snowRate = snowTarget > env.snowAccumulation ? elapsed / 18 : elapsed / 22;
+  const snowRate = snowTarget > env.snowAccumulation ? elapsed / 18 : elapsed / 24;
   env.snowAccumulation = THREE.MathUtils.clamp(env.snowAccumulation + Math.sign(snowTarget - env.snowAccumulation) * Math.min(Math.abs(snowTarget - env.snowAccumulation), snowRate), 0, 1);
+  const snowCrossfade = 1 - Math.exp(-elapsed / 2.4);
+  env.snowVisualAmount += (env.snowAccumulation - env.snowVisualAmount) * snowCrossfade;
+  if (env.snowVisualAmount < 0.0005 && snowTarget === 0) env.snowVisualAmount = 0;
+  env.snowUniform.value = env.snowVisualAmount;
+  window.__snugSnowAmount = env.snowVisualAmount;
+  if (time >= env.snowSurfaceRefreshAt) {
+    env.snowSurfaceRefreshAt = time + 1800;
+    installSnowSurfaceMaterials(env);
+  }
   const angle = phase.dayFraction * Math.PI * 2 - Math.PI;
   env.sun.position.set(Math.cos(angle) * 38, Math.sin(angle) * 24 + 17, -28);
   env.moon.position.set(-env.sun.position.x, 34 - env.sun.position.y, 28);
@@ -3079,13 +3186,11 @@ function tickEnvironment(time = performance.now()) {
     cloud.rotation.y = -cloud.userData.angle + Math.sin(time * 0.00009 + index) * 0.12;
   });
   if (env.terrainBaseColor && env.terrain?.material?.color) {
-    env.terrain.material.color.copy(env.terrainBaseColor).lerp(env.colors.snowGround, env.snowAccumulation * 0.86);
+    env.terrain.material.color.copy(env.terrainBaseColor).lerp(env.colors.snowGround, env.snowVisualAmount * 0.16);
   }
   if (env.globeBaseColor && env.globe?.material?.color) {
-    env.globe.material.color.copy(env.globeBaseColor).lerp(env.colors.snowGround, env.snowAccumulation * 0.48);
+    env.globe.material.color.copy(env.globeBaseColor).lerp(env.colors.snowGround, env.snowVisualAmount * 0.42);
   }
-  env.snowCover.material.opacity = Math.max(0, env.snowAccumulation - 0.18) / 0.82 * 0.52;
-  env.snowCover.visible = env.snowAccumulation > 0.002;
   const particles = env.weather.geometry.attributes.position;
   const falling = env.weatherIntensity > 0.006;
   const visibleWeather = phase.weather !== "Clear" ? phase.weather : env.displayWeather;
