@@ -1,16 +1,20 @@
-# Selfie Social Society 0.9.44 — new name
+# Selfie Social Society 0.9.45 — texture art pass: terrain, rugs, buildings, FX
 
-**Snapshot:** September 21, 2026  
-**Package version:** 0.9.44
+**Snapshot:** September 23, 2026  
+**Package version:** 0.9.45
 
-This release renames the game and its player-facing identity to **Selfie Social Society**. The town remains **Cyclical City**.
+This release puts the new texture artwork to work across the game while preserving every existing system and all NPC lore.
 
-## Included in 0.9.44
+## Included in 0.9.45
 
-- Updated the title, main-menu wordmark, loading and settings copy, Firebase-facing display text, and downloadable project package.
-- Preserved all gameplay, audio, NPC dialogue, roster details, and character choreography.
+- Terrain now uses the new artwork with tiling: dark meadow grass on the village ground (12x repeat), dirt path on the path ribbon (6x), teal pond water (3x) — all untinted so the art shows as authored.
+- 9 new placeable rugs in the Furniture shop (Diamond, Royal, Knit, Plaid Red/Tartan/Navy, Awning Coral, Burlap, Wicker), each a thin textured GLB auto-discovered from `assets/furniture/manifest.json`.
+- Cottage roofs use the new thatch art; cottage walls use the new plaster art (keeps each cottage's tint color); tree trunks on oak, pine, apple, maple, and willow use the new bark art (birch keeps its white bark).
+- Town hall roofs in the living world use the new shingles art.
+- Snowfall now renders the snowflake decal as particle sprites; lightning strikes during thunderstorms show a lightning-bolt decal in the sky; grass-tuft decals are scattered across the meadow (magenta chroma-keyed to transparent at load).
+- Bumped the project ZIP label to v0.9.45.
 
-# Selfie Social Society 0.9.43 — procedural cat voices
+# Cylinder Social Society 0.9.43 — procedural cat voices
 
 **Snapshot:** September 20, 2026  
 **Package version:** 0.9.43
@@ -26,7 +30,7 @@ This release gives adopted companions and Agnes Alley's shelter cats a subtle pr
 - Preserved drop-in audio-file priority and documented the eight new `cat-*.wav` replacement names.
 - Refreshed the downloadable project archive as version 0.9.43.
 
-# Selfie Social Society 0.9.42 — procedural character voices and world audio
+# Cylinder Social Society 0.9.42 — procedural character voices and world audio
 
 **Snapshot:** September 20, 2026  
 **Package version:** 0.9.42
@@ -42,7 +46,7 @@ This release expands the procedural audio layer with expressive character sounds
 - Preserved drop-in file priority for every new sound and documented all replacement filenames in the audio guide.
 - Refreshed the downloadable project archive as version 0.9.42.
 
-# Selfie Social Society 0.9.41 — procedural SFX engine
+# Cylinder Social Society 0.9.41 — procedural SFX engine
 
 **Snapshot:** September 20, 2026  
 **Package version:** 0.9.41
@@ -57,41 +61,41 @@ This release replaces the placeholder sound-effect files with the supplied proce
 - Preserved audio-folder overrides: a matching file discovered in `assets/audio/sfx/` takes priority over its synthesized default.
 - Removed the old bundled placeholder SFX files, refreshed the audio guide, and updated the downloadable project archive.
 
-# Selfie Social Society 0.9.40 — new name for the society and town
+# Cylinder Social Society 0.9.40 — new name for the society and town
 
 **Snapshot:** September 20, 2026  
 **Package version:** 0.9.40
 
-This release carries the new **Selfie Social Society** name and **Cyclical City** town name across the complete game and project package.
+This release carries the new **Cylinder Social Society** name and **Cyclical City** town name across the complete game and project package.
 
 ## Included in 0.9.40
 
-- Redrew the illustrated main-menu wordmark for **Selfie Social Society**, retaining the coin-headed neighbor motif and adding the **Cyclical City** signature.
+- Redrew the illustrated main-menu wordmark for **Cylinder Social Society**, retaining the coin-headed neighbor motif and adding the **Cyclical City** signature.
 - Updated player-facing menus, prompts, onboarding dialogue, activity panels, invitations, captions, and help text with the new names.
 - Updated asset guides, manifests, release notes, and the downloadable project archive while preserving infrastructure identifiers and gameplay behavior.
 
-# Selfie Social Society 0.9.39 — custom identity and iconography
+# Cylinder Social Society 0.9.39 — custom identity and iconography
 
 **Snapshot:** September 19, 2026  
 **Package version:** 0.9.39
 
-This release gives Selfie Social Society a hand-drawn visual identity while keeping the orbiting-town menu and every existing game flow intact.
+This release gives Cylinder Social Society a hand-drawn visual identity while keeping the orbiting-town menu and every existing game flow intact.
 
 ## Included in 0.9.39
 
-- Replaced the plain main-menu title with a crisp illustrated **Selfie Social Society** SVG wordmark featuring a coin-headed neighbor and a small **Cyclical City** signature.
+- Replaced the plain main-menu title with a crisp illustrated **Cylinder Social Society** SVG wordmark featuring a coin-headed neighbor and a small **Cyclical City** signature.
 - Added a consistent warm, black-outlined icon set for the main menu, game dock, shop, chat, camera, voice, notifications, photo mode, and Pause & Help.
 - Added a distinct custom SVG glyph for every game in the full 30-minigame catalogue, and wired the set into Solo Practice and active-round displays.
 - Added `assets/icons/README.md` with stable filenames, viewBox sizes, and replacement guidance so any icon or the logo can be redrawn later without changing game code.
 - Kept the icon-only main menu, transparent confirmation overlay, town camera, minigame catalogue, NPCs, environments, and multiplayer behavior unchanged.
 - Refreshed the downloadable project archive as **v0.9.39**, including the complete icon library and runtime enhancer.
 
-# Selfie Social Society 0.9.38 — editable Cyclical City layout
+# Cylinder Social Society 0.9.38 — editable Cyclical City layout
 
 **Snapshot:** September 19, 2026  
 **Package version:** 0.9.38
 
-This release connects Selfie Social Society to the World Editor’s shared layout format, so a redeployed `assets/world/layout.json` can reposition the shipped town without changing game code.
+This release connects Cylinder Social Society to the World Editor’s shared layout format, so a redeployed `assets/world/layout.json` can reposition the shipped town without changing game code.
 
 ## Included in 0.9.38
 
@@ -101,7 +105,7 @@ This release connects Selfie Social Society to the World Editor’s shared layou
 - Added `assets/world/README.md` with the coordinate contract, canonical and game-specific type IDs, exact NPC names, and the World Editor export-and-redeploy workflow.
 - Refreshed the downloadable project archive as **v0.9.38**, including the world-layout files and updated source.
 
-# Selfie Social Society 0.9.37 — game-night economy
+# Cylinder Social Society 0.9.37 — game-night economy
 
 **Snapshot:** September 19, 2026  
 **Package version:** 0.9.37
@@ -120,7 +124,7 @@ This release begins the next strategy-blueprint stage with a full minigame econo
 - Preserved the full 13-NPC cast, Firebase coin persistence, existing environment upgrades, and discovery-first presentation without an economy tutorial.
 - Refreshed the downloadable project archive as **v0.9.37** on September 19, 2026 at 3:15 PM EDT (**12.0 MiB**), including updated source files and checksums.
 
-# Selfie Social Society 0.9.36 — lantern-lit living town
+# Cylinder Social Society 0.9.36 — lantern-lit living town
 
 **Snapshot:** September 19, 2026  
 **Package version:** 0.9.36
@@ -137,7 +141,7 @@ This release gives Cyclical City a fuller day-to-night atmosphere, re-centers ev
 - Preserved all avatar, NPC, speaking-mouth, collision, tap-to-move, camera, onboarding, multiplayer, Snug Board, and minigame behavior.
 - Refreshed the downloadable project archive as **v0.9.36** on September 19, 2026 at 12:37 PM EDT (**12.0 MiB**), including the complete web project, Firebase files, environment upgrade source, drop-in asset folders, and checksums.
 
-# Selfie Social Society 0.9.35 — the Cyclical City cast
+# Cylinder Social Society 0.9.35 — the Cyclical City cast
 
 **Snapshot:** September 19, 2026  
 **Package version:** 0.9.35
@@ -155,7 +159,7 @@ This release writes the full confirmed town roster into Cyclical City as interac
 - Chip Chance now announces shared minigame names and winners from the existing minigame event stream.
 - Refreshed the downloadable project archive as **v0.9.35** on September 19, 2026 at 11:04 AM EDT (**12.0 MiB**), including the complete web project, Firebase files, NPC source and slot manifests, and checksums.
 
-# Selfie Social Society 0.9.34 — full minigame slate and living speech
+# Cylinder Social Society 0.9.34 — full minigame slate and living speech
 
 **Snapshot:** September 19, 2026  
 **Package version:** 0.9.34
@@ -174,7 +178,7 @@ This release completes the seven-wave minigame blueprint, expands Solo Practice 
 - Added auto-discovered prop folders and manifest entries for all 24 blueprint minigames.
 - Added a small black speaking mouth to Mayor Mayor, Gideon, Lyla Lens, and player avatars. Its edge ripples with speech, rotates gently while active, settles during pauses, and relaxes back to a plain circle when the line ends; subtitles and full-body speaking gestures remain intact.
 
-# Selfie Social Society 0.9.33 — atmospheric rainbows
+# Cylinder Social Society 0.9.33 — atmospheric rainbows
 
 **Snapshot:** September 19, 2026  
 **Package version:** 0.9.33
@@ -202,7 +206,7 @@ This release turns the after-rain rainbow into a true sky event while preserving
 
 ## Deploy
 
-1. Extract `selfie-social-society-project.zip` and upload the extracted **contents** to the root of the existing GitHub repository connected to Vercel.
+1. Extract `snug-society-project.zip` and upload the extracted **contents** to the root of the existing GitHub repository connected to Vercel.
 2. Follow the **Family room push notifications** section in `README.md` to set the VAPID key and `SITE_URL`.
 3. Run `npm --prefix functions install`, then `firebase deploy --only functions`.
 4. Publish `assets/firebase-realtime-database.rules.json` and `assets/firebase-firestore.rules` in Firebase Console.

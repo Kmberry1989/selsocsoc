@@ -103,7 +103,7 @@ function publishDiagnostics() {
   window.__cylindricWorldLayout = {
     format: FORMAT,
     version: FORMAT_VERSION,
-    gameVersion: '0.9.44',
+    gameVersion: '0.9.45',
     source: state.source,
     objectCount: state.effective.length,
     appliedCount: state.targets.size,

@@ -549,7 +549,7 @@ function buildUpgrade(world = window.__snugWorld) {
   state.group = group;
   state.effects = { lights, ground, life, pond };
   window.__cylindricEnvironmentUpgrade = {
-    version: '0.9.44',
+    version: '0.9.45',
     diagnostics: state.diagnostics,
     group,
     centerBuildingRoofs: () => centerBuildingRoofs(world),

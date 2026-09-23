@@ -46,6 +46,51 @@
       "path": "assets/furniture/reading-armchair.glb"
     },
     {
+      "id": "rug-awning-coral",
+      "name": "Rug Awning Coral",
+      "path": "assets/furniture/rug-awning-coral.glb"
+    },
+    {
+      "id": "rug-burlap",
+      "name": "Rug Burlap",
+      "path": "assets/furniture/rug-burlap.glb"
+    },
+    {
+      "id": "rug-diamond",
+      "name": "Rug Diamond",
+      "path": "assets/furniture/rug-diamond.glb"
+    },
+    {
+      "id": "rug-knit",
+      "name": "Rug Knit",
+      "path": "assets/furniture/rug-knit.glb"
+    },
+    {
+      "id": "rug-plaid-navy",
+      "name": "Rug Plaid Navy",
+      "path": "assets/furniture/rug-plaid-navy.glb"
+    },
+    {
+      "id": "rug-plaid-red",
+      "name": "Rug Plaid Red",
+      "path": "assets/furniture/rug-plaid-red.glb"
+    },
+    {
+      "id": "rug-plaid-tartan",
+      "name": "Rug Plaid Tartan",
+      "path": "assets/furniture/rug-plaid-tartan.glb"
+    },
+    {
+      "id": "rug-royal",
+      "name": "Rug Royal",
+      "path": "assets/furniture/rug-royal.glb"
+    },
+    {
+      "id": "rug-wicker",
+      "name": "Rug Wicker",
+      "path": "assets/furniture/rug-wicker.glb"
+    },
+    {
       "id": "sideboard",
       "name": "Sideboard",
       "path": "assets/furniture/sideboard.glb"

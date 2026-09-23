@@ -55,5 +55,5 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
   new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{if(node.nodeType===1)enhance(node);}))).observe(document.documentElement,{childList:true,subtree:true});
   addEventListener('snug-minigame-start',run);
-  window.__cylindricIconSystem={version:'0.9.44',enhance:run,gameById};
+  window.__cylindricIconSystem={version:'0.9.45',enhance:run,gameById};
 })();

@@ -15,6 +15,15 @@ Included pieces:
 - `dining-chair.glb`
 - `sideboard.glb`
 - `woven-rug.glb`
+- `rug-diamond.glb`
+- `rug-royal.glb`
+- `rug-knit.glb`
+- `rug-plaid-red.glb`
+- `rug-plaid-tartan.glb`
+- `rug-plaid-navy.glb`
+- `rug-awning-coral.glb`
+- `rug-burlap.glb`
+- `rug-wicker.glb`
 
 To add another piece, place a binary glTF 2.0 `.glb` here, keep its origin at ground center, and run:
 

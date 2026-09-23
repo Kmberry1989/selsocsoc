@@ -1849,7 +1849,7 @@ class ProceduralCatAudioEngine {
 
   window.addEventListener("pagehide", () => clearInterval(monitor), { once: true });
   window.__snugProceduralAudio = {
-    version: "0.9.44",
+    version: "0.9.45",
     context: sharedContext,
     emotes,
     suite,
