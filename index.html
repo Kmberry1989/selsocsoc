@@ -593,6 +593,70 @@
     @media(prefers-reduced-motion:reduce){.mini-balloon,.pond-ripple:before,.pond-ripple:after,.pond-ripple i{animation:none}}
   </style>
   <link rel="stylesheet" href="assets/cosmetic-tints.css">
+  <style id="snug-portrait-focus-styles">
+    /* The first-run portrait flow is a true focus screen: no world or navigation
+       can sit behind it, receive a stray tap, or compete with the photograph. */
+    .sheet-backdrop[data-portrait-step-flow="true"]{
+      z-index:900!important;
+      align-items:stretch!important;
+      width:var(--snug-viewport-width,100vw)!important;
+      height:var(--snug-viewport-height,100dvh)!important;
+      max-width:none!important;
+      max-height:none!important;
+      padding:0!important;
+      background:var(--surface)!important;
+      overflow:hidden!important;
+      overscroll-behavior:none;
+    }
+    .sheet-backdrop[data-portrait-step-flow="true"]>.sheet[data-welcome-enhanced="true"]{
+      width:100%!important;
+      height:100%!important;
+      max-width:none!important;
+      max-height:none!important;
+      margin:0!important;
+      padding:max(var(--snug-safe-top,8px),12px) max(var(--snug-safe-right,8px),14px) max(var(--snug-safe-bottom,8px),12px) max(var(--snug-safe-left,8px),14px)!important;
+      border-radius:0!important;
+      background:var(--surface)!important;
+      box-shadow:none!important;
+      overflow-x:hidden!important;
+      overflow-y:auto!important;
+      overscroll-behavior:contain;
+      -webkit-overflow-scrolling:touch;
+    }
+    .sheet[data-welcome-enhanced="true"] .sheet-head .icon-btn{display:none!important}
+    .sheet[data-welcome-enhanced="true"][data-portrait-phase="refine"] .sheet-head,
+    .sheet[data-welcome-enhanced="true"][data-portrait-phase="refine"] .portrait-director{display:none!important}
+    .sheet[data-welcome-enhanced="true"][data-portrait-phase="refine"] .portrait-route,
+    .sheet[data-welcome-enhanced="true"][data-portrait-phase="refine"] .quick-capture,
+    .sheet[data-welcome-enhanced="true"][data-portrait-phase="refine"] .avatar-expression-preview,
+    .sheet[data-welcome-enhanced="true"][data-portrait-phase="refine"] .face-editor{width:min(560px,100%);margin-left:auto;margin-right:auto}
+    .sheet[data-welcome-enhanced="true"][data-portrait-phase="refine"] .avatar-expression-preview{
+      display:block!important;
+      margin-top:10px;
+      margin-bottom:10px;
+      padding:0;
+      border:0;
+      background:transparent;
+    }
+    .sheet[data-welcome-enhanced="true"][data-portrait-phase="refine"] .avatar-expression-preview-copy{display:none!important}
+    .sheet[data-welcome-enhanced="true"][data-portrait-phase="refine"] .avatar-expression-stage{
+      width:100%;
+      height:clamp(180px,32dvh,300px);
+      border-radius:18px;
+      background:color-mix(in srgb,var(--sky) 42%,var(--surface-2));
+    }
+    .sheet[data-welcome-enhanced="true"][data-portrait-phase="refine"] .face-editor{
+      margin-top:0;
+      padding:10px 0 0;
+      border-top:1px solid var(--border);
+      border-bottom:0;
+    }
+    @media(max-height:620px){
+      .sheet[data-welcome-enhanced="true"][data-portrait-phase="refine"] .avatar-expression-stage{height:150px}
+      .sheet[data-welcome-enhanced="true"][data-portrait-phase="refine"] .quick-capture{margin-bottom:4px}
+      .sheet[data-welcome-enhanced="true"][data-portrait-phase="refine"] .avatar-expression-preview{margin-top:4px;margin-bottom:4px}
+    }
+  </style>
   <script src="assets/cosmetic-tints.js"></script>
   <script src="assets/speaking-mouth.js"></script>
   <script async src="assets/selfie-social-society-app.bundle.js"></script>
