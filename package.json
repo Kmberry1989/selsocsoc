@@ -5,5 +5,8 @@
   "scripts": {
     "build": "node scripts/generate-cosmetics-manifest.mjs && node assets/audio/generate-manifest.mjs && node assets/menu-wallpaper/generate-manifest.mjs && node assets/environment-props/generate-manifest.mjs && node assets/minigames/generate-manifest.mjs"
   },
-  "displayName": "Selfie Social Society"
+  "displayName": "Selfie Social Society",
+  "dependencies": {
+    "archiver": "^8.0.0"
+  }
 }

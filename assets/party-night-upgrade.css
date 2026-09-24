@@ -1,0 +1,107 @@
+:root {
+  --party-ink: #213638;
+  --party-coral: #e76854;
+  --party-gold: #e8b94d;
+  --party-teal: #4e8f88;
+}
+
+.party-setup-backdrop,
+.portrait-camera-backdrop {
+  position: fixed;
+  z-index: 1100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  background: #172021b8;
+  backdrop-filter: blur(10px);
+}
+
+.party-setup,
+.portrait-camera {
+  width: min(620px, 100%);
+  max-height: min(850px, 100%);
+  overflow: auto;
+  border: 1px solid #ffffff99;
+  border-radius: 28px;
+  background: #fffdf8;
+  color: var(--party-ink);
+  box-shadow: 0 24px 80px #0d17184d;
+}
+
+.party-setup { padding: 24px; }
+.party-setup header,
+.portrait-camera header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.party-setup header small,
+.portrait-camera header small { color: var(--party-teal); font-size: 11px; font-weight: 900; letter-spacing: .11em; text-transform: uppercase; }
+.party-setup h2,
+.portrait-camera h2 { margin: 3px 0 5px; font-size: clamp(27px, 5vw, 38px); line-height: 1; letter-spacing: -.04em; }
+.party-setup p { margin: 0; color: #647274; line-height: 1.5; }
+.party-close { width: 44px; height: 44px; border: 1px solid #d9dedb; border-radius: 50%; background: #f5f0e7; font-size: 25px; }
+.party-options { display: grid; gap: 18px; margin: 24px 0; }
+.party-options fieldset { border: 0; }
+.party-options legend { margin-bottom: 8px; font-size: 12px; font-weight: 900; }
+.party-segments { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.party-segments button { min-height: 48px; padding: 8px; border: 1px solid #d9dedb; border-radius: 14px; background: #f5f0e7; font-weight: 800; }
+.party-segments button[aria-pressed="true"] { border-color: var(--party-coral); background: #fff1ec; color: #a53a2c; box-shadow: inset 0 0 0 1px var(--party-coral); }
+.party-rule-copy { min-height: 44px; margin-top: 9px; font-size: 12px; }
+.party-start { width: 100%; min-height: 54px; border: 0; border-radius: 16px; background: var(--party-coral); color: #fff; font-size: 16px; font-weight: 950; box-shadow: 0 8px 18px #b842333d; }
+
+.portrait-studio-intro { margin: 10px 0 14px; padding: 14px; border-radius: 18px; background: linear-gradient(135deg, #fff1e9, #f3eadc); }
+.portrait-studio-intro b { display: block; margin-bottom: 4px; }
+.portrait-studio-intro p { margin: 0; color: #5f6c6e; font-size: 12px; line-height: 1.45; }
+.portrait-capture-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 12px; }
+.portrait-capture-choices button,
+.portrait-upload-label { display: grid; min-height: 64px; place-items: center; padding: 9px; border: 1px solid #d7dcd8; border-radius: 15px; background: #fffdf8; color: var(--party-ink); text-align: center; font-size: 12px; font-weight: 900; cursor: pointer; }
+.portrait-capture-choices small { display: block; color: #728082; font-weight: 650; }
+.portrait-upload-label input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.portrait-progress { margin-top: 10px; color: #526164; font-size: 11px; font-weight: 800; }
+.portrait-contact-sheet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin: 12px 0; }
+.portrait-contact-sheet button { position: relative; aspect-ratio: 1; overflow: hidden; padding: 0; border: 2px solid #fff; border-radius: 14px; background: #e8ece8; box-shadow: 0 0 0 1px #d3d8d4; }
+.portrait-contact-sheet img { width: 100%; height: 100%; object-fit: cover; }
+.portrait-contact-sheet span { position: absolute; right: 4px; bottom: 4px; left: 4px; padding: 4px; border-radius: 8px; background: #172021c9; color: #fff; font-size: 9px; font-weight: 900; }
+.portrait-manager-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 12px 0; padding: 10px 12px; border: 1px solid #d9dedb; border-radius: 14px; }
+.portrait-manager-row span { display: grid; }
+.portrait-manager-row small { color: #708082; }
+.portrait-manager-row button { min-width: 72px; min-height: 40px; border: 0; border-radius: 12px; background: #26383b; color: #fff; font-weight: 850; }
+.portrait-manager-row button[aria-pressed="false"] { background: #e4e7e4; color: #687476; }
+.portrait-delete-all { width: 100%; min-height: 42px; border: 1px solid #d98d82; border-radius: 13px; background: #fff4f1; color: #9d3d31; font-weight: 850; }
+.portrait-head.is-direct-edit { cursor: grab; touch-action: none; outline: 2px dashed #ffffffb8; outline-offset: -8px; }
+.portrait-head.is-direct-edit:active { cursor: grabbing; }
+.portrait-fine-tune { margin: 9px 0; border-top: 1px solid #d9dedb; border-bottom: 1px solid #d9dedb; }
+.portrait-fine-tune summary { padding: 12px 0; font-size: 12px; font-weight: 900; cursor: pointer; }
+
+.portrait-camera { padding: 18px; }
+.portrait-camera-stage { position: relative; overflow: hidden; margin-top: 14px; border-radius: 22px; aspect-ratio: 1; background: #172021; }
+.portrait-camera video,
+.portrait-camera canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+.portrait-camera canvas { position: absolute; inset: 0; }
+.portrait-face-guide { position: absolute; width: 57%; height: 72%; border: 3px solid #fff; border-radius: 48% 48% 44% 44%; top: 13%; left: 21.5%; box-shadow: 0 0 0 999px #0c16164a; pointer-events: none; }
+.portrait-camera-status { position: absolute; right: 12px; bottom: 12px; left: 12px; padding: 9px 12px; border-radius: 13px; background: #172021d9; color: #fff; text-align: center; font-size: 12px; font-weight: 850; }
+.portrait-countdown { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-size: 88px; font-weight: 950; text-shadow: 0 6px 24px #000; }
+.portrait-camera-actions { display: grid; grid-template-columns: 1fr 1.6fr; gap: 9px; margin-top: 12px; }
+.portrait-camera-actions button { min-height: 50px; border: 0; border-radius: 14px; font-weight: 900; }
+.portrait-camera-actions button:first-child { background: #ecece6; color: var(--party-ink); }
+.portrait-camera-actions button:last-child { background: var(--party-coral); color: #fff; }
+
+.market-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
+.market-list small,.market-list em { grid-column: 1 / -1; }
+.market-list b { padding: 8px 4px; border-radius: 9px; background: #ecebe2; color: #6f7b7b; text-align: center; font-size: 10px; }
+.market-list b.active { background: #fff0bd; color: #715210; box-shadow: inset 0 0 0 2px var(--party-gold); }
+.market-list em { color: #708082; font-size: 10px; font-style: normal; }
+.challenge-targets.market button span:before { content: "Market item"; display: block; margin-bottom: 4px; color: #7a8889; font-size: 8px; }
+
+@media (max-width: 520px) {
+  .party-setup-backdrop,.portrait-camera-backdrop { padding: 0; align-items: stretch; }
+  .party-setup,.portrait-camera { width: 100%; max-height: 100%; border-radius: 0; padding-top: max(18px, env(safe-area-inset-top)); }
+  .portrait-capture-choices { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .party-setup-backdrop,.portrait-camera-backdrop { backdrop-filter: none; }
+}
+
+.snug-board-space.star.active-prize {
+  box-shadow: 0 0 0 3px rgba(255, 226, 111, .72), 0 10px 28px rgba(255, 210, 72, .3);
+  transform: translateY(-3px);
+}
