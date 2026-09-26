@@ -1,39 +1,8 @@
-# Selfie Social Society — 3D parachute arrival + NPC speaking performance
+# Selfie Social Society — hotfix: welcoming-committee stall + arrival handoff (September 26, 2026)
 
-**Snapshot:** September 26, 2026
-**Package version:** 0.9.45
-
-- Parachute arrival is now fully 3D: ambient parachutists stream down through the main-menu diorama behind the title; confirming a mode hides the menu and glides the player's own avatar down toward Cyclical City with the camera following toward the mayor's office, then fades to black into the welcoming committee. The old DOM/CSS parachutist film is gone, along with the stutter at the start of the fall (pre-warmed shared geometry, eased delta-time descent).
-- NPC speaking performance: a speaking NPC shakes like an upside-down salt shaker while its large circular mouth spills words that fall to the bottom of the screen and form the captions.
-- Dialogue now auto-advances to the next line once a line has been spoken and the player gives no input; press-and-hold fast-forward and tap behavior are unchanged.
-- All NPC placeholder slots (FaceSlot_*, OutfitSlot_*, HeadAccessorySlot_*, HandSlot_*, ShoeSlot_*, HeldItemSlot_*) intact.
-
-# Selfie Social Society — artifact sync: sprite world pass + new game systems
-
-**Snapshot:** September 26, 2026
-**Package version:** 0.9.45
-
-Synced the repository to the live artifact build: the game now runs from the multi-file structure (index.html + assets/) matching the current Selfie Social Society build, replacing the earlier single-file export which was missing several live scripts.
-
-## Included in this sync
-
-- Sprite world pass (`assets/plant-billboards.js` + `assets/sprites/`): 37 transparent camera-facing world sprites — bushes, decor (birdhouse, cairn, lantern, mushrooms, reeds, signpost), flowers and plants — blooming/rising into view on approach.
-- World direction pass (`assets/world-direction-pass.js`): four feathered biome surfaces (Clover Commons, Whispering Wood, Sunmeadow, Pondmarsh) plus NPC visitor badges and crests for the player-vs-NPC visual distinction.
-- New game systems: `assets/inventory-system.js` (inventory UI), `assets/minigame-stages.js` (card-game table stages), `assets/outfit-textures.js` (2D outfit-texture prototype), `assets/npc-roster.js`, `assets/environment-upgrade.js`, `assets/world-layout.js`, `assets/push-notifications.js`.
-- 14 inventory item sprites in `assets/inventory/items/` and the outfit-texture prototype in `assets/outfit-textures/` (from the earlier update) are preserved and wired into the live scripts.
-- `assets/snug-asset-pipeline.js` updated for the new asset folders.
-
-# Selfie Social Society 0.9.45 — inventory sprites + 2D outfit-texture prototype
-
-**Snapshot:** September 26, 2026  
-**Package version:** 0.9.45
-
-Content update on the 0.9.45 build: 14 illustrated inventory item sprites and a manifest-driven 2D outfit-texture prototype. Every existing system, asset, and NPC lore is preserved.
-
-## Included in this update
-
-- 14 new inventory item sprites in `assets/inventory/items/`: Lucky Bobber, Snapshot Lens, Moonlight Lantern, Cat Treat Tin, Golden Dice, Wishing Coin, Mayor's Mini Top Hat, Gideon's Guitar Pick, Starlight Crown, Barnaby's Bargain Tag, Dottie's Streak Ribbon, Bubble Wand, Pip's Parade Kazoo, Mystery Left Boot.
-- New 2D outfit-texture prototype in `assets/outfit-textures/` (additive — all 3D GLB outfit support is unchanged): manifest-driven PNG pipeline where transparent pixels reveal the body underneath and the overlay follows body geometry and body sliders. Ships with a 1024x1024 peg-body UV template and the Painted Pastel Tunic proof of concept.
+- Fixed the welcoming committee stalling after any tap: tapping the dialogue or panel used to cancel the auto-advance timer without advancing the line, leaving the scene stuck until the Continue button was found. Tapping now advances to the next line once the current line has been spoken; taps during speech no longer kill the pending auto-advance.
+- Fixed the arrival fallback leaving a permanent black overlay: if the 3D world wasn't ready when a mode was confirmed, the fade stayed opaque and the arrival class stayed set, trapping the player. The fallback now lifts the fade exactly like the full glide.
+- Fixed the ambient parachutist stream resurrecting for one frame at the end of the arrival glide (a full scene recompile hitch right as the committee starts).
 
 # Selfie Social Society 0.9.45 — texture art pass: terrain, rugs, buildings, FX
 

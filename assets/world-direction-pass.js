@@ -362,6 +362,12 @@
       if (!ready) {
         fade.classList.add("is-black");
         await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        // The fallback must release the screen exactly like the full glide:
+        // leaving the fade black and the arrival class set would trap the
+        // player behind an opaque overlay with no way forward.
+        document.documentElement.classList.remove("snug-arrival-active");
+        fade.classList.add("is-out");
+        setTimeout(() => fade.remove(), reducedMotion.matches ? 80 : 520);
         return { mode, sequence: "parachute-arrival-3d-fallback" };
       }
       const { world, THREE } = ready;
@@ -455,6 +461,11 @@
   };
 
   const classObserver = new MutationObserver(() => {
+    // While the arrival intro is settling (its promise is still pending) the
+    // menu classes shuffle during the handoff — never resurrect the ambient
+    // parachutist stream in that window; it would compile the whole scene
+    // and hitch right as the welcoming committee starts.
+    if (window.__snugArrivalPromise) return;
     if (document.documentElement.classList.contains("snug-start-open") && !document.documentElement.classList.contains("snug-arrival-active")) ensureParachutes();
     else if (parachuteState?.ambientActive && !parachuteState.introActive) stopAmbient();
   });
