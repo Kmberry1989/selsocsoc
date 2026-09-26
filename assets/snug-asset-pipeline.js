@@ -103,6 +103,28 @@ async function loadManifest() {
   return normalizeCatalog(source, reviews);
 }
 
+function normalizeTextureOutfit(item) {
+  const filename = String(item?.path || '').split('/').pop();
+  if (!filename || !/\.png$/i.test(filename)) return null;
+  const id = String(item?.id || filename.replace(/\.png$/i, ''));
+  return {
+    id,
+    name: String(item?.name || displayName(filename)),
+    path: String(item.path),
+    type: 'texture-outfit',
+    description: String(item?.description || '')
+  };
+}
+
+async function loadTextureOutfitManifest() {
+  const source = await loadJSON('assets/outfit-textures/manifest.json', { outfits: [] });
+  const seen = new Set();
+  return (Array.isArray(source.outfits) ? source.outfits : [])
+    .map(normalizeTextureOutfit)
+    .filter((item) => item && !seen.has(item.id) && seen.add(item.id))
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
 function normalizeEnvironment(source = {}) {
   return Object.fromEntries(Object.entries(ENVIRONMENT_FOLDERS).map(([category, folder]) => {
     const seen = new Set();
@@ -214,7 +236,7 @@ let pipelinePromise;
 export function loadSnugAssetPipeline() {
   if (pipelinePromise) return pipelinePromise;
   pipelinePromise = (async () => {
-    const [catalog, environment, furniture, minigames] = await Promise.all([loadManifest(), loadEnvironmentManifest(), loadFurnitureManifest(), loadMinigameManifest()]);
+    const [catalog, textureOutfits, environment, furniture, minigames] = await Promise.all([loadManifest(), loadTextureOutfitManifest(), loadEnvironmentManifest(), loadFurnitureManifest(), loadMinigameManifest()]);
     const pendingReviews = Object.entries(catalog).flatMap(([category, items]) =>
       items.filter((item) => item.id && item.fitPending).map((item) => ({ ...item, category }))
     );
@@ -274,6 +296,7 @@ export function loadSnugAssetPipeline() {
 
     return {
       catalog,
+      textureOutfits,
       environment,
       furniture,
       minigames,

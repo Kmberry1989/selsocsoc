@@ -1,0 +1,1 @@
+.snug-painted-outfit-row select{min-width:0}.snug-painted-outfit-row::after{content:"2D · alpha keeps the body color";grid-column:1/-1;font-size:11px;font-weight:700;color:var(--muted);line-height:1.2;margin-top:-2px}@media(max-width:520px){.snug-painted-outfit-row::after{font-size:10px}}

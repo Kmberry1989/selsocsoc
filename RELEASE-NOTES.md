@@ -1,3 +1,18 @@
+# Selfie Social Society — artifact sync: sprite world pass + new game systems
+
+**Snapshot:** September 26, 2026
+**Package version:** 0.9.45
+
+Synced the repository to the live artifact build: the game now runs from the multi-file structure (index.html + assets/) matching the current Selfie Social Society build, replacing the earlier single-file export which was missing several live scripts.
+
+## Included in this sync
+
+- Sprite world pass (`assets/plant-billboards.js` + `assets/sprites/`): 37 transparent camera-facing world sprites — bushes, decor (birdhouse, cairn, lantern, mushrooms, reeds, signpost), flowers and plants — blooming/rising into view on approach.
+- World direction pass (`assets/world-direction-pass.js`): four feathered biome surfaces (Clover Commons, Whispering Wood, Sunmeadow, Pondmarsh) plus NPC visitor badges and crests for the player-vs-NPC visual distinction.
+- New game systems: `assets/inventory-system.js` (inventory UI), `assets/minigame-stages.js` (card-game table stages), `assets/outfit-textures.js` (2D outfit-texture prototype), `assets/npc-roster.js`, `assets/environment-upgrade.js`, `assets/world-layout.js`, `assets/push-notifications.js`.
+- 14 inventory item sprites in `assets/inventory/items/` and the outfit-texture prototype in `assets/outfit-textures/` (from the earlier update) are preserved and wired into the live scripts.
+- `assets/snug-asset-pipeline.js` updated for the new asset folders.
+
 # Selfie Social Society 0.9.45 — inventory sprites + 2D outfit-texture prototype
 
 **Snapshot:** September 26, 2026  
