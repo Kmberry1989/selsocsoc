@@ -1,3 +1,11 @@
+# Selfie Social Society — hotfix: committee auto-advance guarantee + tap/long-press + mouth/tip (September 26, 2026)
+
+- Fixed the welcoming committee stalling on the mayor's first line: the auto-advance waited for a speechSynthesis end event that iOS can silently drop, so the scene never progressed. Each line now also arms a generous text-length timer that guarantees advancement even if speech events never fire; real speech still advances promptly via its end event.
+- Tapping the committee panel or dialogue now always advances to the next line; a 450ms press-and-hold (long-press) also advances. Lifting after a hold no longer double-advances.
+- Removed the painted smile arcs from the welcoming-committee faces — the 3D speaking mouth is now the one mouth shape, so it no longer reads as a nose.
+- The speaking mouth now squiggles while talking (layered ripples, slightly wider than tall) via the shared speaking-mouth module.
+- The speaking committee member now tips sideways in the air (~24 degrees with a salt-shaker shake) once in position, and untilts smoothly while landing.
+
 # Selfie Social Society — hotfix: welcoming-committee stall + arrival handoff (September 26, 2026)
 
 - Fixed the welcoming committee stalling after any tap: tapping the dialogue or panel used to cancel the auto-advance timer without advancing the line, leaving the scene stuck until the Continue button was found. Tapping now advances to the next line once the current line has been spoken; taps during speech no longer kill the pending auto-advance.

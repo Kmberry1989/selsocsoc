@@ -4,20 +4,27 @@
 
   function paint(mouth, level, now) {
     const { canvas, context, texture, phase } = mouth;
-    const center = canvas.width / 2;
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
     const settledRadius = canvas.width * 0.16;
     const radius = settledRadius + canvas.width * 0.075 * level;
-    const wave = canvas.width * 0.045 * level;
+    // One mouth shape: a squiggly blob. The squiggle grows while talking
+    // via layered ripples at different speeds; a gentle wobble at rest.
+    const wave = canvas.width * (0.02 + 0.075 * level);
+    const t = now * 0.001;
 
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.beginPath();
-    for (let index = 0; index < 36; index += 1) {
-      const angle = index / 36 * TAU;
-      const ripple = Math.sin(angle * 5 + now * 0.011 + phase) * wave
-        + Math.sin(angle * 3 - now * 0.006 + phase * 0.7) * wave * 0.38;
-      const distance = radius + ripple;
-      const x = center + Math.cos(angle) * distance;
-      const y = center + Math.sin(angle) * distance;
+    const steps = 48;
+    for (let index = 0; index < steps; index += 1) {
+      const angle = index / steps * TAU;
+      const squiggle = Math.sin(angle * 5 + t * 11 + phase) * wave
+        + Math.sin(angle * 8 - t * 7.3 + phase * 1.7) * wave * 0.55
+        + Math.sin(angle * 3 + t * 3.1 + phase * 0.6) * wave * 0.4;
+      const distance = radius + squiggle;
+      // Slightly wider than tall so it reads as a mouth, never a nose.
+      const x = cx + Math.cos(angle) * distance * 1.18;
+      const y = cy + Math.sin(angle) * distance * 0.92;
       if (index === 0) context.moveTo(x, y);
       else context.lineTo(x, y);
     }
