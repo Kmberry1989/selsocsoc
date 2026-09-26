@@ -279,50 +279,9 @@
   };
 
   const ensureParachutes = () => {
-    const THREE = window.__snugThree;
-    const world = window.__snugWorld;
-    if (!THREE || !world?.scene || !world.player || world.mode !== "village") return false;
-    if (parachuteState?.world === world && parachuteState.ambientActive) return true;
-    if (parachuteState) stopAmbient();
-    const group = new THREE.Group(); group.name = "SnugParachuting3D";
-    const resources = createParachuteResources(THREE, world);
-    const ambient = [];
-    for (let index = 0; index < 6; index += 1) {
-      const rig = createParachutist(THREE, resources, resources.template, `AmbientParachutist3D_${index + 1}`);
-      group.add(rig); ambient.push(rig);
-    }
-    world.scene.add(group);
-    const state = { THREE, world, group, resources, ambient, ambientActive: true, introActive: false, frame: 0, lastTime: performance.now(), raf: 0 };
-    parachuteState = state;
-    ambient.forEach((rig, index) => resetAmbient(rig, index, 0, true));
-    const tick = (now) => {
-      if (parachuteState !== state) return;
-      state.raf = requestAnimationFrame(tick);
-      const delta = clamp((now - state.lastTime) / 1000, 0, .034);
-      state.lastTime = now; state.frame += 1;
-      if (state.ambientActive && document.documentElement.classList.contains("snug-start-open") && !state.introActive) {
-        state.ambient.forEach((rig, index) => {
-          const motion = rig.userData.motion;
-          if (state.frame === motion.readyFrame) rig.visible = true;
-          if (state.frame < motion.motionFrame || reducedMotion.matches) return;
-          motion.moving = true; motion.age += delta;
-          const ramp = easeOutCubic(motion.age / .9);
-          rig.position.y -= motion.speed * ramp * delta;
-          rig.position.x += (motion.drift + Math.sin(motion.age * .72 + motion.phase) * .18) * delta;
-          rig.rotation.z = Math.sin(motion.age * 1.25 + motion.phase) * .065;
-          if (rig.position.y < 1.6) resetAmbient(rig, index, state.frame);
-        });
-      } else if (state.ambientActive && !document.documentElement.classList.contains("snug-start-open")) stopAmbient();
-    };
-    requestAnimationFrame(() => {
-      if (parachuteState !== state) return;
-      ambient.forEach((rig) => { rig.visible = true; });
-      try { world.renderer?.compile?.(world.scene, world.camera); } catch {}
-      ambient.forEach((rig) => { rig.visible = false; });
-      state.raf = requestAnimationFrame(tick);
-    });
-    window.__snugArrivalDebug = { ambientCount: ambient.length, active: true, sharedResources: true, mode: "ambient" };
-    return true;
+    // Parachuters removed (user-directed 2026-09-26): the menu no longer
+    // streams ambient parachutists. Kept as a no-op so callers don't break.
+    return false;
   };
 
   const cleanupParachutes = () => {
@@ -352,102 +311,21 @@
   window.__snugArrivalIntro = async (mode = "town") => {
     if (window.__snugArrivalPromise) return window.__snugArrivalPromise;
     window.__snugArrivalPromise = (async () => {
-      const ready = await waitForWorld();
+      // Parachute glide removed (user-directed 2026-09-26): a simple
+      // fade-through from the menu to the welcoming committee.
       const fade = document.createElement("div");
       fade.className = "snug-arrival-fade";
       fade.setAttribute("aria-hidden", "true");
       document.body.appendChild(fade);
       document.documentElement.classList.add("snug-arrival-active");
-      stopAmbient({ keepResources: true });
-      if (!ready) {
-        fade.classList.add("is-black");
-        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-        // The fallback must release the screen exactly like the full glide:
-        // leaving the fade black and the arrival class set would trap the
-        // player behind an opaque overlay with no way forward.
-        document.documentElement.classList.remove("snug-arrival-active");
-        fade.classList.add("is-out");
-        setTimeout(() => fade.remove(), reducedMotion.matches ? 80 : 520);
-        return { mode, sequence: "parachute-arrival-3d-fallback" };
-      }
-      const { world, THREE } = ready;
-      let state = parachuteState;
-      if (!state || state.world !== world) {
-        const group = new THREE.Group(); group.name = "SnugParachuting3D"; world.scene.add(group);
-        state = { THREE, world, group, resources: createParachuteResources(THREE, world), ambient: [], ambientActive: false, introActive: false, frame: 0, lastTime: performance.now(), raf: 0 };
-        parachuteState = state;
-      }
-      state.introActive = true;
-      const hall = world.scene.getObjectByName("NorthTownHall");
-      const hallPosition = new THREE.Vector3(0, 0, -33);
-      hall?.getWorldPosition?.(hallPosition);
-      const start = new THREE.Vector3(hallPosition.x - 4.2, hallPosition.y + 12.5, hallPosition.z + 10.5);
-      const finish = new THREE.Vector3(hallPosition.x, hallPosition.y + 1.35, hallPosition.z + 4.2);
-      const hero = createParachutist(THREE, state.resources, window.__snugPlayerAvatar || world.player, "PlayerArrivalParachutist3D");
-      hero.position.copy(start); state.group.add(hero);
-      const originalVisible = world.player.visible;
-      world.player.visible = false;
-      const cameraStart = world.camera.position.clone();
-      const cameraQuaternion = world.camera.quaternion.clone();
-      const duration = reducedMotion.matches ? .24 : 4.35;
-      const verticalDistance = start.y - finish.y;
-      const baseSpeed = verticalDistance / Math.max(.2, duration - Math.min(.225, duration * .25));
-      let elapsed = 0, last = performance.now(), frame = 0, fading = false;
-      hero.visible = false;
-      // The shared parachute resources were compiled during menu prewarm.
-      // Recompiling the entire live town here stalls mode confirmation.
-      window.__snugArrivalDebug = { ambientCount: 0, active: true, sharedResources: true, mode: "player-glide", target: "NorthTownHall" };
-      await new Promise((resolve) => {
-        let done = false;
-        const finishGlide = () => { if (done) return; done = true; resolve(); };
-        // Always release the existing enter(mode) contract, even if an embedded
-        // browser temporarily suspends animation frames during the transition.
-        const watchdog = setTimeout(() => {
-          fade.classList.add("is-black");
-          finishGlide();
-        }, reducedMotion.matches ? 700 : 6200);
-        const glide = (now) => {
-          if (done) return;
-          const delta = clamp((now - last) / 1000, 0, .05); last = now; frame += 1;
-          if (frame === 1) { hero.visible = true; requestAnimationFrame(glide); return; }
-          // Use a clamped simulation delta so both motion and completion remain
-          // stable when the host's frame clock jumps, pauses, or is virtualized.
-          elapsed = Math.min(duration, elapsed + delta);
-          if (!fading) {
-            const progress = clamp(elapsed / duration, 0, 1);
-            const horizontal = easeOutCubic(progress);
-            const ramp = reducedMotion.matches ? 1 : easeOutCubic(elapsed / .9);
-            hero.position.y = Math.max(finish.y, hero.position.y - baseSpeed * ramp * delta);
-            hero.position.x = start.x + (finish.x - start.x) * horizontal;
-            hero.position.z = start.z + (finish.z - start.z) * horizontal;
-            hero.rotation.z = reducedMotion.matches ? 0 : Math.sin(elapsed * 1.75) * .075 * (1 - progress);
-            const cameraGoal = new THREE.Vector3(hero.position.x + 7.4, hero.position.y + 4.8, hero.position.z + 10.2);
-            const follow = reducedMotion.matches ? 1 : 1 - Math.exp(-delta * 3.8);
-            world.camera.position.lerp(cameraGoal, follow);
-            world.camera.lookAt(new THREE.Vector3(hero.position.x, hero.position.y + 1.8, hero.position.z));
-            if (progress >= 1 || hero.position.y <= finish.y + .02) {
-              hero.position.copy(finish); fading = true; fade.classList.add("is-black");
-              // The handoff must not depend on foreground rAF cadence: browsers
-              // can throttle frames while the full-screen fade is opaque.
-              setTimeout(() => { clearTimeout(watchdog); finishGlide(); }, reducedMotion.matches ? 80 : 460);
-              return;
-            }
-          }
-          requestAnimationFrame(glide);
-        };
-        requestAnimationFrame(glide);
-      });
-      world.player.visible = originalVisible;
-      world.camera.position.copy(cameraStart); world.camera.quaternion.copy(cameraQuaternion);
-      hero.parent?.remove(hero);
-      state.introActive = false;
-      cleanupParachutes();
-      // Reveal the next scene without waiting for another rAF while the page is
-      // fully covered; some embedded WebViews pause opaque-frame callbacks.
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      fade.classList.add("is-black");
+      await new Promise((resolve) => setTimeout(resolve, reducedMotion.matches ? 120 : 520));
       document.documentElement.classList.remove("snug-arrival-active");
       fade.classList.add("is-out");
       setTimeout(() => fade.remove(), reducedMotion.matches ? 80 : 520);
-      return { mode, sequence: "parachute-arrival-3d" };
+      window.__snugArrivalDebug = { ambientCount: 0, active: false, sharedResources: true, mode: "fade" };
+      return { mode, sequence: "fade-arrival" };
     })().finally(() => { window.__snugArrivalPromise = null; });
     return window.__snugArrivalPromise;
   };

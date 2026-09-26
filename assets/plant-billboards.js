@@ -56,7 +56,16 @@
           fog: true,
           toneMapped: true,
         });
-        return [name, { texture, material, aspect }];
+        const crossMaterial = new THREE.MeshBasicMaterial({
+          map: texture,
+          transparent: true,
+          alphaTest: 0.08,
+          depthWrite: true,
+          side: THREE.DoubleSide,
+          fog: true,
+          toneMapped: true,
+        });
+        return [name, { texture, material, crossMaterial, aspect }];
       }));
       window.__snugThree = THREE;
       return { THREE, assets: new Map(entries) };
@@ -84,6 +93,36 @@
       bloom: 0.16,
     };
     return sprite;
+  }
+
+  function makeCrossPlaneTree(THREE, assets, name, record, height, label) {
+    const asset = assets.get(name);
+    if (!asset) return null;
+    const tree = new THREE.Group();
+    tree.name = label;
+    tree.position.set(Number(record.x) || 0, Number(record.y) || 0, Number(record.z) || 0);
+    const geometry = new THREE.PlaneGeometry(height * asset.aspect, height);
+    geometry.translate(0, height * 0.5, 0);
+    [0, Math.PI / 2].forEach((rotation, index) => {
+      const plane = new THREE.Mesh(geometry, asset.crossMaterial);
+      plane.name = `${label}_Plane_${index + 1}`;
+      plane.rotation.y = rotation;
+      plane.renderOrder = 1;
+      plane.raycast = () => {};
+      tree.add(plane);
+    });
+    tree.userData = {
+      crossPlaneTree: true,
+      matchedPlaneCount: 2,
+      layoutId: record.id || "",
+      source: record.props?.source || "",
+      spritePath: `assets/sprites/${name}`,
+      baseScale: [1, 1],
+      baseY: Number(record.y) || 0,
+      treeHeight: height,
+      bloom: 0.16,
+    };
+    return tree;
   }
 
   function choose(list, index) {
@@ -127,12 +166,12 @@
         const scale = Math.max(0.05, Number(record.scale) || 1);
         let sprite = null;
         if (source === "expanded-tree") {
-          sprite = makeSprite(THREE, assets, choose(SPRITES.trees, record.props?.instanceIndex), record, 3.45 * scale, `SnugTreeSprite_${record.id}`);
+          sprite = makeCrossPlaneTree(THREE, assets, choose(SPRITES.trees, record.props?.instanceIndex), record, 3.45 * scale, `SnugTreeCrossPair_${record.id}`);
           counters.trees += Boolean(sprite);
         } else if (source === "base-environment" && /^tree-/.test(record.props?.asset || "")) {
           const requested = `${record.props.asset}.png`;
           const name = assets.has(requested) ? requested : "tree-oak.png";
-          sprite = makeSprite(THREE, assets, name, record, 3.05 * scale, `SnugTreeSprite_${record.id}`);
+          sprite = makeCrossPlaneTree(THREE, assets, name, record, 3.05 * scale, `SnugTreeCrossPair_${record.id}`);
           counters.trees += Boolean(sprite);
         } else if (source === "base-environment" && record.props?.asset === "bush-round") {
           sprite = makeSprite(THREE, assets, choose(SPRITES.bushes, recordIndex), record, 1.3 * scale, `SnugBushSprite_${record.id}`);
@@ -167,7 +206,9 @@
         world: world.scene,
         ...counters,
         count: group.children.length,
-        cameraFacing: true,
+        cameraFacing: false,
+        treeConstruction: "matched-cross-plane-pairs",
+        treePlaneCount: counters.trees * 2,
         textureFolder: "assets/sprites/",
       };
       window.dispatchEvent(new CustomEvent("snug-plant-billboards-ready", { detail: window.__snugPlantBillboards }));
@@ -187,7 +228,10 @@
       const name = names[Math.min(names.length - 1, stage - 1)];
       const heights = kind === "oak" ? [0, 0.7, 1.55, 2.75] : kind === "fern" ? [0, 0.38, 0.65, 0.9] : [0, 0.38, 0.62, 0.86];
       plant.children.forEach((child) => { child.visible = false; });
-      const sprite = makeSprite(THREE, assets, name, { id: plant.name, x: 0, y: 0, z: 0, props: { source: "player-garden" } }, heights[stage] || heights[3], `SnugGardenSprite_${index + 1}`);
+      const height = heights[stage] || heights[3];
+      const sprite = kind === "oak"
+        ? makeCrossPlaneTree(THREE, assets, name, { id: plant.name, x: 0, y: 0, z: 0, props: { source: "player-garden" } }, height, `SnugGardenTreeCrossPair_${index + 1}`)
+        : makeSprite(THREE, assets, name, { id: plant.name, x: 0, y: 0, z: 0, props: { source: "player-garden" } }, height, `SnugGardenSprite_${index + 1}`);
       if (sprite) plant.add(sprite);
     });
     patchedGardens.add(garden);
@@ -209,8 +253,14 @@
       const target = Math.max(0.16, Math.min(1, (34 - distance) / 13));
       data.bloom += (target - data.bloom) * 0.11;
       const eased = data.bloom * data.bloom * (3 - 2 * data.bloom);
-      sprite.scale.set(data.baseScale[0] * (.18 + eased * .82), data.baseScale[1] * (.18 + eased * .82), 1);
-      sprite.position.y = data.baseY - (1 - eased) * Math.min(1.6, data.baseScale[1] * .48);
+      if (data.crossPlaneTree) {
+        const scale = .18 + eased * .82;
+        sprite.scale.setScalar(scale);
+        sprite.position.y = data.baseY - (1 - eased) * Math.min(1.6, data.treeHeight * .48);
+      } else {
+        sprite.scale.set(data.baseScale[0] * (.18 + eased * .82), data.baseScale[1] * (.18 + eased * .82), 1);
+        sprite.position.y = data.baseY - (1 - eased) * Math.min(1.6, data.baseScale[1] * .48);
+      }
     });
   };
   requestAnimationFrame(animateBillboards);

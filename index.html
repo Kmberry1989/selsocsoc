@@ -202,7 +202,7 @@
     .snug-menu-wallpaper.has-wallpaper{opacity:1}
     .snug-menu-wallpaper img,.snug-menu-wallpaper video{object-fit:cover}
     .snug-menu-wallpaper video{z-index:2}
-    .snug-menu-shader{z-index:2;opacity:.72;mix-blend-mode:soft-light}
+    .snug-menu-shader{z-index:2;opacity:.3;mix-blend-mode:soft-light}
     .snug-start-scenery:after{content:"";position:absolute;z-index:3;inset:-25%;background:radial-gradient(circle at 22% 26%,#fff4bd52 0 8%,transparent 32%),radial-gradient(circle at 80% 70%,#73c8c23d,transparent 34%);animation:snugMenuDrift 14s ease-in-out infinite alternate;mix-blend-mode:soft-light}
     .snug-start-panel{position:relative;z-index:4;width:min(680px,calc(100% - 12px));margin:min(52dvh,440px) auto 0;padding:22px;border-color:#ffffffd6;background:#fffdf8eb;box-shadow:0 22px 64px #14282e4f;backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px)}
     .snug-start-signin{display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:10px;width:100%;min-height:50px;margin-top:9px;padding:8px 12px;border:1px solid #ccd7d3;border-radius:15px;background:#edf3efed;color:#30433d;text-align:left}
@@ -213,7 +213,7 @@
     @media(max-height:650px) and (max-width:759px){.snug-start-screen{display:flex;padding-bottom:8px}.snug-start-panel{margin-top:260px;margin-bottom:0}}
     @media(max-width:380px){.snug-start-panel{padding:17px;margin-top:48dvh}.snug-start-signin{grid-template-columns:28px minmax(0,1fr);padding-inline:9px}.snug-start-signin svg{width:22px;height:22px}}
     @media(prefers-color-scheme:dark){.snug-start-screen{background:transparent}.snug-start-signin{border-color:#40504c;background:#2b3734ed;color:#f4f3ed}.snug-start-signin small,.snug-start-login-status{color:#abb5b5!important}}
-    @media(prefers-reduced-motion:reduce){.snug-start-scenery:after{animation:none}.snug-menu-wallpaper{transition:none}.snug-menu-shader{opacity:.5}}
+    @media(prefers-reduced-motion:reduce){.snug-start-scenery:after{animation:none}.snug-menu-wallpaper{transition:none}.snug-menu-shader{opacity:.22}}
     /* Keep the orbiting town unobstructed: the menu is a single compact icon dock. */
     .snug-start-screen{overflow:hidden;padding:0;background:transparent}
     .snug-start-screen:before{background:linear-gradient(0deg,#10282d7a 0,transparent 26%),linear-gradient(135deg,#10282d3b 0,transparent 28%)}
@@ -667,6 +667,9 @@
   <script async src="assets/selfie-social-society-app.bundle.js"></script>
   <link rel="stylesheet" href="assets/town-life.css">
   <link rel="stylesheet" href="assets/society-plus.css">
+  <link rel="stylesheet" href="assets/mailbox-system.css">
+  <link rel="stylesheet" href="assets/gardening-system.css">
+  <link rel="stylesheet" href="assets/visit-system.css">
   <link rel="stylesheet" href="assets/inventory-system.css">
   <link rel="stylesheet" href="assets/outfit-textures.css">
   <link rel="stylesheet" href="assets/minigame-expansion.css">
@@ -682,8 +685,12 @@
   <script defer src="assets/environment-upgrade.js"></script>
   <script defer src="assets/plant-billboards.js"></script>
   <script defer src="assets/world-direction-pass.js"></script>
+  <script defer src="assets/bokeh-flare.js"></script>
   <script defer src="assets/minigame-stages.js"></script>
   <script defer src="assets/world-layout.js"></script>
+  <script defer src="assets/mailbox-system.js"></script>
+  <script defer src="assets/gardening-system.js"></script>
+  <script defer src="assets/visit-system.js"></script>
   <script defer src="assets/push-notifications.js"></script>
   <script defer src="assets/icons/icon-system.js"></script>
   <script id="snug-cloud-billboards">

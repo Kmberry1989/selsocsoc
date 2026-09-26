@@ -249,7 +249,7 @@ async function pollSocial() {
     for (const event of [...state.socialEvents.slice(-8), ...state.mail.slice(0, 5)]) {
       if (state.seen.has(event.id)) continue;
       state.seen.add(event.id);
-      if (event.to === state.session.uid && event.from !== state.session.uid) showToast(event.type === "knock" ? `${event.fromName} knocked on your door` : event.type === "reaction" ? `${event.fromName} sent a ${event.reaction}` : event.type === "trade" ? `${event.fromName} offered a trade` : event.type === "gift" ? `${event.fromName} sent a gift` : "A neighbor reached out");
+      if (event.to === state.session.uid && event.from !== state.session.uid) showToast(event.type === "knock" ? `${event.fromName} has arrived at your door` : event.type === "reaction" ? `${event.fromName} sent a ${event.reaction}` : event.type === "trade" ? `${event.fromName} offered a trade` : event.type === "gift" ? `${event.fromName} sent a gift` : "A neighbor reached out");
       if (event.type === "trade-accepted" && event.to === state.session.uid && event.item) {
         patchPlayer(profile => ({ ...profile, inventory: [...new Set((profile.inventory || []).filter(id => id !== event.item).concat(event.want || []))] }));
         deleteMail(event.id).catch(() => {});
@@ -264,7 +264,7 @@ async function sendSocial(type, targetUid, extra = {}) {
   try {
     await rtdb("social/plaza/events", { method: "POST", body: JSON.stringify({ type, from: state.session.uid, fromName: name().slice(0,18), to: targetUid, createdAt: Date.now(), ...extra }) });
     if (["reaction","knock"].includes(type)) progress("social", 1);
-    showToast(type === "knock" ? "Knock sent" : type === "trade" ? "Trade offered" : "Reaction sent");
+    showToast(type === "knock" ? "Doorbell sent" : type === "trade" ? "Trade offered" : "Reaction sent");
   } catch { showToast("That did not reach the village network"); }
   finally { state.busy = false; pollSocial(); }
 }
