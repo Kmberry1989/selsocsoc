@@ -1,0 +1,11 @@
+{
+  "outfits": [
+    {
+      "id": "painted-pastel-tunic",
+      "name": "Painted Pastel Tunic",
+      "path": "assets/outfit-textures/painted-pastel-tunic.png",
+      "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
+      "description": "A flat toon-painted proof of the simple tunic template."
+    }
+  ]
+}

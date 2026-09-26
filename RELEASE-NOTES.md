@@ -1,3 +1,15 @@
+# Selfie Social Society 0.9.45 — inventory sprites + 2D outfit-texture prototype
+
+**Snapshot:** September 26, 2026  
+**Package version:** 0.9.45
+
+Content update on the 0.9.45 build: 14 illustrated inventory item sprites and a manifest-driven 2D outfit-texture prototype. Every existing system, asset, and NPC lore is preserved.
+
+## Included in this update
+
+- 14 new inventory item sprites in `assets/inventory/items/`: Lucky Bobber, Snapshot Lens, Moonlight Lantern, Cat Treat Tin, Golden Dice, Wishing Coin, Mayor's Mini Top Hat, Gideon's Guitar Pick, Starlight Crown, Barnaby's Bargain Tag, Dottie's Streak Ribbon, Bubble Wand, Pip's Parade Kazoo, Mystery Left Boot.
+- New 2D outfit-texture prototype in `assets/outfit-textures/` (additive — all 3D GLB outfit support is unchanged): manifest-driven PNG pipeline where transparent pixels reveal the body underneath and the overlay follows body geometry and body sliders. Ships with a 1024x1024 peg-body UV template and the Painted Pastel Tunic proof of concept.
+
 # Selfie Social Society 0.9.45 — texture art pass: terrain, rugs, buildings, FX
 
 **Snapshot:** September 23, 2026  
