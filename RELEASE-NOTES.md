@@ -1,3 +1,13 @@
+# Selfie Social Society — 3D parachute arrival + NPC speaking performance
+
+**Snapshot:** September 26, 2026
+**Package version:** 0.9.45
+
+- Parachute arrival is now fully 3D: ambient parachutists stream down through the main-menu diorama behind the title; confirming a mode hides the menu and glides the player's own avatar down toward Cyclical City with the camera following toward the mayor's office, then fades to black into the welcoming committee. The old DOM/CSS parachutist film is gone, along with the stutter at the start of the fall (pre-warmed shared geometry, eased delta-time descent).
+- NPC speaking performance: a speaking NPC shakes like an upside-down salt shaker while its large circular mouth spills words that fall to the bottom of the screen and form the captions.
+- Dialogue now auto-advances to the next line once a line has been spoken and the player gives no input; press-and-hold fast-forward and tap behavior are unchanged.
+- All NPC placeholder slots (FaceSlot_*, OutfitSlot_*, HeadAccessorySlot_*, HandSlot_*, ShoeSlot_*, HeldItemSlot_*) intact.
+
 # Selfie Social Society — artifact sync: sprite world pass + new game systems
 
 **Snapshot:** September 26, 2026
