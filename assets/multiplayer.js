@@ -42,6 +42,7 @@ const GAME_DEFS = {
   snowball: { name: "Snowball Toss", duration: 240000, note: "Line up a snowball and hit the carnival targets.", wave: 7, solo: true, bot: "racer", input: "action", payouts: [30, 20, 13, 7], propFolder: "snowball-toss" },
   lantern: { name: "Lantern Hunt", duration: 300000, note: "Find the lanterns glowing in the festival-night shadows.", wave: 7, solo: true, bot: "collector", input: "action", payouts: [34, 22, 14, 8], propFolder: "lantern-hunt" },
   petal: { name: "Petal Catch", duration: 240000, note: "Catch golden petals and leave the grey ones drifting.", wave: 7, solo: true, bot: "collector", input: "action", payouts: [30, 20, 13, 7], propFolder: "petal-catch" },
+  market: { name: "Market Basket Mayhem", duration: 90000, note: "Fill each changing shopping list, avoid wrong items, and race back to checkout.", wave: 8, solo: true, bot: "collector", input: "action", payouts: [30, 20, 13, 7], propFolder: "market-basket-mayhem" },
 };
 function durationPayoutBand(duration) {
   const minutes = Math.max(0.5, Number(duration || 30000) / 60000);
@@ -806,6 +807,7 @@ const BOARD_SPACES = [
   "event", "coin", "star", "shop", "minigame", "coin",
 ];
 const BOARD_LABELS = { start: "Town Gate", coin: "+3 coins", event: "Town event", minigame: "Game space", shop: "Board shop", star: "Star stop" };
+const BOARD_PRIZE_STOPS = BOARD_SPACES.map((type, index) => type === "star" ? index : -1).filter((index) => index >= 0);
 const BOARD_MINIGAMES = ["Lantern Timing", "Parcel Pop", "Garden Dash", "Tea Tray Tangle"];
 const BOARD_SHOP = { boost: { name: "Dice boost", cost: 5 }, trap: { name: "Puddle trap", cost: 6 }, steal: { name: "Pocket swap", cost: 8 } };
 const BOARD_BOTS = [
@@ -871,17 +873,21 @@ function deriveBoardGame() {
     id: start.id,
     hostUid: start.uid,
     seed: Number(start.seed || 1),
-    rounds: 5,
+    rounds: Math.max(5, Math.min(15, Number(start.rounds || 5))),
     round: 1,
     phase: "movement",
     turnIndex: 0,
-    players: roster.map((entry) => ({ ...entry, pos: 0, coins: 10, stars: 0, minigameWins: 0, items: { boost: 0, trap: 0, steal: 0 } })),
+    rules: start.rules === "strategic" ? "strategic" : "casual",
+    difficulty: ["easy", "normal", "hard"].includes(start.difficulty) ? start.difficulty : "normal",
+    players: roster.map((entry) => ({ ...entry, pos: 0, coins: start.rules === "strategic" ? 8 : 10, stars: 0, minigameWins: 0, items: { boost: 0, trap: 0, steal: 0 } })),
     traps: [],
     scores: {},
     minigameStartedAt: 0,
     shopUid: "",
     shopSpace: -1,
-    log: [roster.some((entry) => entry.bot) ? "The empty seats were filled by friendly town players." : "Everyone starts at the Town Gate with 10 coins."],
+    prizePos: BOARD_PRIZE_STOPS[Math.abs(Number(start.seed || 1)) % BOARD_PRIZE_STOPS.length],
+    prizeMoves: 0,
+    log: [roster.some((entry) => entry.bot) ? "The empty seats were filled by friendly town players." : `Everyone starts at the Town Gate with ${start.rules === "strategic" ? 8 : 10} coins.`],
   };
   const player = (uid) => game.players.find((entry) => entry.uid === uid);
   const currentUid = () => game.players[game.turnIndex]?.uid || "";
@@ -935,7 +941,16 @@ function deriveBoardGame() {
         mover.coins += gain ? amount : -amount;
         game.log.push(`${mover.name} met a town surprise and ${gain ? "gained" : "lost"} ${amount} coins.`);
       } else if (space === "minigame") { mover.coins += 2; game.log.push(`${mover.name} warmed up on a game space for 2 coins.`); }
-      else if (space === "star" && mover.coins >= 10) { mover.coins -= 10; mover.stars += 1; game.log.push(`${mover.name} traded 10 coins for a star.`); }
+      else if (mover.pos === game.prizePos && mover.coins >= 10) {
+        mover.coins -= 10;
+        mover.stars += 1;
+        game.prizeMoves += 1;
+        const oldPrize = game.prizePos;
+        game.prizePos = BOARD_PRIZE_STOPS[(BOARD_PRIZE_STOPS.indexOf(oldPrize) + 1 + ((game.seed + game.round + game.prizeMoves) % (BOARD_PRIZE_STOPS.length - 1))) % BOARD_PRIZE_STOPS.length];
+        if (game.prizePos === oldPrize) game.prizePos = BOARD_PRIZE_STOPS[(BOARD_PRIZE_STOPS.indexOf(oldPrize) + 1) % BOARD_PRIZE_STOPS.length];
+        game.log.push(`${mover.name} traded 10 coins for the prize star. Lyla moved it to space ${game.prizePos}.`);
+      }
+      else if (space === "star") game.log.push(`${mover.name} visited an empty prize pavilion.`);
       else if (space === "shop") { game.shopUid = mover.uid; game.shopSpace = mover.pos; game.log.push(`${mover.name} reached the Board Shop.`); }
       else game.log.push(`${mover.name} rolled ${roll}.`);
       game.turnIndex += 1;
@@ -1042,7 +1057,8 @@ function startBoardGame() {
     const botCount = Math.max(0, lobby.totalPlayers - humans.length);
     const people = [...humans.map((entry) => ({ uid: entry.uid, name: entry.name, color: entry.color, bot: false })), ...BOARD_BOTS.slice(0, botCount).map((entry) => ({ ...entry, bot: true }))];
     const players = Object.fromEntries(people.map((entry, order) => [entry.uid, { name: String(entry.name).slice(0, 18), color: safeColor(entry.color), order, bot: entry.bot === true }]));
-    appendBoardEvent({ type: "board-start", game: "snug-board", uid: boardUid(), name: playerName().slice(0, 18), createdAt: Date.now(), seed: crypto.getRandomValues(new Uint32Array(1))[0], rounds: 5, lobbyId: lobby.id, players });
+    const setup = window.__snugPartySettings || {};
+    appendBoardEvent({ type: "board-start", game: "snug-board", uid: boardUid(), name: playerName().slice(0, 18), createdAt: Date.now(), seed: crypto.getRandomValues(new Uint32Array(1))[0], rounds: Math.max(5, Math.min(15, Number(setup.rounds || 5))), rules: setup.rules === "strategic" ? "strategic" : "casual", difficulty: ["easy", "normal", "hard"].includes(setup.difficulty) ? setup.difficulty : "normal", lobbyId: lobby.id, players });
     state.boardLobby = null;
     window.dispatchEvent(new CustomEvent("snug-sfx", { detail: { id: "game-start" } }));
   } finally { state.boardBusy = false; renderBoardMode(); }
@@ -1086,7 +1102,9 @@ function boardSpaceMarkup(type, index, game) {
   const residents = game.players.filter((entry) => entry.pos === index);
   const tokens = residents.map((entry) => `<i class="snug-board-token ${entry.bot ? "bot" : ""}" style="background:${safeColor(entry.color)}" title="${escapeHtml(entry.name)}">${escapeHtml(String(entry.name || "P").slice(0, 1).toUpperCase())}</i>`).join("");
   const trapped = game.traps.some((entry) => entry.active && entry.space === index);
-  return `<div class="snug-board-space ${type} ${trapped ? "snug-board-trap" : ""}"><span class="snug-board-number">${index}</span><b>${BOARD_LABELS[type]}</b><div class="snug-board-tokens">${tokens}</div><small>${type === "star" ? "10 coins" : type === "shop" ? "Items" : type === "start" ? "Start" : ""}</small></div>`;
+  const activePrize = index === game.prizePos;
+  const label = type === "star" ? (activePrize ? "Prize star" : "Prize pavilion") : BOARD_LABELS[type];
+  return `<div class="snug-board-space ${type} ${activePrize ? "active-prize" : ""} ${trapped ? "snug-board-trap" : ""}"><span class="snug-board-number">${index}</span><b>${label}</b><div class="snug-board-tokens">${tokens}</div><small>${activePrize ? "★ 10 coins" : type === "star" ? "Relocated" : type === "shop" ? "Items" : type === "start" ? "Start" : ""}</small></div>`;
 }
 
 function boardPlayerMarkup(entry, game) {
@@ -1143,9 +1161,10 @@ function renderBoardMode() {
   const error = state.error ? `<div class="snug-board-error" role="status">${escapeHtml(state.error)}</div>` : "";
   const game = state.boardGame;
   if (!game) {
-    shell.innerHTML = `<div class="snug-board-head"><div><small>Five-round party</small><h2 id="snug-board-title">Snug Board</h2></div>${close}</div>${error}${boardLobbyMarkup(state.boardLobby)}`;
+    const setup = window.__snugPartySettings || { rounds: 5, rules: "casual" };
+    shell.innerHTML = `<div class="snug-board-head"><div><small>${Math.max(5, Math.min(15, Number(setup.rounds || 5)))}-round ${setup.rules === "strategic" ? "strategic" : "casual"} party</small><h2 id="snug-board-title">Snug Board</h2></div>${close}</div>${error}${boardLobbyMarkup(state.boardLobby)}`;
   } else {
-    shell.innerHTML = `<div class="snug-board-head"><div><small>Round ${game.round} of ${game.rounds} · ${state.isPrivate ? "Family room" : "Village plaza"}</small><h2 id="snug-board-title">Snug Board</h2></div>${close}</div>${error}<div class="snug-board-layout"><div><div class="snug-board-map">${BOARD_SPACES.map((type, index) => boardSpaceMarkup(type, index, game)).join("")}</div><div class="snug-board-legend"><span>Gold: coins</span><span>Blue: events</span><span>Coral: minigames</span><span>Green: shops</span><span>Dark: stars</span></div></div><aside class="snug-board-side"><div class="snug-board-card"><div class="snug-board-stats">${game.players.map((entry) => boardPlayerMarkup(entry, game)).join("")}</div></div>${boardActionMarkup(game)}<div class="snug-board-card"><h3>Town chatter</h3><ul class="snug-board-log">${game.log.slice(-5).reverse().map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul></div></aside></div>`;
+    shell.innerHTML = `<div class="snug-board-head"><div><small>Round ${game.round} of ${game.rounds} · ${game.rules === "strategic" ? "Strategic" : "Casual"} · ${state.isPrivate ? "Family room" : "Village plaza"}</small><h2 id="snug-board-title">Snug Board</h2></div>${close}</div>${error}<div class="snug-board-layout"><div><div class="snug-board-map">${BOARD_SPACES.map((type, index) => boardSpaceMarkup(type, index, game)).join("")}</div><div class="snug-board-legend"><span>Gold: coins</span><span>Blue: events</span><span>Coral: minigames</span><span>Green: shops</span><span>Dark: prize stops</span></div></div><aside class="snug-board-side"><div class="snug-board-card"><div class="snug-board-stats">${game.players.map((entry) => boardPlayerMarkup(entry, game)).join("")}</div></div>${boardActionMarkup(game)}<div class="snug-board-card"><h3>Town chatter</h3><ul class="snug-board-log">${game.log.slice(-5).reverse().map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul></div></aside></div>`;
   }
   shell.querySelector(".snug-board-close")?.addEventListener("click", closeBoardMode);
   shell.querySelector("[data-board-ready]")?.addEventListener("click", () => setBoardReady());
@@ -1187,7 +1206,8 @@ function renderBoardMode() {
 
 function botScore(game, bot) {
   const value = (game.seed + game.round * 37 + bot.uid.charCodeAt(bot.uid.length - 1) * 19) % 34;
-  return 60 + value;
+  const difficultyOffset = game.difficulty === "hard" ? 8 : game.difficulty === "easy" ? -12 : 0;
+  return Math.max(35, Math.min(99, 60 + value + difficultyOffset));
 }
 
 function botUsedItemThisTurn(game, bot) {
@@ -1259,7 +1279,7 @@ function scheduleBoardAutomation() {
     state.boardBusy = false;
     state.boardBotKey = "";
     renderBoardMode();
-  }, 720);
+  }, game.difficulty === "hard" ? 480 : game.difficulty === "easy" ? 980 : 720);
 }
 
 function tickBoardMode() {
@@ -1422,7 +1442,8 @@ function playEntry() {
     const score = scoreFor(state.session?.uid);
     return `<div class="play-entry active"><span><small>Round in play</small><b>${GAME_DEFS[game.game].name}</b><em>${score} point${score === 1 ? "" : "s"}</em></span>${game.game === "quiz" ? `<button type="button" data-action="open-chat">Chat</button>` : `<strong>${secondsLeft()}s</strong>`}</div>`;
   }
-  return `<div class="board-entry-wrap"><button type="button" class="play-entry" data-action="play" ${state.rolling || !state.session ? "disabled" : ""}>${dieMarkup()}<span><small>${state.rolling ? "Rolling the room dice…" : "Quick round"}</small><b>${state.rolling ? "Choosing a game" : "Play a minigame"}</b></span><strong>${state.rolling ? "" : "Roll"}</strong></button><button type="button" class="play-entry board-party-entry" data-action="board"><i class="board-party-mark" aria-hidden="true">★</i><span><small>Five rounds · everyone plays</small><b>Snug Board</b></span><strong>Open</strong></button></div>`;
+  const configuredRounds = Math.max(5, Math.min(15, Number(window.__snugPartySettings?.rounds || 5)));
+  return `<div class="board-entry-wrap"><button type="button" class="play-entry" data-action="play" ${state.rolling || !state.session ? "disabled" : ""}>${dieMarkup()}<span><small>${state.rolling ? "Rolling the room dice…" : "Quick round"}</small><b>${state.rolling ? "Choosing a game" : "Play a minigame"}</b></span><strong>${state.rolling ? "" : "Roll"}</strong></button><button type="button" class="play-entry board-party-entry" data-action="board"><i class="board-party-mark" aria-hidden="true">★</i><span><small>${configuredRounds} rounds · everyone plays</small><b>Snug Board</b></span><strong>Open</strong></button></div>`;
 }
 
 function practicePanelMarkup() {
@@ -1460,14 +1481,15 @@ function practicePanelMarkup() {
       snowball: "Tap the carnival target to land each snowball.",
       lantern: "Find the lanterns hiding in the night scene.",
       petal: "Catch gold petals and let grey petals fall.",
+      market: "Collect the highlighted groceries in order, then hurry through checkout.",
     };
     return `<div class="practice-live"><span class="practice-status"><small>${minigamePhase(game) === "countdown" ? "Get ready" : `Live solo round · ${secondsLeft()}s`}</small><b>${GAME_DEFS[game.game].name}</b></span><p>${practiceNotes[game.game] || GAME_DEFS[game.game].note}</p><strong>${score} point${score === 1 ? "" : "s"}</strong><button type="button" class="multi-primary" data-action="close-practice">Back to the plaza</button></div>`;
   }
   const cards = SOLO_GAME_IDS.map((id) => {
     const gameDef = GAME_DEFS[id];
     const marks = { coin: "coin-mark", tag: "tag-mark", quiz: "quiz-mark", balloon: "balloon-mark", sprint: "sprint-mark", fishing: "fishing-mark" };
-    const symbols = { quiz: "?", balloon: "○", sprint: "›", fishing: "⌁", potato: "●", hide: "◉", statues: "Ⅱ", memory: "◇", pattern: "···", draw: "⌁", cats: "△", bridge: "▰", curling: "◎", charades: "!", sneaky: "?", snap: "□", puffs: "○", freeze: "✣", treasure: "×", snowball: "●", lantern: "◌", petal: "✦" };
-    const descriptions = { coin: "Collect plaza coins", tag: "Chase a lively practice pal", quiz: "Three questions, four choices", balloon: "Pop drifting targets", sprint: "Race eight plaza gates", fishing: "Time six pond casts", potato: "Pass before the beat", hide: "Find the hidden neighbor", statues: "Freeze on the silence", memory: "Clear matching pairs", pattern: "Repeat the color sequence", draw: "Guess the sketch", cats: "Guide cats to the pen", bridge: "Gather planks and pegs", curling: "Land near the center", charades: "Guess the emote", sneaky: "Catch the bluff", snap: "Frame the town sight", puffs: "Choose the open lane", freeze: "Free frozen teammates", treasure: "Dig glowing spots", snowball: "Hit festival targets", lantern: "Find night lanterns", petal: "Catch only gold" };
+    const symbols = { quiz: "?", balloon: "○", sprint: "›", fishing: "⌁", potato: "●", hide: "◉", statues: "Ⅱ", memory: "◇", pattern: "···", draw: "⌁", cats: "△", bridge: "▰", curling: "◎", charades: "!", sneaky: "?", snap: "□", puffs: "○", freeze: "✣", treasure: "×", snowball: "●", lantern: "◌", petal: "✦", market: "▦" };
+    const descriptions = { coin: "Collect plaza coins", tag: "Chase a lively practice pal", quiz: "Three questions, four choices", balloon: "Pop drifting targets", sprint: "Race eight plaza gates", fishing: "Time six pond casts", potato: "Pass before the beat", hide: "Find the hidden neighbor", statues: "Freeze on the silence", memory: "Clear matching pairs", pattern: "Repeat the color sequence", draw: "Guess the sketch", cats: "Guide cats to the pen", bridge: "Gather planks and pegs", curling: "Land near the center", charades: "Guess the emote", sneaky: "Catch the bluff", snap: "Frame the town sight", puffs: "Choose the open lane", freeze: "Free frozen teammates", treasure: "Dig glowing spots", snowball: "Hit festival targets", lantern: "Find night lanterns", petal: "Catch only gold", market: "Fill a changing shopping list" };
     return `<button type="button" data-solo-game="${id}"><span class="practice-mark ${marks[id] || ""}" aria-hidden="true">${symbols[id] || ""}</span><span><b>${escapeHtml(gameDef.name)}</b><small>${descriptions[id]}</small></span><strong>${gameDef.duration >= 60000 ? `${Math.round(gameDef.duration / 60000)} min` : `${Math.round(gameDef.duration / 1000)}s`}</strong></button>`;
   }).join("");
   return `<p class="practice-intro">Pick from the complete seven-wave slate. Every game runs a full solo round and ends with a before + payout = after receipt.</p><div class="practice-grid">${cards}</div><p class="practice-foot">All 24 blueprint games are ready for Solo Practice. The room dice and Snug Board can call the same shared minigame framework.</p>`;
@@ -2002,7 +2024,7 @@ async function submitFishingCast() {
   finally { state.wave1Busy = false; }
 }
 
-const BLUEPRINT_CHALLENGE_GAMES = new Set(["potato", "hide", "statues", "memory", "pattern", "draw", "cats", "bridge", "curling", "charades", "sneaky", "snap", "puffs", "freeze", "treasure", "snowball", "lantern", "petal"]);
+const BLUEPRINT_CHALLENGE_GAMES = new Set(["potato", "hide", "statues", "memory", "pattern", "draw", "cats", "bridge", "curling", "charades", "sneaky", "snap", "puffs", "freeze", "treasure", "snowball", "lantern", "petal", "market"]);
 const CHALLENGE_CHOICES = {
   draw: [
     { clue: "house", options: ["House", "Cat", "Tree", "Fish"] },
@@ -2035,6 +2057,7 @@ const CHALLENGE_LABELS = {
   freeze: ["TEAMMATE", "TEAMMATE", "TAGGER", "TEAMMATE", "TAGGER", "TEAMMATE"], treasure: ["DIG", "DIG", "DIG", "DIG", "DIG", "DIG"],
   snowball: ["10", "25", "50", "25", "10", "50"], lantern: ["LANTERN", "SHADOW", "LANTERN", "SHADOW", "LANTERN", "SHADOW"],
   petal: ["GOLD", "GREY", "GOLD", "GREY", "GOLD", "GREY"],
+  market: ["APPLES", "BREAD", "FLOWERS", "TEA", "CHEESE", "SOAP"],
 };
 
 function challengeSeed(offset = 0) {
@@ -2059,6 +2082,7 @@ function challengePrompt(game) {
     snowball: "Hit the highest-value target",
     lantern: "Find a real lantern",
     petal: "Catch a golden petal",
+    market: ["Find the apples", "Pick up fresh bread", "Add flowers", "Choose the tea", "Grab the cheese", "Finish with soap"][score % 6],
   };
   return prompts[game] || GAME_DEFS[game]?.note || "Make your move";
 }
@@ -2111,8 +2135,9 @@ function targetChallengeMarkup(game) {
   const labels = CHALLENGE_LABELS[game] || ["ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX"];
   const target = challengeTargetIndex(labels.length);
   const requested = game === "bridge" ? (scoreFor(state.session?.uid) % 2 ? "PEG" : "PLANK") : "";
-  const correctIndex = game === "bridge" ? labels.findIndex((label, index) => label === requested && index >= target % 2) : game === "statues" ? (scoreFor(state.session?.uid) % 2 ? 1 : 0) : game === "puffs" ? target % 3 : game === "freeze" ? labels.findIndex((label, index) => label === "TEAMMATE" && index >= target % 2) : game === "snowball" ? labels.findIndex((label) => label === "50") : game === "lantern" ? labels.findIndex((label, index) => label === "LANTERN" && index >= target % 2) : game === "petal" ? labels.findIndex((label, index) => label === "GOLD" && index >= target % 2) : target;
-  return `<div class="challenge-targets ${game}">${labels.map((label, index) => `<button type="button" data-challenge-target data-correct="${String(index === correctIndex)}" aria-label="${escapeHtml(label.toLowerCase())}"><span>${escapeHtml(label)}</span></button>`).join("")}</div>`;
+  const correctIndex = game === "bridge" ? labels.findIndex((label, index) => label === requested && index >= target % 2) : game === "statues" ? (scoreFor(state.session?.uid) % 2 ? 1 : 0) : game === "puffs" ? target % 3 : game === "freeze" ? labels.findIndex((label, index) => label === "TEAMMATE" && index >= target % 2) : game === "snowball" ? labels.findIndex((label) => label === "50") : game === "lantern" ? labels.findIndex((label, index) => label === "LANTERN" && index >= target % 2) : game === "petal" ? labels.findIndex((label, index) => label === "GOLD" && index >= target % 2) : game === "market" ? scoreFor(state.session?.uid) % labels.length : target;
+  const list = game === "market" ? `<div class="market-list"><small>Shopping list</small>${[0, 1, 2].map((offset) => `<b class="${offset === 0 ? "active" : ""}">${labels[(scoreFor(state.session?.uid) + offset) % labels.length]}</b>`).join("")}<em>Correct items move the list forward. Wrong items cost time.</em></div>` : "";
+  return `${list}<div class="challenge-targets ${game}">${labels.map((label, index) => `<button type="button" data-challenge-target data-correct="${String(index === correctIndex)}" aria-label="${escapeHtml(label.toLowerCase())}"><span>${escapeHtml(label)}</span></button>`).join("")}</div>`;
 }
 
 function challengeStageMarkup(game) {
