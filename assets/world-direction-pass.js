@@ -8,92 +8,52 @@
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const easeOutCubic = (value) => 1 - Math.pow(1 - clamp(value, 0, 1), 3);
 
+  // Bloom captions (replaces the old word-fountain): words bloom into view
+  // in the caption line as they are spoken, instead of falling from the
+  // mouth. Same start/stop API so dialogue callers don't change.
   const wordSpill = (() => {
-    let layer = null;
     const runs = new Map();
-    const ensureLayer = () => {
-      if (layer?.isConnected) return layer;
-      layer = document.createElement("div");
-      layer.className = "snug-word-spill-layer";
-      layer.setAttribute("aria-hidden", "true");
-      document.body.appendChild(layer);
-      return layer;
-    };
     const stop = (target) => {
       const run = runs.get(target);
       if (!run) return;
       run.cancelled = true;
-      cancelAnimationFrame(run.raf);
-      run.chips.forEach((chip) => chip.remove());
+      clearTimeout(run.timer);
       runs.delete(target);
     };
     const start = ({ text, target, source, duration = 2600 }) => {
       if (!target || !text) return { stop() {} };
       stop(target);
       const words = String(text).match(/\S+/g) || [];
-      target.textContent = "";
-      target.setAttribute("aria-label", String(text));
       if (reducedMotion.matches || !words.length) {
         target.textContent = text;
         return { stop() {} };
       }
-      const run = { cancelled: false, chips: [], raf: 0, startedAt: performance.now(), next: 0 };
+      target.textContent = "";
+      target.setAttribute("aria-label", String(text));
+      const run = { cancelled: false, timer: 0 };
       runs.set(target, run);
       const interval = clamp((duration - 350) / Math.max(1, words.length), 54, 240);
-      const falling = [];
-      const settle = (item) => {
-        if (item.settled) return;
-        item.settled = true;
-        item.chip.remove();
-        const word = document.createElement("span");
-        word.className = "snug-settled-word";
-        word.textContent = `${item.word} `;
-        target.appendChild(word);
-      };
-      const spawn = (word, index, now) => {
-        const point = source?.() || { x: innerWidth / 2, y: innerHeight * 0.42 };
-        const targetRect = target.getBoundingClientRect();
-        const chip = document.createElement("span");
-        chip.className = "snug-falling-word";
-        chip.textContent = word;
-        ensureLayer().appendChild(chip);
-        const destinationX = clamp(targetRect.left + 18 + (index * 43) % Math.max(60, targetRect.width - 36), 8, innerWidth - 46);
-        const destinationY = clamp(targetRect.top + 8 + Math.floor((index * 43) / Math.max(60, targetRect.width - 36)) * 21, 8, innerHeight - 30);
-        const flight = clamp(520 + Math.abs(destinationY - point.y) * 1.15, 620, 1180);
-        const item = { chip, word, start: now, x: point.x, y: point.y, dx: destinationX - point.x, dy: destinationY - point.y, flight, settled: false };
-        chip.style.transform = `translate3d(${item.x}px,${item.y}px,0) scale(.72)`;
-        run.chips.push(chip);
-        falling.push(item);
-      };
-      const tick = (now) => {
+      const spans = words.map((word) => {
+        const span = document.createElement("span");
+        span.className = "snug-bloom-word";
+        span.textContent = word;
+        target.appendChild(span);
+        target.appendChild(document.createTextNode(" "));
+        return span;
+      });
+      let index = 0;
+      const step = () => {
         if (run.cancelled) return;
-        const elapsed = now - run.startedAt;
-        while (run.next < words.length && elapsed >= run.next * interval) {
-          spawn(words[run.next], run.next, now);
-          run.next += 1;
-        }
-        for (let index = falling.length - 1; index >= 0; index -= 1) {
-          const item = falling[index];
-          const progress = clamp((now - item.start) / item.flight, 0, 1);
-          const arc = 86 * Math.sin(progress * Math.PI);
-          const x = item.x + item.dx * progress + Math.sin(progress * Math.PI * 3) * 7;
-          const y = item.y + item.dy * progress - arc + 42 * progress * progress;
-          const scale = 0.72 + progress * 0.28;
-          item.chip.style.opacity = String(Math.min(1, progress * 4));
-          item.chip.style.transform = `translate3d(${x}px,${y}px,0) rotate(${(1 - progress) * 8}deg) scale(${scale})`;
-          if (progress >= 1) {
-            settle(item);
-            falling.splice(index, 1);
-          }
-        }
-        if (run.next >= words.length && falling.length === 0) {
+        if (index < spans.length) {
+          spans[index].classList.add("is-bloomed");
+          index += 1;
+          run.timer = setTimeout(step, interval);
+        } else {
           runs.delete(target);
           target.removeAttribute("aria-label");
-          return;
         }
-        run.raf = requestAnimationFrame(tick);
       };
-      run.raf = requestAnimationFrame(tick);
+      step();
       return { stop: () => stop(target) };
     };
     return { start, stop };

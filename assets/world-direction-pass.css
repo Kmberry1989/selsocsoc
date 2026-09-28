@@ -1,9 +1,7 @@
 .snug-arrival-fade{position:fixed;z-index:720;pointer-events:none;inset:0;background:#0b1112;opacity:0;transition:opacity .42s ease}
 .snug-arrival-fade.is-black{opacity:1}.snug-arrival-fade.is-out{opacity:0}
 html.snug-arrival-active .snug-start-screen{opacity:0;visibility:hidden;pointer-events:none}
-.snug-word-spill-layer{position:fixed;z-index:690;pointer-events:none;inset:0;overflow:hidden}
-.snug-falling-word{position:absolute;top:0;left:0;display:inline-block;padding:3px 7px;border:2px solid #172021;border-radius:999px;background:#fffdf8;color:#26383b;box-shadow:0 3px 0 #17202133;font:900 12px/1.05 "Avenir Next","Segoe UI",sans-serif;white-space:nowrap;will-change:transform,opacity;transform-origin:center}
-.snug-settled-word{display:inline;animation:snugWordSettle .18s ease-out both}
-@keyframes snugWordSettle{from{opacity:.25;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
-@media(prefers-color-scheme:dark){.snug-falling-word{border-color:#eef4ef;background:#26383b;color:#fffdf8;box-shadow:0 3px 0 #0006}}
-@media(prefers-reduced-motion:reduce){.snug-arrival-fade{transition-duration:.08s}.snug-settled-word{animation:none}}
+.snug-bloom-word{display:inline-block;opacity:0;transform:scale(.6);filter:blur(2px)}
+.snug-bloom-word.is-bloomed{animation:snugWordBloom .28s ease-out forwards}
+@keyframes snugWordBloom{0%{opacity:0;transform:scale(.6);filter:blur(2px)}60%{opacity:1;transform:scale(1.12);filter:blur(0)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
+@media(prefers-reduced-motion:reduce){.snug-arrival-fade{transition-duration:.08s}.snug-bloom-word{animation:none;opacity:1;transform:none;filter:none}}
