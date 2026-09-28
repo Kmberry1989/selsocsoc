@@ -20,191 +20,223 @@
     "appliedTo": "reserved garden-bed material"
   },
   "grass-meadow": {
-    "path": "assets/textures/grass-meadow.png",
+    "path": "assets/textures/grass-meadow.webp",
     "appliedTo": "default village ground"
   },
   "grass-lawn": {
-    "path": "assets/textures/grass-lawn.png",
+    "path": "assets/textures/grass-lawn.webp",
     "appliedTo": "lawn / dry grass biome"
   },
   "grass-clover": {
-    "path": "assets/textures/grass-clover.png",
+    "path": "assets/textures/grass-clover.webp",
     "appliedTo": "clover meadow biome"
   },
   "grass-dry": {
-    "path": "assets/textures/grass-dry.png",
+    "path": "assets/textures/grass-dry.webp",
     "appliedTo": "dry mottled grass biome"
   },
   "grass-snow": {
-    "path": "assets/textures/grass-snow.png",
+    "path": "assets/textures/grass-snow.webp",
     "appliedTo": "snow-dusted grass"
   },
   "snow-sparkle": {
-    "path": "assets/textures/snow-sparkle.png",
+    "path": "assets/textures/snow-sparkle.webp",
     "appliedTo": "winter ground"
   },
   "snow-waves": {
-    "path": "assets/textures/snow-waves.png",
+    "path": "assets/textures/snow-waves.webp",
     "appliedTo": "snowdrift ground"
   },
   "water-pond-teal": {
-    "path": "assets/textures/water-pond-teal.png",
+    "path": "assets/textures/water-pond-teal.webp",
     "appliedTo": "pond water option"
   },
   "water-pond-blue": {
-    "path": "assets/textures/water-pond-blue.png",
+    "path": "assets/textures/water-pond-blue.webp",
     "appliedTo": "pond water option"
   },
   "sand-ripples": {
-    "path": "assets/textures/sand-ripples.png",
+    "path": "assets/textures/sand-ripples.webp",
     "appliedTo": "beach ground"
   },
   "sand-waves": {
-    "path": "assets/textures/sand-waves.png",
+    "path": "assets/textures/sand-waves.webp",
     "appliedTo": "dune sand"
   },
   "sand-shells": {
-    "path": "assets/textures/sand-shells.png",
+    "path": "assets/textures/sand-shells.webp",
     "appliedTo": "shell beach detail"
   },
   "soil-garden": {
-    "path": "assets/textures/soil-garden.png",
+    "path": "assets/textures/soil-garden.webp",
     "appliedTo": "garden planting beds"
   },
   "dirt-path": {
-    "path": "assets/textures/dirt-path.png",
+    "path": "assets/textures/dirt-path.webp",
     "appliedTo": "dirt paths"
   },
   "dirt-grass-edge": {
-    "path": "assets/textures/dirt-grass-edge.png",
+    "path": "assets/textures/dirt-grass-edge.webp",
     "appliedTo": "path-to-grass transition"
   },
   "cobblestone": {
-    "path": "assets/textures/cobblestone.png",
+    "path": "assets/textures/cobblestone.webp",
     "appliedTo": "plaza and walkways"
   },
   "wood-planks": {
-    "path": "assets/textures/wood-planks.png",
+    "path": "assets/textures/wood-planks.webp",
     "appliedTo": "furniture and fencing"
   },
   "wood-planks-vertical": {
-    "path": "assets/textures/wood-planks-vertical.png",
+    "path": "assets/textures/wood-planks-vertical.webp",
     "appliedTo": "walls and fencing"
   },
   "wood-brick": {
-    "path": "assets/textures/wood-brick.png",
+    "path": "assets/textures/wood-brick.webp",
     "appliedTo": "cottage walls"
   },
   "thatch": {
-    "path": "assets/textures/thatch.png",
+    "path": "assets/textures/thatch.webp",
     "appliedTo": "thatched roofs and hay"
   },
   "foliage-bushes": {
-    "path": "assets/textures/foliage-bushes.png",
+    "path": "assets/textures/foliage-bushes.webp",
     "appliedTo": "bush and canopy decal (transparent)"
   },
   "rocks": {
-    "path": "assets/textures/rocks.png",
+    "path": "assets/textures/rocks.webp",
     "appliedTo": "rock cluster decal (transparent)"
   },
   "flowers-daisies": {
-    "path": "assets/textures/flowers-daisies.png",
+    "path": "assets/textures/flowers-daisies.webp",
     "appliedTo": "flower patch decal (transparent)"
   },
   "flowers-bouquets": {
-    "path": "assets/textures/flowers-bouquets.png",
+    "path": "assets/textures/flowers-bouquets.webp",
     "appliedTo": "planter flower decal (transparent)"
   },
   "flowers-branches": {
-    "path": "assets/textures/flowers-branches.png",
+    "path": "assets/textures/flowers-branches.webp",
     "appliedTo": "flowering branch decal (transparent)"
   },
   "flowers-mixed": {
-    "path": "assets/textures/flowers-mixed.png",
+    "path": "assets/textures/flowers-mixed.webp",
     "appliedTo": "mixed flower decal (transparent)"
   },
   "cloud-puff": {
-    "path": "assets/textures/cloud-puff.png",
+    "path": "assets/textures/cloud-puff.webp",
     "appliedTo": "sky cloud sprite (transparent)"
   },
   "cloud-cluster": {
-    "path": "assets/textures/cloud-cluster.png",
+    "path": "assets/textures/cloud-cluster.webp",
     "appliedTo": "sky cloud cluster (transparent)"
   },
   "cloud-strip": {
-    "path": "assets/textures/cloud-strip.png",
+    "path": "assets/textures/cloud-strip.webp",
     "appliedTo": "horizon cloud strip (transparent)"
   },
   "stars-sparkle": {
-    "path": "assets/textures/stars-sparkle.png",
+    "path": "assets/textures/stars-sparkle.webp",
     "appliedTo": "sparkle decal (transparent)"
   },
   "fabric-rug-diamond": {
-    "path": "assets/textures/fabric-rug-diamond.png",
+    "path": "assets/textures/fabric-rug-diamond.webp",
     "appliedTo": "woven diamond area rug"
   },
   "fabric-rug-royal": {
-    "path": "assets/textures/fabric-rug-royal.png",
+    "path": "assets/textures/fabric-rug-royal.webp",
     "appliedTo": "patterned medallion area rug"
   },
   "fabric-rug-knit": {
-    "path": "assets/textures/fabric-rug-knit.png",
+    "path": "assets/textures/fabric-rug-knit.webp",
     "appliedTo": "chunky knitted rug"
   },
   "fabric-plaid-red": {
-    "path": "assets/textures/fabric-plaid-red.png",
+    "path": "assets/textures/fabric-plaid-red.webp",
     "appliedTo": "red plaid fabric"
   },
   "fabric-plaid-tartan": {
-    "path": "assets/textures/fabric-plaid-tartan.png",
+    "path": "assets/textures/fabric-plaid-tartan.webp",
     "appliedTo": "red tartan fabric"
   },
   "fabric-plaid-navy": {
-    "path": "assets/textures/fabric-plaid-navy.png",
+    "path": "assets/textures/fabric-plaid-navy.webp",
     "appliedTo": "navy tartan fabric"
   },
   "fabric-awning-coral": {
-    "path": "assets/textures/fabric-awning-coral.png",
+    "path": "assets/textures/fabric-awning-coral.webp",
     "appliedTo": "coral striped awning fabric"
   },
   "fabric-burlap": {
-    "path": "assets/textures/fabric-burlap.png",
+    "path": "assets/textures/fabric-burlap.webp",
     "appliedTo": "burlap fabric"
   },
   "fabric-wicker": {
-    "path": "assets/textures/fabric-wicker.png",
+    "path": "assets/textures/fabric-wicker.webp",
     "appliedTo": "woven wicker"
   },
   "material-shingles": {
-    "path": "assets/textures/material-shingles.png",
+    "path": "assets/textures/material-shingles.webp",
     "appliedTo": "wood shingle roofing"
   },
   "material-plaster": {
-    "path": "assets/textures/material-plaster.png",
+    "path": "assets/textures/material-plaster.webp",
     "appliedTo": "plaster wall"
   },
   "material-bark": {
-    "path": "assets/textures/material-bark.png",
+    "path": "assets/textures/material-bark.webp",
     "appliedTo": "tree bark"
   },
   "terrain-stone-path": {
-    "path": "assets/textures/terrain-stone-path.png",
+    "path": "assets/textures/terrain-stone-path.webp",
     "appliedTo": "stepping-stone path"
   },
   "fx-lightning": {
-    "path": "assets/textures/fx-lightning.png",
+    "path": "assets/textures/fx-lightning.webp",
     "appliedTo": "lightning bolt decal (transparent)"
   },
   "fx-snowflake": {
-    "path": "assets/textures/fx-snowflake.png",
+    "path": "assets/textures/fx-snowflake.webp",
     "appliedTo": "snowflake decal (transparent)"
   },
   "fx-grass-tufts": {
-    "path": "assets/textures/fx-grass-tufts.png",
+    "path": "assets/textures/fx-grass-tufts.webp",
     "appliedTo": "grass tuft decals (transparent)"
   },
   "pattern-snowflake": {
-    "path": "assets/textures/pattern-snowflake.png",
+    "path": "assets/textures/pattern-snowflake.webp",
     "appliedTo": "snowflake pattern overlay (transparent)"
+  },
+  "hardwood-honey-oak": {
+    "path": "assets/textures/hardwood-honey-oak.webp",
+    "appliedTo": "home flooring"
+  },
+  "hardwood-barnwood-gray": {
+    "path": "assets/textures/hardwood-barnwood-gray.webp",
+    "appliedTo": "home flooring"
+  },
+  "hardwood-walnut": {
+    "path": "assets/textures/hardwood-walnut.webp",
+    "appliedTo": "home flooring"
+  },
+  "carpet-kilim-diamond-terracotta-navy": {
+    "path": "assets/textures/carpet-kilim-diamond-terracotta-navy.webp",
+    "appliedTo": "home carpet"
+  },
+  "carpet-braided-rag-coral-cream-teal": {
+    "path": "assets/textures/carpet-braided-rag-coral-cream-teal.webp",
+    "appliedTo": "home carpet"
+  },
+  "carpet-shag-oatmeal": {
+    "path": "assets/textures/carpet-shag-oatmeal.webp",
+    "appliedTo": "home carpet"
+  },
+  "wallpaper-daisies-sage-cream": {
+    "path": "assets/textures/wallpaper-daisies-sage-cream.webp",
+    "appliedTo": "home wallpaper"
+  },
+  "wallpaper-pinstripe-gold-cream": {
+    "path": "assets/textures/wallpaper-pinstripe-gold-cream.webp",
+    "appliedTo": "home wallpaper"
   }
 }

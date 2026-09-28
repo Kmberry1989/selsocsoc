@@ -31,7 +31,7 @@
     const id = String(item?.id || '');
     const name = String(item?.name || '');
     const path = String(item?.path || '');
-    return id && name && /^assets\/outfit-textures\/[a-z0-9][a-z0-9-]*\.png$/i.test(path)
+    return id && name && /^assets\/outfit-textures\/[a-z0-9][a-z0-9-]*\.(?:png|webp)$/i.test(path)
       ? { ...item, id, name, path, type: 'texture-outfit' }
       : null;
   }

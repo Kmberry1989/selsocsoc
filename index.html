@@ -313,6 +313,7 @@
     .snug-help-push-toggle{min-width:94px;height:40px;padding:0 12px;border:0;border-radius:12px;background:var(--green);color:#fff;font-size:11px;font-weight:900}.snug-help-push-toggle[aria-checked="false"]{background:var(--surface-2);color:var(--dim)}.snug-help-push-toggle:disabled{opacity:.66}.family-ping-button{min-height:44px;border:1px solid color-mix(in srgb,var(--green) 46%,var(--border));border-radius:13px;background:color-mix(in srgb,var(--green) 12%,var(--surface));color:var(--green);font-weight:900}.family-ping-button:disabled{opacity:.66}.family-ping-toast{position:fixed;z-index:220;left:50%;bottom:90px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;width:min(430px,calc(100% - 24px));padding:10px 11px;border:1px solid #ffffff38;border-radius:16px;background:#26383bf5;color:#fff;box-shadow:var(--shadow);transform:translateX(-50%)}.family-ping-toast>span{display:grid;gap:2px;min-width:0}.family-ping-toast b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}.family-ping-toast small{color:#d9e3df;font-size:10px}.family-ping-toast button{height:36px;padding:0 13px;border:0;border-radius:10px;background:var(--green);color:#fff;font-size:11px;font-weight:900}@media(max-width:699px){.family-ping-toast{bottom:70px}}@media(prefers-color-scheme:dark){.family-ping-button{background:#2b3935}}
   </style>
   <link rel="stylesheet" href="assets/icons/icon-system.css">
+  <link rel="stylesheet" href="assets/artwork-integration.css" />
 </head>
 <body>
   <div data-generated-space-root="" data-generated-space-slug="snug-society"></div>
@@ -716,7 +717,7 @@
         const THREE = await getThree();
         if (patchedWorlds.has(livingWorld)) return;
         const loader = new THREE.TextureLoader();
-        const textureNames = ["cloud-puff.png", "cloud-cluster.png"];
+        const textureNames = ["cloud-puff.webp", "cloud-cluster.webp"];
         const textures = textureNames.map((name) => {
           const texture = loader.load(`assets/textures/${name}`);
           texture.colorSpace = THREE.SRGBColorSpace;
@@ -800,5 +801,6 @@
       window.visualViewport?.addEventListener("scroll", syncVisibleViewport, {passive:true});
     })();
   </script>
+  <script src="assets/modal-interaction-guard.js"></script>
 </body>
 </html>

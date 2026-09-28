@@ -105,8 +105,8 @@ async function loadManifest() {
 
 function normalizeTextureOutfit(item) {
   const filename = String(item?.path || '').split('/').pop();
-  if (!filename || !/\.png$/i.test(filename)) return null;
-  const id = String(item?.id || filename.replace(/\.png$/i, ''));
+  if (!filename || !/\.(?:png|webp)$/i.test(filename)) return null;
+  const id = String(item?.id || filename.replace(/\.(?:png|webp)$/i, ''));
   return {
     id,
     name: String(item?.name || displayName(filename)),

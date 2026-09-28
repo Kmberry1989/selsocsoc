@@ -20,26 +20,29 @@
     { id: "tool-trail-lantern", name: "Trail Lantern", cost: 46, color: "#e4ad45", purpose: "A wearable light for dusk walks through Whispering Wood." },
     { id: "tool-cast-bell", name: "Casting Bell", cost: 34, color: "#4d929c", purpose: "Provides an audible timing cue during fishing practice." },
     { id: "decor-picnic-cloth", name: "Sunmeadow Picnic Cloth", cost: 38, color: "#d86d60", purpose: "An aesthetic furnishing for lawns, porches, and photo scenes." },
-    { id: "starlight-crown", name: "Starlight Crown", color: "#d8a83e", purpose: "Wearable glowing festival crown from Pip Parade’s Starlight Jamboree.", slot: "head-accessory", action: "wear", sprite: "assets/inventory/items/starlight-crown.png", shop: false, collection: "purpose-items" },
-    { id: "lucky-bobber", name: "Lucky Bobber", color: "#57a7a5", purpose: "Equippable bobber that boosts luck for rarer pond surprises.", slot: "fishing-tool", action: "equip", sprite: "assets/inventory/items/lucky-bobber.png", shop: false, collection: "purpose-items" },
-    { id: "snapshot-lens", name: "Snapshot Lens", color: "#6886ad", purpose: "Unlocks Lyla Lens’s starburst photo filter.", slot: "photo-filter", action: "unlock", sprite: "assets/inventory/items/snapshot-lens.png", shop: false, collection: "purpose-items" },
-    { id: "moonlight-lantern", name: "Moonlight Lantern", color: "#e5ad43", purpose: "Holdable lantern that glows softly at night and lights the avatar.", slot: "held-item", action: "hold", sprite: "assets/inventory/items/moonlight-lantern.png", shop: false, collection: "purpose-items" },
-    { id: "cat-treat-tin", name: "Cat Treat Tin", color: "#bf7654", purpose: "Shake it to attract a stray-cat follower for a while, courtesy of Agnes Alley.", slot: "held-item", action: "use", sprite: "assets/inventory/items/cat-treat-tin.png", shop: false, collection: "purpose-items" },
-    { id: "golden-dice", name: "Golden Dice", color: "#d6a43b", purpose: "Snug Board consumable from Chip Chance: one free reroll per game.", slot: "board-consumable", action: "use", sprite: "assets/inventory/items/golden-dice.png", shop: false, collection: "purpose-items" },
-    { id: "gideons-guitar-pick", name: "Gideon’s Guitar Pick", color: "#c56e55", purpose: "Holdable pick that strums a cheerful chord on tap.", slot: "held-item", action: "hold", sprite: "assets/inventory/items/gideons-guitar-pick.png", shop: false, collection: "purpose-items" },
-    { id: "barnabys-bargain-tag", name: "Barnaby’s Bargain Tag", color: "#c98542", purpose: "Wearable price tag that floats above the head and shows joke prices.", slot: "head-accessory", action: "wear", sprite: "assets/inventory/items/barnabys-bargain-tag.png", shop: false, collection: "purpose-items" },
-    { id: "dotties-streak-ribbon", name: "Dottie’s Streak Ribbon", color: "#d46c64", purpose: "Wearable ribbon that displays the login streak.", slot: "neckwear", action: "wear", sprite: "assets/inventory/items/dotties-streak-ribbon.png", shop: false, collection: "purpose-items" },
-    { id: "bubble-wand", name: "Bubble Wand", color: "#689cc0", purpose: "Emote prop that blows a stream of bubbles.", slot: "held-item", action: "hold", sprite: "assets/inventory/items/bubble-wand.png", shop: false, collection: "purpose-items" },
-    { id: "pips-parade-kazoo", name: "Pip’s Parade Kazoo", color: "#c65d69", purpose: "Holdable kazoo that toots a merry tune with confetti.", slot: "held-item", action: "hold", sprite: "assets/inventory/items/pips-parade-kazoo.png", shop: false, collection: "purpose-items" },
-    { id: "wishing-coin", name: "Wishing Coin", color: "#caa03e", purpose: "Toss it into the pond for a random small gift.", slot: "keepsake", action: "use", sprite: "assets/inventory/items/wishing-coin.png", shop: false, collection: "purpose-items" },
-    { id: "mayors-mini-top-hat", name: "Mayor’s Mini Top Hat", color: "#4f6470", purpose: "Wearable tiny star-spangled top hat from Mayor Mayor.", slot: "head-accessory", action: "wear", sprite: "assets/inventory/items/mayors-mini-top-hat.png", shop: false, collection: "purpose-items" },
-    { id: "mystery-left-boot", name: "Mystery Left Boot", color: "#7b604c", purpose: "Joke trophy and the pond’s most common unbelievable catch; display it in the house.", slot: "house-display", action: "display", sprite: "assets/inventory/items/mystery-left-boot.png", shop: false, collection: "purpose-items" },
+    { id: "starlight-crown", name: "Starlight Crown", color: "#d8a83e", purpose: "Wearable glowing festival crown from Pip Parade’s Starlight Jamboree.", slot: "head-accessory", action: "wear", sprite: "assets/inventory/items/starlight-crown.webp", shop: false, collection: "purpose-items" },
+    { id: "lucky-bobber", name: "Lucky Bobber", color: "#57a7a5", purpose: "Equippable bobber that boosts luck for rarer pond surprises.", slot: "fishing-tool", action: "equip", sprite: "assets/inventory/items/lucky-bobber.webp", shop: false, collection: "purpose-items" },
+    { id: "snapshot-lens", name: "Snapshot Lens", color: "#6886ad", purpose: "Unlocks Lyla Lens’s starburst photo filter.", slot: "photo-filter", action: "unlock", sprite: "assets/inventory/items/snapshot-lens.webp", shop: false, collection: "purpose-items" },
+    { id: "moonlight-lantern", name: "Moonlight Lantern", color: "#e5ad43", purpose: "Holdable lantern that glows softly at night and lights the avatar.", slot: "held-item", action: "hold", sprite: "assets/inventory/items/moonlight-lantern.webp", shop: false, collection: "purpose-items" },
+    { id: "cat-treat-tin", name: "Cat Treat Tin", color: "#bf7654", purpose: "Shake it to attract a stray-cat follower for a while, courtesy of Agnes Alley.", slot: "held-item", action: "use", sprite: "assets/inventory/items/cat-treat-tin.webp", shop: false, collection: "purpose-items" },
+    { id: "golden-dice", name: "Golden Dice", color: "#d6a43b", purpose: "Snug Board consumable from Chip Chance: one free reroll per game.", slot: "board-consumable", action: "use", sprite: "assets/inventory/items/golden-dice.webp", shop: false, collection: "purpose-items" },
+    { id: "gideons-guitar-pick", name: "Gideon’s Guitar Pick", color: "#c56e55", purpose: "Holdable pick that strums a cheerful chord on tap.", slot: "held-item", action: "hold", sprite: "assets/inventory/items/gideons-guitar-pick.webp", shop: false, collection: "purpose-items" },
+    { id: "barnabys-bargain-tag", name: "Barnaby’s Bargain Tag", color: "#c98542", purpose: "Wearable price tag that floats above the head and shows joke prices.", slot: "head-accessory", action: "wear", sprite: "assets/inventory/items/barnabys-bargain-tag.webp", shop: false, collection: "purpose-items" },
+    { id: "dotties-streak-ribbon", name: "Dottie’s Streak Ribbon", color: "#d46c64", purpose: "Wearable ribbon that displays the login streak.", slot: "neckwear", action: "wear", sprite: "assets/inventory/items/dotties-streak-ribbon.webp", shop: false, collection: "purpose-items" },
+    { id: "bubble-wand", name: "Bubble Wand", color: "#689cc0", purpose: "Emote prop that blows a stream of bubbles.", slot: "held-item", action: "hold", sprite: "assets/inventory/items/bubble-wand.webp", shop: false, collection: "purpose-items" },
+    { id: "pips-parade-kazoo", name: "Pip’s Parade Kazoo", color: "#c65d69", purpose: "Holdable kazoo that toots a merry tune with confetti.", slot: "held-item", action: "hold", sprite: "assets/inventory/items/pips-parade-kazoo.webp", shop: false, collection: "purpose-items" },
+    { id: "wishing-coin", name: "Wishing Coin", color: "#caa03e", purpose: "Toss it into the pond for a random small gift.", slot: "keepsake", action: "use", sprite: "assets/inventory/items/wishing-coin.webp", shop: false, collection: "purpose-items" },
+    { id: "mayors-mini-top-hat", name: "Mayor’s Mini Top Hat", color: "#4f6470", purpose: "Wearable tiny star-spangled top hat from Mayor Mayor.", slot: "head-accessory", action: "wear", sprite: "assets/inventory/items/mayors-mini-top-hat.webp", shop: false, collection: "purpose-items" },
+    { id: "mystery-left-boot", name: "Mystery Left Boot", color: "#7b604c", purpose: "Joke trophy and the pond’s most common unbelievable catch; display it in the house.", slot: "house-display", action: "display", sprite: "assets/inventory/items/mystery-left-boot.webp", shop: false, collection: "purpose-items" },
   ];
 
   const ITEM_BY_NAME = new Map(ITEMS.map((item) => [item.name, item]));
   const ITEM_BY_ID = new Map(ITEMS.map((item) => [item.id, item]));
   const earnedInSession = new Set();
   const WILD_CATCHES = [
+    { name: "a pearly conch shell", note: "It carries the sound of the plaza fountain.", shells: 6, art: "assets/fishing-art/shell-conch.webp" },
+    { name: "a blushing scallop shell", note: "Polished smooth by an extremely tidy current.", shells: 5, art: "assets/fishing-art/shell-scallop.webp" },
+    { name: "a tiny spiral shell", note: "Something inside whispered thanks and moved out.", shells: 7, art: "assets/fishing-art/shell-spiral.webp" },
     { name: "a rubber duck wearing a crown", note: "It squeaked with surprising authority.", shells: 4 },
     { name: "a ringing telephone", note: "Nobody was on the other end, but it knew your name.", shells: 7 },
     { name: "an unopened umbrella", note: "Bone dry. Somehow.", shells: 5 },
@@ -200,7 +203,7 @@
     panel.className = 'fishing-loot-reveal';
     panel.setAttribute('role', 'status');
     const item = catchData.item;
-    panel.innerHTML = `<span class="fishing-loot-sprite" style="--sprite-color:${item?.color || '#557f88'}">${item ? itemArt(item) : surpriseSvg()}</span><span><small>${item ? 'Inventory catch' : 'Impossible catch'}</small><b>You pulled up ${catchData.name}!</b><em>${item ? 'Added to your inventory.' : `${catchData.note} · +${catchData.shells} shells`}</em></span>`;
+    panel.innerHTML = `<span class="fishing-loot-sprite" style="--sprite-color:${item?.color || '#557f88'}">${item ? itemArt(item) : catchData.art ? `<img src="${catchData.art}" alt="">` : surpriseSvg()}</span><span><small>${item ? 'Inventory catch' : 'Impossible catch'}</small><b>You pulled up ${catchData.name}!</b><em>${item ? 'Added to your inventory.' : `${catchData.note} · +${catchData.shells} shells`}</em></span>`;
     document.body.appendChild(panel);
     requestAnimationFrame(() => panel.classList.add('show'));
     setTimeout(() => { panel.classList.remove('show'); setTimeout(() => panel.remove(), 220); }, 3800);

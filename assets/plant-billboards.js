@@ -1,15 +1,15 @@
 (() => {
   const SPRITES = {
-    trees: ["tree-oak.png", "tree-apple.png", "tree-birch.png", "tree-maple.png", "tree-pine.png", "tree-willow.png"],
-    bushes: ["bush-1.png", "bush-2.png", "bush-3.png", "bush-4.png"],
+    trees: ["tree-oak.webp", "tree-apple.webp", "tree-birch.webp", "tree-maple.webp", "tree-pine.webp", "tree-willow.webp", "prop-tree-cherry-blossom.webp", "prop-tree-oak.webp", "prop-tree-pine.webp"],
+    bushes: ["bush-1.png", "bush-2.png", "bush-3.png", "bush-4.png", "prop-plant-fern.webp", "prop-plant-monstera.webp", "prop-plant-snake-plant.webp"],
     flowers: ["flower-mixed-1.png", "flower-mixed-2.png", "flower-mixed-3.png", "flower-mixed-4.png", "flower-mixed-5.png", "flower-branch-3.png", "flower-branch-5.png", "flower-branch-6.png"],
-    grass: ["grass-tuft-1.png"],
+    grass: ["grass-tuft-1.webp"],
     garden: {
       fern: ["bush-2.png", "bush-3.png", "bush-1.png"],
       moonflower: ["flower-branch-2.png", "flower-branch-6.png", "flower-mixed-4.png"],
-      oak: ["tree-oak.png", "tree-apple.png", "tree-oak.png"],
+      oak: ["tree-oak.webp", "tree-apple.webp", "tree-oak.webp"],
     },
-    decor: ["decor-lantern.png", "decor-mushrooms.png", "decor-reeds.png", "decor-cairn.png", "decor-signpost.png", "decor-birdhouse.png"],
+    decor: ["decor-lantern.png", "decor-mushrooms.png", "decor-reeds.png", "decor-cairn.png", "decor-signpost.png", "decor-birdhouse.png", "prop-rock-boulder.webp", "prop-rock-pebbles.webp", "prop-rock-stepping-stone.webp", "prop-fence-garden-lattice.webp", "prop-fence-rustic-split-rail.webp", "prop-fence-white-picket-segment.webp"],
   };
   const DECOR = [
     [-28,-16,0,1.3],[-22,18,1,0.75],[-16,-25,2,1.25],[-10,26,3,0.8],[-4,-23,4,1.2],[3,29,5,1.1],
@@ -169,8 +169,8 @@
           sprite = makeCrossPlaneTree(THREE, assets, choose(SPRITES.trees, record.props?.instanceIndex), record, 3.45 * scale, `SnugTreeCrossPair_${record.id}`);
           counters.trees += Boolean(sprite);
         } else if (source === "base-environment" && /^tree-/.test(record.props?.asset || "")) {
-          const requested = `${record.props.asset}.png`;
-          const name = assets.has(requested) ? requested : "tree-oak.png";
+          const requested = `${record.props.asset}.webp`;
+          const name = assets.has(requested) ? requested : "tree-oak.webp";
           sprite = makeCrossPlaneTree(THREE, assets, name, record, 3.05 * scale, `SnugTreeCrossPair_${record.id}`);
           counters.trees += Boolean(sprite);
         } else if (source === "base-environment" && record.props?.asset === "bush-round") {
@@ -186,7 +186,7 @@
           sprite = makeSprite(THREE, assets, choose(SPRITES.flowers, (record.props?.meshIndex || 0) * 17 + (record.props?.instanceIndex || 0)), { ...record, y: 0.02 }, 0.38 * scale, `SnugFlowerSprite_${record.id}`);
           counters.flowers += Boolean(sprite);
         } else if (source === "ground-grass") {
-          sprite = makeSprite(THREE, assets, "grass-tuft-1.png", { ...record, y: 0.015 }, 0.3 * scale, `SnugGrassSprite_${record.id}`);
+          sprite = makeSprite(THREE, assets, "grass-tuft-1.webp", { ...record, y: 0.015 }, 0.3 * scale, `SnugGrassSprite_${record.id}`);
           counters.grass += Boolean(sprite);
         }
         if (sprite) group.add(sprite);
