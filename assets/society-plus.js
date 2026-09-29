@@ -249,10 +249,13 @@ async function pollSocial() {
     for (const event of [...state.socialEvents.slice(-8), ...state.mail.slice(0, 5)]) {
       if (state.seen.has(event.id)) continue;
       state.seen.add(event.id);
-      if (event.to === state.session.uid && event.from !== state.session.uid) showToast(event.type === "knock" ? `${event.fromName} has arrived at your door` : event.type === "reaction" ? `${event.fromName} sent a ${event.reaction}` : event.type === "trade" ? `${event.fromName} offered a trade` : event.type === "gift" ? `${event.fromName} sent a gift` : "A neighbor reached out");
+      if (event.to === state.session.uid && event.from !== state.session.uid) showToast(event.type === "knock" ? `${event.fromName} has arrived at your door` : event.type === "reaction" ? `${event.fromName} sent a ${event.reaction}` : event.type === "trade" ? `${event.fromName} offered a trade` : event.type === "gift" ? `${event.fromName} sent a gift` : event.type === "trade-accepted" ? "Stanley Stamp delivered your trade parcel" : "A neighbor reached out");
       if (event.type === "trade-accepted" && event.to === state.session.uid && event.item) {
-        patchPlayer(profile => ({ ...profile, inventory: [...new Set((profile.inventory || []).filter(id => id !== event.item).concat(event.want || []))] }));
-        deleteMail(event.id).catch(() => {});
+        // Your offered item leaves your inventory now (it belongs to your trade
+        // partner). The incoming parcel stays in your mailbox until you unwrap it.
+        if (inventory().includes(event.item)) {
+          patchPlayer(profile => ({ ...profile, inventory: [...new Set((profile.inventory || []).filter(id => id !== event.item))] }));
+        }
       }
     }
     renderPanel();
@@ -283,6 +286,12 @@ async function acceptGift(message) {
   patchPlayer(profile => ({ ...profile, inventory: [...new Set([...(profile.inventory || []), message.item])] }));
   await deleteMail(message.id).catch(() => {});
   showToast(`${displayName(message.item)} added to your collection`); pollSocial();
+}
+async function acceptParcel(message) {
+  if (!message?.want) return;
+  patchPlayer(profile => ({ ...profile, inventory: [...new Set([...(profile.inventory || []), message.want])] }));
+  await deleteMail(message.id).catch(() => {});
+  showToast(`${displayName(message.want)} added to your collection`); pollSocial();
 }
 async function acceptTrade(event) {
   if (!event?.item || !inventory().includes(event.want)) return showToast(`You need ${displayName(event.want)} to accept`);
@@ -360,7 +369,7 @@ function socialMarkup() {
   const online = state.presence.length;
   const ownedOptions = inventory().map(id => `<option value="${esc(id)}">${esc(displayName(id))}</option>`).join("");
   const activity = state.socialEvents.slice(-8).reverse().map(event => `<li><b>${esc(event.from === state.session.uid ? `To ${event.targetName || "neighbor"}` : event.fromName)}</b><span>${esc(event.type === "reaction" ? event.reaction : event.type.replace(/-/g," "))}</span>${event.type === "reaction" && event.to === state.session.uid ? `<button data-return-reaction="${esc(event.from)}" data-reaction-kind="${esc(event.reaction || 'wave')}">Return</button>` : event.type === "trade" && event.to === state.session.uid ? `<button data-accept-trade="${esc(event.id)}">Accept</button>` : ""}</li>`).join("") || `<li class="society-empty">Wave, knock, or offer a trade when a neighbor arrives.</li>`;
-  const mail = state.mail.filter(message => message.type !== "trade-accepted").map(message => message.type === "trade" ? `<li><div><b>${esc(message.fromName)} offers ${esc(displayName(message.item))}</b><small>For your ${esc(displayName(message.want))}</small></div><button data-accept-trade="${esc(message.id)}">Accept trade</button></li>` : `<li><div><b>${esc(message.fromName)} sent ${esc(displayName(message.item))}</b><small>Waiting in your mailbox</small></div><button data-accept-gift="${esc(message.id)}">Open gift</button></li>`).join("") || `<li class="society-empty">Your mailbox is empty.</li>`;
+  const mail = state.mail.map(message => message.type === "trade" ? `<li><div><b>${esc(message.fromName)} offers ${esc(displayName(message.item))}</b><small>For your ${esc(displayName(message.want))}</small></div><button data-accept-trade="${esc(message.id)}">Accept trade</button></li>` : message.type === "trade-accepted" ? `<li><div><b>${esc(message.fromName)}'s trade parcel</b><small>${esc(displayName(message.want))} is waiting in your mailbox</small></div><button data-accept-parcel="${esc(message.id)}">Open parcel</button></li>` : `<li><div><b>${esc(message.fromName)} sent ${esc(displayName(message.item))}</b><small>Waiting in your mailbox</small></div><button data-accept-gift="${esc(message.id)}">Open gift</button></li>`).join("") || `<li class="society-empty">Your mailbox is empty.</li>`;
   return `<div class="social-status"><b>${online} neighbor${online === 1 ? "" : "s"} nearby</b><small>Live in the village plaza</small></div><div class="society-section"><h3>Quick reaction</h3><div class="social-compose"><select data-person><option value="">Choose a neighbor</option>${playerOptions()}</select><button data-reaction="wave">Wave</button><button data-reaction="high-five">High-five</button><button data-knock>Knock</button></div></div><div class="society-section"><h3>Trade or gift</h3><div class="trade-grid"><select data-trade-person><option value="">Neighbor</option>${playerOptions()}</select><select data-offer><option value="">Your item</option>${ownedOptions}</select><select data-want><option value="">Ask for…</option>${ownedOptions}</select><button data-trade>Offer trade</button><button data-gift>Mailbox gift</button></div></div><div class="society-section"><h3>Mailbox</h3><ul class="mail-list">${mail}</ul></div><div class="society-section"><h3>Recent exchanges</h3><ul class="activity-list">${activity}</ul></div>`;
 }
 function collectionMarkup() {
@@ -407,6 +416,7 @@ function bindPanel() {
   $("[data-gift]",root)?.addEventListener("click", () => sendGift($("[data-trade-person]",root)?.value, $("[data-offer]",root)?.value));
   root.querySelectorAll("[data-return-reaction]").forEach(button => button.addEventListener("click", () => sendSocial("reaction", button.dataset.returnReaction, { reaction: button.dataset.reactionKind || "wave" })));
   root.querySelectorAll("[data-accept-gift]").forEach(button => button.addEventListener("click", () => acceptGift(state.mail.find(item => item.id === button.dataset.acceptGift))));
+  root.querySelectorAll("[data-accept-parcel]").forEach(button => button.addEventListener("click", () => acceptParcel(state.mail.find(item => item.id === button.dataset.acceptParcel))));
   root.querySelectorAll("[data-accept-trade]").forEach(button => button.addEventListener("click", () => acceptTrade(state.mail.find(item => item.id === button.dataset.acceptTrade))));
 }
 function renderDock() {

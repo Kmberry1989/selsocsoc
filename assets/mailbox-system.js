@@ -244,7 +244,8 @@
       const envelope = parseEnvelope(message.want);
       const stamp = STAMPS.find((item) => item.id === envelope.stamp);
       const thankYou = String(message.item || "").startsWith("__thank_you__");
-      return `<li class="${Number(message.createdAt || 0) > lastOpened ? "new" : ""}"><span class="parcel-wrap wrap-${esc(envelope.wrap)}" aria-hidden="true">${stamp ? stampSvg(stamp.glyph) : stampSvg("letter")}</span><div><small>${thankYou ? "Thank-you note" : "Gift parcel"}</small><b>${esc(message.fromName || "Neighbor")}</b><p>${esc(thankYou ? "Sent a little note back." : displayName(message.item))}</p></div><button type="button" data-open-mail="${esc(message.id)}">${thankYou ? "Read" : "Unwrap"}</button></li>`;
+      const tradeParcel = message.type === "trade-accepted";
+      return `<li class="${Number(message.createdAt || 0) > lastOpened ? "new" : ""}"><span class="parcel-wrap wrap-${esc(envelope.wrap)}" aria-hidden="true">${stamp ? stampSvg(stamp.glyph) : stampSvg("letter")}</span><div><small>${thankYou ? "Thank-you note" : tradeParcel ? "Trade parcel" : "Gift parcel"}</small><b>${esc(message.fromName || "Neighbor")}</b><p>${esc(thankYou ? "Sent a little note back." : tradeParcel ? `${displayName(message.want)} arrived via trade.` : displayName(message.item))}</p></div><button type="button" data-open-mail="${esc(message.id)}">${thankYou ? "Read" : "Unwrap"}</button></li>`;
     }).join("")}</ul>`;
   }
   function sendMarkup() {
@@ -340,10 +341,10 @@
     }
   }
 
-  function showUnwrap(message, stamp, wrap, thankYou) {
+  function showUnwrap(message, stamp, wrap, thankYou, tradeParcel = false) {
     const overlay = document.createElement("div");
     overlay.className = "unwrap-backdrop";
-    overlay.innerHTML = `<section class="unwrap-card" role="dialog" aria-modal="true" aria-label="Opened mail"><div class="unwrap-parcel wrap-${esc(wrap)}"><span>${stampSvg(stamp?.glyph || "letter")}</span></div><small>${thankYou ? "A note from" : "A gift from"}</small><h3>${esc(message.fromName || "Neighbor")}</h3><p>${esc(thankYou ? "Thank you! Your parcel made my day." : `${displayName(message.item)} is now in your collection.`)}</p><div><button type="button" data-unwrapped-done>Done</button>${thankYou ? "" : `<button type="button" class="mail-primary" data-send-thanks>Send thanks</button>`}</div></section>`;
+    overlay.innerHTML = `<section class="unwrap-card" role="dialog" aria-modal="true" aria-label="Opened mail"><div class="unwrap-parcel wrap-${esc(wrap)}"><span>${stampSvg(stamp?.glyph || "letter")}</span></div><small>${thankYou ? "A note from" : tradeParcel ? "A trade parcel from" : "A gift from"}</small><h3>${esc(message.fromName || "Neighbor")}</h3><p>${esc(thankYou ? "Thank you! Your parcel made my day." : `${displayName(tradeParcel ? message.want : message.item)} is now in your collection.`)}</p><div><button type="button" data-unwrapped-done>Done</button>${thankYou ? "" : `<button type="button" class="mail-primary" data-send-thanks>Send thanks</button>`}</div></section>`;
     document.body.appendChild(overlay);
     const close = () => overlay.remove();
     $("[data-unwrapped-done]", overlay)?.addEventListener("click", close);
@@ -364,18 +365,20 @@
     const { stamp: stampId, wrap } = parseEnvelope(message.want);
     const stamp = STAMPS.find((item) => item.id === stampId);
     const thankYou = String(message.item || "").startsWith("__thank_you__");
+    const tradeParcel = message.type === "trade-accepted";
+    const incoming = tradeParcel ? message.want : message.item;
     const button = $(`[data-open-mail="${CSS.escape(id)}"]`, state.panel);
     if (button) button.disabled = true;
     try {
-      if (!thankYou) {
-        const nextInventory = [...new Set([...inventory(), message.item])];
+      if (!thankYou && incoming) {
+        const nextInventory = [...new Set([...inventory(), incoming])];
         state.profile.inventory = nextInventory;
         await patchFields({ inventory: nextInventory });
         window.dispatchEvent(new CustomEvent("snug-player-patch", { detail: (player) => ({ ...player, inventory: nextInventory, owned: nextInventory }) }));
       }
       await deleteMail(id);
       state.mail = state.mail.filter((item) => item.id !== id);
-      showUnwrap(message, stamp, wrap, thankYou);
+      showUnwrap(message, stamp, wrap, thankYou, tradeParcel);
       renderDock();
       renderPanel();
     } catch {
@@ -573,6 +576,11 @@
     renderDock();updateMailboxWorld();
   }
 
+  window.__snugMailboxUI = {
+    openPanel: (view) => openPanel(view || "inbox"),
+    unreadCount: () => unreadMail().length,
+    mailbox: () => normalizedMailbox(),
+  };
   window.addEventListener("snug-session",(event)=>attachSession(event.detail));
   window.addEventListener("snug-remote-players",(event)=>{state.players=Array.isArray(event.detail?.players)?event.detail.players:[];refreshRemoteProfiles();renderPanel();});
   ["snug-world-ready","snug-world-expanded","cylindric-world-layout-applied"].forEach((eventName)=>window.addEventListener(eventName,()=>[0,180,700].forEach((delay)=>setTimeout(updateMailboxWorld,delay))));
