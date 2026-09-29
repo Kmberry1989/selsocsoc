@@ -46,7 +46,10 @@ Validation per puzzle:
 
 Export format: `{ "format": "whirl-of-resources-puzzle-pack", "version": 1, "title": "Whirl of Resources", "puzzles": [{ category, phrase }] }`. Import accepts the same shape (or a bare array) and validates each puzzle before adding it. Starting a show requires at least one valid puzzle per round; otherwise the host explains what is missing instead of starting.
 
+## 3D prize wheel
+
+The show ships a procedural 3D prize wheel, `assets/game-shows/whirl-of-resources/prize-wheel.glb` (872 triangles, ~96 KB): 12 wedges in `SEGMENTS` order with vertex colors matched to the CSS wheel, a gold rim, hub and knob, plus a static stand (two glTF nodes, `Wheel` and `Stand`). On show open the game lazy-loads it with the repo's dynamic-import three.js pattern (`assets/vendor/three/three.module.js` + `GLTFLoader.js`); the `Wheel` node rotation is driven from `state.rotation` so the `segmentAtPointer()` mapping stays exact. If three.js or the GLB fails to load, the CSS wheel remains in place untouched — the 3D wheel is strictly an enhancement layer.
+
 ## Follow-ups
 
-- A 3D prize-wheel GLB can replace the CSS wheel through the asset pipeline; the 12-segment layout is defined in `SEGMENTS` in the game file.
 - Shared-room/multiplayer show mode.

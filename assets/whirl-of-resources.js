@@ -22,6 +22,86 @@
   const SEGMENT_DEG = 360 / SEGMENTS.length;
   const SEGMENT_NAMES = { bankrupt: "BANKRUPT", "lose-turn": "LOSE A TURN" };
 
+  /* ================= 3D prize wheel (optional; CSS wheel is the fallback) ================= */
+
+  // Procedural GLB: 12 wedges in SEGMENTS order (clockwise from top, matching the
+  // CSS conic-gradient), gold rim, hub, knob, and a static stand. Node "Wheel"
+  // rotates; node "Stand" does not. If three.js or the GLB fails to load, the
+  // CSS wheel keeps working untouched.
+  const WHEEL_GLB = "assets/game-shows/whirl-of-resources/prize-wheel.glb";
+  let threePromise;
+  const getThree = () => (threePromise ||= import("./assets/vendor/three/three.module.js"));
+
+  async function ensureWheel3D() {
+    if (state.wheel3d) {
+      attachWheel3D();
+      return;
+    }
+    if (state.wheel3dTried) return;
+    const wrap = state.root?.querySelector(".whirl-wheel-wrap");
+    if (!wrap) return;
+    state.wheel3dTried = true;
+    try {
+      const THREE = await getThree();
+      const { GLTFLoader } = await import("./assets/vendor/three/GLTFLoader.js");
+      const gltf = await new GLTFLoader().loadAsync(WHEEL_GLB);
+      const wheelNode = gltf.scene.getObjectByName("Wheel");
+      if (!wheelNode) throw new Error("Wheel node missing in " + WHEEL_GLB);
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+      const canvas = renderer.domElement;
+      canvas.setAttribute("data-whirl-3d", "");
+      canvas.setAttribute("aria-hidden", "true");
+      Object.assign(canvas.style, {
+        position: "absolute", inset: "15px",
+        width: "calc(100% - 30px)", height: "calc(100% - 30px)",
+        borderRadius: "50%", pointerEvents: "none",
+      });
+      const scene = new THREE.Scene();
+      scene.add(new THREE.HemisphereLight(0xffffff, 0x24403c, 0.9));
+      const key = new THREE.DirectionalLight(0xfff2d0, 1.25);
+      key.position.set(2.5, 3.5, 4);
+      scene.add(key);
+      const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 30);
+      camera.position.set(0, -0.05, 3.2);
+      camera.lookAt(0, -0.12, 0);
+      scene.add(gltf.scene);
+      state.wheel3d = { THREE, renderer, scene, camera, node: wheelNode, lastSize: 0 };
+      attachWheel3D();
+    } catch (error) {
+      state.wheel3dFailed = true; // CSS wheel stays as-is
+    }
+  }
+
+  function attachWheel3D() {
+    const w3 = state.wheel3d;
+    if (!w3) return;
+    const wrap = state.root?.querySelector(".whirl-wheel-wrap");
+    if (!wrap) return;
+    const canvas = w3.renderer.domElement;
+    if (!canvas.isConnected) {
+      wrap.appendChild(canvas);
+      const cssWheel = wrap.querySelector(".whirl-wheel");
+      if (cssWheel) cssWheel.style.display = "none";
+      const knob = wrap.querySelector(".whirl-knob");
+      if (knob) knob.style.display = "none";
+    }
+    const size = Math.max(60, (wrap.clientWidth || 300) - 30);
+    if (Math.abs(size - w3.lastSize) > 2) {
+      w3.renderer.setSize(size, size, false);
+      w3.lastSize = size;
+    }
+  }
+
+  function paintWheel3D() {
+    const w3 = state.wheel3d;
+    if (!w3 || !w3.renderer.domElement.isConnected) return;
+    // CSS rotate() is clockwise-positive; three.js rotation.z is CCW-positive
+    // viewed from +Z, so negate to keep the segmentAtPointer() mapping exact.
+    w3.node.rotation.z = (-state.rotation * Math.PI) / 180;
+    w3.renderer.render(w3.scene, w3.camera);
+  }
+
   // Starter puzzle pack — Cyclical City canon only. Exposed for a future show editor.
   const PUZZLES = [
     { category: "Around Cyclical City", phrase: "CYCLICAL CITY" },
@@ -204,6 +284,7 @@
     round: 0, puzzle: null, letters: [], used: new Set(), justRevealed: new Set(),
     bank: 0, pendingPrize: null, lastSegment: null, prizesWon: [],
     spinning: false, spinToken: 0, rotation: 0,
+    wheel3d: null, wheel3dTried: false, wheel3dFailed: false,
     solveOpen: false, muted: false, callout: "", banner: "", bannerPhase: "",
     puzzles: starterPuzzles(),
     editingPuzzle: null,
@@ -395,6 +476,8 @@
   function paintWheel() {
     const wheel = state.root?.querySelector(".whirl-wheel");
     if (wheel) wheel.style.transform = `rotate(${state.rotation}deg)`;
+    ensureWheel3D();
+    paintWheel3D();
   }
 
   function setCallout(html) {
