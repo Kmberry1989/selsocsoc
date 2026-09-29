@@ -309,12 +309,51 @@ function buyDaily(item) {
   award(-price, `${item.name} · −${price} shells`); renderPanel();
 }
 
+/* Public daily-loop API for the NPC service fronts (assets/npc-fronts.js).
+   Read-only views over the real quest/streak/shop state, plus the real
+   claim/purchase calls. Nothing here invents state. */
+window.__snugDailyLoop = {
+  today,
+  dayNumber,
+  quests: () => dailyQuests(),
+  questProgress: (id) => Number(state.gameplay.daily?.progress?.[id] || 0),
+  questClaimed: (id) => Boolean(state.gameplay.daily?.claimed?.[id]),
+  questsReadyToClaim: () => dailyQuests().filter(q => Number(state.gameplay.daily?.progress?.[q.id] || 0) >= q.goal && !state.gameplay.daily?.claimed?.[q.id]),
+  claimQuest,
+  streak: () => Number(state.gameplay.daily?.streak || 0),
+  loginClaimed: () => Boolean(state.gameplay.daily?.loginClaimed),
+  loginReward: () => 5 + Math.min(6, Number(state.gameplay.daily?.streak || 1) - 1) * 3,
+  claimLogin,
+  rotatingShop,
+  dailyPrice: (item) => Math.max(10, Number(item?.cost || 40) - 10),
+  dailyBought: (id) => (state.gameplay.shopPurchases?.[today()] || []).includes(id) || inventory().includes(id),
+  buyDaily,
+  openToday: () => openPanel("today"),
+};
+
+function npcFrontHeader(mark, color, role, name, line) {
+  return `<header class="society-npc-front"><span class="society-npc-mark" style="--npc-color:${color}" aria-hidden="true">${mark}</span><div><small>${esc(role)}</small><b>${esc(name)}</b><p>${line}</p></div></header>`;
+}
+function dottieHeader() {
+  const daily = state.gameplay.daily || {};
+  const streak = Number(daily.streak || 0);
+  const loginReward = 5 + Math.min(6, Number(daily.streak || 1) - 1) * 3;
+  const ready = dailyQuests().filter(q => Number(daily.progress?.[q.id] || 0) >= q.goal && !daily.claimed?.[q.id]).length;
+  const bits = [streak > 1 ? `Day ${streak} of your streak — I’ve pinned today’s little adventures.` : `Welcome to the board — I’ve pinned today’s little adventures.`];
+  if (!daily.loginClaimed) bits.push(`Your ${loginReward}-shell welcome is waiting below.`);
+  if (ready) bits.push(`${ready} bonus${ready === 1 ? "" : "es"} read${ready === 1 ? "y" : "ies"} to claim.`);
+  return npcFrontHeader("DD", "#4f8a68", "Quest giver", "Dottie Daly", esc(bits.join(" ")));
+}
+function barnabyHeader() {
+  return npcFrontHeader("BB", "#527e8d", "Shopkeeper", "Barnaby Bargain", esc("Today’s prices are rotating — but my commitment to a dramatic deal is fixed. These three only sit still till midnight."));
+}
+
 function todayMarkup() {
   const daily = state.gameplay.daily || {};
   const loginReward = 5 + Math.min(6, Number(daily.streak || 1) - 1) * 3;
   const quests = dailyQuests().map(q => { const value = Number(daily.progress?.[q.id] || 0); const done = value >= q.goal; const claimed = daily.claimed?.[q.id]; return `<article class="society-task"><div><b>${esc(q.label)}</b><small>${Math.floor(value)} / ${q.goal}</small><i><span style="width:${Math.min(100,value/q.goal*100)}%"></span></i></div><button data-claim-quest="${q.id}" ${!done || claimed ? "disabled" : ""}>${claimed ? "Claimed" : `+${q.reward}`}</button></article>`; }).join("");
   const shop = rotatingShop().map(item => { const bought = (state.gameplay.shopPurchases?.[today()] || []).includes(item.id) || inventory().includes(item.id); const price = Math.max(10, Number(item.cost || 40) - 10); return `<article class="daily-item"><span style="--item-color:${item.color || '#7ca083'}"></span><div><small>${esc(item.category)}</small><b>${esc(item.name)}</b></div><button data-daily-buy="${esc(item.id)}" ${bought ? "disabled" : ""}>${bought ? "Owned" : `${price} shells`}</button></article>`; }).join("") || `<p class="society-empty">Approved daily stock will appear after cosmetic files are added.</p>`;
-  return `<section class="streak-card"><div><small>Login streak</small><b>${daily.streak || 1} day${daily.streak === 1 ? "" : "s"}</b><p>Tomorrow’s welcome grows a little more.</p></div><button data-login ${daily.loginClaimed ? "disabled" : ""}>${daily.loginClaimed ? "Collected" : `Collect ${loginReward}`}</button></section><div class="society-section"><h3>Today’s quests</h3>${quests}</div><div class="society-section"><h3>Daily market shelf</h3><div class="daily-shop">${shop}</div></div>`;
+  return `${dottieHeader()}<section class="streak-card"><div><small>Login streak</small><b>${daily.streak || 1} day${daily.streak === 1 ? "" : "s"}</b><p>Tomorrow’s welcome grows a little more.</p></div><button data-login ${daily.loginClaimed ? "disabled" : ""}>${daily.loginClaimed ? "Collected" : `Collect ${loginReward}`}</button></section><div class="society-section"><h3>Today’s quests</h3>${quests}</div><div class="society-section" id="daily-market-shelf">${barnabyHeader()}<h3>Daily market shelf</h3><div class="daily-shop">${shop}</div></div>`;
 }
 function playerOptions() { return state.presence.map(player => `<option value="${esc(player.uid)}">${esc(player.name || "Neighbor")}</option>`).join(""); }
 function socialMarkup() {
