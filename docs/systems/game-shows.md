@@ -16,7 +16,8 @@ Selfie Social Society's game shows are staged, hosted TV-style events inside Cyc
 
 - `assets/game-show-audio.js` — the shared game-show sound package: theme music, stingers, and transitions the shows call into. Designed to be extensible for future game shows.
 - `assets/nosy-neighbors.js` + `assets/nosy-neighbors.css` — Nosy Neighbors (shipped).
-- `assets/whirl-of-resources.css` — Whirl of Resources styling (game logic not yet implemented; see `whirl-of-resources.md`).
+- `assets/whirl-of-resources.js` + `assets/whirl-of-resources.css` — Whirl of Resources (shipped).
+- `assets/family-feud-show.js` + `assets/family-feud-show.css` — Survey Showdown, the one-on-one survey show (shipped).
 - `assets/mailbox-system.js` — show-related achievements (e.g. "Whirl Winner" listens for the `snug-whirl-result` event).
 
 ## Where state lives
@@ -32,4 +33,4 @@ Show results that pay out (wins, shells) flow into the standard player save. See
 
 - [Whirl of Resources](whirl-of-resources.md) — SHIPPED
 - [Nosy Neighbors](nosy-neighbors.md) — SHIPPED
-- [Family Feud-style one-on-one](family-feud-show.md) — PLANNED
+- [Family Feud-style one-on-one](family-feud-show.md) — SHIPPED (as **Survey Showdown**)

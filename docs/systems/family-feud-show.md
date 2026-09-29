@@ -1,28 +1,54 @@
-# Family Feud-style One-on-One Show
+# Survey Showdown (Family Feud-style One-on-One)
 
-**Status:** PLANNED
-
-> Design direction only. There is no code for this show in the repo. Do not treat this guide as a description of shipped behavior.
+**Status:** SHIPPED
 
 ## What it is
 
-A planned Family Feud-style one-on-one game show for the Cyclical City game-show lineup: two players face off guessing the most popular answers to survey-style questions.
+Cyclical City's one-on-one survey game show: the player faces a rival bot across three survey questions, buzzing in for face-offs, running the board on correct guesses, and surviving three-strike steal rounds. Staged like the other shows — marquee, hosts, set dressing, full sound package.
 
-## Planned design (not yet built)
+## How it works for the player
 
-- One-on-one survey-answer format in the style of Family Feud, staged like the other game shows (marquee, hosts, set dressing, sound package).
-- Intended to reuse the shared game-show framework: `assets/game-show-audio.js` for the sound package and the staged-overlay presentation pattern established by [Nosy Neighbors](nosy-neighbors.md).
-- Like the other shows, it should be extensible for future game-show additions rather than a one-off.
+- Launched from a **Survey Showdown** card in the Play panel and the Solo Practice grid (same MutationObserver injection pattern as the other shows).
+- Home marquee: pick rival difficulty (**Easy / Normal / Hard**), then start.
+- **Face-off:** the survey question appears with a 15-second buzz race. Buzz in first, then name an answer within 12 seconds — or the rival answers first and you get one chance to beat their rank. Higher answer (lower rank) controls the board; ties go to the player.
+- **Board round:** the controller names answers. Each hit reveals the answer and banks its survey points; each miss is a strike. Three strikes hands the other side a single **steal** attempt — a hit steals the whole bank, a miss leaves it with the controller.
+- Three questions per show; the third is the **double round** (all points ×2). Most total points wins.
+- Winner: 200 shells + points as bonus shells and the **Mayor's Brass Button** (`keepsake-mayor-button`) inventory item. Runner-up: 25 shells.
+- Answers match forgivingly: case/punctuation-insensitive, plural-tolerant, with authored aliases per answer (e.g. "tomato" matches "Tomatoes").
+- Sound toggle, reduced-motion support (no buzz-race animation pressure, shortened delays), keyboard/touch-friendly forms, clean Leave that reports an unfinished result.
 
-## What exists in the repo today
+## Key code files
 
-Nothing. No files, styles, or hooks reference this show. The extensible audio/show systems (`assets/game-show-audio.js`) were built with future shows like this one in mind.
+- `assets/family-feud-show.js` — show logic (~950 lines): survey data, face-off/board/steal state machine, difficulty-aware rival bot, TTS hosting, economy hooks, launch-card injection.
+- `assets/family-feud-show.css` — marquee, survey board, strikes, buzz button, scoreboard, responsive + reduced-motion.
+- `assets/game-show-audio.js` — shared sound package (theme, stingers, reveal/wrong/fanfare).
+- Loaded by `index.html` after `assets/whirl-of-resources.js`.
 
-## Key code files (when built)
+## Where state lives
 
-- New show logic + CSS files (not yet written)
-- `assets/game-show-audio.js` — shared sound package to build on
+- In-show state is local to the overlay; results flow into the standard player save.
+- Win/loss dispatches `snug-feud-result` (`{ won, playerPoints, rivalPoints, difficulty, finished }`), mirroring the `snug-whirl-result` convention.
+- Shells via `snug-award-coins`; the prize item via `snug-player-patch` (same conventions as the other live systems).
+- Survey pack exposed as `window.__snugFeudSurveys` (deep copies) for a future show editor; test hooks at `window.__snugFeudTest`.
+
+## Survey content
+
+26 authored questions with Cyclical City flavor (neighbors, landmarks, town life, festivals, the NPC roster), each with 5–8 ranked answers whose points sum to 100 (100 neighbors surveyed).
+
+## The rival bot
+
+Self-contained and difficulty-aware (Easy/Normal/Hard, mirroring the Snug Board convention):
+- **Buzz speed:** hard buzzes in ~2–5s, easy in ~8–12s.
+- **Face-off answers:** weighted toward top-ranked answers by difficulty.
+- **Board play:** knows more answers and strikes less on hard (8% strike chance) than easy (34%).
+- **Steals:** succeeds ~65% on hard, ~28% on easy.
 
 ## NPCs involved
 
-Undecided. Chip Chance hosts the game-show lineup generally; casting for this show is open.
+- **Chip Chance** — host and announcer (cheesy catchphrases, roster voice: rate 1.28, pitch 1.1).
+- **Tilly Turner** — Keeper of the Answers (rate 1.06, pitch 1.24).
+
+## Follow-ups (deliberate)
+
+- A survey-pack editor mirroring the Nosy Neighbors editor (data is already exposed for it).
+- Multiplayer/shared-room show mode.
