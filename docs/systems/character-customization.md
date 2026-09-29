@@ -14,6 +14,28 @@ Full avatar customization: selfie face, hairstyles, outfits, accessories, tints 
 - **Tinting:** each equipped item stores its own color; players pick a tint or reset to white. The runtime multiplies the tint over the original materials, preserving authored detail. Meshes/materials with `NoTint`/`Untinted` in the name (or glTF extras `snugTint: false`) are excluded.
 - **Fit review:** every accessory GLB gets an instant fit preview on the avatar with plain-language notes, manual rotate/scale/move on all three axes, and an approve button. Unapproved pieces stay hidden from the Style menu; fit tweaks save to Firestore.
 - **Outfit textures:** 2D outfit textures are supported (`assets/outfit-textures.js`) — outfits are moving toward 2D textures, with 3D kept for hats, held items, and accessories where silhouette matters.
+## Option counts per slot (2026-09-29)
+
+Every wearable slot now ships real options (templates excluded from counts). New GLBs enter the fit-review queue and stay out of the Style menu until approved in-game.
+
+| Slot | Folder | Options | Items |
+|---|---|---|---|
+| Hairstyles | `assets/cosmetics/hairstyles/` | 4 | Bob Cut, Spiky Hair, Ponytail, Curly Afro |
+| Head accessories | `assets/cosmetics/head-accessories/` | 4 | Golden Crown, Antenna Headband, Halo, Party Hat |
+| Hand accessories | `assets/cosmetics/hand-accessories/` | 4 | Cuff Bracelet, Spike Bracelet, Ribbon Bow, Cozy Mitten |
+| Shoes | `assets/cosmetics/shoes/` | 4 | Chunky Sneaker, Tall Rain Boot, Strappy Sandal, Cozy Slipper |
+| Face-wear | `assets/cosmetics/face-wear/` | 4 | Round Glasses, Star Shades, Sleep Mask, Diver Goggles |
+| Facial hair | `assets/cosmetics/facial-hair/` | 4 | Handlebar Mustache, Full Beard, Goatee, Sideburn Strips |
+| Held items | `assets/cosmetics/held-items/` | 4 | Bubble Wand, Paper Umbrella, Toy Camera, Star Lantern |
+| Back items | `assets/cosmetics/back-items/` | 4 | Mini Backpack, Butterfly Wings, Adventure Quiver, Turtle Shell |
+| Neckwear | `assets/cosmetics/neckwear/` | 4 | Bow Tie, Chunky Scarf, Bead Necklace, Lucky Bandana |
+| Outfits (3D) | `assets/cosmetics/outfits/` | 0 | template only — 2D outfit textures are the active path (see below) |
+| Outfit textures (2D) | `assets/outfit-textures/` | 1+ | Painted Pastel Tunic + additional textures being authored in parallel |
+| Skin tones | in-game picker | 8 | `#f6d2bd` through `#241611` |
+| Face | expression photos | 9 | player's own selfie expressions |
+| Body mass / height | sliders | continuous | 0.78–1.28 mass, 0.82–1.22 height |
+
+All 36 procedural GLBs are plain (non-Draco) GLB 2.0, well under the 25k-triangle / 2 MB caps (largest: 2,160 tris, 45 KB). Main surfaces use a tintable white-base `Fabric` material so player tints apply; fixed accents (gold trim, lenses, jewels) use `*_NoTint` materials with `snugTint: false`.
 
 ## Key code files
 

@@ -2,12 +2,52 @@
   "fitReviews": {},
   "hairstyles": [
     {
+      "id": "bob_cut",
+      "name": "Bob Cut",
+      "path": "assets/cosmetics/hairstyles/bob_cut.glb"
+    },
+    {
+      "id": "curly_afro",
+      "name": "Curly Afro",
+      "path": "assets/cosmetics/hairstyles/curly_afro.glb"
+    },
+    {
+      "id": "ponytail",
+      "name": "Ponytail",
+      "path": "assets/cosmetics/hairstyles/ponytail.glb"
+    },
+    {
+      "id": "spiky_hair",
+      "name": "Spiky Hair",
+      "path": "assets/cosmetics/hairstyles/spiky_hair.glb"
+    },
+    {
       "id": "template-hair",
       "name": "Template Hair",
       "path": "assets/cosmetics/hairstyles/template-hair.glb"
     }
   ],
   "headAccessories": [
+    {
+      "id": "antenna_headband",
+      "name": "Antenna Headband",
+      "path": "assets/cosmetics/head-accessories/antenna_headband.glb"
+    },
+    {
+      "id": "golden_crown",
+      "name": "Golden Crown",
+      "path": "assets/cosmetics/head-accessories/golden_crown.glb"
+    },
+    {
+      "id": "halo",
+      "name": "Halo",
+      "path": "assets/cosmetics/head-accessories/halo.glb"
+    },
+    {
+      "id": "party_hat",
+      "name": "Party Hat",
+      "path": "assets/cosmetics/head-accessories/party_hat.glb"
+    },
     {
       "id": "template-head-accessory",
       "name": "Template Head Accessory",
@@ -23,12 +63,52 @@
   ],
   "handAccessories": [
     {
+      "id": "cozy_mitten",
+      "name": "Cozy Mitten",
+      "path": "assets/cosmetics/hand-accessories/cozy_mitten.glb"
+    },
+    {
+      "id": "cuff_bracelet",
+      "name": "Cuff Bracelet",
+      "path": "assets/cosmetics/hand-accessories/cuff_bracelet.glb"
+    },
+    {
+      "id": "ribbon_bow",
+      "name": "Ribbon Bow",
+      "path": "assets/cosmetics/hand-accessories/ribbon_bow.glb"
+    },
+    {
+      "id": "spike_bracelet",
+      "name": "Spike Bracelet",
+      "path": "assets/cosmetics/hand-accessories/spike_bracelet.glb"
+    },
+    {
       "id": "template-hand-accessory",
       "name": "Template Hand Accessory",
       "path": "assets/cosmetics/hand-accessories/template-hand-accessory.glb"
     }
   ],
   "shoes": [
+    {
+      "id": "chunky_sneaker",
+      "name": "Chunky Sneaker",
+      "path": "assets/cosmetics/shoes/chunky_sneaker.glb"
+    },
+    {
+      "id": "cozy_slipper",
+      "name": "Cozy Slipper",
+      "path": "assets/cosmetics/shoes/cozy_slipper.glb"
+    },
+    {
+      "id": "strappy_sandal",
+      "name": "Strappy Sandal",
+      "path": "assets/cosmetics/shoes/strappy_sandal.glb"
+    },
+    {
+      "id": "tall_rain_boot",
+      "name": "Tall Rain Boot",
+      "path": "assets/cosmetics/shoes/tall_rain_boot.glb"
+    },
     {
       "id": "template-shoe",
       "name": "Template Shoe",
@@ -37,12 +117,52 @@
   ],
   "faceWear": [
     {
+      "id": "diver_goggles",
+      "name": "Diver Goggles",
+      "path": "assets/cosmetics/face-wear/diver_goggles.glb"
+    },
+    {
+      "id": "round_glasses",
+      "name": "Round Glasses",
+      "path": "assets/cosmetics/face-wear/round_glasses.glb"
+    },
+    {
+      "id": "sleep_mask",
+      "name": "Sleep Mask",
+      "path": "assets/cosmetics/face-wear/sleep_mask.glb"
+    },
+    {
+      "id": "star_shades",
+      "name": "Star Shades",
+      "path": "assets/cosmetics/face-wear/star_shades.glb"
+    },
+    {
       "id": "template-face-wear",
       "name": "Template Face Wear",
       "path": "assets/cosmetics/face-wear/template-face-wear.glb"
     }
   ],
   "facialHair": [
+    {
+      "id": "full_beard",
+      "name": "Full Beard",
+      "path": "assets/cosmetics/facial-hair/full_beard.glb"
+    },
+    {
+      "id": "goatee",
+      "name": "Goatee",
+      "path": "assets/cosmetics/facial-hair/goatee.glb"
+    },
+    {
+      "id": "handlebar_mustache",
+      "name": "Handlebar Mustache",
+      "path": "assets/cosmetics/facial-hair/handlebar_mustache.glb"
+    },
+    {
+      "id": "sideburn_strips",
+      "name": "Sideburn Strips",
+      "path": "assets/cosmetics/facial-hair/sideburn_strips.glb"
+    },
     {
       "id": "template-facial-hair",
       "name": "Template Facial Hair",
@@ -51,19 +171,79 @@
   ],
   "heldItems": [
     {
+      "id": "bubble_wand",
+      "name": "Bubble Wand",
+      "path": "assets/cosmetics/held-items/bubble_wand.glb"
+    },
+    {
+      "id": "paper_umbrella",
+      "name": "Paper Umbrella",
+      "path": "assets/cosmetics/held-items/paper_umbrella.glb"
+    },
+    {
+      "id": "star_lantern",
+      "name": "Star Lantern",
+      "path": "assets/cosmetics/held-items/star_lantern.glb"
+    },
+    {
       "id": "template-held-item",
       "name": "Template Held Item",
       "path": "assets/cosmetics/held-items/template-held-item.glb"
+    },
+    {
+      "id": "toy_camera",
+      "name": "Toy Camera",
+      "path": "assets/cosmetics/held-items/toy_camera.glb"
     }
   ],
   "backItems": [
     {
+      "id": "adventure_quiver",
+      "name": "Adventure Quiver",
+      "path": "assets/cosmetics/back-items/adventure_quiver.glb"
+    },
+    {
+      "id": "butterfly_wings",
+      "name": "Butterfly Wings",
+      "path": "assets/cosmetics/back-items/butterfly_wings.glb"
+    },
+    {
+      "id": "mini_backpack",
+      "name": "Mini Backpack",
+      "path": "assets/cosmetics/back-items/mini_backpack.glb"
+    },
+    {
       "id": "template-back-item",
       "name": "Template Back Item",
       "path": "assets/cosmetics/back-items/template-back-item.glb"
+    },
+    {
+      "id": "turtle_shell",
+      "name": "Turtle Shell",
+      "path": "assets/cosmetics/back-items/turtle_shell.glb"
     }
   ],
   "neckwear": [
+    {
+      "id": "bead_necklace",
+      "name": "Bead Necklace",
+      "path": "assets/cosmetics/neckwear/bead_necklace.glb"
+    },
+    {
+      "id": "bow_tie",
+      "name": "Bow Tie",
+      "path": "assets/cosmetics/neckwear/bow_tie.glb"
+    },
+    {
+      "id": "chunky_scarf",
+      "name": "Chunky Scarf",
+      "path": "assets/cosmetics/neckwear/chunky_scarf.glb"
+    },
+    {
+      "id": "lucky_bandana",
+      "name": "Lucky Bandana",
+      "path": "assets/cosmetics/neckwear/lucky_bandana.glb"
+    },
     {
       "id": "template-neckwear",
       "name": "Template Neckwear",
