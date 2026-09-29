@@ -6,6 +6,54 @@
       "path": "assets/outfit-textures/painted-pastel-tunic.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
       "description": "A flat toon-painted proof of the simple tunic template."
+    },
+    {
+      "id": "outfit-harvest-tunic",
+      "name": "Harvest Tunic",
+      "path": "assets/outfit-textures/outfit-harvest-tunic.png",
+      "description": "A wheat-gold tunic with burnt-orange stripes, chocolate bands, and a wheat medallion."
+    },
+    {
+      "id": "outfit-tidepool-tunic",
+      "name": "Tidepool Tunic",
+      "path": "assets/outfit-textures/outfit-tidepool-tunic.png",
+      "description": "A sea-teal tunic with scallop waves, bubble dots, and navy trim."
+    },
+    {
+      "id": "outfit-sunrise-poncho",
+      "name": "Sunrise Poncho",
+      "path": "assets/outfit-textures/outfit-sunrise-poncho.png",
+      "description": "A sunrise-striped poncho with terracotta hem and cream fringe."
+    },
+    {
+      "id": "outfit-meadow-poncho",
+      "name": "Meadow Poncho",
+      "path": "assets/outfit-textures/outfit-meadow-poncho.png",
+      "description": "A leaf-green poncho with daisy dots, diamond lattice, and bark-brown hem."
+    },
+    {
+      "id": "outfit-starlight-cape",
+      "name": "Starlight Cape",
+      "path": "assets/outfit-textures/outfit-starlight-cape.png",
+      "description": "A midnight-navy cape with gold stars, shoulder capelet, and gold clasp."
+    },
+    {
+      "id": "outfit-ember-tabard",
+      "name": "Ember Tabard",
+      "path": "assets/outfit-textures/outfit-ember-tabard.png",
+      "description": "A crimson harlequin tabard with amber diamonds and gold trim."
+    },
+    {
+      "id": "outfit-royal-tabard",
+      "name": "Royal Tabard",
+      "path": "assets/outfit-textures/outfit-royal-tabard.png",
+      "description": "A royal-purple tabard with gold border and cream fleur dots."
+    },
+    {
+      "id": "outfit-dusk-wrap",
+      "name": "Dusk Wrap",
+      "path": "assets/outfit-textures/outfit-dusk-wrap.png",
+      "description": "A slate wrap with diagonal plum and dusty-rose bands and a tie knot."
     }
   ]
 }

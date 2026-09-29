@@ -57,3 +57,18 @@ None — though NPCs share a recognizable facial style distinct from players, so
 ## Authoring constraints (from README)
 
 Export GLB in meters with embedded textures, under 25k triangles and 2 MB. Origins: coin-head center for hairstyles/head accessories, body center for outfits, one hand/foot center for hand/foot accessories (mirrored both sides). The loader auto-corrects Z-up/Y-up mismatches.
+
+## Painted outfit wardrobe
+
+The drop-in folder `assets/outfit-textures/` holds 2D painted outfits (1024 × 1024 RGBA PNGs over `peg-body-uv-template.png`, registered in its `manifest.json`; see that folder's README). Besides the proof-of-concept Painted Pastel Tunic, the wardrobe now includes eight procedurally painted storybook outfits:
+
+- **Harvest Tunic** — wheat-gold with burnt-orange stripes, chocolate bands, wheat medallion
+- **Tidepool Tunic** — sea-teal with scallop waves, bubble dots, navy trim
+- **Sunrise Poncho** — rose/amber/cream stripes, terracotta hem with cream fringe
+- **Meadow Poncho** — leaf-green with daisy dots, diamond lattice, bark-brown hem
+- **Starlight Cape** — midnight-navy with gold stars, shoulder capelet, gold clasp
+- **Ember Tabard** — crimson harlequin with amber diamonds, gold trim
+- **Royal Tabard** — royal-purple with cream fleur dots, gold border
+- **Dusk Wrap** — slate with diagonal plum/dusty-rose bands, tie knot
+
+The eight were generated procedurally (Python/PIL) mapped precisely onto the template's four UV islands, with toon-outline edging. Preview renders on the peg avatar live in the goal's `files/outfit-previews/` folder. Note: `scripts/validate-assets.mjs` now exempts the whole `assets/outfit-textures/` folder from the unexpected-runtime-PNG check, since PNG is that folder's required format.
