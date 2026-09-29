@@ -30,6 +30,6 @@ Show results that pay out (wins, shells) flow into the standard player save. See
 
 ## Shows
 
-- [Whirl of Resources](whirl-of-resources.md) — PLANNED
+- [Whirl of Resources](whirl-of-resources.md) — SHIPPED
 - [Nosy Neighbors](nosy-neighbors.md) — SHIPPED
 - [Family Feud-style one-on-one](family-feud-show.md) — PLANNED
