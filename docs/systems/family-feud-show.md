@@ -29,11 +29,21 @@ Cyclical City's one-on-one survey game show: the player faces a rival bot across
 - In-show state is local to the overlay; results flow into the standard player save.
 - Win/loss dispatches `snug-feud-result` (`{ won, playerPoints, rivalPoints, difficulty, finished }`), mirroring the `snug-whirl-result` convention.
 - Shells via `snug-award-coins`; the prize item via `snug-player-patch` (same conventions as the other live systems).
-- Survey pack exposed as `window.__snugFeudSurveys` (deep copies) for a future show editor; test hooks at `window.__snugFeudTest`.
+- Survey pack exposed as `window.__snugFeudSurveys` (deep copies); the in-show survey editor edits the session pack. Test hooks at `window.__snugFeudTest`.
 
-## Survey content
+## Survey content and survey editor
 
-26 authored questions with Cyclical City flavor (neighbors, landmarks, town life, festivals, the NPC roster), each with 5–8 ranked answers whose points sum to 100 (100 neighbors surveyed).
+26 starter questions with Cyclical City flavor (neighbors, landmarks, town life, festivals, the NPC roster), each with 5–8 ranked answers whose points sum to 100 (100 neighbors surveyed).
+
+The in-show survey editor ("Survey editor" on the show home screen) mirrors the Nosy Neighbors show editor: it is another internal `state.view`, session-only, with JSON download/import and restore-starter. The showdown plays from `state.surveys` (deep-cloned from the starter pack), so edits take effect immediately.
+
+Validation per question:
+- At least 3 answers, points totaling exactly 100.
+- Duplicate detection uses the game's own matching (case/punctuation/plural-insensitive across answer text + aliases).
+- A note (not a block) when a question has fewer than the usual 5+ answers.
+- The board preview shows the ranked answers before saving.
+
+Export format: `{ "format": "survey-showdown-survey-pack", "version": 1, "title": "Survey Showdown", "surveys": [{ q, answers: [{ t, p, aka }] }] }`. Import accepts the same shape (or a bare array) and validates each question before adding it. Starting a show requires at least 3 valid questions in the session pack; otherwise the host explains what is missing instead of starting.
 
 ## The rival bot
 
@@ -50,5 +60,4 @@ Self-contained and difficulty-aware (Easy/Normal/Hard, mirroring the Snug Board 
 
 ## Follow-ups (deliberate)
 
-- A survey-pack editor mirroring the Nosy Neighbors editor (data is already exposed for it).
 - Multiplayer/shared-room show mode.

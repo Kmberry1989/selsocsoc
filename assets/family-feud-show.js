@@ -376,6 +376,164 @@
     }));
   }
 
+  /* ================= Survey editor ================= */
+  // In-show survey-pack editor, mirroring the Nosy Neighbors show editor:
+  // session-only edits, JSON download/import, restore-starter. The showdown
+  // plays from state.surveys, so edits take effect immediately in this session.
+
+  let feudEditorSeq = 0;
+  function starterSurveys() {
+    return SURVEYS.map((s) => ({
+      id: `survey-${++feudEditorSeq}`,
+      q: s.q,
+      answers: s.answers.map((a) => ({ t: a.t, p: a.p, aka: [...(a.aka || [])] })),
+    }));
+  }
+  function blankSurvey() {
+    return {
+      id: `survey-new-${++feudEditorSeq}-${Date.now()}`,
+      q: "",
+      answers: [{ t: "", p: "", aka: [] }, { t: "", p: "", aka: [] }, { t: "", p: "", aka: [] }],
+    };
+  }
+  function findSurvey(id) { return state.surveys.find((s) => s.id === id) || null; }
+  // The form edits a draft until it validates; valid saves commit to state.surveys.
+  function editingSurveySource() {
+    if (state.surveyDraft && state.surveyDraft.id === state.editingSurvey) return state.surveyDraft;
+    return findSurvey(state.editingSurvey) || blankSurvey();
+  }
+  // Duplicate detection uses the game's own matching: norm + singular.
+  function surveyProblems(survey) {
+    const problems = [];
+    if (!String(survey.q || "").trim()) problems.push("Give the question some text.");
+    const answers = (survey.answers || []).filter((a) => String(a.t || "").trim());
+    if (answers.length < 3) problems.push("Add at least 3 answers.");
+    const seen = new Map();
+    answers.forEach((a) => {
+      const label = String(a.t).trim();
+      const forms = [a.t, ...(a.aka || [])].map(norm).filter(Boolean).flatMap((f) => [f, singular(f)]);
+      forms.forEach((f) => {
+        if (seen.has(f)) problems.push(`"${label}" collides with "${seen.get(f)}" — the game matches answers case- and plural-insensitively.`);
+        else seen.set(f, label);
+      });
+    });
+    let total = 0; let badPoints = false;
+    answers.forEach((a) => {
+      const p = Number(a.p);
+      if (!Number.isInteger(p) || p < 1) badPoints = true; else total += p;
+    });
+    if (badPoints) problems.push("Every answer needs a whole-number point value of 1 or more.");
+    else if (answers.length >= 3 && total !== 100) problems.push(`Points add up to ${total} — they must total exactly 100.`);
+    return problems;
+  }
+  function harvestSurveyForm() {
+    const form = state.root?.querySelector("[data-feud-ed-form]");
+    if (!form) return null;
+    const data = new FormData(form);
+    const answers = [];
+    for (let i = 0; i < 12; i++) {
+      if (data.get(`at${i}`) === null) break;
+      answers.push({
+        t: String(data.get(`at${i}`) || "").trim().slice(0, 80),
+        p: String(data.get(`ap${i}`) || "").trim(),
+        aka: String(data.get(`aa${i}`) || "").split(/[,\n]/).map((v) => v.trim().slice(0, 40)).filter(Boolean).slice(0, 6),
+      });
+    }
+    return { id: String(data.get("id") || ""), q: String(data.get("q") || "").trim().slice(0, 160), answers };
+  }
+  function saveSurveyForm() {
+    const draft = harvestSurveyForm();
+    if (!draft) return;
+    const problems = surveyProblems(draft);
+    if (problems.length) {
+      state.surveyDraft = draft;
+      state.surveyStatus = problems.join(" ");
+      audio()?.wrong?.();
+      render();
+      return;
+    }
+    const clean = {
+      id: draft.id, q: draft.q,
+      answers: draft.answers.filter((a) => a.t).map((a) => ({ t: a.t, p: Number(a.p), aka: a.aka })),
+    };
+    const index = state.surveys.findIndex((s) => s.id === clean.id);
+    if (index >= 0) state.surveys[index] = clean; else state.surveys.push(clean);
+    state.editingSurvey = clean.id;
+    state.surveyDraft = null;
+    state.surveyStatus = clean.answers.length < 5
+      ? "Question saved. Note: fewer than the usual 5+ answers — the board will feel sparse."
+      : "Question saved for this session.";
+    audio()?.ui?.();
+    render();
+  }
+  function surveyEditorView() {
+    const editing = editingSurveySource();
+    const exists = !!findSurvey(editing.id);
+    const rows = state.surveys.map((s) => {
+      const total = s.answers.reduce((n, a) => n + (Number(a.p) || 0), 0);
+      return `<button class="feud-ed-row${s.id === editing.id ? " active" : ""}" type="button" data-feud-ed-open="${esc(s.id)}"><span><b>${esc(s.q || "Untitled question")}</b><small>${s.answers.length} answers · ${total} pts</small></span><i aria-hidden="true">›</i></button>`;
+    }).join("");
+    const answerFields = editing.answers.map((a, i) => (
+      `<div class="feud-ed-answer">` +
+      `<label><span>Answer ${i + 1}</span><input name="at${i}" maxlength="80" value="${esc(a.t)}" placeholder="Top answer"></label>` +
+      `<label class="feud-ed-points"><span>Points</span><input name="ap${i}" inputmode="numeric" value="${esc(a.p)}" placeholder="0"></label>` +
+      `<label class="feud-ed-aliases"><span>Aliases (comma or line separated)</span><input name="aa${i}" maxlength="200" value="${esc((a.aka || []).join(", "))}" placeholder="other wordings players might type"></label>` +
+      `<button type="button" class="feud-ed-x" data-feud-ed-del-answer="${i}" aria-label="Remove answer ${i + 1}">×</button></div>`
+    )).join("");
+    const ranked = [...editing.answers].filter((a) => String(a.t || "").trim())
+      .sort((x, y) => (Number(y.p) || 0) - (Number(x.p) || 0));
+    const preview = ranked.length
+      ? `<div class="feud-ed-preview"><b>Board preview (ranked)</b><ol>${ranked.map((a, i) => `<li><span>${i + 1}</span><b>${esc(a.t)}</b><em>${esc(a.p)} pts</em></li>`).join("")}</ol></div>` : "";
+    return `<section class="feud-ed" aria-label="Survey editor"><div class="feud-ed-head"><span><small>Companion tool</small><h2>Survey Showdown survey editor</h2><p>Add, revise, remove, import, and export every survey the showdown needs.</p></span><span class="feud-ed-count">${state.surveys.length} questions</span></div>` +
+      `<div class="feud-ed-layout"><div class="feud-ed-list"><div class="feud-ed-toolbar"><button type="button" data-feud-ed-new>New question</button><button type="button" data-feud-ed-export>Download pack</button><label>Import pack<input type="file" accept="application/json" data-feud-ed-import></label><button type="button" data-feud-ed-reset>Restore starter</button></div>` +
+      `<div class="feud-ed-rows">${rows || `<div class="feud-ed-empty">No questions yet. Create one to begin.</div>`}</div>` +
+      `<p class="feud-ed-note">Edits stay in this session until you download the survey pack. Import that JSON next time to keep working—nothing is stored in this browser.</p></div>` +
+      `<form class="feud-ed-form" data-feud-ed-form><input type="hidden" name="id" value="${esc(editing.id)}">` +
+      `<label class="feud-ed-field"><span>Survey question</span><input name="q" maxlength="160" value="${esc(editing.q)}" placeholder="We asked 100 neighbors…"></label>` +
+      `<div class="feud-ed-answers">${answerFields}</div>` +
+      (editing.answers.length < 12 ? `<button type="button" class="secondary" data-feud-ed-add-answer>Add answer</button>` : "") +
+      preview +
+      `<div class="feud-ed-actions"><button class="feud-ed-danger" type="button" data-feud-ed-delete${exists ? "" : " disabled"}>Delete</button><button class="feud-primary" type="submit">Save question</button></div>` +
+      `<p class="feud-ed-status" role="status">${esc(state.surveyStatus)}</p></form></div>` +
+      `<div class="feud-ed-actions"><button type="button" class="secondary" data-feud-home>Done editing</button></div></section>`;
+  }
+  function surveyExport() {
+    const pack = { format: "survey-showdown-survey-pack", version: 1, title: "Survey Showdown",
+      surveys: state.surveys.map((s) => ({ q: s.q, answers: s.answers.map((a) => ({ t: a.t, p: Number(a.p), aka: [...a.aka] })) })) };
+    const blob = new Blob([JSON.stringify(pack, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob), link = document.createElement("a");
+    link.href = url; link.download = "survey-showdown-survey-pack.json"; link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 500);
+    state.surveyStatus = "Survey pack downloaded."; state.surveyDraft = null; render();
+  }
+  async function surveyImport(file) {
+    try {
+      const payload = JSON.parse(await file.text());
+      const list = Array.isArray(payload) ? payload : payload.surveys;
+      if (!Array.isArray(list) || !list.length) throw Error("That file has no surveys.");
+      let added = 0, skipped = 0;
+      list.slice(0, 300).forEach((raw) => {
+        const q = String(raw.q || "").trim().slice(0, 160);
+        const answers = (Array.isArray(raw.answers) ? raw.answers : []).map((a) => ({
+          t: String(a.t || "").trim().slice(0, 80),
+          p: Number(a.p),
+          aka: (Array.isArray(a.aka) ? a.aka : []).map((v) => String(v).trim().slice(0, 40)).filter(Boolean).slice(0, 6),
+        })).filter((a) => a.t);
+        const candidate = { id: `survey-imp-${++feudEditorSeq}-${added}`, q, answers };
+        if (surveyProblems(candidate).length) { skipped++; return; }
+        state.surveys.push(candidate); added++;
+      });
+      if (!added) throw Error("That file has no usable surveys (each needs 3+ answers totaling exactly 100 points).");
+      state.editingSurvey = state.surveys[state.surveys.length - 1].id;
+      state.surveyDraft = null;
+      state.surveyStatus = `Imported ${added} question${added === 1 ? "" : "s"}${skipped ? ` (${skipped} skipped).` : "."}`;
+      render();
+    } catch (error) {
+      state.surveyStatus = error instanceof Error ? error.message : "That survey pack could not be imported.";
+      render();
+    }
+  }
+
   /* ================= State ================= */
 
   const state = {
@@ -390,7 +548,12 @@
     timerToken: 0, timerEndsAt: 0, timerId: 0,
     muted: false, callout: "", banner: "", bannerPhase: "",
     lastResult: null,
+    surveys: starterSurveys(),
+    editingSurvey: null,
+    surveyDraft: null,
+    surveyStatus: "",
   };
+  state.editingSurvey = state.surveys[0] ? state.surveys[0].id : null;
   const reducedMotion = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
   const thinkMs = () => {
     if (reducedMotion()) return 260;
@@ -467,7 +630,7 @@
       hostsHTML() +
       `<div class="feud-callout" role="status">We asked 100 neighbors \u2014 you and a rival take turns guessing their top answers. Three strikes and the bank is up for grabs. Most points after ${QUESTIONS_PER_SHOW} questions wins!</div>` +
       `<div class="feud-diff" role="group" aria-label="Rival difficulty">${diffs}</div>` +
-      `<div class="feud-actions"><button type="button" data-feud-start>Start the show</button><button type="button" class="secondary" data-feud-close>Not now</button></div>` +
+      `<div class="feud-actions"><button type="button" data-feud-start>Start the show</button><button type="button" class="secondary" data-feud-editor>Survey editor</button><button type="button" class="secondary" data-feud-close>Not now</button></div>` +
       `</div></div>`;
   }
 
@@ -541,6 +704,7 @@
     if (!panel) return;
     panel.innerHTML =
       state.view === "home" ? homeView() :
+      state.view === "editor" ? surveyEditorView() :
       state.view === "faceoff" ? faceoffView() :
       state.view === "board" ? boardView() : finalView();
     const audioButton = state.root.querySelector("[data-feud-audio]");
@@ -638,7 +802,14 @@
   }
 
   function startShow() {
-    const questions = shuffleArr(SURVEYS).slice(0, QUESTIONS_PER_SHOW);
+    const valid = state.surveys.filter((s) => !surveyProblems(s).length);
+    if (valid.length < QUESTIONS_PER_SHOW) {
+      state.banner = "NOT ENOUGH QUESTIONS";
+      state.callout = `Need at least ${QUESTIONS_PER_SHOW} valid questions — open the survey editor to add more.`;
+      render();
+      return;
+    }
+    const questions = shuffleArr(valid).slice(0, QUESTIONS_PER_SHOW);
     state.game = { qIndex: 0, questions, playerTotal: 0, rivalTotal: 0 };
     startQuestion();
   }
@@ -981,6 +1152,30 @@
       render();
       return;
     }
+    if (target.matches("[data-feud-editor]")) { state.view = "editor"; state.surveyStatus = ""; state.surveyDraft = null; audio()?.ui?.(); render(); return; }
+    if (state.view === "editor") {
+      if (target.matches("[data-feud-ed-new]")) { const b = blankSurvey(); state.editingSurvey = b.id; state.surveyDraft = b; state.surveyStatus = ""; render(); return; }
+      if (target.dataset.feudEdOpen) { state.editingSurvey = target.dataset.feudEdOpen; state.surveyDraft = null; state.surveyStatus = ""; render(); return; }
+      if (target.matches("[data-feud-ed-export]")) { surveyExport(); return; }
+      if (target.matches("[data-feud-ed-reset]")) { state.surveys = starterSurveys(); state.editingSurvey = state.surveys[0].id; state.surveyDraft = null; state.surveyStatus = "Starter surveys restored for this session."; render(); return; }
+      if (target.matches("[data-feud-ed-delete]")) {
+        state.surveys = state.surveys.filter((s) => s.id !== state.editingSurvey);
+        state.editingSurvey = state.surveys[0] ? state.surveys[0].id : null;
+        state.surveyDraft = null; state.surveyStatus = "Question removed from this session."; audio()?.wrong?.(); render(); return;
+      }
+      if (target.matches("[data-feud-ed-add-answer]")) {
+        const draft = harvestSurveyForm() || editingSurveySource();
+        if (draft.answers.length < 12) draft.answers.push({ t: "", p: "", aka: [] });
+        state.surveyDraft = draft; state.surveyStatus = ""; render(); return;
+      }
+      const delAnswer = target.closest("[data-feud-ed-del-answer]");
+      if (delAnswer) {
+        const draft = harvestSurveyForm() || editingSurveySource();
+        draft.answers.splice(Number(delAnswer.dataset.feudEdDelAnswer), 1);
+        if (!draft.answers.length) draft.answers.push({ t: "", p: "", aka: [] });
+        state.surveyDraft = draft; state.surveyStatus = ""; render(); return;
+      }
+    }
     if (target.matches("[data-feud-start]")) { audio()?.ui?.(); startShow(); return; }
     if (target.matches("[data-feud-again]")) { audio()?.ui?.(); startShow(); return; }
     if (target.matches("[data-feud-home]")) {
@@ -1024,6 +1219,12 @@
     const launch = event.target.closest?.("[data-feud-launch]");
     if (launch) { event.preventDefault(); open(); }
   }, true);
+  document.addEventListener("submit", (event) => {
+    if (event.target.matches?.("[data-feud-ed-form]")) { event.preventDefault(); saveSurveyForm(); }
+  });
+  document.addEventListener("change", (event) => {
+    if (event.target.matches?.("[data-feud-ed-import]") && event.target.files?.[0]) surveyImport(event.target.files[0]);
+  });
 
   const observer = new MutationObserver((records) => records.forEach((record) => record.addedNodes.forEach((node) => {
     if (node.nodeType === 1) install(node);

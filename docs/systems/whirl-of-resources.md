@@ -33,12 +33,20 @@ Round state (puzzle, bank, used letters) is local to the show session. Winnings 
 - **Chip Chance** — announcer; cheesy spoken catchphrases in his radio-show announcer voice (rate 1.28, pitch 1.1, matching his roster voice).
 - **Tilly Turner** — co-host; intro, turn indicator, and prize presentations.
 
-## Puzzle pack
+## Puzzle pack and puzzle editor
 
-12 starter puzzles, all Cyclical City canon (town names, landmarks, neighbors, show sayings — including Gideon's "HE IS MR MAYOR MAYOR NOW"). Exposed as `window.__snugWhirlPuzzles` for a future show editor.
+12 starter puzzles, all Cyclical City canon (town names, landmarks, neighbors, show sayings — including Gideon's "HE IS MR MAYOR MAYOR NOW").
+
+The in-show puzzle editor ("Puzzle editor" on the show home screen) mirrors the Nosy Neighbors show editor: it is another internal `state.view`, session-only, with JSON download/import and restore-starter. The show plays from `state.puzzles` (deep-cloned from the starter pack), so edits take effect immediately.
+
+Validation per puzzle:
+- Category required; phrase required and normalized to A–Z + spaces (the same normalization the game uses when checking solves).
+- Empty phrases rejected; a 60-character cap keeps phrases board-friendly.
+- The editor shows a live letter count and notes any invalid characters it strips.
+
+Export format: `{ "format": "whirl-of-resources-puzzle-pack", "version": 1, "title": "Whirl of Resources", "puzzles": [{ category, phrase }] }`. Import accepts the same shape (or a bare array) and validates each puzzle before adding it. Starting a show requires at least one valid puzzle per round; otherwise the host explains what is missing instead of starting.
 
 ## Follow-ups
 
-- A show editor (create/import puzzle packs) mirroring the Nosy Neighbors editor.
 - A 3D prize-wheel GLB can replace the CSS wheel through the asset pipeline; the 12-segment layout is defined in `SEGMENTS` in the game file.
 - Shared-room/multiplayer show mode.

@@ -87,6 +87,116 @@
     spinPrompt: () => TURN_INDICATOR,
   };
 
+  /* ================= Puzzle editor ================= */
+  // In-show puzzle-pack editor, mirroring the Nosy Neighbors show editor:
+  // session-only edits, JSON download/import, restore-starter. The show plays
+  // from state.puzzles, so edits take effect immediately in this session.
+
+  let whirlEditorSeq = 0;
+  function starterPuzzles() {
+    return PUZZLES.map((p) => ({ id: `puzzle-${++whirlEditorSeq}`, category: p.category, phrase: p.phrase }));
+  }
+  function blankPuzzle() {
+    return { id: `puzzle-new-${++whirlEditorSeq}-${Date.now()}`, category: "", phrase: "" };
+  }
+  function findPuzzle(id) { return state.puzzles.find((p) => p.id === id) || null; }
+  function editingPuzzleSource() {
+    if (state.puzzleDraft && state.puzzleDraft.id === state.editingPuzzle) return state.puzzleDraft;
+    return findPuzzle(state.editingPuzzle) || blankPuzzle();
+  }
+  // Same normalization the game applies when checking solves.
+  const phraseNorm = (value) => String(value || "").toUpperCase().replace(/[^A-Z]+/g, " ").trim().replace(/\s+/g, " ");
+  function letterCount(phrase) { return phraseNorm(phrase).replace(/ /g, "").length; }
+  function puzzleProblems(puzzle) {
+    const problems = [];
+    if (!String(puzzle.category || "").trim()) problems.push("Give the puzzle a category.");
+    const phrase = phraseNorm(puzzle.phrase);
+    if (!phrase) problems.push("Give the puzzle a phrase using letters A–Z.");
+    else if (phrase.length > 60) problems.push("Keep the phrase to 60 characters or fewer so it fits the board.");
+    return { problems, phrase };
+  }
+  function savePuzzleForm() {
+    const form = state.root?.querySelector("[data-whirl-ed-form]");
+    if (!form) return;
+    const data = new FormData(form);
+    const raw = String(data.get("phrase") || "");
+    const draft = {
+      id: String(data.get("id") || ""),
+      category: String(data.get("category") || "").trim().slice(0, 40),
+      phrase: raw.trim().slice(0, 80),
+    };
+    const { problems, phrase } = puzzleProblems(draft);
+    if (problems.length) {
+      state.puzzleDraft = draft;
+      state.puzzleStatus = problems.join(" ");
+      audio()?.wrong?.();
+      render();
+      return;
+    }
+    const clean = { id: draft.id, category: draft.category, phrase };
+    const stripped = raw.toUpperCase().replace(/[A-Z ]/g, "").length;
+    const index = state.puzzles.findIndex((p) => p.id === clean.id);
+    if (index >= 0) state.puzzles[index] = clean; else state.puzzles.push(clean);
+    state.editingPuzzle = clean.id;
+    state.puzzleDraft = null;
+    state.puzzleStatus = stripped
+      ? `Puzzle saved for this session. (Removed ${stripped} invalid character${stripped === 1 ? "" : "s"}.)`
+      : "Puzzle saved for this session.";
+    audio()?.ui?.();
+    render();
+  }
+  function puzzleEditorView() {
+    const editing = editingPuzzleSource();
+    const exists = !!findPuzzle(editing.id);
+    const rows = state.puzzles.map((p) => (
+      `<button class="whirl-ed-row${p.id === editing.id ? " active" : ""}" type="button" data-whirl-ed-open="${esc(p.id)}"><span><b>${esc(p.phrase || "Untitled puzzle")}</b><small>${esc(p.category)} · ${letterCount(p.phrase)} letters</small></span><i aria-hidden="true">›</i></button>`
+    )).join("");
+    return `<section class="whirl-ed" aria-label="Puzzle editor"><div class="whirl-ed-head"><span><small>Companion tool</small><h2>Whirl of Resources puzzle editor</h2><p>Add, revise, remove, import, and export every puzzle the wheel needs.</p></span><span class="whirl-ed-count">${state.puzzles.length} puzzles</span></div>` +
+      `<div class="whirl-ed-layout"><div class="whirl-ed-list"><div class="whirl-ed-toolbar"><button type="button" data-whirl-ed-new>New puzzle</button><button type="button" data-whirl-ed-export>Download pack</button><label>Import pack<input type="file" accept="application/json" data-whirl-ed-import></label><button type="button" data-whirl-ed-reset>Restore starter</button></div>` +
+      `<div class="whirl-ed-rows">${rows || `<div class="whirl-ed-empty">No puzzles yet. Create one to begin.</div>`}</div>` +
+      `<p class="whirl-ed-note">Edits stay in this session until you download the puzzle pack. Import that JSON next time to keep working—nothing is stored in this browser.</p></div>` +
+      `<form class="whirl-ed-form" data-whirl-ed-form><input type="hidden" name="id" value="${esc(editing.id)}">` +
+      `<label class="whirl-ed-field"><span>Category</span><input name="category" maxlength="40" value="${esc(editing.category)}" placeholder="Around Cyclical City"></label>` +
+      `<label class="whirl-ed-field"><span>Puzzle phrase (letters A–Z)</span><input name="phrase" data-whirl-ed-phrase maxlength="80" value="${esc(editing.phrase)}" placeholder="GIVE THE WHIRL A TWIRL"></label>` +
+      `<p class="whirl-ed-count-line" role="status"><span data-whirl-ed-count>${letterCount(editing.phrase)} letters</span> · spaces separate words on the board</p>` +
+      `<div class="whirl-ed-actions"><button class="whirl-ed-danger" type="button" data-whirl-ed-delete${exists ? "" : " disabled"}>Delete</button><button class="whirl-primary" type="submit">Save puzzle</button></div>` +
+      `<p class="whirl-ed-status" role="status">${esc(state.puzzleStatus)}</p></form></div>` +
+      `<div class="whirl-ed-actions"><button type="button" class="secondary" data-whirl-home>Done editing</button></div></section>`;
+  }
+  function puzzleExport() {
+    const pack = { format: "whirl-of-resources-puzzle-pack", version: 1, title: "Whirl of Resources",
+      puzzles: state.puzzles.map((p) => ({ category: p.category, phrase: p.phrase })) };
+    const blob = new Blob([JSON.stringify(pack, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob), link = document.createElement("a");
+    link.href = url; link.download = "whirl-of-resources-puzzle-pack.json"; link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 500);
+    state.puzzleStatus = "Puzzle pack downloaded."; state.puzzleDraft = null; render();
+  }
+  async function puzzleImport(file) {
+    try {
+      const payload = JSON.parse(await file.text());
+      const list = Array.isArray(payload) ? payload : payload.puzzles;
+      if (!Array.isArray(list) || !list.length) throw Error("That file has no puzzles.");
+      let added = 0, skipped = 0;
+      list.slice(0, 300).forEach((raw) => {
+        const category = String(raw.category || "").trim().slice(0, 40);
+        const candidate = { id: `puzzle-imp-${++whirlEditorSeq}-${added}`, category, phrase: String(raw.phrase || "").trim().slice(0, 80) };
+        const { problems, phrase } = puzzleProblems(candidate);
+        if (problems.length) { skipped++; return; }
+        candidate.phrase = phrase;
+        state.puzzles.push(candidate); added++;
+      });
+      if (!added) throw Error("That file has no usable puzzles (each needs a category and a letter phrase).");
+      state.editingPuzzle = state.puzzles[state.puzzles.length - 1].id;
+      state.puzzleDraft = null;
+      state.puzzleStatus = `Imported ${added} puzzle${added === 1 ? "" : "s"}${skipped ? ` (${skipped} skipped).` : "."}`;
+      render();
+    } catch (error) {
+      state.puzzleStatus = error instanceof Error ? error.message : "That puzzle pack could not be imported.";
+      render();
+    }
+  }
+
   /* ================= State ================= */
 
   const state = {
@@ -95,7 +205,12 @@
     bank: 0, pendingPrize: null, lastSegment: null, prizesWon: [],
     spinning: false, spinToken: 0, rotation: 0,
     solveOpen: false, muted: false, callout: "", banner: "", bannerPhase: "",
+    puzzles: starterPuzzles(),
+    editingPuzzle: null,
+    puzzleDraft: null,
+    puzzleStatus: "",
   };
+  state.editingPuzzle = state.puzzles[0] ? state.puzzles[0].id : null;
 
   /* ================= Helpers ================= */
 
@@ -227,7 +342,7 @@
       `<div class="whirl-banner">${esc(TURN_INDICATOR)}</div>` +
       hostsHTML() +
       `<div class="whirl-callout" role="status">Spin the big wheel, call your letters, and solve the puzzle. Shell wedges build your bank \u2014 \u2605 wedges hide real prizes from around town!</div>` +
-      `<div class="whirl-actions"><button type="button" data-whirl-start>Start the show</button><button type="button" class="secondary" data-whirl-close>Not now</button></div>` +
+      `<div class="whirl-actions"><button type="button" data-whirl-start>Start the show</button><button type="button" class="secondary" data-whirl-editor>Puzzle editor</button><button type="button" class="secondary" data-whirl-close>Not now</button></div>` +
       `</div></div>`;
   }
 
@@ -267,7 +382,7 @@
   function render() {
     if (!state.root) return;
     const panel = state.root.querySelector(".whirl-panel");
-    panel.innerHTML = state.view === "home" ? homeView() : state.view === "round" ? roundView() : finalView();
+    panel.innerHTML = state.view === "home" ? homeView() : state.view === "editor" ? puzzleEditorView() : state.view === "round" ? roundView() : finalView();
     state.justRevealed.clear();
     paintWheel();
     const audioButton = state.root.querySelector("[data-whirl-audio]");
@@ -358,7 +473,13 @@
 
   function startShow() {
     state.round += 1;
-    state.puzzle = PUZZLES[(state.round - 1) % PUZZLES.length];
+    const valid = state.puzzles.filter((p) => !puzzleProblems(p).problems.length);
+    if (valid.length < state.round) {
+      state.callout = "Need at least one valid puzzle per round — open the puzzle editor to add more.";
+      render();
+      return;
+    }
+    state.puzzle = valid[(state.round - 1) % valid.length];
     state.letters = [...state.puzzle.phrase].map((ch) => ({ ch, revealed: ch === " " }));
     state.used = new Set();
     state.justRevealed = new Set();
@@ -580,6 +701,18 @@
       render();
       return;
     }
+    if (target.matches("[data-whirl-editor]")) { state.view = "editor"; state.puzzleStatus = ""; state.puzzleDraft = null; audio()?.ui?.(); render(); return; }
+    if (state.view === "editor") {
+      if (target.matches("[data-whirl-ed-new]")) { const b = blankPuzzle(); state.editingPuzzle = b.id; state.puzzleDraft = b; state.puzzleStatus = ""; render(); return; }
+      if (target.dataset.whirlEdOpen) { state.editingPuzzle = target.dataset.whirlEdOpen; state.puzzleDraft = null; state.puzzleStatus = ""; render(); return; }
+      if (target.matches("[data-whirl-ed-export]")) { puzzleExport(); return; }
+      if (target.matches("[data-whirl-ed-reset]")) { state.puzzles = starterPuzzles(); state.editingPuzzle = state.puzzles[0].id; state.puzzleDraft = null; state.puzzleStatus = "Starter puzzles restored for this session."; render(); return; }
+      if (target.matches("[data-whirl-ed-delete]")) {
+        state.puzzles = state.puzzles.filter((p) => p.id !== state.editingPuzzle);
+        state.editingPuzzle = state.puzzles[0] ? state.puzzles[0].id : null;
+        state.puzzleDraft = null; state.puzzleStatus = "Puzzle removed from this session."; audio()?.wrong?.(); render(); return;
+      }
+    }
     if (state.view !== "round") return;
     if (target.matches("[data-whirl-spin]") || target.closest("[data-whirl-spin-zone]")) {
       if (state.phase === "spin") { audio()?.ui?.(); spinWheel(); }
@@ -632,6 +765,19 @@
     const launch = event.target.closest?.("[data-whirl-launch]");
     if (launch) { event.preventDefault(); open(); }
   }, true);
+  document.addEventListener("submit", (event) => {
+    if (event.target.matches?.("[data-whirl-ed-form]")) { event.preventDefault(); savePuzzleForm(); }
+  });
+  document.addEventListener("change", (event) => {
+    if (event.target.matches?.("[data-whirl-ed-import]") && event.target.files?.[0]) puzzleImport(event.target.files[0]);
+  });
+  document.addEventListener("input", (event) => {
+    const field = event.target.matches?.("[data-whirl-ed-phrase]") ? event.target : null;
+    if (field) {
+      const count = field.closest("form")?.querySelector("[data-whirl-ed-count]");
+      if (count) count.textContent = `${letterCount(field.value)} letters`;
+    }
+  });
 
   const observer = new MutationObserver((records) => records.forEach((record) => record.addedNodes.forEach((node) => {
     if (node.nodeType === 1) install(node);
