@@ -247,11 +247,10 @@
   }
 
   function boot() {
-    try {
-      processRoot(document.body);
-    } catch {
-      /* keep the pass non-fatal */
-    }
+    // Defer the initial full-document pass to idle time: running it
+    // synchronously here blocks the main thread during startup (iOS freeze).
+    // The MutationObserver below catches anything that arrives first.
+    schedule(document.body);
     const observer = new MutationObserver((mutations) => {
       for (const m of mutations) {
         if (m.type === "characterData") {
