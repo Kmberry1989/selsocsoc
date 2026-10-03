@@ -13,7 +13,54 @@ const state = {
   warned: new Set(),
   overridden: new Set(),
   source: 'defaults',
+  layers: { biomePaint: [], npcPaths: [], triggerZones: [] },
 };
+
+// World Editor data layers (biomePaint, npcPaths, triggerZones) are validated
+// here. Invalid entries are dropped; missing/empty layers leave systems inert.
+const BIOME_NAMES = ['Clover Commons', 'Whispering Wood', 'Sunmeadow', 'Pondmarsh'];
+const NPC_ROSTER = ['Mayor Mayor', 'Gideon', 'Lyla Lens', 'Chip Chance', 'Barnaby Bargain', 'Pip Parade', 'Agnes Alley', 'Dottie Daly', 'Peggy Plank', 'Mr. Buck Coinsworth', 'Fern Bramble', 'Stanley Stamp', 'Bobby Gill'];
+function sanitizeLayers(data) {
+  const out = { biomePaint: [], npcPaths: [], triggerZones: [] };
+  if (!data || typeof data !== 'object') return out;
+  if (Array.isArray(data.biomePaint)) {
+    for (const d of data.biomePaint) {
+      if (!d || !finite(d.x) || !finite(d.z) || !finite(d.radius) || Number(d.radius) <= 0) continue;
+      if (!BIOME_NAMES.includes(d.biome)) continue;
+      const strength = Math.min(1, Math.max(0.1, Number(d.strength) || 0.5));
+      out.biomePaint.push({ x: Number(d.x), z: Number(d.z), radius: Number(d.radius), biome: d.biome, strength });
+    }
+  }
+  if (Array.isArray(data.npcPaths)) {
+    for (const p of data.npcPaths) {
+      if (!p || typeof p.id !== 'string' || !p.id || typeof p.npc !== 'string' || !NPC_ROSTER.includes(p.npc)) continue;
+      if (!Array.isArray(p.waypoints) || p.waypoints.length < 2) continue;
+      const waypoints = [];
+      for (const w of p.waypoints) {
+        if (!w || !finite(w.x) || !finite(w.z)) continue;
+        waypoints.push({ x: Number(w.x), z: Number(w.z) });
+      }
+      if (waypoints.length < 2) continue;
+      out.npcPaths.push({ id: p.id, name: typeof p.name === 'string' ? p.name : p.id, npc: p.npc, loop: p.loop !== false, waypoints });
+    }
+  }
+  if (Array.isArray(data.triggerZones)) {
+    for (const z of data.triggerZones) {
+      if (!z || typeof z.id !== 'string' || !z.id || !finite(z.x) || !finite(z.z)) continue;
+      if (z.shape !== 'rect' && z.shape !== 'circle') continue;
+      if (z.shape === 'rect' && (!finite(z.width) || !finite(z.depth))) continue;
+      if (z.shape === 'circle' && (!finite(z.radius) || Number(z.radius) <= 0)) continue;
+      if (!['dialogue', 'quest', 'sound', 'camera'].includes(z.event)) continue;
+      out.triggerZones.push({
+        id: z.id, name: typeof z.name === 'string' ? z.name : z.id,
+        shape: z.shape, x: Number(z.x), z: Number(z.z),
+        width: Number(z.width) || 0, depth: Number(z.depth) || 0, radius: Number(z.radius) || 0,
+        event: z.event, config: (z.config && typeof z.config === 'object') ? z.config : {},
+      });
+    }
+  }
+  return out;
+}
 const yAxis = new THREE.Vector3(0, 1, 0);
 const scratchMatrix = new THREE.Matrix4();
 const scratchPosition = new THREE.Vector3();
@@ -95,6 +142,9 @@ async function loadLayouts() {
     state.source = 'layout.json';
   }
   state.effective = state.defaults.map((base) => overrideById.get(base.id) || base);
+  // World Editor layers come from the override layout.json if present,
+  // otherwise from the defaults. Empty/missing layers stay inert.
+  state.layers = sanitizeLayers(override || defaults);
   publishDiagnostics();
   scheduleApply();
 }
@@ -108,7 +158,17 @@ function publishDiagnostics() {
     objectCount: state.effective.length,
     appliedCount: state.targets.size,
     bounds: { x: WORLD_X_LIMIT, z: WORLD_Z_LIMIT },
+    biomePaint: state.layers.biomePaint,
+    npcPaths: state.layers.npcPaths,
+    triggerZones: state.layers.triggerZones,
   };
+  window.dispatchEvent(new CustomEvent('snug-world-layers-ready', {
+    detail: {
+      biomePaint: state.layers.biomePaint,
+      npcPaths: state.layers.npcPaths,
+      triggerZones: state.layers.triggerZones,
+    },
+  }));
 }
 
 function resetForWorld(world) {
