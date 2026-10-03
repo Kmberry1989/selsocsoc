@@ -41,5 +41,6 @@ Historical audits live alongside these: `/GAMEPLAY-AUDIT.md` (asset/interaction 
 
 - [Multiplayer Architecture](multiplayer-architecture.md) — SHIPPED — Firebase-only: Auth, Firestore, RTDB, Cloud Functions, Cloud Messaging
 - [Character Customization](character-customization.md) — SHIPPED — cosmetics, tinting, fit review, 2D outfit textures
+- [Accessory Tinting](accessory-tinting.md) — SHIPPED — curated swatch tints for equipped cosmetics, persisted per slot
 - [Welcoming-Committee Onboarding](onboarding.md) — SHIPPED — cinematic photo-shoot onboarding with Gideon & Mayor Mayor
 - [Text Legibility & Accessibility Pass](text-legibility.md) — SHIPPED — bold+outline floating text, 80% container floor, reduced motion
