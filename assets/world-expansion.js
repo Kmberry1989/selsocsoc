@@ -19,6 +19,9 @@ const COTTAGES = [
   [-25, 19, 0xb7a2d7, 2.38], [-18, 25, 0xe2bb70, 2.75], [-30, 13, 0x87b6ac, 2.16],
   [24, 21, 0xd78874, -2.42], [30, 15, 0x86aec8, -2.13], [18, 27, 0xd5aa70, -2.72],
 ];
+// User-directed 2026-10-03: no 3D trees. The 2D sprite billboards stay;
+// only the instanced 3D trunk/crown geometry is skipped. Model files untouched.
+const ENABLE_3D_TREES = false;
 let activeExpansion = null;
 
 function seeded(seed) {
@@ -203,6 +206,8 @@ function buildExpansion(world) {
   group.name = 'SnugExpandedCountryside';
   PATH_SEGMENTS.forEach((segment) => addPathBetween(group, segment));
 
+  const dummy = new THREE.Object3D();
+  if (ENABLE_3D_TREES) {
   const treeTrunks = new THREE.InstancedMesh(
     new THREE.CylinderGeometry(0.18, 0.26, 1.7, 7),
     new THREE.MeshStandardMaterial({ color: 0x78513b, roughness: 0.94 }),
@@ -213,7 +218,6 @@ function buildExpansion(world) {
     new THREE.MeshStandardMaterial({ color: 0x4f8d58, roughness: 0.9 }),
     72
   );
-  const dummy = new THREE.Object3D();
   let treeIndex = 0;
   for (let ring = 0; ring < 3; ring += 1) {
     const count = [18, 24, 30][ring];
@@ -241,6 +245,7 @@ function buildExpansion(world) {
   treeTrunks.castShadow = treeCrowns.castShadow = true;
   treeTrunks.receiveShadow = treeCrowns.receiveShadow = true;
   group.add(treeTrunks, treeCrowns);
+  }
 
   const flowerColors = [0xf3d067, 0xeb7c7a, 0xb7a2d8, 0xf2f0df];
   flowerColors.forEach((color, colorIndex) => {

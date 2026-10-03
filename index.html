@@ -765,6 +765,9 @@
           sprite.scale.set(width, width, 1);
           sprite.center.set(0.5, 0.5);
           sprite.raycast = () => {};
+          // User-directed 2026-10-03: explicit render order so sky clouds draw
+          // after (above) ground items instead of sorting underneath them.
+          sprite.renderOrder = 10;
           sprite.userData.cameraFacingCloud = true;
 
           cloud.children.slice().forEach((child) => cloud.remove(child));
