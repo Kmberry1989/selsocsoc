@@ -63,9 +63,14 @@ up to 5 plans, and share them with friends through the mailbox.
 
 ## Known limitations / follow-ups
 
-- **Barn raising (deferred):** the design doc's co-op tap events need a live
-  RTDB write layer for build sessions plus published rules; fair play needs a
-  two-device session. Documented here as the next social extension.
+- **Barn raising (shipped 2026-10-03):** `assets/barn-raising.js` adds time-boxed
+  (24h) co-op events for the big-ticket upgrades — second story, third story,
+  widow's walk. The player calls a raising from Peggy's counter; NPC neighbors
+  chip in shells over time (labeled as neighbors, never fake humans) and the
+  player can contribute too. Raised shells discount the build cost. Peggy
+  foremen every raising in her voice. Contributions dispatch
+  `snug-project-contribution` (project: "Barn-raising: …"), which unlocks the
+  new "Barn Crew" stamp in `assets/mailbox-system.js`.
 - Interior rendering (dividers/doors/flooring) lives in the module's 2D floor
   plan; the bundled home interior UI was not modified.
 - Needs an on-phone check: blueprint editor feel, expansion visuals from the
