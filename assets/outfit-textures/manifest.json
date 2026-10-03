@@ -54,6 +54,30 @@
       "name": "Dusk Wrap",
       "path": "assets/outfit-textures/outfit-dusk-wrap.png",
       "description": "A slate wrap with diagonal plum and dusty-rose bands and a tie knot."
+    },
+    {
+      "id": "outfit-classic-tee-jeans",
+      "name": "Classic Tee & Jeans",
+      "path": "assets/outfit-textures/outfit-classic-tee-jeans.png",
+      "description": "A white crew-neck tee with medium-wash blue jeans, brown belt, and orange stitching."
+    },
+    {
+      "id": "outfit-hoodie-jeans",
+      "name": "Hoodie & Dark Jeans",
+      "path": "assets/outfit-textures/outfit-hoodie-jeans.png",
+      "description": "A heather-gray pullover hoodie with kangaroo pocket and dark indigo jeans."
+    },
+    {
+      "id": "outfit-flannel-jeans",
+      "name": "Flannel & Jeans",
+      "path": "assets/outfit-textures/outfit-flannel-jeans.png",
+      "description": "A red buffalo-plaid flannel shirt with rolled sleeves and medium-wash jeans."
+    },
+    {
+      "id": "outfit-striped-tee-khakis",
+      "name": "Striped Tee & Khakis",
+      "path": "assets/outfit-textures/outfit-striped-tee-khakis.png",
+      "description": "A navy-and-white striped tee with khaki chinos and a brown leather belt."
     }
   ]
 }
