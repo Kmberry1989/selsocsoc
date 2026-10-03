@@ -78,6 +78,34 @@
       "name": "Striped Tee & Khakis",
       "path": "assets/outfit-textures/outfit-striped-tee-khakis.png",
       "description": "A navy-and-white striped tee with khaki chinos and a brown leather belt."
+    },
+    {
+      "id": "outfit-pumpkin-patch-poncho",
+      "name": "Pumpkin Patch Poncho",
+      "path": "assets/outfit-textures/outfit-pumpkin-patch-poncho.png",
+      "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
+      "description": "A burnt-orange poncho with pumpkin-vine embroidery, chocolate hem, and cream fringe."
+    },
+    {
+      "id": "outfit-woodland-cape",
+      "name": "Woodland Cape",
+      "path": "assets/outfit-textures/outfit-woodland-cape.png",
+      "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
+      "description": "A forest-green cape with falling amber leaves, amber clasp, and darker shoulder capelet."
+    },
+    {
+      "id": "outfit-cider-mill-tabard",
+      "name": "Cider Mill Tabard",
+      "path": "assets/outfit-textures/outfit-cider-mill-tabard.png",
+      "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
+      "description": "An apple-red tabard with cream stripes, cinnamon trim, and an embroidered apple emblem."
+    },
+    {
+      "id": "outfit-bonfire-wrap",
+      "name": "Bonfire Wrap",
+      "path": "assets/outfit-textures/outfit-bonfire-wrap.png",
+      "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
+      "description": "A charcoal wrap with diagonal ember-orange flame bands and a golden tie knot."
     }
   ]
 }
