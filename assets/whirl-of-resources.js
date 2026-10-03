@@ -537,7 +537,7 @@
       hostsHTML() +
       `<div class="whirl-tickets" role="status"><span class="whirl-ticket-count">\u{1F39F} <b>${tickets}</b> ticket${state.tickets === 1 ? "" : "s"}</span><small>One free ticket every day \u00b7 extras ${TICKET_COST} shells</small></div>` +
       `<div class="whirl-callout" role="status">Grab the big wheel and give it a flick, call your letters, and solve the puzzle. Three rounds make a game \u2014 the champion earns a bonus Greenhouse Round on the doubled wheel!</div>` +
-      `<div class="whirl-actions"><button type="button" data-whirl-start${canStart ? "" : " disabled"}>Start the show \u00b7 1 ticket</button><button type="button" class="secondary" data-whirl-buy-ticket>Buy ticket \u00b7 ${TICKET_COST}</button><button type="button" class="secondary" data-whirl-editor>Puzzle editor</button><button type="button" class="secondary" data-whirl-close>Not now</button></div>` +
+      `<div class="whirl-actions"><button type="button" data-whirl-start${canStart ? "" : " disabled"}>Start the show \u00b7 1 ticket</button><button type="button" class="secondary" data-whirl-multiplayer>Play together</button><button type="button" class="secondary" data-whirl-buy-ticket>Buy ticket \u00b7 ${TICKET_COST}</button><button type="button" class="secondary" data-whirl-editor>Puzzle editor</button><button type="button" class="secondary" data-whirl-close>Not now</button></div>` +
       `</div></div>`;
   }
 
@@ -1194,6 +1194,7 @@
       return;
     }
     if (target.matches("[data-whirl-start]")) { tryStartGame(); return; }
+    if (target.matches("[data-whirl-multiplayer]")) { audio()?.ui?.(); close(); window.__snugWhirlMultiplayer?.open(); return; }
     if (target.matches("[data-whirl-again]")) { tryStartGame(); return; }
     if (target.matches("[data-whirl-next-round]")) {
       audio()?.ui?.();
