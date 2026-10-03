@@ -123,6 +123,7 @@ const QUESTS = [
   { id: "sneaky-one", label: "Catch 1 sneaky bluff", game: "sneaky", goal: 1, reward: 28 },
   { id: "snap-three", label: "Frame 3 scavenger sights", game: "snap", goal: 3, reward: 26 },
   { id: "puffs-three", label: "Dodge 3 puffs", game: "puffs", goal: 3, reward: 24 },
+  { id: "whirl-winner", label: "Win a Whirl of Resources round", game: "whirl", goal: 1, reward: 30, requireWin: true },
   { id: "freeze-two", label: "Make 2 Freeze Tag saves", game: "freeze", goal: 2, reward: 26 },
   { id: "treasure-three", label: "Dig up 3 treasures", game: "treasure", goal: 3, reward: 26 },
   { id: "snowball-four", label: "Hit 4 snowball targets", game: "snowball", goal: 4, reward: 24 },

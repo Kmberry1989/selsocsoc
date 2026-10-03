@@ -47,3 +47,26 @@
 .whirl-ed-count-line{margin:0;color:#bcd3cd;font-size:10px}
 @media(max-width:720px){.whirl-ed-layout{grid-template-columns:1fr}.whirl-ed-rows{max-height:28dvh}}
 @media(prefers-reduced-motion:reduce){.whirl-ed *{animation:none!important;transition:none!important}}
+
+/* ================= Whirl additions: tickets, greenhouse, podium ================= */
+.whirl-tickets{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border:1px solid #ffffff2b;border-radius:12px;background:#ffffff0e}
+.whirl-ticket-count{font-size:13px;font-weight:900;color:#ffe693}
+.whirl-tickets small{color:#bcd3cd;font-size:9px}
+.whirl-banner[data-phase="greenhouse"]{background:#2f7a4e;border-color:#bff0cd}
+.whirl-banner[data-phase="jackpot"]{background:#8a6d1f;border-color:#ffe693;animation:whirlJackpot .8s ease-in-out infinite alternate}
+.whirl-banner[data-phase="podium"]{background:#7a4a8a;border-color:#ecd4f5}
+@keyframes whirlJackpot{to{box-shadow:0 4px 0 #69241f,0 0 26px #ffe693}}
+.whirl-wheel-wrap{touch-action:none}
+.whirl-podium{position:relative;overflow:hidden;padding:16px 12px 8px;border:4px solid #694a32;border-radius:16px;background:linear-gradient(180deg,#3d6a68,#22484a);box-shadow:inset 0 0 0 3px #f5d99a,0 9px 28px #0716165e}
+.whirl-steps{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:end;gap:6px;max-width:420px;margin:6px auto 0}
+.whirl-step{display:grid;align-content:end;justify-items:center;gap:4px;border-radius:10px 10px 0 0;background:#f5cb58;color:#26383b;font-weight:950}
+.whirl-step.first{min-height:120px;background:linear-gradient(180deg,#ffe693,#f5cb58)}
+.whirl-step.second{min-height:88px;background:linear-gradient(180deg,#dfe8ea,#b9c8cc)}
+.whirl-step.third{min-height:66px;background:linear-gradient(180deg,#e8b07e,#c98a52)}
+.whirl-step span{font-size:22px}
+.whirl-step b{font-size:12px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.whirl-champ-face{display:grid;place-items:center;width:54px;height:54px;border:4px solid #fff;border-radius:50%;background:#d59b73;color:#26383b;font-size:24px;font-weight:950;box-shadow:0 4px 10px #0007}
+.whirl-confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.whirl-confetti i{position:absolute;top:-12px;left:calc(var(--x)*1%);width:8px;height:12px;background:var(--c);border-radius:2px;animation:whirlFall var(--d) linear infinite}
+@keyframes whirlFall{to{transform:translateY(340px) rotate(540deg)}}
+@media(prefers-reduced-motion:reduce){.whirl-confetti,.whirl-banner[data-phase="jackpot"]{animation:none!important}}
