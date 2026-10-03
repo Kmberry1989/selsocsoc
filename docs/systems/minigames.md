@@ -33,6 +33,16 @@ coin-scramble, plaza-tag, room-quiz, balloon-pop, plaza-sprint, pond-fishing, ho
 
 - **Chip Chance** — minigame host (dice roll, hypes games, announces winners).
 
+## Card table stages (custom games grid)
+
+Three card games share the staged table in `minigame-stages.js`/`minigame-stages.css`: flat cloud-style 2D-sprite cards with front/back 3D flip animations, hand fan, draw pile, discard/books areas, card fly animations, status narration, and voice toggle. Opponents' avatars sit at the far side; the player's own avatar sits at the near side (`snug-player-seat`), emoting with the player's recorded selfie expressions (`players/{uid}.expressionPhotos`, loaded via the same portrait path as home visits, drawn-face fallback when unavailable).
+
+- **Go Fish with Chip Chance** — classic rank-asking; 7-card hands, books of 4.
+- **War with Mr. Buck Coinsworth** — 26/26 split, flip-to-battle rounds, ties trigger war (3 down + 1 decider); 40-round cap, most cards wins; won piles reshuffle when a battle pile empties.
+- **Old Maid with Agnes Alley** — queen of spades removed; all cards dealt; pairs discarded; alternate draws from the opponent's fanned face-down hand; the player left holding the stray queen loses.
+
+New games reuse the table helpers (`cardMarkup`, `animateCardMove`, `shuffle`, `setStatus`, `setExpression`) and are registered in the `custom` map + custom-games grid. NPC-only opponents — no live multiplayer card sessions (no RTDB write layer for game sessions; same constraint as the Whirl room mode).
+
 ## Known limitations
 
 Per docs/PARTY_NIGHT_AUDIT.md, breadth is high but shared-overlay games don't all meet the bar of distinct polished games yet; eight games are slated for bespoke arenas and input teaching. Minigame exit paths and complete play/finish timing were not destructively exercised (GAMEPLAY-AUDIT.md).
