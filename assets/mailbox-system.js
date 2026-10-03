@@ -23,11 +23,11 @@
 
   const STAMPS = [
     { id: "sprout", name: "Sprout Badge", achievement: "Plant your first seed", subject: "tiny green seedling sprouting from soil mound", glyph: "sprout" },
-    { id: "golden-harvest", name: "Golden Harvest", achievement: "Harvest a golden crop", subject: "golden wheat sheaf with sparkles", glyph: "wheat" },
-    { id: "master-builder", name: "Master Builder", achievement: "Complete a second story", subject: "tiny house with a second story and a crane hook", glyph: "house" },
+    { id: "golden-harvest", name: "Golden Harvest", achievement: "Harvest a golden crop", subject: "golden wheat sheaf with sparkles", glyph: "wheat", rare: true },
+    { id: "master-builder", name: "Master Builder", achievement: "Complete a second story", subject: "tiny house with a second story and a crane hook", glyph: "house", rare: true },
     { id: "pen-pal", name: "Pen Pal", achievement: "Send 10 gifts", subject: "envelope with a heart seal", glyph: "letter" },
-    { id: "whirl-winner", name: "Whirl Winner", achievement: "Win a round of Whirl of Resources", subject: "colorful spinning prize wheel", glyph: "wheel" },
-    { id: "star-sailor", name: "Star Sailor", achievement: "Win a Snug Board game", subject: "gold trophy star on a game board", glyph: "star" },
+    { id: "whirl-winner", name: "Whirl Winner", achievement: "Win a round of Whirl of Resources", subject: "colorful spinning prize wheel", glyph: "wheel", rare: true },
+    { id: "star-sailor", name: "Star Sailor", achievement: "Win a Snug Board game", subject: "gold trophy star on a game board", glyph: "star", rare: true },
     { id: "night-owl", name: "Night Owl", achievement: "Play after midnight", subject: "sleepy owl with a crescent moon", glyph: "moon" },
     { id: "festival-friend", name: "Festival Friend", achievement: "Attend all three rotating festivals", subject: "string of triangular bunting flags", glyph: "bunting" },
     { id: "cat-whisperer", name: "Cat Whisperer", achievement: "Adopt a cat", subject: "cat face with a yarn ball", glyph: "cat" },
@@ -228,7 +228,7 @@
     return `<svg viewBox="0 0 24 24" aria-hidden="true" ${common}>${paths[glyph] || paths.star}</svg>`;
   }
   function stampCard(stamp, unlocked, selected = false, selectable = false) {
-    return `<button type="button" class="stamp-card ${unlocked ? "unlocked" : "locked"} ${selected ? "selected" : ""}" ${selectable ? `data-pick-stamp="${stamp.id}"` : ""} ${selectable && !unlocked ? "disabled" : ""} aria-label="${esc(stamp.name)}${unlocked ? " unlocked" : " locked"}"><span class="stamp-art stamp-${stamp.id}">${stampSvg(stamp.glyph)}</span><b>${esc(stamp.name)}</b><small>${esc(unlocked ? stamp.achievement : "Locked achievement")}</small></button>`;
+    return `<button type="button" class="stamp-card ${unlocked ? "unlocked" : "locked"} ${selected ? "selected" : ""} ${stamp.rare ? "stamp-rare" : ""}" ${selectable ? `data-pick-stamp="${stamp.id}"` : ""} ${selectable && !unlocked ? "disabled" : ""} aria-label="${esc(stamp.name)}${unlocked ? " unlocked" : " locked"}${stamp.rare ? ", rare" : ""}"><span class="stamp-art stamp-${stamp.id}">${stampSvg(stamp.glyph)}</span><b>${esc(stamp.name)}</b><small>${esc(unlocked ? stamp.achievement : "Locked achievement")}</small></button>`;
   }
 
   function parseEnvelope(value) {
@@ -591,6 +591,7 @@
   window.addEventListener("snug-whirl-result",(event)=>{if(event.detail?.won)unlockStamp("whirl-winner");});
   window.addEventListener("snug-board-result",(event)=>{if(event.detail?.won)unlockStamp("star-sailor");});
   window.addEventListener("snug-project-contribution",(event)=>{if(/bridge/i.test(event.detail?.project||""))unlockStamp("bridge-crew");});
+  window.addEventListener("snug-cat-adopted",()=>unlockStamp("cat-whisperer"));
   window.addEventListener("snug-photo-captured",()=>{const box=normalizedMailbox();saveMailbox({...box,photoCount:Number(box.photoCount||0)+1},"").then(reconcileStamps);});
   async function unlockStamp(id){const box=normalizedMailbox();if(box.stamps.includes(id))return;await saveMailbox({...box,stamps:[...box.stamps,id]},"");showToast(`${STAMPS.find((stamp)=>stamp.id===id)?.name||"New"} stamp unlocked`);}
   if(window.__snugSession)attachSession(window.__snugSession);

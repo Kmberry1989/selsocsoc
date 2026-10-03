@@ -85,10 +85,10 @@ const state = {
   roomId: "plaza",
   roomName: "Village Plaza",
   isPrivate: false,
-  players: [],
-  messages: [],
+  players: [],  messages: [],
   minigameEvents: [],
   currentGame: null,
+  boardResultAnnounced: new Set(),
   position: { x: 0, z: 1.5, rotation: 0 },
   panel: null,
   polling: null,
@@ -1121,6 +1121,10 @@ function boardActionMarkup(game) {
   const me = game.players.find((entry) => entry.uid === boardUid());
   if (game.phase === "ended") {
     const winner = game.final[0];
+    if (winner && game.id && !state.boardResultAnnounced.has(game.id)) {
+      state.boardResultAnnounced.add(game.id);
+      window.dispatchEvent(new CustomEvent("snug-board-result", { detail: { won: winner.uid === boardUid(), winner: winner.uid, stars: winner.finalStars } }));
+    }
     const coinNames = game.players.filter((entry) => game.coinBonus.includes(entry.uid)).map((entry) => escapeHtml(entry.name)).join(", ");
     const winNames = game.players.filter((entry) => game.gameBonus.includes(entry.uid)).map((entry) => escapeHtml(entry.name)).join(", ");
     return `<div class="snug-board-card"><h3>${winner?.uid === boardUid() ? "You win the board!" : `${escapeHtml(winner?.name || "A neighbor")} wins!`}</h3><p>Final stars include two last-minute awards, so the lead can change right at the end.</p><div class="snug-board-bonuses"><div class="snug-board-bonus"><b>Banker Star</b><small>Most coins banked · ${coinNames}</small></div><div class="snug-board-bonus"><b>Minigame Star</b><small>Most wins · ${winNames}</small></div></div><div class="snug-board-stats">${game.final.map((entry) => `<div class="snug-board-player"><i style="background:${safeColor(entry.color)}">${escapeHtml(entry.name.slice(0, 1).toUpperCase())}</i><span><b>${escapeHtml(entry.name)}${entry.bot ? ' <em class="bot-chip">BOT</em>' : ""}</b><small>${entry.coins} coins</small></span><strong>${entry.finalStars}★</strong></div>`).join("")}</div>${game.hostUid === boardUid() ? `<button type="button" class="snug-board-primary" data-board-new-lobby>Return to lobby</button>` : ""}</div>`;

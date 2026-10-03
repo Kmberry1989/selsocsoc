@@ -36,6 +36,29 @@ The mailbox system handles player-to-player gifts and trade deliveries, plus ach
 
 - **Stanley Stamp** — Mail carrier; handles gifts and trade deliveries.
 
+## Stamp unlock wiring
+
+All 12 starter stamps live in `STAMPS` in `assets/mailbox-system.js` and are stored on the player save (`mailbox.stamps`). Unlocks fire two ways: direct `unlockStamp()` event listeners, and `reconcileStamps()` which re-checks stat-based conditions after every `snug-player-patch` (i.e. after any profile save).
+
+Direct event listeners (mailbox-system.js):
+- `snug-garden-planted` → Sprout Badge (dispatched by gardening-system.js)
+- `snug-garden-harvest` (detail.golden) → Golden Harvest (gardening-system.js)
+- `snug-whirl-result` (detail.won) → Whirl Winner (whirl-of-resources.js)
+- `snug-board-result` (detail.won) → Star Sailor (dispatched once per ended game by multiplayer.js)
+- `snug-house-renovation` (detail.stories ≥ 2) → Master Builder (no dispatcher yet — pending the housing construction feature)
+- `snug-project-contribution` (project matches /bridge/i) → Bridge Crew (town-life.js footbridge contributions)
+- `snug-cat-adopted` → Cat Whisperer (town-life.js)
+- `snug-photo-captured` → increments the 25-photo Shutterbug counter (town-life.js)
+
+Stat-based conditions checked by `reconcileStamps()`:
+- Pen Pal — `mailbox.sentCount` ≥ 10 (tracked by mailbox-system.js on send)
+- Night Owl — current hour is after midnight (00:00–05:00 local)
+- Festival Friend — 3+ `gameplay.festivalRewards` (society-plus.js)
+- Cyclical Citizen — expression photos saved during the welcoming committee
+
+Rare stamps (Golden Harvest, Master Builder, Whirl Winner, Star Sailor) get an animated holographic shine via `.stamp-rare` in mailbox-system.css (disabled under `prefers-reduced-motion`).
+
 ## Known limitations
 
 Mailbox delivery and gift acceptance across two real users needs a live two-client session to fully verify (GAMEPLAY-AUDIT.md).
+Master Builder cannot be earned yet — no housing system writes `house.stories` or dispatches `snug-house-renovation`; the wiring is in place for when housing construction ships.

@@ -211,6 +211,7 @@ async function saveContribution(amount) {
     town.projectContributors.sort((a, b) => b.amount - a.amount);
     showToast(`You added ${value} shells`);
     window.dispatchEvent(new CustomEvent("snug-sfx", { detail: { id: "coin-pickup" } }));
+    window.dispatchEvent(new CustomEvent("snug-project-contribution", { detail: { project: PROJECT.name, amount: value } }));
   } catch {
     town.error = "That contribution did not go through. Your shells were not spent.";
   } finally {
@@ -242,6 +243,7 @@ async function adoptCat() {
     reactCat();
     catVocal(Math.random() < 0.65 ? "trill" : "meow", { force: true, reason: "adoption" });
     showToast(`${name} is coming home with you`);
+    window.dispatchEvent(new CustomEvent("snug-cat-adopted", { detail: { name, coat } }));
   } catch {
     town.error = "The adoption could not be saved yet.";
   } finally {
@@ -1013,6 +1015,7 @@ function capturePhoto() {
   try { renderer.render(scene, camera); } catch {}
   renderer.domElement.toBlob((blob) => {
     if (!blob) return showToast("The camera missed that frame. Try once more.");
+    window.dispatchEvent(new CustomEvent("snug-photo-captured"));
     if (town.photoPreviewUrl) URL.revokeObjectURL(town.photoPreviewUrl);
     town.photoPreviewUrl = URL.createObjectURL(blob);
     const backdrop = document.createElement("div");
