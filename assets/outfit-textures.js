@@ -279,9 +279,11 @@
 
   loadManifest().finally(() => {
     syncStyleMenu();
+    // Throttled (was 600ms): skip while the tab is hidden.
     setInterval(() => {
+      if (document.hidden) return;
       syncStyleMenu();
       applyCurrentOutfit();
-    }, 600);
+    }, 2000);
   });
 })();

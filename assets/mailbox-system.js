@@ -557,6 +557,7 @@
 
   async function poll() {
     if(!state.session)return;
+    if(document.hidden)return;
     try{
       const next=await loadMail();
       const priorIds=new Set(state.mail.map((item)=>item.id));
@@ -597,6 +598,7 @@
   if(window.__snugSession)attachSession(window.__snugSession);
   renderDock();
   setInterval(()=>{
+    if(document.hidden)return;
     renderDock();
     const world=window.__snugWorld;
     if(world?.mode==="village"&&(!state.mailboxGroup||state.worldScene!==world.scene))updateMailboxWorld();

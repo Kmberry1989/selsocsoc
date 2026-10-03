@@ -320,8 +320,34 @@
   function boot() {
     scanRows();
     wrapTextureOutfit();
-    new MutationObserver(queueScan).observe(document.body, { childList: true, subtree: true });
-    setInterval(() => { scanRows(); wrapTextureOutfit(); }, 2000);
+    const observer = new MutationObserver(queueScan);
+    const startObserving = () => {
+      observer.observe(document.body, { childList: true, subtree: true });
+    };
+    startObserving();
+    // If no Style menu exists, the observer is pure overhead: disconnect it
+    // once idle, and re-attach on the next user gesture (the menu opens via
+    // taps/keys, so the picker still injects when needed).
+    const idleCheck = () => {
+      if (document.querySelector('.cosmetic-selects .cosmetic-select-row')) return;
+      observer.disconnect();
+      const reattach = () => {
+        startObserving();
+        queueScan();
+      };
+      window.addEventListener('pointerdown', reattach, { once: true, passive: true });
+      window.addEventListener('keydown', reattach, { once: true });
+    };
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(idleCheck, { timeout: 15000 });
+    } else {
+      setTimeout(idleCheck, 8000);
+    }
+    setInterval(() => {
+      if (document.hidden) return;
+      scanRows();
+      wrapTextureOutfit();
+    }, 2000);
   }
 
   async function attach(session) {

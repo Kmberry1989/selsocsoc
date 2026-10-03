@@ -634,6 +634,7 @@ class GameSoundEngine {
 
   let lastPlayerPosition = null;
   setInterval(() => {
+    if (document.hidden) return;
     const position = window.__snugWorld?.player?.position;
     if (!position) { lastPlayerPosition = null; return; }
     if (lastPlayerPosition) {
@@ -1841,6 +1842,7 @@ class ProceduralCatAudioEngine {
   observer.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ["class", "hidden"] });
 
   const monitor = setInterval(() => {
+    if (document.hidden) return;
     inspectTimers();
     inspectExpression();
     inspectAmbience();
