@@ -1,0 +1,24 @@
+/* Selfie Social Society — Barn-raising co-op styles. Mobile-first. */
+.barn-raising-panel{margin:12px 0;padding:12px;border:2px dashed var(--house-brass,#b98a2f);border-radius:14px;background:color-mix(in srgb,var(--house-brass,#b98a2f) 8%,var(--surface,#fff))}
+.barn-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.barn-head small{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim,#666)}
+.barn-head h3{margin:0;font-size:14px}
+.barn-head strong{font-size:16px;color:var(--house-brass,#b98a2f)}
+.barn-copy{font-size:10px;color:var(--dim,#666);margin:0 0 8px;line-height:1.4}
+.barn-progress{height:12px;border-radius:8px;background:rgba(0,0,0,.08);overflow:hidden;margin-bottom:4px}
+.barn-progress span{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,var(--house-brass,#b98a2f),#d9a441);transition:width .4s ease}
+.barn-progress-label{display:flex;justify-content:space-between;font-size:10px;margin-bottom:8px}
+.barn-progress-label b{color:var(--house-brass,#b98a2f)}
+.barn-contribute-row{display:flex;gap:8px;margin-bottom:8px}
+.barn-contribute-row button{flex:1;min-height:40px;border:0;border-radius:11px;background:var(--house-wood,#8a5a33);color:#fff;font-weight:900;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.barn-contribute-row button small{font-size:8px;font-weight:700;opacity:.85}
+.barn-contribute-row button b{font-size:13px}
+.barn-note{font-size:10px;color:var(--dim,#666);margin:6px 0;line-height:1.4}
+.barn-subhead{margin:8px 0 4px;font-size:10px}
+.barn-subhead b{text-transform:uppercase;letter-spacing:.05em}
+.barn-contributor{display:flex;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:1px dotted rgba(0,0,0,.08)}
+.barn-contributor b{color:var(--house-brass,#b98a2f)}
+.barn-call-row{display:flex;gap:6px;margin-top:6px}
+.barn-call-row button{flex:1;min-height:34px;padding:5px 9px;font-size:9px;font-weight:900;border:2px solid var(--house-brass,#b98a2f);border-radius:11px;background:transparent;color:var(--house-brass,#b98a2f);cursor:pointer}
+.barn-call-row button:disabled{opacity:.45;cursor:not-allowed}
+@media (prefers-reduced-motion:reduce){.barn-progress span{transition:none}}

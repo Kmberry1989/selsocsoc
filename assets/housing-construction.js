@@ -153,6 +153,7 @@
       blueprints: [], // {id,name,w,d,dividers,doors,stairs,createdAt,from?}
       shared: {},     // code -> {name,w,d,dividers,doors,stairs,by,at}
       peggyQuest: { offered: false, accepted: false, done: false },
+      barnRaising: null, // {upgradeId,upgradeName,goal,raised,contributors,startedAt,endsAt,status,milestones}
     };
   }
   function normalize(raw) {
@@ -178,6 +179,7 @@
       blueprints: Array.isArray(value.blueprints) ? value.blueprints.slice(0, 5) : [],
       shared: value.shared && typeof value.shared === "object" ? value.shared : {},
       peggyQuest: { ...base.peggyQuest, ...(value.peggyQuest || {}) },
+      barnRaising: value.barnRaising && typeof value.barnRaising === "object" ? value.barnRaising : null,
     };
   }
   function gainXp(amount) {
@@ -615,6 +617,7 @@
     document.body.appendChild(backdrop);
     bindPanel(backdrop);
     renderPeggyBubble();
+    window.dispatchEvent(new CustomEvent("snug-housing-rendered"));
   }
 
   function bindPanel(root) {
@@ -806,16 +809,22 @@
     }
     const roofCards = Object.entries(ROOFS).map(([id, r]) => {
       const ok = d.level >= r.level;
-      return `<div class="housing-card"><span><b>${r.name} roof</b><small>${ok ? costLabel(COST.roof) : `Homestead level ${r.level}`}</small></span><button type="button" data-roof="${id}" ${d.roof === id ? "disabled" : ""} ${ok && d.roof !== id && !state.busy ? "" : "disabled"}>${d.roof === id ? "On" : "Set"}</button></div>`;
+      const roofCost = id === "widowswalk" ? COST.widowswalk : COST.roof;
+      const barnBtn = barn && id === "widowswalk" && barn.canRaise("widowswalk") && d.roof !== "widowswalk" ? `<div class="barn-call-row"><button type="button" data-barn-call="widowswalk">Call a barn-raising</button></div>` : "";
+      return `<div class="housing-card"><span><b>${r.name} roof</b><small>${ok ? costLabel(roofCost) : `Homestead level ${r.level}`}</small></span><button type="button" data-roof="${id}" ${d.roof === id ? "disabled" : ""} ${ok && d.roof !== id && !state.busy ? "" : "disabled"}>${d.roof === id ? "On" : "Set"}</button></div>${barnBtn}`;
     }).join("");
     const canStory2 = d.stories < 2 && q.accepted && canAfford(COST.story2);
     const canStory3 = d.stories === 2 && unlocked("story3") && canAfford(COST.story3);
-    return `${questCard}
+    const barn = window.__snugBarnRaising;
+    const barnPanel = barn ? barn.raisingPanelHtml() : "";
+    const barnBtn2 = barn && barn.canRaise("story2") && d.stories < 2 ? `<div class="barn-call-row"><button type="button" data-barn-call="story2">Call a barn-raising</button></div>` : "";
+    const barnBtn3 = barn && barn.canRaise("story3") && d.stories < 3 ? `<div class="barn-call-row"><button type="button" data-barn-call="story3">Call a barn-raising</button></div>` : "";
+    return `${questCard}${barnPanel}
     <h3>Staircase</h3>
     <div class="housing-card"><span><b>Staircase</b><small>${d.stairs ? `Placed at tile ${d.stairs.x}, ${d.stairs.y}` : "Not placed yet"} · ${costLabel(COST.stairs)}</small></span><button type="button" data-place-stairs ${d.stairs || state.busy ? "disabled" : ""}>${d.stairs ? "Placed" : "Place"}</button></div>
     <h3>New stories</h3>
-    <div class="housing-card"><span><b>Second story</b><small>${d.stories >= 2 ? "Built — the street can see it" : q.accepted ? costLabel(COST.story2) : "Requires Peggy's commission"} </small></span><button type="button" data-build-story="2" ${canStory2 && !state.busy ? "" : "disabled"}>${d.stories >= 2 ? "Built" : "Build"}</button></div>
-    <div class="housing-card"><span><b>Third story</b><small>${d.stories >= 3 ? "Built" : unlocked("story3") ? costLabel(COST.story3) : `Homestead level ${ladderLevel("story3")}`}</small></span><button type="button" data-build-story="3" ${canStory3 && !state.busy ? "" : "disabled"}>${d.stories >= 3 ? "Built" : "Build"}</button></div>
+    <div class="housing-card"><span><b>Second story</b><small>${d.stories >= 2 ? "Built — the street can see it" : q.accepted ? costLabel(COST.story2) : "Requires Peggy's commission"} </small></span><button type="button" data-build-story="2" ${canStory2 && !state.busy ? "" : "disabled"}>${d.stories >= 2 ? "Built" : "Build"}</button></div>${barnBtn2}
+    <div class="housing-card"><span><b>Third story</b><small>${d.stories >= 3 ? "Built" : unlocked("story3") ? costLabel(COST.story3) : `Homestead level ${ladderLevel("story3")}`}</small></span><button type="button" data-build-story="3" ${canStory3 && !state.busy ? "" : "disabled"}>${d.stories >= 3 ? "Built" : "Build"}</button></div>${barnBtn3}
     <h3>Roof styles</h3>${roofCards}
     <p class="housing-note">New floors start as one open room — split them with dividers on the Rooms tab.</p>`;
   }
@@ -834,21 +843,42 @@
       try { await save(); toast("Staircase placed."); } catch (e) { toast(state.error); }
     });
     root.querySelectorAll("[data-build-story]").forEach((b) => b.addEventListener("click", () => buildStory(Number(b.dataset.buildStory))));
+    root.querySelectorAll("[data-barn-call]").forEach((b) => {
+      if (b.__barnBound) return;
+      b.__barnBound = true;
+      b.addEventListener("click", () => window.__snugBarnRaising?.callRaising(b.dataset.barnCall));
+    });
     root.querySelectorAll("[data-roof]").forEach((b) => b.addEventListener("click", async () => {
       const id = b.dataset.roof;
-      if (!await payFor(COST.roof, `${ROOFS[id].name} roof · −${COST.roof.shells} shells`, XP.roof)) return;
+      const baseCost = id === "widowswalk" ? COST.widowswalk : COST.roof;
+      const discount = window.__snugBarnRaising?.discountFor("widowswalk") || 0;
+      const cost = id === "widowswalk" && discount > 0
+        ? { shells: Math.max(0, baseCost.shells - discount), lumber: baseCost.lumber }
+        : baseCost;
+      if (!await payFor(cost, `${ROOFS[id].name} roof · −${cost.shells} shells${discount > 0 ? ` (${discount} off from barn-raising!)` : ""}`, XP.roof)) return;
       state.data.roof = id;
+      if (id === "widowswalk") {
+        await window.__snugBarnRaising?.consumeRaising("widowswalk");
+        peggySay("The widow's walk! Neighbors helped raise this crown — Cyclical City can see it for miles!");
+        window.dispatchEvent(new CustomEvent("snug-house-renovation", { detail: { widowswalk: true } }));
+      }
       try { await save(); toast(`${ROOFS[id].name} roof set.`); } catch (e) { toast(state.error); }
     }));
   }
 
   async function buildStory(n) {
     const d = state.data;
-    const cost = n === 2 ? COST.story2 : COST.story3;
+    const baseCost = n === 2 ? COST.story2 : COST.story3;
+    const upgradeId = n === 2 ? "story2" : "story3";
+    const discount = window.__snugBarnRaising?.discountFor(upgradeId) || 0;
+    const cost = discount > 0
+      ? { shells: Math.max(0, baseCost.shells - discount), lumber: baseCost.lumber }
+      : baseCost;
     if (n === 2 && !d.peggyQuest.accepted) { toast("Accept Peggy's commission first."); return; }
     if (!d.stairs) { toast("Place a staircase first — every story needs a way up."); return; }
-    if (!await payFor(cost, `Story ${n} · −${cost.shells} shells`, XP.story)) return;
+    if (!await payFor(cost, `Story ${n} · −${cost.shells} shells${discount > 0 ? ` (${discount} off from barn-raising!)` : ""}`, XP.story)) return;
     d.stories = n;
+    await window.__snugBarnRaising?.consumeRaising(upgradeId);
     if (n === 2) { d.peggyQuest.done = true; peggySay(PEGGY_LINES.commissionDone); }
     else peggySay("Three stories! You're building a landmark, friend.");
     window.dispatchEvent(new CustomEvent("snug-house-renovation", { detail: { stories: n } }));
@@ -1262,4 +1292,15 @@
 
   // Debug/test surface (pure logic only).
   window.__snugHousingTest = { normalize, defaults, roomRegions, validateWalls, wallsToBlueprint, xpNeeded, ladderLevel, COST, parseBlueprintItem, houseSignature, buildHouseMesh };
+
+  // Public API for companion modules (barn-raising, etc.)
+  window.__snugHousing = {
+    getData: () => state.data,
+    save: (extra) => save(extra),
+    peggySay,
+    toast,
+    isOpen: () => state.open,
+    render: () => renderPanel(),
+    open: (view) => open(view),
+  };
 })();

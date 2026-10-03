@@ -32,6 +32,7 @@
     { id: "festival-friend", name: "Festival Friend", achievement: "Attend all three rotating festivals", subject: "string of triangular bunting flags", glyph: "bunting" },
     { id: "cat-whisperer", name: "Cat Whisperer", achievement: "Adopt a cat", subject: "cat face with a yarn ball", glyph: "cat" },
     { id: "bridge-crew", name: "Bridge Crew", achievement: "Contribute to the Moonlight Footbridge", subject: "arched wooden footbridge over water", glyph: "bridge" },
+    { id: "barn-crew", name: "Barn Crew", achievement: "Contribute to a barn-raising", subject: "neighbors raising a timber house frame together", glyph: "house" },
     { id: "shutterbug", name: "Shutterbug", achievement: "Take 25 photo-mode pictures", subject: "vintage camera with a flash star", glyph: "camera" },
     { id: "cyclical-citizen", name: "Cyclical Citizen", achievement: "Complete the welcoming committee", subject: "town gate with a welcome banner", glyph: "gate" },
   ];
@@ -592,6 +593,7 @@
   window.addEventListener("snug-whirl-result",(event)=>{if(event.detail?.won)unlockStamp("whirl-winner");});
   window.addEventListener("snug-board-result",(event)=>{if(event.detail?.won)unlockStamp("star-sailor");});
   window.addEventListener("snug-project-contribution",(event)=>{if(/bridge/i.test(event.detail?.project||""))unlockStamp("bridge-crew");});
+  window.addEventListener("snug-project-contribution",(event)=>{if(/barn/i.test(event.detail?.project||""))unlockStamp("barn-crew");});
   window.addEventListener("snug-cat-adopted",()=>unlockStamp("cat-whisperer"));
   window.addEventListener("snug-photo-captured",()=>{const box=normalizedMailbox();saveMailbox({...box,photoCount:Number(box.photoCount||0)+1},"").then(reconcileStamps);});
   async function unlockStamp(id){const box=normalizedMailbox();if(box.stamps.includes(id))return;await saveMailbox({...box,stamps:[...box.stamps,id]},"");showToast(`${STAMPS.find((stamp)=>stamp.id===id)?.name||"New"} stamp unlocked`);}
