@@ -318,19 +318,29 @@
   // TEMPORARY DIAGNOSTIC 2026-10-03: tracks town-entry freeze. Remove after diagnosis.
   (function(){
     const marks = [];
+    // Visible on-screen badge
+    const badge = document.createElement('div');
+    badge.style.cssText = 'position:fixed;top:8px;left:8px;z-index:99999;background:#000c;color:#0f0;font:11px monospace;padding:6px 8px;border-radius:6px;max-width:90vw;word-break:break-all;';
+    badge.textContent = 'DIAG READY';
+    document.addEventListener('DOMContentLoaded', () => document.body.appendChild(badge));
+    if (document.body) document.body.appendChild(badge);
     const mark = (label) => {
       const t = (performance.now()/1000).toFixed(1);
       marks.push(`[${t}s] ${label}`);
+      const txt = marks.slice(-3).join(' → ');
+      badge.textContent = txt;
       document.title = `[${t}s ${label}] Selfie Social Society`;
       console.log(`[TOWN-ENTRY] [${t}s] ${label}`);
-      // Longtask observer to catch main-thread blocks
       if (!window.__townEntryLongtasks) {
         window.__townEntryLongtasks = [];
         try {
           new PerformanceObserver((list) => {
             for (const e of list.getEntries()) {
               window.__townEntryLongtasks.push(`${(e.duration|0)}ms@${(e.startTime/1000).toFixed(1)}s`);
-              if (e.duration > 500) console.warn(`[TOWN-ENTRY] LONGTASK ${e.duration|0}ms`);
+              if (e.duration > 500) {
+                console.warn(`[TOWN-ENTRY] LONGTASK ${e.duration|0}ms`);
+                badge.textContent = txt + ` | LONGTASK ${e.duration|0}ms!`;
+              }
             }
           }).observe({ entryTypes: ['longtask'] });
         } catch {}
@@ -338,31 +348,33 @@
     };
     window.__townEntryMark = mark;
     window.__townEntryMarks = marks;
-    // Hook into the enter flow by watching for the arrival intro
-    const origRaf = window.requestAnimationFrame;
     let enterClicked = false;
     document.addEventListener('click', (e) => {
       const btn = e.target.closest?.('[data-start-mode="town"]');
       if (btn && !enterClicked) {
         enterClicked = true;
         mark('ENTER-CLICKED');
-        // Watch for the fade
         const obs = new MutationObserver(() => {
           if (document.querySelector('.snug-arrival-fade.is-black')) { mark('FADE-BLACK'); obs.disconnect(); }
         });
         obs.observe(document.body, { childList: true, subtree: true, attributes: true });
-        // Watch for menu removal
         const obs2 = new MutationObserver(() => {
-          if (!document.querySelector('.snug-start-screen')) { mark('MENU-REMOVED'); obs2.disconnect(); }
+          if (!document.querySelector('.snug-start-screen, #snug-start-screen, [data-start-screen]')) {
+            // Check more broadly: menu gone when is-leaving completes
+            if (document.documentElement.classList.contains('snug-start-open') === false) {
+              mark('MENU-GONE'); obs2.disconnect();
+            }
+          }
         });
         obs2.observe(document.body, { childList: true, subtree: true });
-        // Watch for welcome event
         window.addEventListener('snug-start-welcome', () => mark('WELCOME-EVENT'), { once: true });
-        // Timeout: if we're stuck, report longtasks
+        window.addEventListener('snug-world-ready', () => mark('WORLD-READY'), { once: true });
+        window.addEventListener('snug-avatar-ready', () => mark('AVATAR-READY'), { once: true });
         setTimeout(() => {
           if (enterClicked) {
             console.log('[TOWN-ENTRY] 15s after click. Marks:', marks.join(' | '));
             console.log('[TOWN-ENTRY] Longtasks:', (window.__townEntryLongtasks||[]).join(', '));
+            badge.textContent += ' | 15s TIMEOUT - see console';
           }
         }, 15000);
       }
