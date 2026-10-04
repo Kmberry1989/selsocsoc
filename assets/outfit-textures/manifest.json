@@ -270,6 +270,12 @@
       "name": "Plaid Flannel & Corduroys",
       "description": "A green-and-navy plaid flannel shirt with chocolate-brown corduroys.",
       "path": "assets/outfit-textures/outfit-plaid-flannel-corduroys.png"
+    },
+    {
+      "id": "outfit-zipup-hoodie-joggers",
+      "name": "Zip-Up Hoodie & Joggers",
+      "description": "An oversized zip-up hoodie with drawstrings and kangaroo pocket, paired with tapered joggers. Tint-ready.",
+      "path": "assets/outfit-textures/outfit-zipup-hoodie-joggers.png"
     }
   ]
 }
