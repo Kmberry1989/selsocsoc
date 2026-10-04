@@ -106,6 +106,34 @@
       "path": "assets/outfit-textures/outfit-bonfire-wrap.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
       "description": "A charcoal wrap with diagonal ember-orange flame bands and a golden tie knot."
+    },
+    {
+      "id": "outfit-snowfall-cape",
+      "name": "Snowfall Cape",
+      "path": "assets/outfit-textures/outfit-snowfall-cape.png",
+      "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
+      "description": "A deep spruce-green cape with white snowflake motifs, cream faux-fur trim, and a gold clasp."
+    },
+    {
+      "id": "outfit-hearthside-wrap",
+      "name": "Hearthside Wrap",
+      "path": "assets/outfit-textures/outfit-hearthside-wrap.png",
+      "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
+      "description": "A warm cranberry wrap with golden cable-knit pattern, cream fringe, and a wooden toggle."
+    },
+    {
+      "id": "outfit-evergreen-tabard",
+      "name": "Evergreen Tabard",
+      "path": "assets/outfit-textures/outfit-evergreen-tabard.png",
+      "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
+      "description": "A pine-green tabard with gold border trim and embroidered holly sprigs with red berries."
+    },
+    {
+      "id": "outfit-frostlight-tunic",
+      "name": "Frostlight Tunic",
+      "path": "assets/outfit-textures/outfit-frostlight-tunic.png",
+      "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
+      "description": "An icy periwinkle tunic with silver snowflake embroidery, white fur trim, and a silver belt."
     }
   ]
 }
