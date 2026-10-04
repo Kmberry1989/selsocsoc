@@ -57,3 +57,26 @@
   .snug-tint-swatch{width:32px;height:32px}
   .snug-tint-swatches{gap:5px}
 }
+/* Seasonal palette tabs */
+.snug-tint-tabs{
+  display:flex;
+  gap:6px;
+  margin:6px 0 8px;
+  flex-wrap:wrap;
+}
+.snug-tint-tab{
+  min-height:34px;
+  padding:6px 12px;
+  border:1px solid #d7d2c8;
+  border-radius:999px;
+  background:#f5f1e9;
+  color:#2c3437;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+}
+.snug-tint-tab.active{
+  border-color:#b23a18;
+  background:#b23a18;
+  color:#fff;
+}
