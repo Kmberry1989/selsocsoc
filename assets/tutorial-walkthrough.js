@@ -53,7 +53,7 @@
   ];
 
   const INTRO_LINE = "Well butter my biscuit \u2014 a new neighbor, all moved in and photo-ready! I'm Gideon, Cyclical City's tour guide and purveyor of fine facts. Eight little stops and you'll know this town like the back of my hand. Ready?";
-  const FAREWELL_LINE = "And that's the grand tour! Fifty shells for the road, courtesy of the Cyclical City welcoming committee \u2014 which is me. I am the committee. Go make yourself at home, neighbor!";
+  const FAREWELL_LINE = "And that's the grand tour! Fifty shells for the road, courtesy of the Cyclical City welcoming committee \u2014 which is me. I am the committee. Oh \u2014 and tap the Story button when you get a chance. Every neighbor's got a tale, and yours is just getting started. Go make yourself at home, neighbor!";
 
   const state = {
     active: false,          // tutorial running this session
