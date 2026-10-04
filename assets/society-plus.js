@@ -142,6 +142,50 @@ const FESTIVAL_REWARDS = {
   Meteors: { id: "festival-stargazer-scarf", name: "Stargazer Scarf" },
   Parade: { id: "festival-parade-rosette", name: "Parade Rosette" },
 };
+// Pip Parade seasonal keepsakes: painted outfits earnable only during their
+// season's festival window (player's local date). One claim per outfit, ever.
+const SEASONAL_OUTFIT_REWARDS = {
+  spring: [
+    { id: "outfit-blossom-tunic", name: "Blossom Tunic" },
+    { id: "outfit-raindrop-cape", name: "Raindrop Cape" },
+    { id: "outfit-seedling-poncho", name: "Seedling Poncho" },
+    { id: "outfit-dewdrop-wrap", name: "Dewdrop Wrap" },
+  ],
+  summer: [
+    { id: "outfit-sunflower-tabard", name: "Sunflower Tabard" },
+    { id: "outfit-lakeside-wrap", name: "Lakeside Wrap" },
+    { id: "outfit-firefly-cape", name: "Firefly Cape" },
+    { id: "outfit-summerberry-tunic", name: "Summerberry Tunic" },
+  ],
+  fall: [
+    { id: "outfit-pumpkin-patch-poncho", name: "Pumpkin Patch Poncho" },
+    { id: "outfit-woodland-cape", name: "Woodland Cape" },
+    { id: "outfit-cider-mill-tabard", name: "Cider Mill Tabard" },
+    { id: "outfit-bonfire-wrap", name: "Bonfire Wrap" },
+  ],
+  winter: [
+    { id: "outfit-snowfall-cape", name: "Snowfall Cape" },
+    { id: "outfit-hearthside-wrap", name: "Hearthside Wrap" },
+    { id: "outfit-evergreen-tabard", name: "Evergreen Tabard" },
+    { id: "outfit-frostlight-tunic", name: "Frostlight Tunic" },
+  ],
+};
+function activeSeason() {
+  const month = new Date().getMonth() + 1; // 1-12, player's local date
+  if (month >= 3 && month <= 5) return "spring";
+  if (month >= 6 && month <= 8) return "summer";
+  if (month >= 9 && month <= 11) return "fall";
+  return "winter"; // Dec-Feb
+}
+function seasonLabel(season) {
+  return season === "spring" ? "Spring" : season === "summer" ? "Summer" : season === "fall" ? "Fall" : "Winter";
+}
+function seasonWindow(season) {
+  return season === "spring" ? "Mar–May" : season === "summer" ? "Jun–Aug" : season === "fall" ? "Sep–Nov" : "Dec–Feb";
+}
+function seasonalOutfits(season = activeSeason()) {
+  return season ? (SEASONAL_OUTFIT_REWARDS[season] || []) : [];
+}
 
 function ensureDaily() {
   const key = today();
@@ -219,6 +263,13 @@ function activeFestival() {
 }
 function claimFestivalReward() {
   const reward = activeFestival();
+  if (!reward || state.gameplay.festivalRewards[reward.id]) return;
+  state.gameplay.festivalRewards[reward.id] = Date.now();
+  patchPlayer(profile => ({ ...profile, inventory: [...new Set([...(profile.inventory || []), reward.id])] }));
+  queueSave(); showToast(`${reward.name} added to your collection`); renderPanel();
+}
+function claimSeasonalOutfit(id) {
+  const reward = seasonalOutfits().find(item => item.id === id);
   if (!reward || state.gameplay.festivalRewards[reward.id]) return;
   state.gameplay.festivalRewards[reward.id] = Date.now();
   patchPlayer(profile => ({ ...profile, inventory: [...new Set([...(profile.inventory || []), reward.id])] }));
@@ -341,6 +392,21 @@ window.__snugDailyLoop = {
   openToday: () => openPanel("today"),
 };
 
+/* Public wardrobe API for the painted-outfit selector (assets/outfit-textures.js).
+   Inventory-aware visibility for seasonal unlocks, plus persistence of the
+   selected painted outfit id in profile.equippedAppearance. */
+window.__snugWardrobe = {
+  inventory: () => inventory(),
+  profile: () => ({ ...state.profile }),
+  owns: (id) => inventory().includes(id),
+  activeSeason: () => activeSeason(),
+  seasonalOutfits: (season) => seasonalOutfits(season),
+  claimSeasonalOutfit,
+  setPaintedOutfit: (id = "") => {
+    patchPlayer(p => ({ ...p, equippedAppearance: { ...(p.equippedAppearance || {}), paintedOutfit: String(id || "") } }));
+  },
+};
+
 function npcFrontHeader(mark, color, role, name, line) {
   return `<header class="society-npc-front"><span class="society-npc-mark" style="--npc-color:${color}" aria-hidden="true">${mark}</span><div><small>${esc(role)}</small><b>${esc(name)}</b><p>${line}</p></div></header>`;
 }
@@ -379,12 +445,19 @@ function collectionMarkup() {
     return `<section class="collection-group"><h3>${esc(displayName(category))}<small>${real.filter(item => inventory().includes(item.id)).length}/${real.length}</small></h3><div>${real.map(item => `<span class="${inventory().includes(item.id) ? "owned" : "missing"}"><i></i>${esc(item.name)}</span>`).join("")}</div></section>`;
   }).join("");
   const rewards = Object.values(FESTIVAL_REWARDS).map(item => `<span class="${inventory().includes(item.id) ? "owned" : "missing"}"><i></i>${esc(item.name)}</span>`).join("");
-  return `${groups || `<p class="society-empty">Approved customization pieces will fill this catalog.</p>`}<section class="collection-group"><h3>Festival keepsakes<small>${Object.keys(state.gameplay.festivalRewards || {}).length}/3</small></h3><div>${rewards}</div></section>`;
+  const seasonal = Object.entries(SEASONAL_OUTFIT_REWARDS).map(([season, items]) => {
+    const owned = items.filter(item => inventory().includes(item.id)).length;
+    return `<section class="collection-group"><h3>${seasonLabel(season)} festival outfits<small>${owned}/${items.length}</small></h3><div>${items.map(item => `<span class="${inventory().includes(item.id) ? "owned" : "missing"}"><i></i>${esc(item.name)}</span>`).join("")}</div></section>`;
+  }).join("");
+  return `${groups || `<p class="society-empty">Approved customization pieces will fill this catalog.</p>`}<section class="collection-group"><h3>Festival keepsakes<small>${Object.keys(state.gameplay.festivalRewards || {}).filter(id => Object.values(FESTIVAL_REWARDS).some(r => r.id === id)).length}/3</small></h3><div>${rewards}</div></section>${seasonal}`;
 }
 function achievementsMarkup() {
   const cards = ACHIEVEMENTS.map(a => { const unlocked = a.test(state.gameplay); const claimed = Boolean(state.gameplay.achievements?.[a.id]); return `<article class="achievement ${unlocked ? "ready" : ""}"><span aria-hidden="true"></span><div><b>${esc(a.name)}</b><small>${esc(a.note)}</small></div><button data-achievement="${a.id}" ${!unlocked || claimed ? "disabled" : ""}>${claimed ? "Earned" : unlocked ? `Claim ${a.reward}` : "Locked"}</button></article>`; }).join("");
   const festival = activeFestival();
-  return `<div class="society-section"><h3>Achievements</h3>${cards}</div><section class="festival-reward"><div><small>Festival exclusive</small><b>${festival ? esc(festival.name) : "Visit during a festival"}</b><p>${festival ? "A limited keepsake is ready while the celebration is live." : "Fireworks Night, Meteor Shower, and the Costume Parade each carry one keepsake."}</p></div><button data-festival-reward ${!festival || state.gameplay.festivalRewards?.[festival.id] ? "disabled" : ""}>${festival && state.gameplay.festivalRewards?.[festival.id] ? "Collected" : "Claim"}</button></section>`;
+  const season = activeSeason();
+  const seasonal = seasonalOutfits(season);
+  const seasonalSection = `<section class="festival-reward"><div><small>Pip Parade · ${seasonLabel(season)} keepsakes</small><b>Seasonal outfits</b><p>One claim per outfit while the season lasts — ${seasonWindow(season)}.</p><div>${seasonal.map(item => { const claimed = Boolean(state.gameplay.festivalRewards?.[item.id]); return `<button data-seasonal-outfit="${item.id}" ${claimed ? "disabled" : ""}>${claimed ? `${esc(item.name)} · Collected` : `Claim ${esc(item.name)}`}</button>`; }).join("")}</div></div></section>`;
+  return `<div class="society-section"><h3>Achievements</h3>${cards}</div><section class="festival-reward"><div><small>Festival exclusive</small><b>${festival ? esc(festival.name) : "Visit during a festival"}</b><p>${festival ? "A limited keepsake is ready while the celebration is live." : "Fireworks Night, Meteor Shower, and the Costume Parade each carry one keepsake."}</p></div><button data-festival-reward ${!festival || state.gameplay.festivalRewards?.[festival.id] ? "disabled" : ""}>${festival && state.gameplay.festivalRewards?.[festival.id] ? "Collected" : "Claim"}</button></section>${seasonalSection}`;
 }
 
 function closePanel() { state.panel?.remove(); state.panel = null; document.body.classList.remove("society-open"); }
@@ -406,6 +479,7 @@ function bindPanel() {
   root.querySelectorAll("[data-daily-buy]").forEach(button => button.addEventListener("click", () => buyDaily(rotatingShop().find(item => item.id === button.dataset.dailyBuy))));
   root.querySelectorAll("[data-achievement]").forEach(button => button.addEventListener("click", () => claimAchievement(button.dataset.achievement)));
   $("[data-festival-reward]", root)?.addEventListener("click", claimFestivalReward);
+  root.querySelectorAll("[data-seasonal-outfit]").forEach(button => button.addEventListener("click", () => claimSeasonalOutfit(button.dataset.seasonalOutfit)));
   root.querySelectorAll("[data-reaction]").forEach(button => button.addEventListener("click", () => sendSocial("reaction", $("[data-person]",root)?.value, { reaction: button.dataset.reaction })));
   $("[data-knock]",root)?.addEventListener("click", () => sendSocial("knock", $("[data-person]",root)?.value));
   $("[data-trade]",root)?.addEventListener("click", async () => {

@@ -211,6 +211,48 @@
     select.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
+  // Seasonal outfits (manifest `unlock.season`) stay hidden until owned.
+  // Free outfits are always visible. Never invents ownership.
+  function visibleOutfits() {
+    const owns = window.__snugWardrobe?.owns;
+    return state.outfits.filter((item) => {
+      if (!item?.unlock?.season) return true;
+      return typeof owns === 'function' ? owns(item.id) === true : false;
+    });
+  }
+
+  function persistSelection() {
+    try { window.__snugWardrobe?.setPaintedOutfit?.(state.selectedId); } catch (_) {}
+  }
+
+  function restoreSelection() {
+    if (state.selectedId) return;
+    let saved = '';
+    try { saved = String(window.__snugWardrobe?.profile?.()?.equippedAppearance?.paintedOutfit || ''); } catch (_) {}
+    if (saved && visibleOutfits().some((item) => item.id === saved)) {
+      state.selectedId = saved;
+    }
+  }
+
+  function refreshPaintedOutfitOptions() {
+    const select = document.querySelector(`#${ROW_ID} select`);
+    if (!select) return;
+    const visible = visibleOutfits();
+    // Keep the current selection only if it's still visible.
+    if (state.selectedId && !visible.some((item) => item.id === state.selectedId)) {
+      state.selectedId = '';
+      persistSelection();
+    }
+    while (select.options.length > 1) select.remove(1);
+    visible.forEach((item) => {
+      const option = document.createElement('option');
+      option.value = item.id;
+      option.textContent = item.name;
+      select.appendChild(option);
+    });
+    select.value = state.selectedId;
+  }
+
   function buildPaintedOutfitRow(container) {
     let row = container.querySelector(`#${ROW_ID}`);
     if (row) return row;
@@ -226,7 +268,7 @@
     none.value = '';
     none.textContent = 'None · use 3D outfit';
     select.appendChild(none);
-    state.outfits.forEach((item) => {
+    visibleOutfits().forEach((item) => {
       const option = document.createElement('option');
       option.value = item.id;
       option.textContent = item.name;
@@ -236,6 +278,7 @@
     select.addEventListener('change', () => {
       state.selectedId = select.value;
       if (state.selectedId) clearThreeDimensionalOutfit();
+      persistSelection();
       applyCurrentOutfit(true);
       window.dispatchEvent(new CustomEvent('snug-texture-outfit-change', {
         detail: state.outfits.find((item) => item.id === state.selectedId) || null
@@ -268,21 +311,34 @@
   }, true);
 
   window.addEventListener('snug-world-ready', () => applyCurrentOutfit(true));
+  window.addEventListener('snug-session', () => {
+    restoreSelection();
+    refreshPaintedOutfitOptions();
+    applyCurrentOutfit(true);
+  });
+  // Inventory changes (e.g. claiming a seasonal outfit) reveal newly owned outfits.
+  window.addEventListener('snug-player-patch', () => {
+    refreshPaintedOutfitOptions();
+  });
   window.__snugApplyTextureOutfit = (id = '') => {
-    state.selectedId = state.outfits.some((item) => item.id === id) ? id : '';
+    state.selectedId = visibleOutfits().some((item) => item.id === id) ? id : '';
     syncStyleMenu();
     const select = document.querySelector(`#${ROW_ID} select`);
     if (select) select.value = state.selectedId;
     if (state.selectedId) clearThreeDimensionalOutfit();
+    persistSelection();
     return applyCurrentOutfit(true);
   };
 
   loadManifest().finally(() => {
+    restoreSelection();
     syncStyleMenu();
+    refreshPaintedOutfitOptions();
     // Throttled (was 600ms): skip while the tab is hidden.
     setInterval(() => {
       if (document.hidden) return;
       syncStyleMenu();
+      refreshPaintedOutfitOptions();
       applyCurrentOutfit();
     }, 2000);
   });

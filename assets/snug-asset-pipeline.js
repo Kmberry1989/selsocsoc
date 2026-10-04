@@ -107,12 +107,16 @@ function normalizeTextureOutfit(item) {
   const filename = String(item?.path || '').split('/').pop();
   if (!filename || !/\.(?:png|webp)$/i.test(filename)) return null;
   const id = String(item?.id || filename.replace(/\.(?:png|webp)$/i, ''));
+  const unlock = item?.unlock && typeof item.unlock === 'object' && !Array.isArray(item.unlock)
+    ? { type: String(item.unlock.type || ''), season: String(item.unlock.season || '') }
+    : null;
   return {
     id,
     name: String(item?.name || displayName(filename)),
     path: String(item.path),
     type: 'texture-outfit',
-    description: String(item?.description || '')
+    description: String(item?.description || ''),
+    ...(unlock ? { unlock } : {})
   };
 }
 

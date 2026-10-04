@@ -84,56 +84,88 @@
       "name": "Pumpkin Patch Poncho",
       "path": "assets/outfit-textures/outfit-pumpkin-patch-poncho.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
-      "description": "A burnt-orange poncho with pumpkin-vine embroidery, chocolate hem, and cream fringe."
+      "description": "A burnt-orange poncho with pumpkin-vine embroidery, chocolate hem, and cream fringe.",
+      "unlock": {
+        "type": "festival",
+        "season": "fall"
+      }
     },
     {
       "id": "outfit-woodland-cape",
       "name": "Woodland Cape",
       "path": "assets/outfit-textures/outfit-woodland-cape.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
-      "description": "A forest-green cape with falling amber leaves, amber clasp, and darker shoulder capelet."
+      "description": "A forest-green cape with falling amber leaves, amber clasp, and darker shoulder capelet.",
+      "unlock": {
+        "type": "festival",
+        "season": "fall"
+      }
     },
     {
       "id": "outfit-cider-mill-tabard",
       "name": "Cider Mill Tabard",
       "path": "assets/outfit-textures/outfit-cider-mill-tabard.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
-      "description": "An apple-red tabard with cream stripes, cinnamon trim, and an embroidered apple emblem."
+      "description": "An apple-red tabard with cream stripes, cinnamon trim, and an embroidered apple emblem.",
+      "unlock": {
+        "type": "festival",
+        "season": "fall"
+      }
     },
     {
       "id": "outfit-bonfire-wrap",
       "name": "Bonfire Wrap",
       "path": "assets/outfit-textures/outfit-bonfire-wrap.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
-      "description": "A charcoal wrap with diagonal ember-orange flame bands and a golden tie knot."
+      "description": "A charcoal wrap with diagonal ember-orange flame bands and a golden tie knot.",
+      "unlock": {
+        "type": "festival",
+        "season": "fall"
+      }
     },
     {
       "id": "outfit-snowfall-cape",
       "name": "Snowfall Cape",
       "path": "assets/outfit-textures/outfit-snowfall-cape.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
-      "description": "A deep spruce-green cape with white snowflake motifs, cream faux-fur trim, and a gold clasp."
+      "description": "A deep spruce-green cape with white snowflake motifs, cream faux-fur trim, and a gold clasp.",
+      "unlock": {
+        "type": "festival",
+        "season": "winter"
+      }
     },
     {
       "id": "outfit-hearthside-wrap",
       "name": "Hearthside Wrap",
       "path": "assets/outfit-textures/outfit-hearthside-wrap.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
-      "description": "A warm cranberry wrap with golden cable-knit pattern, cream fringe, and a wooden toggle."
+      "description": "A warm cranberry wrap with golden cable-knit pattern, cream fringe, and a wooden toggle.",
+      "unlock": {
+        "type": "festival",
+        "season": "winter"
+      }
     },
     {
       "id": "outfit-evergreen-tabard",
       "name": "Evergreen Tabard",
       "path": "assets/outfit-textures/outfit-evergreen-tabard.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
-      "description": "A pine-green tabard with gold border trim and embroidered holly sprigs with red berries."
+      "description": "A pine-green tabard with gold border trim and embroidered holly sprigs with red berries.",
+      "unlock": {
+        "type": "festival",
+        "season": "winter"
+      }
     },
     {
       "id": "outfit-frostlight-tunic",
       "name": "Frostlight Tunic",
       "path": "assets/outfit-textures/outfit-frostlight-tunic.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
-      "description": "An icy periwinkle tunic with silver snowflake embroidery, white fur trim, and a silver belt."
+      "description": "An icy periwinkle tunic with silver snowflake embroidery, white fur trim, and a silver belt.",
+      "unlock": {
+        "type": "festival",
+        "season": "winter"
+      }
     },
     {
       "id": "outfit-blossom-tunic",
