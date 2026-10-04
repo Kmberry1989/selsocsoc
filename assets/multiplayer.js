@@ -149,6 +149,7 @@ const state = {
   boardClock: null,
   boardBusy: false,
   boardUseBoost: false,
+  boardRouteChoice: "",
   boardLobby: null,
   boardJoinPending: false,
   boardBotTimer: null,
@@ -802,10 +803,17 @@ function dieMarkup() {
 
 const BOARD_SPACES = [
   "start", "coin", "event", "coin", "shop", "minigame",
-  "coin", "star", "event", "coin", "shop", "minigame",
-  "coin", "event", "star", "coin", "shop", "minigame",
+  "coin", "coin", "event", "coin", "shop", "minigame",
+  "star", "event", "star", "coin", "shop", "minigame",
   "event", "coin", "star", "shop", "minigame", "coin",
+  "event", "event", "shop",
 ];
+const BOARD_MAIN_LENGTH = 24;
+const BOARD_ROUTE_JUNCTION = 4;
+const BOARD_NEIGHBORHOOD_END = 9;
+const BOARD_MARKET_START = 24;
+const BOARD_MARKET_END = 26;
+const BOARD_ROUTE_LABELS = { neighborhood: "Neighborhood path", market: "Market shortcut" };
 const BOARD_LABELS = { start: "Town Gate", coin: "+3 coins", event: "Town event", minigame: "Game space", shop: "Board shop", star: "Star stop" };
 const BOARD_PRIZE_STOPS = BOARD_SPACES.map((type, index) => type === "star" ? index : -1).filter((index) => index >= 0);
 const BOARD_MINIGAMES = ["Lantern Timing", "Parcel Pop", "Garden Dash", "Tea Tray Tangle"];
@@ -815,6 +823,28 @@ const BOARD_BOTS = [
   { uid: "bot-2", name: "Pip", color: "#d07862" },
   { uid: "bot-3", name: "Juniper", color: "#668fc2" },
 ];
+
+function boardNextSpace(position, route = "neighborhood") {
+  if (position === BOARD_ROUTE_JUNCTION) return route === "market" ? BOARD_MARKET_START : BOARD_ROUTE_JUNCTION + 1;
+  if (position >= BOARD_MARKET_START && position < BOARD_MARKET_END) return position + 1;
+  if (position === BOARD_NEIGHBORHOOD_END || position === BOARD_MARKET_END) return 10;
+  return (position + 1) % BOARD_MAIN_LENGTH;
+}
+
+function boardAdvance(position, steps, route) {
+  let next = position;
+  for (let step = 0; step < steps; step += 1) next = boardNextSpace(next, route);
+  return next;
+}
+
+function boardDistance(from, target, route) {
+  let position = from;
+  for (let distance = 1; distance <= BOARD_MAIN_LENGTH + 5; distance += 1) {
+    position = boardNextSpace(position, route);
+    if (position === target) return distance;
+  }
+  return Infinity;
+}
 
 function boardAccessAllowed() {
   return state.roomId === "plaza" || state.isPrivate;
@@ -911,7 +941,7 @@ function deriveBoardGame() {
       if (!owner || !BOARD_SHOP[event.item] || owner.items[event.item] < 1) continue;
       if (event.item === "trap") {
         owner.items.trap -= 1;
-        game.traps.push({ owner: owner.uid, space: (owner.pos + 4) % BOARD_SPACES.length, active: true });
+        game.traps.push({ owner: owner.uid, space: boardAdvance(owner.pos, 4, owner.lastRoute || "neighborhood"), active: true });
         game.log.push(`${owner.name} set a trap four spaces ahead.`);
       } else if (event.item === "steal") {
         const target = player(event.targetUid);
@@ -930,7 +960,10 @@ function deriveBoardGame() {
       game.shopUid = "";
       if (event.usedBoost && mover.items.boost > 0) mover.items.boost -= 1;
       const roll = Math.max(1, Math.min(9, Number(event.roll || 1)));
-      mover.pos = (mover.pos + roll) % BOARD_SPACES.length;
+      const route = event.route === "market" ? "market" : "neighborhood";
+      mover.pos = boardAdvance(mover.pos, roll, route);
+      mover.lastRoute = route;
+      game.log.push(`${mover.name} took the ${BOARD_ROUTE_LABELS[route].toLowerCase()}.`);
       const trap = game.traps.find((entry) => entry.active && entry.owner !== mover.uid && entry.space === mover.pos);
       if (trap) { trap.active = false; mover.coins = Math.max(0, mover.coins - 5); game.log.push(`${mover.name} splashed into a trap and lost 5 coins.`); }
       const space = BOARD_SPACES[mover.pos];
@@ -1078,6 +1111,7 @@ function closeBoardMode() {
   state.boardBotTimer = null;
   state.boardBotKey = "";
   state.boardUseBoost = false;
+  state.boardRouteChoice = "";
 }
 
 function openBoardMode() {
@@ -1104,7 +1138,8 @@ function boardSpaceMarkup(type, index, game) {
   const trapped = game.traps.some((entry) => entry.active && entry.space === index);
   const activePrize = index === game.prizePos;
   const label = type === "star" ? (activePrize ? "Prize star" : "Prize pavilion") : BOARD_LABELS[type];
-  return `<div class="snug-board-space ${type} ${activePrize ? "active-prize" : ""} ${trapped ? "snug-board-trap" : ""}"><span class="snug-board-number">${index}</span><b>${label}</b><div class="snug-board-tokens">${tokens}</div><small>${activePrize ? "★ 10 coins" : type === "star" ? "Relocated" : type === "shop" ? "Items" : type === "start" ? "Start" : ""}</small></div>`;
+  const route = index >= BOARD_MARKET_START ? "market" : index > BOARD_ROUTE_JUNCTION && index <= BOARD_NEIGHBORHOOD_END ? "neighborhood" : "shared";
+  return `<div class="snug-board-space ${type} board-route-${route} ${index === BOARD_ROUTE_JUNCTION ? "board-route-junction" : ""} ${activePrize ? "active-prize" : ""} ${trapped ? "snug-board-trap" : ""}"><span class="snug-board-number">${index}</span><b>${label}</b><div class="snug-board-tokens">${tokens}</div><small>${activePrize ? "★ 10 coins" : type === "star" ? "Relocated" : index === BOARD_ROUTE_JUNCTION ? "Choose ahead" : route === "market" ? "Market" : route === "neighborhood" ? "Neighborhood" : type === "shop" ? "Items" : type === "start" ? "Start" : ""}</small></div>`;
 }
 
 function boardPlayerMarkup(entry, game) {
@@ -1144,7 +1179,7 @@ function boardActionMarkup(game) {
   if (shopper?.bot) return `<div class="snug-board-card"><h3>${escapeHtml(shopper.name)} is shopping</h3><p>The town player is weighing up a useful item.</p></div>`;
   if (current?.bot) return `<div class="snug-board-card"><h3>${escapeHtml(current.name)} is rolling</h3><p>The town player is choosing an item and planning a move.</p></div>`;
   if (current?.uid !== me.uid) return `<div class="snug-board-card"><h3>${escapeHtml(current?.name || "Another player")} is up</h3><p>After everyone moves, the whole room faces off in a coin-paying minigame.</p></div>`;
-  return `<div class="snug-board-card"><h3>Your turn</h3><p>Roll 1–6 spaces. Stars cost 10 coins when you land on them.</p><div class="snug-board-items"><button type="button" data-board-boost class="${state.boardUseBoost ? "active" : ""}" ${me.items.boost < 1 ? "disabled" : ""}>Boost ×${me.items.boost}<br>+3 roll</button><button type="button" data-board-item="trap" ${me.items.trap < 1 ? "disabled" : ""}>Trap ×${me.items.trap}<br>Lay ahead</button><button type="button" data-board-item="steal" ${me.items.steal < 1 || !richest ? "disabled" : ""}>Swap ×${me.items.steal}<br>Steal 5</button></div><button type="button" class="snug-board-primary" data-board-roll ${state.boardBusy ? "disabled" : ""}>${state.boardUseBoost ? "Roll with +3" : "Roll the dice"}</button></div>`;
+  return `<div class="snug-board-card"><h3>Your turn</h3><p>Choose which path to take at the next junction, then roll. Both paths rejoin before every prize pavilion.</p><div class="snug-board-routes" role="group" aria-label="Choose a route"><button type="button" data-board-route="neighborhood" aria-pressed="${state.boardRouteChoice === "neighborhood"}"><b>Neighborhood path</b><small>Safer · 5 spaces · more coins</small></button><button type="button" data-board-route="market" aria-pressed="${state.boardRouteChoice === "market"}"><b>Market shortcut</b><small>Shorter · 3 spaces · more events</small></button></div><div class="snug-board-items"><button type="button" data-board-boost class="${state.boardUseBoost ? "active" : ""}" ${me.items.boost < 1 ? "disabled" : ""}>Boost ×${me.items.boost}<br>+3 roll</button><button type="button" data-board-item="trap" ${me.items.trap < 1 ? "disabled" : ""}>Trap ×${me.items.trap}<br>Lay ahead</button><button type="button" data-board-item="steal" ${me.items.steal < 1 || !richest ? "disabled" : ""}>Swap ×${me.items.steal}<br>Steal 5</button></div><button type="button" class="snug-board-primary" data-board-roll ${state.boardBusy || !state.boardRouteChoice ? "disabled" : ""}>${!state.boardRouteChoice ? "Choose a route first" : state.boardUseBoost ? "Roll with +3" : `Roll via ${state.boardRouteChoice === "market" ? "market" : "neighborhood"}`}</button></div>`;
 }
 
 function boardLobbyMarkup(lobby) {
@@ -1168,7 +1203,7 @@ function renderBoardMode() {
     const setup = window.__snugPartySettings || { rounds: 5, rules: "casual" };
     shell.innerHTML = `<div class="snug-board-head"><div><small>${Math.max(5, Math.min(15, Number(setup.rounds || 5)))}-round ${setup.rules === "strategic" ? "strategic" : "casual"} party</small><h2 id="snug-board-title">Snug Board</h2></div>${close}</div>${error}${boardLobbyMarkup(state.boardLobby)}`;
   } else {
-    shell.innerHTML = `<div class="snug-board-head"><div><small>Round ${game.round} of ${game.rounds} · ${game.rules === "strategic" ? "Strategic" : "Casual"} · ${state.isPrivate ? "Family room" : "Village plaza"}</small><h2 id="snug-board-title">Snug Board</h2></div>${close}</div>${error}<div class="snug-board-layout"><div><div class="snug-board-map">${BOARD_SPACES.map((type, index) => boardSpaceMarkup(type, index, game)).join("")}</div><div class="snug-board-legend"><span>Gold: coins</span><span>Blue: events</span><span>Coral: minigames</span><span>Green: shops</span><span>Dark: prize stops</span></div></div><aside class="snug-board-side"><div class="snug-board-card"><div class="snug-board-stats">${game.players.map((entry) => boardPlayerMarkup(entry, game)).join("")}</div></div>${boardActionMarkup(game)}<div class="snug-board-card"><h3>Town chatter</h3><ul class="snug-board-log">${game.log.slice(-5).reverse().map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul></div></aside></div>`;
+    shell.innerHTML = `<div class="snug-board-head"><div><small>Round ${game.round} of ${game.rounds} · ${game.rules === "strategic" ? "Strategic" : "Casual"} · ${state.isPrivate ? "Family room" : "Village plaza"}</small><h2 id="snug-board-title">Snug Board</h2></div>${close}</div>${error}<div class="snug-board-layout"><div><div class="snug-board-route-heading"><span>Neighborhood path · safer</span><span>Market shortcut · event-heavy</span></div><div class="snug-board-map">${BOARD_SPACES.map((type, index) => boardSpaceMarkup(type, index, game)).join("")}</div><div class="snug-board-legend"><span>Gold: coins</span><span>Blue: events</span><span>Coral: minigames</span><span>Green: shops</span><span>Dark: prize stops</span></div></div><aside class="snug-board-side"><div class="snug-board-card"><div class="snug-board-stats">${game.players.map((entry) => boardPlayerMarkup(entry, game)).join("")}</div></div>${boardActionMarkup(game)}<div class="snug-board-card"><h3>Town chatter</h3><ul class="snug-board-log">${game.log.slice(-5).reverse().map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul></div></aside></div>`;
   }
   shell.querySelector(".snug-board-close")?.addEventListener("click", closeBoardMode);
   shell.querySelector("[data-board-ready]")?.addEventListener("click", () => setBoardReady());
@@ -1176,13 +1211,18 @@ function renderBoardMode() {
   shell.querySelector("[data-board-start]")?.addEventListener("click", startBoardGame);
   shell.querySelector("[data-board-new-lobby]")?.addEventListener("click", () => createBoardLobby(4));
   shell.querySelector("[data-board-boost]")?.addEventListener("click", () => { state.boardUseBoost = !state.boardUseBoost; renderBoardMode(); });
+  shell.querySelectorAll("[data-board-route]").forEach((button) => button.addEventListener("click", () => {
+    state.boardRouteChoice = button.dataset.boardRoute;
+    renderBoardMode();
+  }));
   shell.querySelector("[data-board-roll]")?.addEventListener("click", async () => {
-    if (state.boardBusy || !state.boardGame) return;
+    if (state.boardBusy || !state.boardGame || !state.boardRouteChoice) return;
     state.boardBusy = true; renderBoardMode();
     const base = randomIndex(6) + 1;
     window.dispatchEvent(new CustomEvent("snug-sfx", { detail: { id: "dice-roll" } }));
-    postBoardEvent("board-roll", { round: state.boardGame.round, roll: base + (state.boardUseBoost ? 3 : 0), usedBoost: state.boardUseBoost });
+    postBoardEvent("board-roll", { round: state.boardGame.round, roll: base + (state.boardUseBoost ? 3 : 0), usedBoost: state.boardUseBoost, route: state.boardRouteChoice });
     state.boardUseBoost = false;
+    state.boardRouteChoice = "";
     state.boardBusy = false;
     renderBoardMode();
   });
@@ -1226,6 +1266,16 @@ function chooseBotShopItem(game, bot) {
   return "pass";
 }
 
+function chooseBotRoute(game, bot) {
+  const neighborhoodStar = boardDistance(bot.pos, game.prizePos, "neighborhood");
+  const marketStar = boardDistance(bot.pos, game.prizePos, "market");
+  if (bot.coins >= 10 && marketStar < neighborhoodStar) return "market";
+  if (game.difficulty === "easy") return "neighborhood";
+  if (game.difficulty === "hard") return "market";
+  if (game.rules === "strategic" && bot.coins < 7) return "neighborhood";
+  return (game.seed + game.round + game.turnIndex + bot.uid.length) % 2 ? "market" : "neighborhood";
+}
+
 function scheduleBoardAutomation() {
   const game = state.boardGame;
   if (!state.boardOverlay || !game || game.phase === "ended" || game.hostUid !== boardUid() || state.boardBusy) {
@@ -1251,11 +1301,12 @@ function scheduleBoardAutomation() {
         key = `${game.id}-${game.round}-item-${current.uid}-${item}`;
         task = () => postBoardEvent("board-item", { round: game.round, actorUid: current.uid, item, targetUid: richest?.uid || "none" });
       } else {
-        const distanceToStar = BOARD_SPACES.map((space, index) => ({ space, distance: (index - current.pos + BOARD_SPACES.length) % BOARD_SPACES.length })).filter((entry) => entry.space === "star" && entry.distance > 0).sort((a, b) => a.distance - b.distance)[0]?.distance || 99;
+        const route = chooseBotRoute(game, current);
+        const distanceToStar = boardDistance(current.pos, game.prizePos, route);
         const usedBoost = current.items.boost > 0 && current.coins >= 10 && distanceToStar > 6 && distanceToStar <= 9;
         const roll = randomIndex(6) + 1 + (usedBoost ? 3 : 0);
         key = `${game.id}-${game.round}-roll-${current.uid}-${game.turnIndex}`;
-        task = () => postBoardEvent("board-roll", { round: game.round, actorUid: current.uid, roll, usedBoost });
+        task = () => postBoardEvent("board-roll", { round: game.round, actorUid: current.uid, roll, usedBoost, route });
       }
     }
   } else if (game.phase === "minigame") {
