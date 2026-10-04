@@ -214,6 +214,30 @@
         "type": "festival",
         "season": "summer"
       }
+    },
+    {
+      "id": "outfit-button-up-chinos",
+      "name": "Button-Up & Chinos",
+      "description": "A crisp sky-blue button-up shirt with khaki chinos.",
+      "path": "assets/outfit-textures/outfit-button-up-chinos.png"
+    },
+    {
+      "id": "outfit-graphic-tee-cargos",
+      "name": "Graphic Tee & Cargos",
+      "description": "A heather-gray tee with a sunset mountain graphic and olive cargo shorts.",
+      "path": "assets/outfit-textures/outfit-graphic-tee-cargos.png"
+    },
+    {
+      "id": "outfit-hoops-jersey-shorts",
+      "name": "Hoops Jersey & Shorts",
+      "description": "A royal-blue basketball jersey (number 23) with white mesh shorts.",
+      "path": "assets/outfit-textures/outfit-hoops-jersey-shorts.png"
+    },
+    {
+      "id": "outfit-plaid-flannel-corduroys",
+      "name": "Plaid Flannel & Corduroys",
+      "description": "A green-and-navy plaid flannel shirt with chocolate-brown corduroys.",
+      "path": "assets/outfit-textures/outfit-plaid-flannel-corduroys.png"
     }
   ]
 }
