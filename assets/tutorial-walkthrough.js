@@ -40,9 +40,19 @@
       line: "Last stop: home sweet home! Your garden bed is all yours, and Fern Bramble's seedlings gossip after rain, you know. Open Town Life and visit the garden.",
       hint: "Open Town Life \u2192 Garden",
     },
+    {
+      id: "gameshub", title: "Every game in town",
+      line: "But wait \u2014 there's more! Tap the Play tab and you'll find the Games Hub: every game in town on one board \u2014 Whirl, Snug Board, card games, the whole arcade. Give it a look!",
+      hint: "Open the Play tab \u2192 Games Hub",
+    },
+    {
+      id: "directory", title: "Never get lost",
+      line: "And if you ever get turned around, tap the little map button: the Town Directory lists every neighbor and lights a glowing path right to their doorstep. Lost? I'll light your way!",
+      hint: "Open the Town Directory",
+    },
   ];
 
-  const INTRO_LINE = "Well butter my biscuit \u2014 a new neighbor, all moved in and photo-ready! I'm Gideon, Cyclical City's tour guide and purveyor of fine facts. Six little stops and you'll know this town like the back of my hand. Ready?";
+  const INTRO_LINE = "Well butter my biscuit \u2014 a new neighbor, all moved in and photo-ready! I'm Gideon, Cyclical City's tour guide and purveyor of fine facts. Eight little stops and you'll know this town like the back of my hand. Ready?";
   const FAREWELL_LINE = "And that's the grand tour! Fifty shells for the road, courtesy of the Cyclical City welcoming committee \u2014 which is me. I am the committee. Go make yourself at home, neighbor!";
 
   const state = {
@@ -344,8 +354,26 @@
     document.addEventListener("click", handler, true);
     on(() => document.removeEventListener("click", handler, true));
   }
+  function watchGamesHub() {
+    let done = false;
+    const fire = () => { if (!done) { done = true; completeStep(); } };
+    const timer = setInterval(() => {
+      const hub = document.querySelector("#snug-games-hub");
+      if (hub && hub.offsetParent !== null) { clearInterval(timer); fire(); }
+    }, 500);
+    on(() => clearInterval(timer));
+  }
+  function watchDirectory() {
+    let done = false;
+    const fire = () => { if (!done) { done = true; completeStep(); } };
+    const timer = setInterval(() => {
+      const sheet = document.querySelector(".snug-dir-sheet");
+      if (sheet && !sheet.hidden) { clearInterval(timer); fire(); }
+    }, 500);
+    on(() => clearInterval(timer));
+  }
 
-  const WATCHERS = { move: watchMove, camera: watchCamera, whirl: watchWhirl, shop: watchShop, style: watchStyle, garden: watchGarden };
+  const WATCHERS = { move: watchMove, camera: watchCamera, whirl: watchWhirl, shop: watchShop, style: watchStyle, garden: watchGarden, gameshub: watchGamesHub, directory: watchDirectory };
 
   function showStop(i) {
     const stop = STOPS[i];

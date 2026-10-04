@@ -3967,3 +3967,6 @@ requestAnimationFrame(environmentFrame);
 
 renderDock();
 if (window.__snugSession) attachSession(window.__snugSession);
+
+// Public entry for the Games Hub (and tutorial): open Snug Board directly.
+window.__snugBoard = { open: openBoardMode, close: closeBoardMode };
