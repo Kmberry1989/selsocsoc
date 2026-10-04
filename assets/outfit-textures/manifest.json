@@ -134,6 +134,86 @@
       "path": "assets/outfit-textures/outfit-frostlight-tunic.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
       "description": "An icy periwinkle tunic with silver snowflake embroidery, white fur trim, and a silver belt."
+    },
+    {
+      "id": "outfit-blossom-tunic",
+      "name": "Blossom Tunic",
+      "path": "assets/outfit-textures/outfit-blossom-tunic.png",
+      "description": "A cherry-blossom pink tunic with petal print and sage-green trim.",
+      "unlock": {
+        "type": "festival",
+        "season": "spring"
+      }
+    },
+    {
+      "id": "outfit-raindrop-cape",
+      "name": "Raindrop Cape",
+      "path": "assets/outfit-textures/outfit-raindrop-cape.png",
+      "description": "A periwinkle rain cape with a raindrop pattern and cloud-white collar.",
+      "unlock": {
+        "type": "festival",
+        "season": "spring"
+      }
+    },
+    {
+      "id": "outfit-seedling-poncho",
+      "name": "Seedling Poncho",
+      "path": "assets/outfit-textures/outfit-seedling-poncho.png",
+      "description": "A sprout-green poncho with a leaf-vein motif and cream fringe.",
+      "unlock": {
+        "type": "festival",
+        "season": "spring"
+      }
+    },
+    {
+      "id": "outfit-dewdrop-wrap",
+      "name": "Dewdrop Wrap",
+      "path": "assets/outfit-textures/outfit-dewdrop-wrap.png",
+      "description": "A pale aqua morning-mist wrap with sparkling dewdrop dots.",
+      "unlock": {
+        "type": "festival",
+        "season": "spring"
+      }
+    },
+    {
+      "id": "outfit-sunflower-tabard",
+      "name": "Sunflower Tabard",
+      "path": "assets/outfit-textures/outfit-sunflower-tabard.png",
+      "description": "A golden tabard with big sunflower heads and chocolate-brown trim.",
+      "unlock": {
+        "type": "festival",
+        "season": "summer"
+      }
+    },
+    {
+      "id": "outfit-lakeside-wrap",
+      "name": "Lakeside Wrap",
+      "path": "assets/outfit-textures/outfit-lakeside-wrap.png",
+      "description": "A cool lake-blue wrap with white wave ripples and a sandy hem.",
+      "unlock": {
+        "type": "festival",
+        "season": "summer"
+      }
+    },
+    {
+      "id": "outfit-firefly-cape",
+      "name": "Firefly Cape",
+      "path": "assets/outfit-textures/outfit-firefly-cape.png",
+      "description": "A twilight indigo cape dotted with glowing fireflies.",
+      "unlock": {
+        "type": "festival",
+        "season": "summer"
+      }
+    },
+    {
+      "id": "outfit-summerberry-tunic",
+      "name": "Summerberry Tunic",
+      "path": "assets/outfit-textures/outfit-summerberry-tunic.png",
+      "description": "A berry-red tunic with berry sprigs and leaf-green collar trim.",
+      "unlock": {
+        "type": "festival",
+        "season": "summer"
+      }
     }
   ]
 }
