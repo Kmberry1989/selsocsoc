@@ -276,6 +276,30 @@
       "name": "Zip-Up Hoodie & Joggers",
       "description": "An oversized zip-up hoodie with drawstrings and kangaroo pocket, paired with tapered joggers. Tint-ready.",
       "path": "assets/outfit-textures/outfit-zipup-hoodie-joggers.png"
+    },
+    {
+      "id": "outfit-henley-dark-jeans",
+      "name": "Henley & Dark Jeans",
+      "description": "A ribbed-collar henley with a 3-button placket over dark jeans. Tint-ready.",
+      "path": "assets/outfit-textures/outfit-henley-dark-jeans.png"
+    },
+    {
+      "id": "outfit-polo-chino-shorts",
+      "name": "Polo & Chino Shorts",
+      "description": "A classic polo with folded collar over chino shorts with side pockets. Tint-ready.",
+      "path": "assets/outfit-textures/outfit-polo-chino-shorts.png"
+    },
+    {
+      "id": "outfit-denim-jacket-tee",
+      "name": "Denim Jacket & Tee",
+      "description": "An open denim-style trucker jacket with chest pockets over a plain crew-neck tee. Tint-ready.",
+      "path": "assets/outfit-textures/outfit-denim-jacket-tee.png"
+    },
+    {
+      "id": "outfit-sweater-vest-slacks",
+      "name": "Sweater Vest & Slacks",
+      "description": "A cable-knit V-neck sweater vest over a collared shirt with tailored slacks. Tint-ready.",
+      "path": "assets/outfit-textures/outfit-sweater-vest-slacks.png"
     }
   ]
 }
