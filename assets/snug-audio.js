@@ -1018,8 +1018,8 @@ class ProceduralAudioEngine {
     filter.frequency.value = 1450;
     filter.Q.value = 0.2;
     gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(0.055, now + 0.7);
-    gain.gain.setValueAtTime(0.055, now + 4.25);
+    gain.gain.linearRampToValueAtTime(0.025, now + 0.7);
+    gain.gain.setValueAtTime(0.025, now + 4.25);
     gain.gain.linearRampToValueAtTime(0, now + 5.05);
     source.connect(filter);
     filter.connect(gain);
