@@ -1,0 +1,8 @@
+{
+  "entry": "index.html",
+  "managedCronJobs": [],
+  "name": "Selfie Social Society",
+  "platformVersion": 15,
+  "runtime": "static",
+  "slug": "world-editor"
+}
