@@ -162,7 +162,7 @@
     if (state.loading) return;
     state.loading = true;
     try {
-      const { GLTFLoader } = await import("./assets/vendor/three/GLTFLoader.js");
+      const { GLTFLoader } = await import("./vendor/three/GLTFLoader.js");
       const gltf = await new GLTFLoader().loadAsync(GLB_PATH);
       const root = gltf.scene.getObjectByName("MailboxHome") || gltf.scene;
       root.position.set(HOME_POS[0], HOME_POS[1], HOME_POS[2]);

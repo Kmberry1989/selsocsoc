@@ -75,7 +75,7 @@
     state.wheel3dTried = true;
     try {
       const THREE = await getThree();
-      const { GLTFLoader } = await import("./assets/vendor/three/GLTFLoader.js");
+      const { GLTFLoader } = await import("./vendor/three/GLTFLoader.js");
       const gltf = await new GLTFLoader().loadAsync(WHEEL_GLB);
       const wheelNode = gltf.scene.getObjectByName("Wheel");
       if (!wheelNode) throw new Error("Wheel node missing in " + WHEEL_GLB);

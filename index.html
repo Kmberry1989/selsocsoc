@@ -230,6 +230,7 @@
     .snug-start-primary:hover,.snug-start-mode:hover,.snug-start-signin:hover,.snug-start-google:hover{filter:brightness(.96)}
     .snug-start-primary:active,.snug-start-mode:active,.snug-start-signin:active,.snug-start-google:active{filter:brightness(.9)}
     .snug-start-primary[disabled],.snug-start-mode[disabled],.snug-start-signin[disabled],.snug-start-google[disabled]{opacity:.58}
+    .snug-start-screen[aria-busy="true"] .snug-start-panel button{pointer-events:none;cursor:wait}
     .snug-start-login-status{position:fixed;right:12px;bottom:calc(max(10px,env(safe-area-inset-bottom)) + clamp(60px,15vw,72px));left:12px;min-height:0;margin:0!important;padding:7px 10px;border-radius:10px;background:#203437d9;color:#fff!important;font-size:11px!important;line-height:1.3;text-align:center;box-shadow:0 5px 18px #10282d3d}
     .snug-start-login-status:empty{display:none}
     .snug-start-login-status.is-error{border:1px solid #ffb7aa;background:#7a2f27ed;color:#fff!important;font-size:12px!important;font-weight:700;line-height:1.45;box-shadow:0 8px 26px #2a0e0b66}
@@ -318,22 +319,22 @@
 </head>
 <body>
   <div data-generated-space-root="" data-generated-space-slug="snug-society"></div>
-  <main class="snug-start-screen" role="dialog" aria-modal="true" aria-labelledby="snug-start-title">
+  <main class="snug-start-screen" role="dialog" aria-modal="true" aria-labelledby="snug-start-title" aria-busy="true">
     <div class="snug-start-scenery" aria-hidden="true">
       <div class="snug-menu-wallpaper"></div>
       <canvas class="snug-menu-shader"></canvas>
     </div>
     <h1 id="snug-start-title" class="snug-logo-wrap"><img class="snug-main-logo" src="assets/icons/logo-selfie-social-society.svg" alt="Selfie Social Society — Cyclical City"></h1>
     <section class="snug-start-panel" aria-label="Choose how to play">
-      <button class="snug-start-primary" type="button" data-start-mode="town" aria-label="Enter Cyclical City" title="Enter Cyclical City"><img class="cs-custom-icon" src="assets/icons/plaza.svg" alt="" aria-hidden="true"></button>
+      <button class="snug-start-primary" type="button" data-start-mode="town" aria-label="Enter Cyclical City" title="Enter Cyclical City" disabled><img class="cs-custom-icon" src="assets/icons/plaza.svg" alt="" aria-hidden="true"></button>
       <div class="snug-start-modes">
-        <button class="snug-start-mode" type="button" data-start-mode="solo" aria-label="Solo practice" title="Solo practice"><img class="cs-custom-icon" src="assets/icons/minigames.svg" alt="" aria-hidden="true"></button>
-        <button class="snug-start-mode" type="button" data-start-mode="family" aria-label="Play together" title="Play together"><img class="cs-custom-icon" src="assets/icons/play.svg" alt="" aria-hidden="true"></button>
-        <button class="snug-start-mode board" type="button" data-start-mode="board" aria-label="Snug Board" title="Snug Board"><img class="cs-custom-icon" src="assets/icons/board.svg" alt="" aria-hidden="true"></button>
+        <button class="snug-start-mode" type="button" data-start-mode="solo" aria-label="Solo practice" title="Solo practice" disabled><img class="cs-custom-icon" src="assets/icons/minigames.svg" alt="" aria-hidden="true"></button>
+        <button class="snug-start-mode" type="button" data-start-mode="family" aria-label="Play together" title="Play together" disabled><img class="cs-custom-icon" src="assets/icons/play.svg" alt="" aria-hidden="true"></button>
+        <button class="snug-start-mode board" type="button" data-start-mode="board" aria-label="Snug Board" title="Snug Board" disabled><img class="cs-custom-icon" src="assets/icons/board.svg" alt="" aria-hidden="true"></button>
       </div>
-      <button class="snug-start-signin" type="button" data-returning-player aria-label="Restore saved player from this browser" title="Restore saved player"><img class="cs-custom-icon" src="assets/icons/sign-in.svg" alt="" aria-hidden="true"></button>
-      <button class="snug-start-google" type="button" data-google-signin aria-label="Sign in with Google" title="Sign in with Google"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#4285F4" d="M28.4 16.3c0-1-.1-1.9-.3-2.8H16v5.3h6.9a5.9 5.9 0 0 1-2.6 3.9v3.4h4.4c2.6-2.4 3.7-5.8 3.7-9.8Z"/><path fill="#34A853" d="M16 28.8c3.5 0 6.5-1.2 8.7-3.2l-4.4-3.4c-1.2.8-2.7 1.3-4.3 1.3-3.4 0-6.3-2.3-7.3-5.4H4.2v3.5A13.1 13.1 0 0 0 16 28.8Z"/><path fill="#FBBC05" d="M8.7 18.1a7.9 7.9 0 0 1 0-5V9.6H4.2a13 13 0 0 0 0 12l4.5-3.5Z"/><path fill="#EA4335" d="M16 7.7c1.9 0 3.7.7 5 2l3.8-3.7A12.7 12.7 0 0 0 4.2 9.6l4.5 3.5c1-3.1 3.9-5.4 7.3-5.4Z"/></svg></button>
-      <p class="snug-start-login-status" aria-live="assertive" role="status"></p>
+      <button class="snug-start-signin" type="button" data-returning-player aria-label="Restore saved player from this browser" title="Restore saved player" disabled><img class="cs-custom-icon" src="assets/icons/sign-in.svg" alt="" aria-hidden="true"></button>
+      <button class="snug-start-google" type="button" data-google-signin aria-label="Sign in with Google" title="Sign in with Google" disabled><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#4285F4" d="M28.4 16.3c0-1-.1-1.9-.3-2.8H16v5.3h6.9a5.9 5.9 0 0 1-2.6 3.9v3.4h4.4c2.6-2.4 3.7-5.8 3.7-9.8Z"/><path fill="#34A853" d="M16 28.8c3.5 0 6.5-1.2 8.7-3.2l-4.4-3.4c-1.2.8-2.7 1.3-4.3 1.3-3.4 0-6.3-2.3-7.3-5.4H4.2v3.5A13.1 13.1 0 0 0 16 28.8Z"/><path fill="#FBBC05" d="M8.7 18.1a7.9 7.9 0 0 1 0-5V9.6H4.2a13 13 0 0 0 0 12l4.5-3.5Z"/><path fill="#EA4335" d="M16 7.7c1.9 0 3.7.7 5 2l3.8-3.7A12.7 12.7 0 0 0 4.2 9.6l4.5 3.5c1-3.1 3.9-5.4 7.3-5.4Z"/></svg></button>
+      <p class="snug-start-login-status" aria-live="assertive" role="status">Loading Cyclical City…</p>
     </section>
     <div class="snug-menu-confirm" role="dialog" aria-modal="true" aria-labelledby="snug-menu-confirm-title" aria-describedby="snug-menu-confirm-copy" hidden>
       <div class="snug-menu-confirm-card">
@@ -426,7 +427,14 @@
         if(screen.classList.contains('is-leaving'))return;
         if(!returning&&!afterArrival&&typeof window.__snugArrivalIntro==='function'){
           screen.querySelectorAll('button').forEach(button=>button.disabled=true);
-          window.__snugArrivalIntro(mode).then(()=>enter(mode,{returning,afterArrival:true}));
+          const timeout=new Promise((_,reject)=>setTimeout(()=>reject(Error('Arrival transition timed out')),10000));
+          Promise.race([window.__snugArrivalIntro(mode),timeout])
+            .then(()=>enter(mode,{returning,afterArrival:true}))
+            .catch(error=>{
+              console.error('Could not enter Cyclical City',error);
+              screen.querySelectorAll('.snug-start-panel button').forEach(button=>button.disabled=false);
+              setLoginStatus('The town took too long to open. Please try again.',true);
+            });
           return;
         }
         if(returning){window.__snugSkipWelcome=true;skipCeremonyForShortcut();}
@@ -492,6 +500,15 @@
         returningStatus.classList.toggle('is-error',isError);
         returningStatus.setAttribute('role',isError?'alert':'status');
       };
+      const markMenuReady=()=>{
+        screen.setAttribute('aria-busy','false');
+        screen.querySelectorAll('.snug-start-panel button').forEach(button=>button.disabled=false);
+        if(returningStatus?.textContent.startsWith('Loading Cyclical City…'))setLoginStatus('');
+      };
+      addEventListener('snug-core-progress',event=>setLoginStatus(`Loading Cyclical City… ${event.detail.loaded}/${event.detail.total}`));
+      addEventListener('snug-core-ready',markMenuReady,{once:true});
+      addEventListener('snug-core-error',event=>setLoginStatus(`The town could not finish loading (${event.detail.src}). Refresh to try again.`,true),{once:true});
+      if(window.__snugCoreReady)setTimeout(markMenuReady,0);
       const describeSignInFailure=error=>{
         const rawCode=String(error?.code||'').trim();
         const code=rawCode?(rawCode.startsWith('auth/')?rawCode:`auth/${rawCode.replace(/^firebase:/i,'').replace(/^auth\//,'')}`):'auth/unknown-error';
@@ -667,7 +684,7 @@
   <script src="assets/hang-watch.js"></script>
   <script src="assets/cosmetic-tints.js"></script>
   <script src="assets/speaking-mouth.js"></script>
-  <script defer src="assets/selfie-social-society-app.bundle.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/selfie-social-society-app.bundle.js"></script>
   <link rel="stylesheet" href="assets/town-life.css">
   <link rel="stylesheet" href="assets/society-plus.css">
   <link rel="stylesheet" href="assets/mailbox-system.css">
@@ -689,53 +706,100 @@
   <link rel="stylesheet" href="assets/nosy-neighbors.css">
   <link rel="stylesheet" href="assets/painting-mode.css">
   <link rel="stylesheet" href="assets/orientation-fix.css">
-  <script defer src="assets/snug-audio.js"></script>
-  <script defer src="assets/game-show-audio.js"></script>
-  <script defer src="assets/selfie-social-society-addons.bundle.js"></script>
-  <script defer src="assets/selfie-social-society-welcome.bundle.js"></script>
-  <script defer src="assets/inventory-system.js"></script>
-  <script defer src="assets/outfit-textures.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/snug-audio.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/game-show-audio.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/selfie-social-society-addons.bundle.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/selfie-social-society-welcome.bundle.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/inventory-system.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/outfit-textures.js"></script>
   <link rel="stylesheet" href="assets/painted-accessories.css">
-  <script defer src="assets/painted-accessories.js"></script>
-  <script defer src="assets/accessory-tinting.js"></script>
-  <script defer src="assets/player-emotes.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/painted-accessories.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/accessory-tinting.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/player-emotes.js"></script>
   <link rel="stylesheet" href="assets/npc-roster.css">
-  <script defer src="assets/npc-roster.js"></script>
-  <script defer src="assets/npc-faces.js"></script>
-  <script defer src="assets/npc-outfits.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-roster.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-faces.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-outfits.js"></script>
   <link rel="stylesheet" href="assets/npc-fronts.css">
-  <script defer src="assets/npc-fronts.js"></script>
-  <script defer src="assets/environment-upgrade.js"></script>
-  <script defer src="assets/plant-billboards.js"></script>
-  <script defer src="assets/world-direction-pass.js"></script>
-  <script defer src="assets/bokeh-flare.js"></script>
-  <script defer src="assets/minigame-stages.js"></script>
-  <script defer src="assets/world-layout.js"></script>
-  <script defer src="assets/world-editor-layers.js"></script>
-  <script defer src="assets/mailbox-system.js"></script>
-<script defer src="assets/mailbox-home.js"></script>
-  <script defer src="assets/gardening-system.js"></script>
-  <script defer src="assets/visit-system.js"></script>
-  <script defer src="assets/whirl-of-resources.js"></script>
-  <script defer src="assets/whirl-multiplayer.js"></script>
-  <script defer src="assets/housing-construction.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-fronts.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/environment-upgrade.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/plant-billboards.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/world-direction-pass.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/bokeh-flare.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/minigame-stages.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/world-layout.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/world-editor-layers.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/mailbox-system.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/mailbox-home.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/gardening-system.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/visit-system.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/whirl-of-resources.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/whirl-multiplayer.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/housing-construction.js"></script>
   <link rel="stylesheet" href="assets/barn-raising.css">
   <link rel="stylesheet" href="assets/tutorial-walkthrough.css">
   <link rel="stylesheet" href="assets/games-hub.css">
   <link rel="stylesheet" href="assets/town-directory.css">
   <link rel="stylesheet" href="assets/storyline.css">
-  <script defer src="assets/barn-raising.js"></script>
-  <script defer src="assets/tutorial-walkthrough.js"></script>
-  <script defer src="assets/games-hub.js"></script>
-  <script defer src="assets/town-directory.js"></script>
-  <script defer src="assets/storyline.js"></script>
-  <script defer src="assets/world-lod.js"></script>
-  <script defer src="assets/lazy-features.js"></script>
-  <script defer src="assets/orientation-fix.js"></script>
-  <script defer src="assets/push-notifications.js"></script>
-  <script defer src="assets/icons/icon-system.js"></script>
-  <script defer src="assets/party-night-upgrade.js"></script>
-  <script defer src="assets/text-legibility.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/barn-raising.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/tutorial-walkthrough.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/games-hub.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/town-directory.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/storyline.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/world-lod.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/lazy-features.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/orientation-fix.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/push-notifications.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/icons/icon-system.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/party-night-upgrade.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/text-legibility.js"></script>
+  <script id="snug-chunk-loader">
+    (() => {
+      const descriptors = [...document.querySelectorAll('script[data-snug-phase][data-src]')];
+      const core = descriptors.filter(node => node.dataset.snugPhase === 'core');
+      const features = descriptors.filter(node => node.dataset.snugPhase === 'feature');
+      const loaded = new Set();
+      const nextFrame = () => new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 0)));
+      const load = descriptor => new Promise((resolve, reject) => {
+        const src = descriptor.dataset.src;
+        if (!src || loaded.has(src)) return resolve();
+        const script = document.createElement('script');
+        script.src = src;
+        script.async = false;
+        script.dataset.snugLoadedChunk = descriptor.dataset.snugPhase;
+        script.addEventListener('load', () => { loaded.add(src); resolve(); }, { once: true });
+        script.addEventListener('error', () => reject(Error(`Failed to load ${src}`)), { once: true });
+        document.head.appendChild(script);
+      });
+      const loadCore = async () => {
+        for (let index = 0; index < core.length; index += 1) {
+          await load(core[index]);
+          dispatchEvent(new CustomEvent('snug-core-progress', { detail: { loaded: index + 1, total: core.length, src: core[index].dataset.src } }));
+          await nextFrame();
+        }
+        window.__snugCoreReady = true;
+        dispatchEvent(new Event('snug-core-ready'));
+      };
+      const loadFeatures = async () => {
+        for (const descriptor of features) {
+          try { await load(descriptor); }
+          catch (error) { console.error('Optional feature chunk failed.', error); }
+          await new Promise(resolve => {
+            if ('requestIdleCallback' in window) requestIdleCallback(resolve, { timeout: 350 });
+            else setTimeout(resolve, 24);
+          });
+        }
+        window.__snugFeatureChunksReady = true;
+        dispatchEvent(new Event('snug-feature-chunks-ready'));
+      };
+      window.__snugChunkLoader = { loadCore, loadFeatures, loaded };
+      loadCore().then(loadFeatures).catch(error => {
+        const src = String(error.message || '').replace(/^Failed to load /, '') || 'core script';
+        console.error('Core game chunk failed.', error);
+        dispatchEvent(new CustomEvent('snug-core-error', { detail: { src } }));
+      });
+    })();
+  </script>
   <script id="snug-cloud-billboards">
     (() => {
       const patchedWorlds = new WeakSet();
