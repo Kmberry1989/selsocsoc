@@ -7,7 +7,7 @@ The title menu appeared frozen while the browser parsed and initialized the game
 The updated startup flow now:
 
 1. Renders the title menu in a busy state.
-2. Loads four required game scripts in order.
+2. Loads the required game and integration scripts in order.
 3. Reports core-loading progress in the menu.
 4. Enables menu controls only after the core is ready.
 5. Loads the remaining feature scripts one at a time during browser idle periods.
@@ -19,7 +19,7 @@ The updated startup flow now:
 
 - Adds `aria-busy="true"` to the initial title screen.
 - Disables title-menu controls until the core-ready event fires.
-- Displays `Loading Cyclical City… X/4` while required chunks load.
+- Displays `Loading Cyclical City… X/14` while required chunks load.
 - Shows a clear refresh message if a required chunk cannot load.
 - Adds a 10-second timeout and error recovery to the arrival transition.
 - Replaces eagerly executed feature `<script>` tags with inert chunk descriptors.
@@ -59,12 +59,18 @@ The loader discovers these descriptors and divides them into two phases.
 
 ### Core phase
 
-The following four scripts load sequentially and in document order:
+The following scripts load sequentially and in document order:
 
 1. `selfie-social-society-app.bundle.js`
 2. `selfie-social-society-addons.bundle.js`
 3. `selfie-social-society-welcome.bundle.js`
 4. `world-direction-pass.js`
+
+The required phase also includes the outfit/accessory and emote integrations,
+NPC outfits, tutorial, Games Hub, town directory, storyline, and party-night
+upgrade. Keeping these modules in the required phase prevents immediate menu
+entry from racing Party Setup or entering town before its navigation and quest
+systems have registered.
 
 The loader yields to the browser between core scripts and emits:
 
@@ -76,7 +82,7 @@ The menu listens for these events and remains non-interactive until `snug-core-r
 
 ### Feature phase
 
-There are 36 optional feature chunks. They preserve their existing document order and load individually after the core phase. Between scripts, the loader uses `requestIdleCallback` with a timeout, falling back to a short timer when idle callbacks are unavailable.
+There are 26 optional feature chunks. They preserve their existing document order and load individually after the core phase. Between scripts, the loader uses `requestIdleCallback` with a timeout, falling back to a short timer when idle callbacks are unavailable.
 
 An optional chunk failure is logged but does not prevent later feature chunks from loading. When the queue completes, the loader sets `window.__snugFeatureChunksReady` and emits `snug-feature-chunks-ready`.
 

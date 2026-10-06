@@ -432,7 +432,7 @@
             .then(()=>enter(mode,{returning,afterArrival:true}))
             .catch(error=>{
               console.error('Could not enter Cyclical City',error);
-              screen.querySelectorAll('.snug-start-panel button').forEach(button=>button.disabled=false);
+              screen.querySelectorAll('button').forEach(button=>button.disabled=false);
               setLoginStatus('The town took too long to open. Please try again.',true);
             });
           return;
@@ -711,15 +711,15 @@
   <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/selfie-social-society-addons.bundle.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/selfie-social-society-welcome.bundle.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/inventory-system.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/outfit-textures.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/outfit-textures.js"></script>
   <link rel="stylesheet" href="assets/painted-accessories.css">
-  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/painted-accessories.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/accessory-tinting.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/player-emotes.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/painted-accessories.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/accessory-tinting.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/player-emotes.js"></script>
   <link rel="stylesheet" href="assets/npc-roster.css">
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-roster.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-faces.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-outfits.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/npc-outfits.js"></script>
   <link rel="stylesheet" href="assets/npc-fronts.css">
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-fronts.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/environment-upgrade.js"></script>
@@ -742,16 +742,16 @@
   <link rel="stylesheet" href="assets/town-directory.css">
   <link rel="stylesheet" href="assets/storyline.css">
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/barn-raising.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/tutorial-walkthrough.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/games-hub.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/town-directory.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/storyline.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/tutorial-walkthrough.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/games-hub.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/town-directory.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/storyline.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/world-lod.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/lazy-features.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/orientation-fix.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/push-notifications.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/icons/icon-system.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/party-night-upgrade.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/party-night-upgrade.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/text-legibility.js"></script>
   <script id="snug-chunk-loader">
     (() => {
