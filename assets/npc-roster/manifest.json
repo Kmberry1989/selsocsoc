@@ -13,7 +13,7 @@
       "shoes": "lyla-lens/shoes-placeholder.glb",
       "heldItem": "lyla-lens/held-item-placeholder.glb",
       "faceSlot": "FaceSlot_LL",
-      "faceArtwork": null
+      "faceArtwork": "npc-faces/face-lyla-lens.png"
     },
     "chip-chance": {
       "name": "Chip Chance",
@@ -25,7 +25,7 @@
       "shoes": "chip-chance/shoes-placeholder.glb",
       "heldItem": "chip-chance/held-item-placeholder.glb",
       "faceSlot": "FaceSlot_CC",
-      "faceArtwork": null
+      "faceArtwork": "npc-faces/face-chip-chance.png"
     },
     "barnaby-bargain": {
       "name": "Barnaby Bargain",
@@ -37,7 +37,7 @@
       "shoes": "barnaby-bargain/shoes-placeholder.glb",
       "heldItem": "barnaby-bargain/held-item-placeholder.glb",
       "faceSlot": "FaceSlot_BB",
-      "faceArtwork": null
+      "faceArtwork": "npc-faces/face-barnaby-bargain.png"
     },
     "pip-parade": {
       "name": "Pip Parade",
@@ -49,7 +49,7 @@
       "shoes": "pip-parade/shoes-placeholder.glb",
       "heldItem": "pip-parade/held-item-placeholder.glb",
       "faceSlot": "FaceSlot_PP",
-      "faceArtwork": null
+      "faceArtwork": "npc-faces/face-pip-parade.png"
     },
     "agnes-alley": {
       "name": "Agnes Alley",
@@ -61,7 +61,7 @@
       "shoes": "agnes-alley/shoes-placeholder.glb",
       "heldItem": "agnes-alley/held-item-placeholder.glb",
       "faceSlot": "FaceSlot_AA",
-      "faceArtwork": null
+      "faceArtwork": "npc-faces/face-agnes-alley.png"
     },
     "dottie-daly": {
       "name": "Dottie Daly",
@@ -73,7 +73,7 @@
       "shoes": "dottie-daly/shoes-placeholder.glb",
       "heldItem": "dottie-daly/held-item-placeholder.glb",
       "faceSlot": "FaceSlot_DD",
-      "faceArtwork": null
+      "faceArtwork": "npc-faces/face-dottie-daly.png"
     },
     "peggy-plank": {
       "name": "Peggy Plank",
@@ -85,7 +85,7 @@
       "shoes": "peggy-plank/shoes-placeholder.glb",
       "heldItem": "peggy-plank/held-item-placeholder.glb",
       "faceSlot": "FaceSlot_PG",
-      "faceArtwork": null
+      "faceArtwork": "npc-faces/face-peggy-plank.png"
     },
     "mr-buck-coinsworth": {
       "name": "Mr. Buck Coinsworth",
@@ -97,7 +97,7 @@
       "shoes": "mr-buck-coinsworth/shoes-placeholder.glb",
       "heldItem": "mr-buck-coinsworth/held-item-placeholder.glb",
       "faceSlot": "FaceSlot_BC",
-      "faceArtwork": null
+      "faceArtwork": "npc-faces/face-mr-buck-coinsworth.png"
     },
     "fern-bramble": {
       "name": "Fern Bramble",
@@ -109,7 +109,7 @@
       "shoes": "fern-bramble/shoes-placeholder.glb",
       "heldItem": "fern-bramble/held-item-placeholder.glb",
       "faceSlot": "FaceSlot_FB",
-      "faceArtwork": null
+      "faceArtwork": "npc-faces/face-fern-bramble.png"
     },
     "stanley-stamp": {
       "name": "Stanley Stamp",
@@ -121,7 +121,7 @@
       "shoes": "stanley-stamp/shoes-placeholder.glb",
       "heldItem": "stanley-stamp/held-item-placeholder.glb",
       "faceSlot": "FaceSlot_SS",
-      "faceArtwork": null
+      "faceArtwork": "npc-faces/face-stanley-stamp.png"
     },
     "bobby-gill": {
       "name": "Bobby Gill",
@@ -133,7 +133,7 @@
       "shoes": "bobby-gill/shoes-placeholder.glb",
       "heldItem": "bobby-gill/held-item-placeholder.glb",
       "faceSlot": "FaceSlot_BG",
-      "faceArtwork": null
+      "faceArtwork": "npc-faces/face-bobby-gill.png"
     }
   }
 }
