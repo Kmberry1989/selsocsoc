@@ -1,0 +1,111 @@
+{
+  "game": "Selfie Social Society",
+  "town": "Cyclical City",
+  "note": "Signature outfits for the 13 NPCs. NPC-only: never shown in the player's Style menu. 2x2 atlas grid (front/right on top row, back/left on bottom row); applied at runtime by assets/npc-outfits.js.",
+  "outfits": [
+    {
+      "id": "npc-lyla-lens",
+      "name": "Lyla's Safari Vest",
+      "path": "assets/npc-outfits/npc-lyla-lens.png",
+      "npcOnly": true,
+      "npcId": "lyla-lens",
+      "description": "Khaki safari photojournalist vest with olive cargo pockets and a leather camera strap, over khaki cargo pants."
+    },
+    {
+      "id": "npc-chip-chance",
+      "name": "Chip's Showman Jacket",
+      "path": "assets/npc-outfits/npc-chip-chance.png",
+      "npcOnly": true,
+      "npcId": "chip-chance",
+      "description": "Deep purple showman jacket with gold lapels, gold buttons and a gold star, over black trousers with gold stripes."
+    },
+    {
+      "id": "npc-barnaby-bargain",
+      "name": "Barnaby's Shop Apron",
+      "path": "assets/npc-outfits/npc-barnaby-bargain.png",
+      "npcOnly": true,
+      "npcId": "barnaby-bargain",
+      "description": "Tan canvas shop apron with price-tag motifs over a red checkered shirt, with brown trousers."
+    },
+    {
+      "id": "npc-pip-parade",
+      "name": "Pip's Party Jacket",
+      "path": "assets/npc-outfits/npc-pip-parade.png",
+      "npcOnly": true,
+      "npcId": "pip-parade",
+      "description": "Rainbow-striped carnival jacket with confetti dots and gold buttons, over confetti-sprinkled white trousers."
+    },
+    {
+      "id": "npc-agnes-alley",
+      "name": "Agnes's Cat Sweater",
+      "path": "assets/npc-outfits/npc-agnes-alley.png",
+      "npcOnly": true,
+      "npcId": "agnes-alley",
+      "description": "Cream cable-knit sweater with orange tabby cat faces and paw prints, over brown corduroy trousers."
+    },
+    {
+      "id": "npc-dottie-daly",
+      "name": "Dottie's Floral Cardigan",
+      "path": "assets/npc-outfits/npc-dottie-daly.png",
+      "npcOnly": true,
+      "npcId": "dottie-daly",
+      "description": "Dusty-rose cardigan with cream and sage florals and pearl buttons, over a cream blouse and brown trousers."
+    },
+    {
+      "id": "npc-peggy-plank",
+      "name": "Peggy's Work Flannel",
+      "path": "assets/npc-outfits/npc-peggy-plank.png",
+      "npcOnly": true,
+      "npcId": "peggy-plank",
+      "description": "Red-and-black buffalo plaid flannel with a leather tool belt and hammer loop, over tan work trousers."
+    },
+    {
+      "id": "npc-mr-buck-coinsworth",
+      "name": "Coinsworth's Pinstripe Suit",
+      "path": "assets/npc-outfits/npc-mr-buck-coinsworth.png",
+      "npcOnly": true,
+      "npcId": "mr-buck-coinsworth",
+      "description": "Navy pinstripe vest with a gold pocket-watch chain, white shirt and red tie, with navy pinstripe trousers."
+    },
+    {
+      "id": "npc-fern-bramble",
+      "name": "Fern's Garden Overalls",
+      "path": "assets/npc-outfits/npc-fern-bramble.png",
+      "npcOnly": true,
+      "npcId": "fern-bramble",
+      "description": "Sage-green overalls with embroidered leaf and flower patches over a terracotta shirt, with brown cuffs."
+    },
+    {
+      "id": "npc-stanley-stamp",
+      "name": "Stanley's Postal Uniform",
+      "path": "assets/npc-outfits/npc-stanley-stamp.png",
+      "npcOnly": true,
+      "npcId": "stanley-stamp",
+      "description": "Postal-blue shirt with gold badge and navy mailbag strap, with navy trousers with a red side stripe."
+    },
+    {
+      "id": "npc-bobby-gill",
+      "name": "Bobby's Fishing Vest",
+      "path": "assets/npc-outfits/npc-bobby-gill.png",
+      "npcOnly": true,
+      "npcId": "bobby-gill",
+      "description": "Olive fishing vest with lure pockets and fly patches over a red plaid shirt, with khaki wader trousers."
+    },
+    {
+      "id": "npc-mayor-mayor",
+      "name": "Mayor's Showman Jacket",
+      "path": "assets/npc-outfits/npc-mayor-mayor.png",
+      "npcOnly": true,
+      "npcId": "mayor-mayor",
+      "description": "Crimson sequined showman jacket with gold lapels, epaulets and a gold star medallion, over black trousers with gold stripes."
+    },
+    {
+      "id": "npc-gideon",
+      "name": "Gideon's Patchwork Coat",
+      "path": "assets/npc-outfits/npc-gideon.png",
+      "npcOnly": true,
+      "npcId": "gideon",
+      "description": "Eccentric patchwork tour-guide coat in teal, mustard, burgundy and paisley with visible stitching, over brown trousers."
+    }
+  ]
+}

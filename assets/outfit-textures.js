@@ -28,6 +28,7 @@
   };
 
   function validOutfit(item) {
+    if (item?.npcOnly === true) return null; // NPC signature outfits never enter the player selector
     const id = String(item?.id || '');
     const name = String(item?.name || '');
     const path = String(item?.path || '');
