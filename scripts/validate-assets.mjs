@@ -24,16 +24,8 @@ async function exists(path) {
 }
 
 const files = await walk(root);
-// tools/world-editor and tools/object-creator are self-contained apps with
-// their own relative assets/ folders; their references resolve from their
-// own directory, not the repo root.
-const selfContainedTools = ['tools/world-editor/', 'tools/object-creator/'];
-const filesWithRepoRelativeRefs = (path) => {
-  const rel = relative(root, path).replaceAll('\\', '/');
-  return !selfContainedTools.some((prefix) => rel.startsWith(prefix));
-};
 const referenced = new Map();
-for (const file of files.filter((path) => textExtensions.has(extname(path)) && filesWithRepoRelativeRefs(path))) {
+for (const file of files.filter((path) => textExtensions.has(extname(path)))) {
   const source = await readFile(file, 'utf8');
   for (const match of source.matchAll(/assets\/[A-Za-z0-9_./ -]+\.(?:webp|png|jpe?g|svg|glb|wav|mp3|ogg|mp4|webm|wasm)/gi)) {
     if (!referenced.has(match[0])) referenced.set(match[0], relative(root, file));
@@ -56,7 +48,7 @@ for (const [path, source] of referenced) if (!await exists(path)) errors.push(`M
 
 const runtimePngs = files
   .map((path) => relative(root, path).replaceAll('\\', '/'))
-  .filter((path) => path.endsWith('.png') && !path.startsWith('tools/') && !path.startsWith('assets/outfit-textures/') && !path.startsWith('assets/painted-accessories/') && !path.startsWith('assets/npc-faces/') && !path.startsWith('assets/npc-outfits/') && !path.startsWith('assets/sprites/'));
+  .filter((path) => path.endsWith('.png') && !path.startsWith('assets/outfit-textures/') && !path.startsWith('assets/painted-accessories/') && !path.startsWith('assets/npc-faces/') && !path.startsWith('assets/npc-outfits/') && !path.startsWith('assets/sprites/'));
 for (const path of runtimePngs) errors.push(`Unexpected runtime PNG: ${path}`);
 
 const textureManifest = JSON.parse(await readFile(join(root, 'assets/textures/manifest.json'), 'utf8'));
