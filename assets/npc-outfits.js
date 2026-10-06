@@ -45,7 +45,104 @@
   const state = {
     outfits: new Map(), // npcId -> { id, path }
     textureCache: new Map(),
+    panelRects: new Map(),
   };
+
+  // Panel inset regions in image px (y down), per quadrant. The insets already
+  // crop the baked-in labels, gutters and "TOP" markers.
+  function quadrantRegions(w, h) {
+    const q = Math.min(w, h) / 2;
+    const quads = [
+      { x: 0, y: 0 }, { x: q, y: 0 }, { x: 0, y: q }, { x: q, y: q }
+    ];
+    return quads.map((quad) => ({
+      x0: Math.floor(quad.x + 0.03 * w),
+      x1: Math.ceil(quad.x + 0.47 * w),
+      y0: Math.floor(quad.y + (1 - 0.894) * h),
+      y1: Math.ceil(quad.y + (1 - 0.523) * h)
+    }));
+  }
+
+  // Garment-fit: find each quadrant's painted garment bounds (excluding the
+  // panel backing) so the garment stretches edge-to-edge on the cube faces.
+  function analyzePanels(image) {
+    const w = image.naturalWidth || image.width;
+    const h = image.naturalHeight || image.height;
+    if (!w || !h) return null;
+    const regions = quadrantRegions(w, h);
+    const scale = Math.min(1, 256 / w);
+    const cw = Math.max(1, Math.round(w * scale));
+    const ch = Math.max(1, Math.round(h * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = cw;
+    canvas.height = ch;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    if (!ctx) return null;
+    ctx.drawImage(image, 0, 0, cw, ch);
+    let data;
+    try {
+      data = ctx.getImageData(0, 0, cw, ch).data;
+    } catch (err) {
+      return null;
+    }
+    const px = (x, y) => {
+      const i = (y * cw + x) * 4;
+      return [data[i], data[i + 1], data[i + 2]];
+    };
+    return regions.map((r) => {
+      const x0 = Math.floor(r.x0 * scale), x1 = Math.ceil(r.x1 * scale);
+      const y0 = Math.floor(r.y0 * scale), y1 = Math.ceil(r.y1 * scale);
+      const border = [];
+      for (let x = x0; x < x1; x += 2) border.push(px(x, y0), px(x, y1 - 1));
+      for (let y = y0; y < y1; y += 2) border.push(px(x0, y), px(x1 - 1, y));
+      const med = [0, 1, 2].map((c) => {
+        const vals = border.map((v) => v[c]).sort((a, b) => a - b);
+        return vals[Math.floor(vals.length / 2)] || 0;
+      });
+      const diff = (v) => Math.max(Math.abs(v[0] - med[0]), Math.abs(v[1] - med[1]), Math.abs(v[2] - med[2]));
+      let bx0 = x1, by0 = y1, bx1 = x0, by1 = y0;
+      for (let y = y0; y < y1; y += 1) {
+        for (let x = x0; x < x1; x += 2) {
+          if (diff(px(x, y)) > 28) {
+            if (x < bx0) bx0 = x;
+            if (x > bx1) bx1 = x;
+            if (y < by0) by0 = y;
+            if (y > by1) by1 = y;
+          }
+        }
+      }
+      const area = (bx1 - bx0) * (by1 - by0);
+      if (bx1 <= bx0 || by1 <= by0 || area < (x1 - x0) * (y1 - y0) * 0.12) {
+        bx0 = x0; by0 = y0; bx1 = x1; by1 = y1;
+      }
+      const padX = Math.max(1, Math.round((bx1 - bx0) * 0.02));
+      const padY = Math.max(1, Math.round((by1 - by0) * 0.02));
+      bx0 = Math.max(x0, bx0 - padX); by0 = Math.max(y0, by0 - padY);
+      bx1 = Math.min(x1, bx1 + padX); by1 = Math.min(y1, by1 + padY);
+      const corners = [[x0 + 2, y0 + 2], [x1 - 3, y0 + 2], [x0 + 2, y1 - 3], [x1 - 3, y1 - 3]];
+      let cap = corners[0], capD = Infinity;
+      for (const cpt of corners) {
+        const d = diff(px(cpt[0], cpt[1]));
+        if (d < capD) { capD = d; cap = cpt; }
+      }
+      const S = 1 / scale;
+      return {
+        uMin: (bx0 * S) / w,
+        uMax: (bx1 * S) / w,
+        vMin: 1 - (by1 * S) / h,
+        vMax: 1 - (by0 * S) / h,
+        capU: (cap[0] * S) / w,
+        capV: 1 - (cap[1] * S) / h
+      };
+    });
+  }
+
+  function panelRectsFor(item, image) {
+    if (!state.panelRects.has(item.id)) {
+      state.panelRects.set(item.id, analyzePanels(image));
+    }
+    return state.panelRects.get(item.id);
+  }
 
   const wrapAngle = (angle) => {
     let w = angle;
@@ -80,7 +177,7 @@
     return state.textureCache.get(item.id);
   }
 
-  function makeAtlasGeometry(body) {
+  function makeAtlasGeometry(body, rects) {
     const source = body.geometry.index ? body.geometry.toNonIndexed() : body.geometry.clone();
     const position = source.getAttribute("position");
     const normal = source.getAttribute("normal");
@@ -102,21 +199,30 @@
         ny += normal.getY(start + c);
         nz += normal.getZ(start + c);
       }
-      if (Math.abs(ny / 3) > 0.55) {
-        for (let c = 0; c < 3; c++) uv.setXY(start + c, 0.995, 0.995);
-        continue;
-      }
       const triAngle = Math.atan2(nx, nz);
       let sector = Math.round(triAngle / (Math.PI / 2));
       sector = ((sector % 4) + 4) % 4;
-      const band = BANDS[BAND_ORDER[sector]];
+      const bandName = BAND_ORDER[sector];
+      const band = BANDS[bandName];
+      const rect = rects && rects[sector];
+      if (Math.abs(ny / 3) > 0.55) {
+        const cu = rect ? rect.capU : 0.995;
+        const cv = rect ? rect.capV : 0.995;
+        for (let c = 0; c < 3; c++) uv.setXY(start + c, cu, cv);
+        continue;
+      }
       for (let c = 0; c < 3; c++) {
         const idx = start + c;
         const vAngle = Math.atan2(position.getX(idx), position.getZ(idx));
         const local = Math.max(-0.5, Math.min(0.5, wrapAngle(vAngle - sector * Math.PI / 2) / (Math.PI / 2)));
-        const u = band.uMin + (local + 0.5) * (band.uMax - band.uMin);
+        const u = rect
+          ? rect.uMin + (local + 0.5) * (rect.uMax - rect.uMin)
+          : band.uMin + (local + 0.5) * (band.uMax - band.uMin);
         const vertical = (position.getY(idx) - minY) / height;
-        uv.setXY(idx, u, band.vBase + vertical * V_SPAN);
+        const v = rect
+          ? rect.vMin + vertical * (rect.vMax - rect.vMin)
+          : band.vBase + vertical * V_SPAN;
+        uv.setXY(idx, u, v);
       }
     }
     uv.needsUpdate = true;
@@ -165,7 +271,7 @@
       material.depthWrite = false;
       if (material.color && material.color.set) material.color.set("#ffffff");
       material.needsUpdate = true;
-      const overlay = new body.constructor(makeAtlasGeometry(body), material);
+      const overlay = new body.constructor(makeAtlasGeometry(body, panelRectsFor(item, image)), material);
       overlay.name = OVERLAY_NAME;
       overlay.scale.set(1.012, 1.004, 1.012);
       overlay.renderOrder = 4;

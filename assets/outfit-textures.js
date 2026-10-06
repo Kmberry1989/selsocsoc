@@ -16,8 +16,106 @@
     selectedId: '',
     activeBody: null,
     activeOverlay: null,
-    textureCache: new Map()
+    textureCache: new Map(),
+    panelRects: new Map()
   };
+
+  // Garment-fit: find each panel's painted garment bounds (excluding the panel
+  // backing, labels and gutters) so the garment stretches edge-to-edge on the
+  // cube body faces instead of floating in backing-colored margins.
+  function analyzePanels(image) {
+    const w = image.naturalWidth || image.width;
+    const h = image.naturalHeight || image.height;
+    if (!w || !h) return null;
+    const regions = atlasBands.map((band) => ({
+      // inset band region in image px (y down); insets already crop labels/gutters
+      x0: Math.floor(band.min * w),
+      x1: Math.ceil(band.max * w),
+      y0: Math.floor((1 - 0.907) * h),
+      y1: Math.ceil((1 - 0.094) * h)
+    }));
+    const scale = Math.min(1, 256 / w);
+    const cw = Math.max(1, Math.round(w * scale));
+    const ch = Math.max(1, Math.round(h * scale));
+    const canvas = document.createElement('canvas');
+    canvas.width = cw;
+    canvas.height = ch;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return null;
+    ctx.drawImage(image, 0, 0, cw, ch);
+    let data;
+    try {
+      data = ctx.getImageData(0, 0, cw, ch).data;
+    } catch (err) {
+      return null;
+    }
+    const px = (x, y) => {
+      const i = (y * cw + x) * 4;
+      return [data[i], data[i + 1], data[i + 2]];
+    };
+    const rects = regions.map((r) => {
+      const x0 = Math.floor(r.x0 * scale), x1 = Math.ceil(r.x1 * scale);
+      const y0 = Math.floor(r.y0 * scale), y1 = Math.ceil(r.y1 * scale);
+      // background = median of region border pixels (robust to art touching edges)
+      const border = [];
+      for (let x = x0; x < x1; x += 2) {
+        border.push(px(x, y0), px(x, y1 - 1));
+      }
+      for (let y = y0; y < y1; y += 2) {
+        border.push(px(x0, y), px(x1 - 1, y));
+      }
+      const med = [0, 1, 2].map((c) => {
+        const vals = border.map((v) => v[c]).sort((a, b) => a - b);
+        return vals[Math.floor(vals.length / 2)] || 0;
+      });
+      const diff = (v) => Math.max(Math.abs(v[0] - med[0]), Math.abs(v[1] - med[1]), Math.abs(v[2] - med[2]));
+      let bx0 = x1, by0 = y1, bx1 = x0, by1 = y0;
+      for (let y = y0; y < y1; y += 1) {
+        for (let x = x0; x < x1; x += 2) {
+          if (diff(px(x, y)) > 28) {
+            if (x < bx0) bx0 = x;
+            if (x > bx1) bx1 = x;
+            if (y < by0) by0 = y;
+            if (y > by1) by1 = y;
+          }
+        }
+      }
+      const area = (bx1 - bx0) * (by1 - by0);
+      const regionArea = (x1 - x0) * (y1 - y0);
+      if (bx1 <= bx0 || by1 <= by0 || area < regionArea * 0.12) {
+        bx0 = x0; by0 = y0; bx1 = x1; by1 = y1; // fallback: whole inset region
+      }
+      // pad slightly so anti-aliased garment edges are not clipped
+      const padX = Math.max(1, Math.round((bx1 - bx0) * 0.02));
+      const padY = Math.max(1, Math.round((by1 - by0) * 0.02));
+      bx0 = Math.max(x0, bx0 - padX); by0 = Math.max(y0, by0 - padY);
+      bx1 = Math.min(x1, bx1 + padX); by1 = Math.min(y1, by1 + padY);
+      // cap sample: inset corner closest to the background color
+      const corners = [[x0 + 2, y0 + 2], [x1 - 3, y0 + 2], [x0 + 2, y1 - 3], [x1 - 3, y1 - 3]];
+      let cap = corners[0], capD = Infinity;
+      for (const cpt of corners) {
+        const d = diff(px(cpt[0], cpt[1]));
+        if (d < capD) { capD = d; cap = cpt; }
+      }
+      const S = 1 / scale;
+      return {
+        uMin: (bx0 * S) / w,
+        uMax: (bx1 * S) / w,
+        vMin: 1 - (by1 * S) / h,
+        vMax: 1 - (by0 * S) / h,
+        capU: (cap[0] * S) / w,
+        capV: 1 - (cap[1] * S) / h
+      };
+    });
+    return rects;
+  }
+
+  function panelRectsFor(item, image) {
+    if (!state.panelRects.has(item.id)) {
+      state.panelRects.set(item.id, analyzePanels(image));
+    }
+    return state.panelRects.get(item.id);
+  }
 
   const escapeText = (value) => String(value ?? '');
   const wrapAngle = (angle) => {
@@ -82,7 +180,7 @@
     return state.textureCache.get(item.id);
   }
 
-  function makeAtlasGeometry(body) {
+  function makeAtlasGeometry(body, rects) {
     const source = body.geometry.index ? body.geometry.toNonIndexed() : body.geometry.clone();
     const position = source.getAttribute('position');
     const normal = source.getAttribute('normal');
@@ -107,24 +205,31 @@
         ny += normal.getY(start + corner);
         nz += normal.getZ(start + corner);
       }
-      const cap = Math.abs(ny / 3) > 0.55;
-      if (cap) {
-        for (let corner = 0; corner < 3; corner += 1) uv.setXY(start + corner, 0.995, 0.995);
-        continue;
-      }
-
+      const isCap = Math.abs(ny / 3) > 0.55;
       const triangleAngle = Math.atan2(nx, nz);
       let sector = Math.round(triangleAngle / (Math.PI / 2));
       sector = ((sector % 4) + 4) % 4;
-      const band = atlasBands[sector === 0 ? 0 : sector === 1 ? 1 : sector === 2 ? 2 : 3];
+      const bandIndex = sector === 0 ? 0 : sector === 1 ? 1 : sector === 2 ? 2 : 3;
+      const band = atlasBands[bandIndex];
+      const rect = rects && rects[bandIndex];
+      if (isCap) {
+        const cu = rect ? rect.capU : 0.995;
+        const cv = rect ? rect.capV : 0.995;
+        for (let corner = 0; corner < 3; corner += 1) uv.setXY(start + corner, cu, cv);
+        continue;
+      }
 
       for (let corner = 0; corner < 3; corner += 1) {
         const index = start + corner;
         const vertexAngle = Math.atan2(position.getX(index), position.getZ(index));
         const local = Math.max(-0.5, Math.min(0.5, wrapAngle(vertexAngle - band.center) / (Math.PI / 2)));
-        const u = band.min + (local + 0.5) * (band.max - band.min);
+        const u = rect
+          ? rect.uMin + (local + 0.5) * (rect.uMax - rect.uMin)
+          : band.min + (local + 0.5) * (band.max - band.min);
         const vertical = (position.getY(index) - minY) / height;
-        const v = 0.094 + vertical * 0.813;
+        const v = rect
+          ? rect.vMin + vertical * (rect.vMax - rect.vMin)
+          : 0.094 + vertical * 0.813;
         uv.setXY(index, u, v);
       }
     }
@@ -166,7 +271,8 @@
       if (state.selectedId !== item.id || currentAvatar()?.userData?.body !== body) return;
       const texture = makeTexture(body, image);
       if (!texture) return;
-      const geometry = makeAtlasGeometry(body);
+      const rects = panelRectsFor(item, image);
+      const geometry = makeAtlasGeometry(body, rects);
       const baseMaterial = Array.isArray(body.material) ? body.material[0] : body.material;
       const material = baseMaterial.clone();
       material.name = `PaintedOutfit_${item.id}`;
