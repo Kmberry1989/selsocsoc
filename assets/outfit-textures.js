@@ -69,20 +69,49 @@
         return vals[Math.floor(vals.length / 2)] || 0;
       });
       const diff = (v) => Math.max(Math.abs(v[0] - med[0]), Math.abs(v[1] - med[1]), Math.abs(v[2] - med[2]));
-      let bx0 = x1, by0 = y1, bx1 = x0, by1 = y0;
-      for (let y = y0; y < y1; y += 1) {
-        for (let x = x0; x < x1; x += 2) {
-          if (diff(px(x, y)) > 28) {
-            if (x < bx0) bx0 = x;
-            if (x > bx1) bx1 = x;
-            if (y < by0) by0 = y;
-            if (y > by1) by1 = y;
-          }
+      // Connected components of non-background pixels: keeps the garment while
+      // dropping baked-in labels and markers (separate, much smaller blobs).
+      const rw = x1 - x0, rh = y1 - y0;
+      const cmask = new Uint8Array(rw * rh);
+      for (let yy = 0; yy < rh; yy += 1) {
+        for (let xx = 0; xx < rw; xx += 2) {
+          if (diff(px(x0 + xx, y0 + yy)) > 28) cmask[yy * rw + xx] = 1;
         }
       }
+      const cseen = new Uint8Array(rw * rh);
+      const ccomps = [];
+      const cstack = [];
+      for (let ci = 0; ci < rw * rh; ci += 1) {
+        if (!cmask[ci] || cseen[ci]) continue;
+        let cbx0 = rw, cby0 = rh, cbx1 = -1, cby1 = -1, carea = 0;
+        cstack.push(ci); cseen[ci] = 1;
+        while (cstack.length) {
+          const cc = cstack.pop();
+          const ccx = cc % rw, ccy = (cc / rw) | 0;
+          carea += 1;
+          if (ccx < cbx0) cbx0 = ccx; if (ccx > cbx1) cbx1 = ccx;
+          if (ccy < cby0) cby0 = ccy; if (ccy > cby1) cby1 = ccy;
+          if (ccx > 0 && cmask[cc - 1] && !cseen[cc - 1]) { cseen[cc - 1] = 1; cstack.push(cc - 1); }
+          if (ccx < rw - 1 && cmask[cc + 1] && !cseen[cc + 1]) { cseen[cc + 1] = 1; cstack.push(cc + 1); }
+          if (ccy > 0 && cmask[cc - rw] && !cseen[cc - rw]) { cseen[cc - rw] = 1; cstack.push(cc - rw); }
+          if (ccy < rh - 1 && cmask[cc + rw] && !cseen[cc + rw]) { cseen[cc + rw] = 1; cstack.push(cc + rw); }
+        }
+        ccomps.push({ area: carea, bx0: cbx0, by0: cby0, bx1: cbx1, by1: cby1 });
+      }
+      ccomps.sort((a, b) => b.area - a.area);
+      const biggest = ccomps.length ? ccomps[0].area : 0;
+      const keep = ccomps.filter((c) => c.area >= biggest * 0.4);
+      let bx0 = x1, by0 = y1, bx1 = x0, by1 = y0;
+      for (const kc of keep) {
+        if (kc.bx0 < bx0) bx0 = kc.bx0;
+        if (kc.by0 < by0) by0 = kc.by0;
+        if (kc.bx1 > bx1) bx1 = kc.bx1;
+        if (kc.by1 > by1) by1 = kc.by1;
+      }
+      bx0 += x0; by0 += y0; bx1 += x0; by1 += y0;
       const area = (bx1 - bx0) * (by1 - by0);
       const regionArea = (x1 - x0) * (y1 - y0);
-      if (bx1 <= bx0 || by1 <= by0 || area < regionArea * 0.12) {
+      if (!keep.length || area < regionArea * 0.12) {
         bx0 = x0; by0 = y0; bx1 = x1; by1 = y1; // fallback: whole inset region
       }
       // pad slightly so anti-aliased garment edges are not clipped
