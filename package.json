@@ -4,10 +4,14 @@
   "version": "0.9.45",
   "scripts": {
     "validate:assets": "node scripts/validate-assets.mjs",
-    "build": "node scripts/generate-cosmetics-manifest.mjs && node assets/audio/generate-manifest.mjs && node assets/menu-wallpaper/generate-manifest.mjs && node assets/environment-props/generate-manifest.mjs && node assets/minigames/generate-manifest.mjs && npm run validate:assets"
+    "build": "node scripts/generate-cosmetics-manifest.mjs && node assets/audio/generate-manifest.mjs && node assets/menu-wallpaper/generate-manifest.mjs && node assets/environment-props/generate-manifest.mjs && node assets/minigames/generate-manifest.mjs && npm run validate:assets",
+    "test:town-smoke": "node scripts/playwright-town-smoke.mjs"
   },
   "displayName": "Selfie Social Society",
   "dependencies": {
     "archiver": "^8.0.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
   }
 }

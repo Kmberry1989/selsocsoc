@@ -276,17 +276,27 @@
       const fade = document.createElement("div");
       fade.className = "snug-arrival-fade";
       fade.setAttribute("aria-hidden", "true");
+      const status = document.createElement("span");
+      status.textContent = "Preparing Cyclical City…";
+      fade.appendChild(status);
       document.body.appendChild(fade);
       document.documentElement.classList.add("snug-arrival-active");
-      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      window.__snugWorldRenderPaused = true;
+      await new Promise((resolve) => setTimeout(resolve, 32));
       fade.classList.add("is-black");
       await new Promise((resolve) => setTimeout(resolve, reducedMotion.matches ? 120 : 520));
+      if (typeof window.__snugPrepareWorld === "function") await window.__snugPrepareWorld();
       document.documentElement.classList.remove("snug-arrival-active");
       fade.classList.add("is-out");
       setTimeout(() => fade.remove(), reducedMotion.matches ? 80 : 520);
       window.__snugArrivalDebug = { ambientCount: 0, active: false, sharedResources: true, mode: "fade" };
       return { mode, sequence: "fade-arrival" };
-    })().finally(() => { window.__snugArrivalPromise = null; });
+    })().finally(() => {
+      setTimeout(() => {
+        if (document.documentElement.classList.contains("snug-start-open")) window.__snugWorldRenderPaused = false;
+      }, 0);
+      window.__snugArrivalPromise = null;
+    });
     return window.__snugArrivalPromise;
   };
 

@@ -444,9 +444,32 @@
           node.inert=previous.inert;
           if(previous.hidden===null)node.removeAttribute('aria-hidden');else node.setAttribute('aria-hidden',previous.hidden);
         });
+        destroyMenuEffects();
+        screen.remove();
         document.documentElement.classList.remove('snug-start-open');
-        setTimeout(()=>{destroyMenuEffects();screen.remove();},260);
-        if(mode==='town'&&!returning)window.dispatchEvent(new Event('snug-start-welcome'));
+        if(mode==='town'&&!returning){
+          let welcomeObserved=false;
+          let welcomeAttempts=0;
+          const finishEntry=()=>{
+            if(window.__snugWelcomeActive){welcomeObserved=true;return setTimeout(finishEntry,250);}
+            if(!welcomeObserved){
+              if(welcomeAttempts<5){welcomeAttempts+=1;window.dispatchEvent(new Event('snug-start-welcome'));return setTimeout(finishEntry,500);}
+              window.__snugWelcomePending=false;
+              dispatchEvent(new Event('snug-start-entered'));
+              return;
+            }
+            window.__snugWelcomePending=false;
+            dispatchEvent(new Event('snug-start-entered'));
+          };
+          const beginWelcome=()=>{
+            window.__snugWelcomePending=true;
+            window.dispatchEvent(new Event('snug-start-welcome'));
+            welcomeObserved=true;
+            setTimeout(finishEntry,350);
+          };
+          if(document.readyState==='complete')setTimeout(beginWelcome,320);
+          else addEventListener('load',()=>setTimeout(beginWelcome,0),{once:true});
+        }else setTimeout(()=>dispatchEvent(new Event('snug-start-entered')),900);
         if(mode==='solo'||mode==='family'||mode==='board'){
           window.__snugSkipWelcome=true;
           skipCeremonyForShortcut();
@@ -476,7 +499,7 @@
         menuConfirmTitle.textContent=title;
         menuConfirmCopy.textContent=copy;
         menuConfirm.hidden=false;
-        requestAnimationFrame(()=>menuConfirmGo.focus());
+        setTimeout(()=>menuConfirmGo.focus(),0);
       };
       menuConfirmCancel?.addEventListener('click',()=>closeMenuConfirm());
       menuConfirm?.addEventListener('pointerdown',event=>{if(event.target===menuConfirm)closeMenuConfirm();});
@@ -681,9 +704,9 @@
       .sheet[data-welcome-enhanced="true"][data-portrait-phase="refine"] .avatar-expression-preview{margin-top:4px;margin-bottom:4px}
     }
   </style>
-  <script src="assets/hang-watch.js"></script>
   <script src="assets/cosmetic-tints.js"></script>
   <script src="assets/speaking-mouth.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/renderer-startup.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/selfie-social-society-app.bundle.js"></script>
   <link rel="stylesheet" href="assets/town-life.css">
   <link rel="stylesheet" href="assets/society-plus.css">
@@ -708,18 +731,17 @@
   <link rel="stylesheet" href="assets/orientation-fix.css">
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/snug-audio.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/game-show-audio.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/selfie-social-society-addons.bundle.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/selfie-social-society-welcome.bundle.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/selfie-social-society-addons.bundle.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/inventory-system.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/outfit-textures.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/outfit-textures.js"></script>
   <link rel="stylesheet" href="assets/painted-accessories.css">
-  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/painted-accessories.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/accessory-tinting.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/player-emotes.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/painted-accessories.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/accessory-tinting.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/player-emotes.js"></script>
   <link rel="stylesheet" href="assets/npc-roster.css">
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-roster.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-faces.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/npc-outfits.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-outfits.js"></script>
   <link rel="stylesheet" href="assets/npc-fronts.css">
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-fronts.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/environment-upgrade.js"></script>
@@ -742,16 +764,16 @@
   <link rel="stylesheet" href="assets/town-directory.css">
   <link rel="stylesheet" href="assets/storyline.css">
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/barn-raising.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/tutorial-walkthrough.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/games-hub.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/town-directory.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/storyline.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/tutorial-walkthrough.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/games-hub.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/town-directory.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/storyline.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/world-lod.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/lazy-features.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/orientation-fix.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/push-notifications.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/icons/icon-system.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/party-night-upgrade.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/party-night-upgrade.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/text-legibility.js"></script>
   <script id="snug-chunk-loader">
     (() => {
@@ -781,13 +803,13 @@
         dispatchEvent(new Event('snug-core-ready'));
       };
       const loadFeatures = async () => {
+        if (document.documentElement.classList.contains('snug-start-open')) {
+          await new Promise(resolve => addEventListener('snug-start-entered', resolve, { once: true }));
+        }
         for (const descriptor of features) {
           try { await load(descriptor); }
           catch (error) { console.error('Optional feature chunk failed.', error); }
-          await new Promise(resolve => {
-            if ('requestIdleCallback' in window) requestIdleCallback(resolve, { timeout: 350 });
-            else setTimeout(resolve, 24);
-          });
+          await new Promise(resolve => setTimeout(resolve, 12));
         }
         window.__snugFeatureChunksReady = true;
         dispatchEvent(new Event('snug-feature-chunks-ready'));
