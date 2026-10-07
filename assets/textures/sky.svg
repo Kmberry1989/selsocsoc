@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="512" viewBox="0 0 1024 512">
+  <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8fc9df"/><stop offset="1" stop-color="#d8edf2"/></linearGradient></defs>
+  <rect width="1024" height="512" fill="url(#sky)"/>
+  <circle cx="824" cy="104" r="58" fill="#fff1b8" opacity=".9"/>
+  <g fill="#fff" opacity=".78"><ellipse cx="176" cy="142" rx="92" ry="28"/><ellipse cx="116" cy="148" rx="50" ry="23"/><ellipse cx="234" cy="151" rx="62" ry="22"/><ellipse cx="604" cy="224" rx="108" ry="31"/><ellipse cx="536" cy="231" rx="58" ry="23"/><ellipse cx="674" cy="232" rx="61" ry="24"/></g>
+</svg>

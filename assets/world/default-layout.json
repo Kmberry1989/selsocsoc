@@ -1,0 +1,6329 @@
+{
+  "format": "cylindric-world-layout",
+  "version": 1,
+  "units": "meters",
+  "axes": {
+    "x": "east",
+    "z": "south",
+    "y": "up",
+    "rotY": "degrees, clockwise seen from above, 0 = object's default facing"
+  },
+  "objects": [
+    {
+      "id": "cottage-plaza-sw",
+      "type": "building-cottage",
+      "x": -8.6,
+      "y": 0.0,
+      "z": -7.2,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.45,
+        "source": "base-cottage"
+      }
+    },
+    {
+      "id": "cottage-plaza-se",
+      "type": "building-cottage",
+      "x": 8.6,
+      "y": 0.0,
+      "z": -7.2,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.45,
+        "source": "base-cottage"
+      }
+    },
+    {
+      "id": "cottage-plaza-nw",
+      "type": "building-cottage",
+      "x": -8.6,
+      "y": 0.0,
+      "z": 7.15,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.45,
+        "source": "base-cottage"
+      }
+    },
+    {
+      "id": "cottage-plaza-ne",
+      "type": "building-cottage",
+      "x": 8.6,
+      "y": 0.0,
+      "z": 7.15,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.45,
+        "source": "base-cottage"
+      }
+    },
+    {
+      "id": "gate-town-south",
+      "type": "gate",
+      "x": 0.0,
+      "y": 0.0,
+      "z": 10.25,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.6,
+        "source": "base-gate"
+      }
+    },
+    {
+      "id": "tree-plaza-01",
+      "type": "tree",
+      "x": -10.55,
+      "y": 0.0,
+      "z": -5.8,
+      "rotY": 348.5408,
+      "scale": 1.05,
+      "props": {
+        "collisionRadius": 0.546,
+        "source": "base-environment",
+        "asset": "tree-oak"
+      }
+    },
+    {
+      "id": "tree-plaza-02",
+      "type": "tree",
+      "x": 10.65,
+      "y": 0.0,
+      "z": -4.9,
+      "rotY": 22.9183,
+      "scale": 0.92,
+      "props": {
+        "collisionRadius": 0.4784,
+        "source": "base-environment",
+        "asset": "tree-oak"
+      }
+    },
+    {
+      "id": "tree-plaza-03",
+      "type": "tree",
+      "x": -10.1,
+      "y": 0.0,
+      "z": 4.75,
+      "rotY": 319.893,
+      "scale": 1.14,
+      "props": {
+        "collisionRadius": 0.5928,
+        "source": "base-environment",
+        "asset": "tree-oak"
+      }
+    },
+    {
+      "id": "tree-plaza-04",
+      "type": "tree",
+      "x": 10.45,
+      "y": 0.0,
+      "z": 5.85,
+      "rotY": 45.8366,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.52,
+        "source": "base-environment",
+        "asset": "tree-oak"
+      }
+    },
+    {
+      "id": "tree-plaza-05",
+      "type": "tree",
+      "x": -3.75,
+      "y": 0.0,
+      "z": 10.15,
+      "rotY": 337.0817,
+      "scale": 0.88,
+      "props": {
+        "collisionRadius": 0.4576,
+        "source": "base-environment",
+        "asset": "tree-oak"
+      }
+    },
+    {
+      "id": "tree-plaza-06",
+      "type": "tree",
+      "x": 5.45,
+      "y": 0.0,
+      "z": -10.15,
+      "rotY": 14.3239,
+      "scale": 1.08,
+      "props": {
+        "collisionRadius": 0.5616,
+        "source": "base-environment",
+        "asset": "tree-oak"
+      }
+    },
+    {
+      "id": "rock-plaza-west",
+      "type": "rock-cluster",
+      "x": -8.35,
+      "y": 0.0,
+      "z": 7.65,
+      "rotY": 339.9465,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.65,
+        "source": "base-environment",
+        "asset": "rock-cluster"
+      }
+    },
+    {
+      "id": "fence-garden-east",
+      "type": "fence",
+      "x": 9.15,
+      "y": 0.0,
+      "z": 8.0,
+      "rotY": 20.0535,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.45,
+        "source": "base-environment",
+        "asset": "fence-segment"
+      }
+    },
+    {
+      "id": "lantern-plaza-center",
+      "type": "lantern-post",
+      "x": 3.4,
+      "y": 0.0,
+      "z": -3.35,
+      "rotY": 0.0,
+      "scale": 0.8,
+      "props": {
+        "collisionRadius": 0.22,
+        "source": "base-environment",
+        "asset": "lantern-post"
+      }
+    },
+    {
+      "id": "flowers-plaza-west",
+      "type": "flower-patch",
+      "x": -3.7,
+      "y": 0.0,
+      "z": -4.45,
+      "rotY": 348.5408,
+      "scale": 1.0,
+      "props": {
+        "source": "base-environment",
+        "asset": "flower-patch"
+      }
+    },
+    {
+      "id": "bush-plaza-east",
+      "type": "bush",
+      "x": 8.45,
+      "y": 0.0,
+      "z": 2.8,
+      "rotY": 14.3239,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.5,
+        "source": "base-environment",
+        "asset": "bush-round"
+      }
+    },
+    {
+      "id": "cottage-outskirts-01",
+      "type": "building-cottage",
+      "x": -25.0,
+      "y": 0.0,
+      "z": -17.0,
+      "rotY": 318.747,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.7,
+        "source": "expanded-cottage"
+      }
+    },
+    {
+      "id": "cottage-outskirts-02",
+      "type": "building-cottage",
+      "x": -29.0,
+      "y": 0.0,
+      "z": -12.0,
+      "rotY": 312.4445,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.7,
+        "source": "expanded-cottage"
+      }
+    },
+    {
+      "id": "cottage-outskirts-03",
+      "type": "building-cottage",
+      "x": -19.0,
+      "y": 0.0,
+      "z": -23.0,
+      "rotY": 341.6654,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.7,
+        "source": "expanded-cottage"
+      }
+    },
+    {
+      "id": "cottage-outskirts-04",
+      "type": "building-cottage",
+      "x": 24.0,
+      "y": 0.0,
+      "z": -19.0,
+      "rotY": 35.5234,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.7,
+        "source": "expanded-cottage"
+      }
+    },
+    {
+      "id": "cottage-outskirts-05",
+      "type": "building-cottage",
+      "x": 29.0,
+      "y": 0.0,
+      "z": -13.0,
+      "rotY": 46.9825,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.7,
+        "source": "expanded-cottage"
+      }
+    },
+    {
+      "id": "cottage-outskirts-06",
+      "type": "building-cottage",
+      "x": 19.0,
+      "y": 0.0,
+      "z": -25.0,
+      "rotY": 20.6265,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.7,
+        "source": "expanded-cottage"
+      }
+    },
+    {
+      "id": "cottage-outskirts-07",
+      "type": "building-cottage",
+      "x": -25.0,
+      "y": 0.0,
+      "z": 19.0,
+      "rotY": 223.636,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.7,
+        "source": "expanded-cottage"
+      }
+    },
+    {
+      "id": "cottage-outskirts-08",
+      "type": "building-cottage",
+      "x": -18.0,
+      "y": 0.0,
+      "z": 25.0,
+      "rotY": 202.4366,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.7,
+        "source": "expanded-cottage"
+      }
+    },
+    {
+      "id": "cottage-outskirts-09",
+      "type": "building-cottage",
+      "x": -30.0,
+      "y": 0.0,
+      "z": 13.0,
+      "rotY": 236.2411,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.7,
+        "source": "expanded-cottage"
+      }
+    },
+    {
+      "id": "cottage-outskirts-10",
+      "type": "building-cottage",
+      "x": 24.0,
+      "y": 0.0,
+      "z": 21.0,
+      "rotY": 138.6558,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.7,
+        "source": "expanded-cottage"
+      }
+    },
+    {
+      "id": "cottage-outskirts-11",
+      "type": "building-cottage",
+      "x": 30.0,
+      "y": 0.0,
+      "z": 15.0,
+      "rotY": 122.04,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.7,
+        "source": "expanded-cottage"
+      }
+    },
+    {
+      "id": "cottage-outskirts-12",
+      "type": "building-cottage",
+      "x": 18.0,
+      "y": 0.0,
+      "z": 27.0,
+      "rotY": 155.8445,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 1.7,
+        "source": "expanded-cottage"
+      }
+    },
+    {
+      "id": "town-hall-north",
+      "type": "building-town-hall",
+      "x": 0.0,
+      "y": 0.0,
+      "z": -33.0,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 3.2,
+        "source": "named-object",
+        "name": "NorthTownHall"
+      }
+    },
+    {
+      "id": "pavilion-east",
+      "type": "building-pavilion",
+      "x": 17.0,
+      "y": 0.0,
+      "z": 5.0,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 3.0,
+        "source": "named-object",
+        "name": "TownPavilion"
+      }
+    },
+    {
+      "id": "pond-countryside",
+      "type": "pond",
+      "x": -18.0,
+      "y": 0.0,
+      "z": 7.5,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 4.4,
+        "source": "pond-cluster"
+      }
+    },
+    {
+      "id": "district-marker-01",
+      "type": "district-marker",
+      "x": -13.0,
+      "y": 0.0,
+      "z": -10.0,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.22,
+        "source": "district-marker"
+      }
+    },
+    {
+      "id": "district-marker-02",
+      "type": "district-marker",
+      "x": 14.0,
+      "y": 0.0,
+      "z": -9.0,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.22,
+        "source": "district-marker"
+      }
+    },
+    {
+      "id": "district-marker-03",
+      "type": "district-marker",
+      "x": -14.0,
+      "y": 0.0,
+      "z": 12.0,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.22,
+        "source": "district-marker"
+      }
+    },
+    {
+      "id": "district-marker-04",
+      "type": "district-marker",
+      "x": 14.0,
+      "y": 0.0,
+      "z": 13.0,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.22,
+        "source": "district-marker"
+      }
+    },
+    {
+      "id": "garden-plot-01",
+      "type": "garden-plot",
+      "x": 4.1,
+      "y": 0.0,
+      "z": 6.7,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.7,
+        "source": "garden-plot",
+        "index": 1
+      }
+    },
+    {
+      "id": "garden-plot-02",
+      "type": "garden-plot",
+      "x": 6.55,
+      "y": 0.0,
+      "z": 6.7,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.7,
+        "source": "garden-plot",
+        "index": 2
+      }
+    },
+    {
+      "id": "garden-plot-03",
+      "type": "garden-plot",
+      "x": 9.0,
+      "y": 0.0,
+      "z": 6.7,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.7,
+        "source": "garden-plot",
+        "index": 3
+      }
+    },
+    {
+      "id": "garden-plot-04",
+      "type": "garden-plot",
+      "x": 4.1,
+      "y": 0.0,
+      "z": 9.5,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.7,
+        "source": "garden-plot",
+        "index": 4
+      }
+    },
+    {
+      "id": "garden-plot-05",
+      "type": "garden-plot",
+      "x": 6.55,
+      "y": 0.0,
+      "z": 9.5,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.7,
+        "source": "garden-plot",
+        "index": 5
+      }
+    },
+    {
+      "id": "garden-plot-06",
+      "type": "garden-plot",
+      "x": 9.0,
+      "y": 0.0,
+      "z": 9.5,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.7,
+        "source": "garden-plot",
+        "index": 6
+      }
+    },
+    {
+      "id": "garden-sign",
+      "type": "sign",
+      "x": 3.15,
+      "y": 0.0,
+      "z": 8.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.2,
+        "source": "garden-sign"
+      }
+    },
+    {
+      "id": "tree-ring-01",
+      "type": "tree",
+      "x": 8.6355,
+      "y": 0.0,
+      "z": 19.5729,
+      "rotY": 247.4716,
+      "scale": 1.3939,
+      "props": {
+        "collisionRadius": 0.697,
+        "source": "expanded-tree",
+        "instanceIndex": 0
+      }
+    },
+    {
+      "id": "tree-ring-02",
+      "type": "tree",
+      "x": 3.33,
+      "y": 0.0,
+      "z": 19.5868,
+      "rotY": 223.4029,
+      "scale": 1.358,
+      "props": {
+        "collisionRadius": 0.679,
+        "source": "expanded-tree",
+        "instanceIndex": 1
+      }
+    },
+    {
+      "id": "tree-ring-03",
+      "type": "tree",
+      "x": -3.4758,
+      "y": 0.0,
+      "z": 18.6533,
+      "rotY": 189.0562,
+      "scale": 0.9157,
+      "props": {
+        "collisionRadius": 0.4578,
+        "source": "expanded-tree",
+        "instanceIndex": 2
+      }
+    },
+    {
+      "id": "tree-ring-04",
+      "type": "tree",
+      "x": -12.4875,
+      "y": 0.0,
+      "z": 17.4267,
+      "rotY": 146.4383,
+      "scale": 1.1602,
+      "props": {
+        "collisionRadius": 0.5801,
+        "source": "expanded-tree",
+        "instanceIndex": 3
+      }
+    },
+    {
+      "id": "tree-ring-05",
+      "type": "tree",
+      "x": -19.9271,
+      "y": 0.0,
+      "z": -3.3305,
+      "rotY": 37.8699,
+      "scale": 1.2203,
+      "props": {
+        "collisionRadius": 0.6101,
+        "source": "expanded-tree",
+        "instanceIndex": 4
+      }
+    },
+    {
+      "id": "tree-ring-06",
+      "type": "tree",
+      "x": -11.6332,
+      "y": 0.0,
+      "z": -13.9393,
+      "rotY": 328.7401,
+      "scale": 0.7937,
+      "props": {
+        "collisionRadius": 0.3969,
+        "source": "expanded-tree",
+        "instanceIndex": 5
+      }
+    },
+    {
+      "id": "tree-ring-07",
+      "type": "tree",
+      "x": -6.766,
+      "y": 0.0,
+      "z": -17.6672,
+      "rotY": 296.6242,
+      "scale": 1.1213,
+      "props": {
+        "collisionRadius": 0.5606,
+        "source": "expanded-tree",
+        "instanceIndex": 6
+      }
+    },
+    {
+      "id": "tree-ring-08",
+      "type": "tree",
+      "x": -3.5642,
+      "y": 0.0,
+      "z": -20.746,
+      "rotY": 277.5724,
+      "scale": 0.9128,
+      "props": {
+        "collisionRadius": 0.4564,
+        "source": "expanded-tree",
+        "instanceIndex": 7
+      }
+    },
+    {
+      "id": "tree-ring-09",
+      "type": "tree",
+      "x": 5.3546,
+      "y": 0.0,
+      "z": -19.4361,
+      "rotY": 234.8155,
+      "scale": 1.1856,
+      "props": {
+        "collisionRadius": 0.5928,
+        "source": "expanded-tree",
+        "instanceIndex": 8
+      }
+    },
+    {
+      "id": "tree-ring-10",
+      "type": "tree",
+      "x": 10.7899,
+      "y": 0.0,
+      "z": -15.821,
+      "rotY": 202.7002,
+      "scale": 1.1466,
+      "props": {
+        "collisionRadius": 0.5733,
+        "source": "expanded-tree",
+        "instanceIndex": 9
+      }
+    },
+    {
+      "id": "tree-ring-11",
+      "type": "tree",
+      "x": 19.1238,
+      "y": 0.0,
+      "z": -3.5454,
+      "rotY": 125.8551,
+      "scale": 1.4178,
+      "props": {
+        "collisionRadius": 0.7089,
+        "source": "expanded-tree",
+        "instanceIndex": 10
+      }
+    },
+    {
+      "id": "tree-ring-12",
+      "type": "tree",
+      "x": 12.3919,
+      "y": 0.0,
+      "z": 26.0747,
+      "rotY": 250.2126,
+      "scale": 0.9584,
+      "props": {
+        "collisionRadius": 0.4792,
+        "source": "expanded-tree",
+        "instanceIndex": 11
+      }
+    },
+    {
+      "id": "tree-ring-13",
+      "type": "tree",
+      "x": 4.5246,
+      "y": 0.0,
+      "z": 30.5182,
+      "rotY": 221.3365,
+      "scale": 1.3259,
+      "props": {
+        "collisionRadius": 0.663,
+        "source": "expanded-tree",
+        "instanceIndex": 12
+      }
+    },
+    {
+      "id": "tree-ring-14",
+      "type": "tree",
+      "x": -2.4232,
+      "y": 0.0,
+      "z": 28.2892,
+      "rotY": 198.6768,
+      "scale": 1.3635,
+      "props": {
+        "collisionRadius": 0.6817,
+        "source": "expanded-tree",
+        "instanceIndex": 13
+      }
+    },
+    {
+      "id": "tree-ring-15",
+      "type": "tree",
+      "x": -9.251,
+      "y": 0.0,
+      "z": 28.3595,
+      "rotY": 176.2869,
+      "scale": 1.0955,
+      "props": {
+        "collisionRadius": 0.5477,
+        "source": "expanded-tree",
+        "instanceIndex": 14
+      }
+    },
+    {
+      "id": "tree-ring-16",
+      "type": "tree",
+      "x": -24.3399,
+      "y": 0.0,
+      "z": 13.9009,
+      "rotY": 104.5433,
+      "scale": 1.2698,
+      "props": {
+        "collisionRadius": 0.6349,
+        "source": "expanded-tree",
+        "instanceIndex": 15
+      }
+    },
+    {
+      "id": "tree-ring-17",
+      "type": "tree",
+      "x": -27.5275,
+      "y": 0.0,
+      "z": 3.6592,
+      "rotY": 66.8722,
+      "scale": 1.1306,
+      "props": {
+        "collisionRadius": 0.5653,
+        "source": "expanded-tree",
+        "instanceIndex": 16
+      }
+    },
+    {
+      "id": "tree-ring-18",
+      "type": "tree",
+      "x": -11.3493,
+      "y": 0.0,
+      "z": -26.969,
+      "rotY": 299.7987,
+      "scale": 0.9907,
+      "props": {
+        "collisionRadius": 0.4953,
+        "source": "expanded-tree",
+        "instanceIndex": 17
+      }
+    },
+    {
+      "id": "tree-ring-19",
+      "type": "tree",
+      "x": 4.3952,
+      "y": 0.0,
+      "z": -27.1594,
+      "rotY": 245.3726,
+      "scale": 0.8084,
+      "props": {
+        "collisionRadius": 0.4042,
+        "source": "expanded-tree",
+        "instanceIndex": 18
+      }
+    },
+    {
+      "id": "tree-ring-20",
+      "type": "tree",
+      "x": 8.964,
+      "y": 0.0,
+      "z": -26.6273,
+      "rotY": 229.3705,
+      "scale": 1.1142,
+      "props": {
+        "collisionRadius": 0.5571,
+        "source": "expanded-tree",
+        "instanceIndex": 19
+      }
+    },
+    {
+      "id": "tree-ring-21",
+      "type": "tree",
+      "x": 25.3585,
+      "y": 0.0,
+      "z": -9.8704,
+      "rotY": 144.1552,
+      "scale": 1.2785,
+      "props": {
+        "collisionRadius": 0.6392,
+        "source": "expanded-tree",
+        "instanceIndex": 20
+      }
+    },
+    {
+      "id": "tree-ring-22",
+      "type": "tree",
+      "x": 28.2657,
+      "y": 0.0,
+      "z": -4.9087,
+      "rotY": 124.7483,
+      "scale": 1.4015,
+      "props": {
+        "collisionRadius": 0.7008,
+        "source": "expanded-tree",
+        "instanceIndex": 21
+      }
+    },
+    {
+      "id": "tree-ring-23",
+      "type": "tree",
+      "x": 36.7825,
+      "y": 0.0,
+      "z": 5.6074,
+      "rotY": 345.2645,
+      "scale": 1.0466,
+      "props": {
+        "collisionRadius": 0.5233,
+        "source": "expanded-tree",
+        "instanceIndex": 22
+      }
+    },
+    {
+      "id": "tree-ring-24",
+      "type": "tree",
+      "x": 37.3943,
+      "y": 0.0,
+      "z": 9.4773,
+      "rotY": 335.823,
+      "scale": 1.204,
+      "props": {
+        "collisionRadius": 0.602,
+        "source": "expanded-tree",
+        "instanceIndex": 23
+      }
+    },
+    {
+      "id": "tree-ring-25",
+      "type": "tree",
+      "x": 34.3998,
+      "y": 0.0,
+      "z": 20.5678,
+      "rotY": 307.5117,
+      "scale": 0.8526,
+      "props": {
+        "collisionRadius": 0.4263,
+        "source": "expanded-tree",
+        "instanceIndex": 24
+      }
+    },
+    {
+      "id": "tree-ring-26",
+      "type": "tree",
+      "x": 27.7841,
+      "y": 0.0,
+      "z": 25.835,
+      "rotY": 287.039,
+      "scale": 0.8109,
+      "props": {
+        "collisionRadius": 0.4055,
+        "source": "expanded-tree",
+        "instanceIndex": 25
+      }
+    },
+    {
+      "id": "tree-ring-27",
+      "type": "tree",
+      "x": 21.8947,
+      "y": 0.0,
+      "z": 34.8724,
+      "rotY": 261.6086,
+      "scale": 1.113,
+      "props": {
+        "collisionRadius": 0.5565,
+        "source": "expanded-tree",
+        "instanceIndex": 26
+      }
+    },
+    {
+      "id": "tree-ring-28",
+      "type": "tree",
+      "x": 15.0594,
+      "y": 0.0,
+      "z": 34.845,
+      "rotY": 246.7343,
+      "scale": 0.7931,
+      "props": {
+        "collisionRadius": 0.3966,
+        "source": "expanded-tree",
+        "instanceIndex": 27
+      }
+    },
+    {
+      "id": "tree-ring-29",
+      "type": "tree",
+      "x": 8.0004,
+      "y": 0.0,
+      "z": 36.3441,
+      "rotY": 228.1045,
+      "scale": 1.0785,
+      "props": {
+        "collisionRadius": 0.5392,
+        "source": "expanded-tree",
+        "instanceIndex": 28
+      }
+    },
+    {
+      "id": "tree-ring-30",
+      "type": "tree",
+      "x": 3.238,
+      "y": 0.0,
+      "z": 39.7228,
+      "rotY": 214.9222,
+      "scale": 1.1142,
+      "props": {
+        "collisionRadius": 0.5571,
+        "source": "expanded-tree",
+        "instanceIndex": 29
+      }
+    },
+    {
+      "id": "tree-ring-31",
+      "type": "tree",
+      "x": -7.9383,
+      "y": 0.0,
+      "z": 36.512,
+      "rotY": 186.1477,
+      "scale": 1.1799,
+      "props": {
+        "collisionRadius": 0.5899,
+        "source": "expanded-tree",
+        "instanceIndex": 30
+      }
+    },
+    {
+      "id": "tree-ring-32",
+      "type": "tree",
+      "x": -17.464,
+      "y": 0.0,
+      "z": 34.6039,
+      "rotY": 161.4751,
+      "scale": 1.1609,
+      "props": {
+        "collisionRadius": 0.5805,
+        "source": "expanded-tree",
+        "instanceIndex": 31
+      }
+    },
+    {
+      "id": "tree-ring-33",
+      "type": "tree",
+      "x": -22.6278,
+      "y": 0.0,
+      "z": 32.286,
+      "rotY": 147.4577,
+      "scale": 1.076,
+      "props": {
+        "collisionRadius": 0.538,
+        "source": "expanded-tree",
+        "instanceIndex": 32
+      }
+    },
+    {
+      "id": "tree-ring-34",
+      "type": "tree",
+      "x": -27.6534,
+      "y": 0.0,
+      "z": 25.6893,
+      "rotY": 126.915,
+      "scale": 0.9411,
+      "props": {
+        "collisionRadius": 0.4706,
+        "source": "expanded-tree",
+        "instanceIndex": 33
+      }
+    },
+    {
+      "id": "tree-ring-35",
+      "type": "tree",
+      "x": -30.9012,
+      "y": 0.0,
+      "z": 20.4518,
+      "rotY": 110.9472,
+      "scale": 1.3329,
+      "props": {
+        "collisionRadius": 0.6664,
+        "source": "expanded-tree",
+        "instanceIndex": 34
+      }
+    },
+    {
+      "id": "tree-ring-36",
+      "type": "tree",
+      "x": -34.6463,
+      "y": 0.0,
+      "z": 15.2783,
+      "rotY": 94.4541,
+      "scale": 1.2507,
+      "props": {
+        "collisionRadius": 0.6254,
+        "source": "expanded-tree",
+        "instanceIndex": 35
+      }
+    },
+    {
+      "id": "tree-ring-37",
+      "type": "tree",
+      "x": -39.9908,
+      "y": 0.0,
+      "z": 8.0713,
+      "rotY": 73.3982,
+      "scale": 1.4401,
+      "props": {
+        "collisionRadius": 0.72,
+        "source": "expanded-tree",
+        "instanceIndex": 36
+      }
+    },
+    {
+      "id": "tree-ring-38",
+      "type": "tree",
+      "x": -39.8603,
+      "y": 0.0,
+      "z": -1.5527,
+      "rotY": 50.2078,
+      "scale": 0.936,
+      "props": {
+        "collisionRadius": 0.468,
+        "source": "expanded-tree",
+        "instanceIndex": 37
+      }
+    },
+    {
+      "id": "tree-ring-39",
+      "type": "tree",
+      "x": -39.652,
+      "y": 0.0,
+      "z": -9.1988,
+      "rotY": 31.7965,
+      "scale": 1.1094,
+      "props": {
+        "collisionRadius": 0.5547,
+        "source": "expanded-tree",
+        "instanceIndex": 38
+      }
+    },
+    {
+      "id": "tree-ring-40",
+      "type": "tree",
+      "x": -36.8396,
+      "y": 0.0,
+      "z": -17.3681,
+      "rotY": 11.0892,
+      "scale": 0.8939,
+      "props": {
+        "collisionRadius": 0.4469,
+        "source": "expanded-tree",
+        "instanceIndex": 39
+      }
+    },
+    {
+      "id": "tree-ring-41",
+      "type": "tree",
+      "x": -29.0493,
+      "y": 0.0,
+      "z": -27.2319,
+      "rotY": 340.6442,
+      "scale": 0.8761,
+      "props": {
+        "collisionRadius": 0.4381,
+        "source": "expanded-tree",
+        "instanceIndex": 40
+      }
+    },
+    {
+      "id": "tree-ring-42",
+      "type": "tree",
+      "x": -22.6808,
+      "y": 0.0,
+      "z": -34.0324,
+      "rotY": 318.2583,
+      "scale": 1.2871,
+      "props": {
+        "collisionRadius": 0.6435,
+        "source": "expanded-tree",
+        "instanceIndex": 41
+      }
+    },
+    {
+      "id": "tree-ring-43",
+      "type": "tree",
+      "x": -15.5618,
+      "y": 0.0,
+      "z": -36.4755,
+      "rotY": 300.2783,
+      "scale": 1.3754,
+      "props": {
+        "collisionRadius": 0.6877,
+        "source": "expanded-tree",
+        "instanceIndex": 42
+      }
+    },
+    {
+      "id": "tree-ring-44",
+      "type": "tree",
+      "x": -9.6564,
+      "y": 0.0,
+      "z": -38.9229,
+      "rotY": 284.6864,
+      "scale": 0.8418,
+      "props": {
+        "collisionRadius": 0.4209,
+        "source": "expanded-tree",
+        "instanceIndex": 43
+      }
+    },
+    {
+      "id": "tree-ring-45",
+      "type": "tree",
+      "x": 2.1515,
+      "y": 0.0,
+      "z": -40.6468,
+      "rotY": 255.8492,
+      "scale": 1.2943,
+      "props": {
+        "collisionRadius": 0.6472,
+        "source": "expanded-tree",
+        "instanceIndex": 44
+      }
+    },
+    {
+      "id": "tree-ring-46",
+      "type": "tree",
+      "x": 6.9212,
+      "y": 0.0,
+      "z": -38.1137,
+      "rotY": 243.503,
+      "scale": 0.9228,
+      "props": {
+        "collisionRadius": 0.4614,
+        "source": "expanded-tree",
+        "instanceIndex": 45
+      }
+    },
+    {
+      "id": "tree-ring-47",
+      "type": "tree",
+      "x": 13.8128,
+      "y": 0.0,
+      "z": -35.209,
+      "rotY": 224.5851,
+      "scale": 1.4321,
+      "props": {
+        "collisionRadius": 0.716,
+        "source": "expanded-tree",
+        "instanceIndex": 46
+      }
+    },
+    {
+      "id": "tree-ring-48",
+      "type": "tree",
+      "x": 23.9519,
+      "y": 0.0,
+      "z": -31.7719,
+      "rotY": 198.0802,
+      "scale": 1.3931,
+      "props": {
+        "collisionRadius": 0.6966,
+        "source": "expanded-tree",
+        "instanceIndex": 47
+      }
+    },
+    {
+      "id": "tree-ring-49",
+      "type": "tree",
+      "x": 27.5086,
+      "y": 0.0,
+      "z": -26.41,
+      "rotY": 182.5157,
+      "scale": 1.1695,
+      "props": {
+        "collisionRadius": 0.5847,
+        "source": "expanded-tree",
+        "instanceIndex": 48
+      }
+    },
+    {
+      "id": "tree-ring-50",
+      "type": "tree",
+      "x": 34.1035,
+      "y": 0.0,
+      "z": -19.4058,
+      "rotY": 158.3896,
+      "scale": 1.0586,
+      "props": {
+        "collisionRadius": 0.5293,
+        "source": "expanded-tree",
+        "instanceIndex": 49
+      }
+    },
+    {
+      "id": "tree-ring-51",
+      "type": "tree",
+      "x": 37.5211,
+      "y": 0.0,
+      "z": -9.2951,
+      "rotY": 131.6534,
+      "scale": 0.8062,
+      "props": {
+        "collisionRadius": 0.4031,
+        "source": "expanded-tree",
+        "instanceIndex": 50
+      }
+    },
+    {
+      "id": "tree-ring-52",
+      "type": "tree",
+      "x": 39.5541,
+      "y": 0.0,
+      "z": -2.1274,
+      "rotY": 113.2338,
+      "scale": 1.1716,
+      "props": {
+        "collisionRadius": 0.5858,
+        "source": "expanded-tree",
+        "instanceIndex": 51
+      }
+    },
+    {
+      "id": "flowers-meadow-1-01",
+      "type": "flower-patch",
+      "x": -10.4358,
+      "y": 0.12,
+      "z": 15.0732,
+      "rotY": 235.3034,
+      "scale": 0.8989,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 0
+      }
+    },
+    {
+      "id": "flowers-meadow-1-02",
+      "type": "flower-patch",
+      "x": 8.875,
+      "y": 0.12,
+      "z": 32.2071,
+      "rotY": 285.4061,
+      "scale": 0.9116,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 1
+      }
+    },
+    {
+      "id": "flowers-meadow-1-03",
+      "type": "flower-patch",
+      "x": 9.3551,
+      "y": 0.12,
+      "z": 11.8297,
+      "rotY": 308.3374,
+      "scale": 0.8977,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 2
+      }
+    },
+    {
+      "id": "flowers-meadow-1-04",
+      "type": "flower-patch",
+      "x": -1.8685,
+      "y": 0.12,
+      "z": 21.7748,
+      "rotY": 265.0954,
+      "scale": 0.9779,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 3
+      }
+    },
+    {
+      "id": "flowers-meadow-1-05",
+      "type": "flower-patch",
+      "x": -5.1894,
+      "y": 0.12,
+      "z": -20.3251,
+      "rotY": 104.3228,
+      "scale": 1.3206,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 4
+      }
+    },
+    {
+      "id": "flowers-meadow-1-06",
+      "type": "flower-patch",
+      "x": -15.0232,
+      "y": 0.12,
+      "z": -4.492,
+      "rotY": 163.3532,
+      "scale": 1.3544,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 5
+      }
+    },
+    {
+      "id": "flowers-meadow-1-07",
+      "type": "flower-patch",
+      "x": -20.5994,
+      "y": 0.12,
+      "z": 17.2425,
+      "rotY": 219.9307,
+      "scale": 1.2017,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 6
+      }
+    },
+    {
+      "id": "flowers-meadow-1-08",
+      "type": "flower-patch",
+      "x": 11.9598,
+      "y": 0.12,
+      "z": -7.7545,
+      "rotY": 32.9588,
+      "scale": 0.9673,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 7
+      }
+    },
+    {
+      "id": "flowers-meadow-1-09",
+      "type": "flower-patch",
+      "x": -8.3112,
+      "y": 0.12,
+      "z": 16.0336,
+      "rotY": 242.5995,
+      "scale": 1.2187,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 8
+      }
+    },
+    {
+      "id": "flowers-meadow-1-10",
+      "type": "flower-patch",
+      "x": 21.0599,
+      "y": 0.12,
+      "z": 10.705,
+      "rotY": 333.0553,
+      "scale": 1.1453,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 9
+      }
+    },
+    {
+      "id": "flowers-meadow-1-11",
+      "type": "flower-patch",
+      "x": 14.4835,
+      "y": 0.12,
+      "z": -19.1849,
+      "rotY": 52.9492,
+      "scale": 1.0757,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 10
+      }
+    },
+    {
+      "id": "flowers-meadow-1-12",
+      "type": "flower-patch",
+      "x": -7.5202,
+      "y": 0.12,
+      "z": -20.8325,
+      "rotY": 109.8488,
+      "scale": 0.8323,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 11
+      }
+    },
+    {
+      "id": "flowers-meadow-1-13",
+      "type": "flower-patch",
+      "x": 2.4462,
+      "y": 0.12,
+      "z": -19.8095,
+      "rotY": 82.9605,
+      "scale": 0.7526,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 12
+      }
+    },
+    {
+      "id": "flowers-meadow-1-14",
+      "type": "flower-patch",
+      "x": -25.4525,
+      "y": 0.12,
+      "z": -22.416,
+      "rotY": 138.6296,
+      "scale": 0.9219,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 13
+      }
+    },
+    {
+      "id": "flowers-meadow-1-15",
+      "type": "flower-patch",
+      "x": -25.0517,
+      "y": 0.12,
+      "z": 2.1841,
+      "rotY": 184.9827,
+      "scale": 0.8516,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 14
+      }
+    },
+    {
+      "id": "flowers-meadow-1-16",
+      "type": "flower-patch",
+      "x": 24.2998,
+      "y": 0.12,
+      "z": -5.226,
+      "rotY": 12.1373,
+      "scale": 1.3081,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 15
+      }
+    },
+    {
+      "id": "flowers-meadow-1-17",
+      "type": "flower-patch",
+      "x": 22.1366,
+      "y": 0.12,
+      "z": 3.6555,
+      "rotY": 350.6233,
+      "scale": 1.1862,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 16
+      }
+    },
+    {
+      "id": "flowers-meadow-1-18",
+      "type": "flower-patch",
+      "x": 12.282,
+      "y": 0.12,
+      "z": 10.2993,
+      "rotY": 320.0178,
+      "scale": 0.8625,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 0,
+        "instanceIndex": 17
+      }
+    },
+    {
+      "id": "flowers-meadow-2-01",
+      "type": "flower-patch",
+      "x": 10.1051,
+      "y": 0.12,
+      "z": -8.5709,
+      "rotY": 40.3038,
+      "scale": 0.7839,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 0
+      }
+    },
+    {
+      "id": "flowers-meadow-2-02",
+      "type": "flower-patch",
+      "x": 1.4374,
+      "y": 0.12,
+      "z": 29.1253,
+      "rotY": 272.8254,
+      "scale": 1.0463,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 1
+      }
+    },
+    {
+      "id": "flowers-meadow-2-03",
+      "type": "flower-patch",
+      "x": 35.5568,
+      "y": 0.12,
+      "z": -4.2017,
+      "rotY": 6.7393,
+      "scale": 1.3039,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 2
+      }
+    },
+    {
+      "id": "flowers-meadow-2-04",
+      "type": "flower-patch",
+      "x": 10.34,
+      "y": 0.12,
+      "z": -27.0341,
+      "rotY": 69.0692,
+      "scale": 1.2445,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 3
+      }
+    },
+    {
+      "id": "flowers-meadow-2-05",
+      "type": "flower-patch",
+      "x": -17.0212,
+      "y": 0.12,
+      "z": 17.0366,
+      "rotY": 225.0258,
+      "scale": 1.057,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 4
+      }
+    },
+    {
+      "id": "flowers-meadow-2-06",
+      "type": "flower-patch",
+      "x": 9.0996,
+      "y": 0.12,
+      "z": -11.2009,
+      "rotY": 50.9098,
+      "scale": 0.8638,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 5
+      }
+    },
+    {
+      "id": "flowers-meadow-2-07",
+      "type": "flower-patch",
+      "x": -5.5455,
+      "y": 0.12,
+      "z": -32.1187,
+      "rotY": 99.796,
+      "scale": 0.8026,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 6
+      }
+    },
+    {
+      "id": "flowers-meadow-2-08",
+      "type": "flower-patch",
+      "x": 5.672,
+      "y": 0.12,
+      "z": -21.5689,
+      "rotY": 75.2665,
+      "scale": 1.2218,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 7
+      }
+    },
+    {
+      "id": "flowers-meadow-2-09",
+      "type": "flower-patch",
+      "x": 12.9106,
+      "y": 0.12,
+      "z": -11.0676,
+      "rotY": 40.6046,
+      "scale": 1.1499,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 8
+      }
+    },
+    {
+      "id": "flowers-meadow-2-10",
+      "type": "flower-patch",
+      "x": -17.4914,
+      "y": 0.12,
+      "z": 28.7299,
+      "rotY": 238.6659,
+      "scale": 1.3081,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 9
+      }
+    },
+    {
+      "id": "flowers-meadow-2-11",
+      "type": "flower-patch",
+      "x": 12.0662,
+      "y": 0.12,
+      "z": 8.2528,
+      "rotY": 325.6294,
+      "scale": 0.7841,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 10
+      }
+    },
+    {
+      "id": "flowers-meadow-2-12",
+      "type": "flower-patch",
+      "x": -22.8836,
+      "y": 0.12,
+      "z": -20.0979,
+      "rotY": 138.7082,
+      "scale": 1.2675,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 11
+      }
+    },
+    {
+      "id": "flowers-meadow-2-13",
+      "type": "flower-patch",
+      "x": -18.3745,
+      "y": 0.12,
+      "z": -26.6501,
+      "rotY": 124.5851,
+      "scale": 1.3147,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 12
+      }
+    },
+    {
+      "id": "flowers-meadow-2-14",
+      "type": "flower-patch",
+      "x": 7.0759,
+      "y": 0.12,
+      "z": -34.5799,
+      "rotY": 78.4354,
+      "scale": 0.9989,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 13
+      }
+    },
+    {
+      "id": "flowers-meadow-2-15",
+      "type": "flower-patch",
+      "x": 10.1143,
+      "y": 0.12,
+      "z": 11.6425,
+      "rotY": 310.9822,
+      "scale": 0.7722,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 14
+      }
+    },
+    {
+      "id": "flowers-meadow-2-16",
+      "type": "flower-patch",
+      "x": -14.9085,
+      "y": 0.12,
+      "z": 23.0138,
+      "rotY": 237.0645,
+      "scale": 0.8074,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 15
+      }
+    },
+    {
+      "id": "flowers-meadow-2-17",
+      "type": "flower-patch",
+      "x": 7.105,
+      "y": 0.12,
+      "z": -21.5356,
+      "rotY": 71.7413,
+      "scale": 0.8207,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 16
+      }
+    },
+    {
+      "id": "flowers-meadow-2-18",
+      "type": "flower-patch",
+      "x": 5.1432,
+      "y": 0.12,
+      "z": 12.0851,
+      "rotY": 293.0537,
+      "scale": 1.1692,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 17
+      }
+    },
+    {
+      "id": "flowers-meadow-2-19",
+      "type": "flower-patch",
+      "x": 3.4245,
+      "y": 0.12,
+      "z": -28.109,
+      "rotY": 83.0539,
+      "scale": 0.7954,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 18
+      }
+    },
+    {
+      "id": "flowers-meadow-2-20",
+      "type": "flower-patch",
+      "x": -9.4687,
+      "y": 0.12,
+      "z": -23.5619,
+      "rotY": 111.8934,
+      "scale": 1.0071,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 19
+      }
+    },
+    {
+      "id": "flowers-meadow-2-21",
+      "type": "flower-patch",
+      "x": -14.5455,
+      "y": 0.12,
+      "z": 26.8896,
+      "rotY": 241.5895,
+      "scale": 1.1468,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 20
+      }
+    },
+    {
+      "id": "flowers-meadow-2-22",
+      "type": "flower-patch",
+      "x": -17.6664,
+      "y": 0.12,
+      "z": 15.7321,
+      "rotY": 221.6853,
+      "scale": 1.0844,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 21
+      }
+    },
+    {
+      "id": "flowers-meadow-2-23",
+      "type": "flower-patch",
+      "x": -2.6017,
+      "y": 0.12,
+      "z": 12.2082,
+      "rotY": 257.9697,
+      "scale": 1.2446,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 1,
+        "instanceIndex": 22
+      }
+    },
+    {
+      "id": "flowers-meadow-3-01",
+      "type": "flower-patch",
+      "x": -9.7997,
+      "y": 0.12,
+      "z": 10.308,
+      "rotY": 226.4481,
+      "scale": 0.8102,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 0
+      }
+    },
+    {
+      "id": "flowers-meadow-3-02",
+      "type": "flower-patch",
+      "x": -16.4891,
+      "y": 0.12,
+      "z": -17.3306,
+      "rotY": 133.5748,
+      "scale": 0.9118,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 1
+      }
+    },
+    {
+      "id": "flowers-meadow-3-03",
+      "type": "flower-patch",
+      "x": 15.3001,
+      "y": 0.12,
+      "z": -2.2019,
+      "rotY": 8.1893,
+      "scale": 1.0935,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 2
+      }
+    },
+    {
+      "id": "flowers-meadow-3-04",
+      "type": "flower-patch",
+      "x": 15.0234,
+      "y": 0.12,
+      "z": -12.2174,
+      "rotY": 39.1189,
+      "scale": 1.1696,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 3
+      }
+    },
+    {
+      "id": "flowers-meadow-3-05",
+      "type": "flower-patch",
+      "x": -4.4483,
+      "y": 0.12,
+      "z": 21.1111,
+      "rotY": 258.1014,
+      "scale": 0.8932,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 4
+      }
+    },
+    {
+      "id": "flowers-meadow-3-06",
+      "type": "flower-patch",
+      "x": 10.2044,
+      "y": 0.12,
+      "z": -24.4034,
+      "rotY": 67.3076,
+      "scale": 0.8551,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 5
+      }
+    },
+    {
+      "id": "flowers-meadow-3-07",
+      "type": "flower-patch",
+      "x": 35.778,
+      "y": 0.12,
+      "z": -3.4154,
+      "rotY": 5.4531,
+      "scale": 1.3621,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 6
+      }
+    },
+    {
+      "id": "flowers-meadow-3-08",
+      "type": "flower-patch",
+      "x": -6.0645,
+      "y": 0.12,
+      "z": 13.3779,
+      "rotY": 245.6143,
+      "scale": 0.8655,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 7
+      }
+    },
+    {
+      "id": "flowers-meadow-3-09",
+      "type": "flower-patch",
+      "x": -18.2798,
+      "y": 0.12,
+      "z": 15.0914,
+      "rotY": 219.5424,
+      "scale": 0.8321,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 8
+      }
+    },
+    {
+      "id": "flowers-meadow-3-10",
+      "type": "flower-patch",
+      "x": -8.4048,
+      "y": 0.12,
+      "z": 25.7344,
+      "rotY": 251.9131,
+      "scale": 1.3034,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 9
+      }
+    },
+    {
+      "id": "flowers-meadow-3-11",
+      "type": "flower-patch",
+      "x": 5.7443,
+      "y": 0.12,
+      "z": 20.9234,
+      "rotY": 285.3516,
+      "scale": 0.9119,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 10
+      }
+    },
+    {
+      "id": "flowers-meadow-3-12",
+      "type": "flower-patch",
+      "x": 19.3611,
+      "y": 0.12,
+      "z": -9.277,
+      "rotY": 25.6017,
+      "scale": 1.0766,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 11
+      }
+    },
+    {
+      "id": "flowers-meadow-3-13",
+      "type": "flower-patch",
+      "x": -21.0778,
+      "y": 0.12,
+      "z": 20.1995,
+      "rotY": 223.7812,
+      "scale": 1.1306,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 12
+      }
+    },
+    {
+      "id": "flowers-meadow-3-14",
+      "type": "flower-patch",
+      "x": -14.0761,
+      "y": 0.12,
+      "z": 26.6968,
+      "rotY": 242.1992,
+      "scale": 1.0661,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 13
+      }
+    },
+    {
+      "id": "flowers-meadow-3-15",
+      "type": "flower-patch",
+      "x": -28.8962,
+      "y": 0.12,
+      "z": 2.3244,
+      "rotY": 184.599,
+      "scale": 1.0561,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 14
+      }
+    },
+    {
+      "id": "flowers-meadow-3-16",
+      "type": "flower-patch",
+      "x": 11.291,
+      "y": 0.12,
+      "z": -30.0957,
+      "rotY": 69.4353,
+      "scale": 1.3361,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 15
+      }
+    },
+    {
+      "id": "flowers-meadow-3-17",
+      "type": "flower-patch",
+      "x": 24.7288,
+      "y": 0.12,
+      "z": 3.1576,
+      "rotY": 352.7233,
+      "scale": 0.8588,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 2,
+        "instanceIndex": 16
+      }
+    },
+    {
+      "id": "flowers-meadow-4-01",
+      "type": "flower-patch",
+      "x": 17.2307,
+      "y": 0.12,
+      "z": -18.103,
+      "rotY": 46.4142,
+      "scale": 0.9339,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 0
+      }
+    },
+    {
+      "id": "flowers-meadow-4-02",
+      "type": "flower-patch",
+      "x": -10.9919,
+      "y": 0.12,
+      "z": -21.2637,
+      "rotY": 117.3359,
+      "scale": 1.3995,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 1
+      }
+    },
+    {
+      "id": "flowers-meadow-4-03",
+      "type": "flower-patch",
+      "x": 16.5808,
+      "y": 0.12,
+      "z": -16.1862,
+      "rotY": 44.3101,
+      "scale": 1.3222,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 2
+      }
+    },
+    {
+      "id": "flowers-meadow-4-04",
+      "type": "flower-patch",
+      "x": 5.3165,
+      "y": 0.12,
+      "z": 14.044,
+      "rotY": 290.7345,
+      "scale": 1.3016,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 3
+      }
+    },
+    {
+      "id": "flowers-meadow-4-05",
+      "type": "flower-patch",
+      "x": -4.969,
+      "y": 0.12,
+      "z": -26.7302,
+      "rotY": 100.5308,
+      "scale": 1.3695,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 4
+      }
+    },
+    {
+      "id": "flowers-meadow-4-06",
+      "type": "flower-patch",
+      "x": 8.7767,
+      "y": 0.12,
+      "z": -26.2833,
+      "rotY": 71.5344,
+      "scale": 0.8895,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 5
+      }
+    },
+    {
+      "id": "flowers-meadow-4-07",
+      "type": "flower-patch",
+      "x": 34.9402,
+      "y": 0.12,
+      "z": -7.6559,
+      "rotY": 12.359,
+      "scale": 1.0251,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 6
+      }
+    },
+    {
+      "id": "flowers-meadow-4-08",
+      "type": "flower-patch",
+      "x": 33.0311,
+      "y": 0.12,
+      "z": -9.2845,
+      "rotY": 15.6998,
+      "scale": 0.949,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 7
+      }
+    },
+    {
+      "id": "flowers-meadow-4-09",
+      "type": "flower-patch",
+      "x": -28.2576,
+      "y": 0.12,
+      "z": 6.3644,
+      "rotY": 192.6929,
+      "scale": 1.1839,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 8
+      }
+    },
+    {
+      "id": "flowers-meadow-4-10",
+      "type": "flower-patch",
+      "x": 6.4931,
+      "y": 0.12,
+      "z": 29.0232,
+      "rotY": 282.6107,
+      "scale": 0.9086,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 9
+      }
+    },
+    {
+      "id": "flowers-meadow-4-11",
+      "type": "flower-patch",
+      "x": 21.0751,
+      "y": 0.12,
+      "z": 11.3288,
+      "rotY": 331.74,
+      "scale": 0.8108,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 10
+      }
+    },
+    {
+      "id": "flowers-meadow-4-12",
+      "type": "flower-patch",
+      "x": 3.9631,
+      "y": 0.12,
+      "z": 27.7257,
+      "rotY": 278.1346,
+      "scale": 1.066,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 11
+      }
+    },
+    {
+      "id": "flowers-meadow-4-13",
+      "type": "flower-patch",
+      "x": 29.3951,
+      "y": 0.12,
+      "z": 11.0319,
+      "rotY": 339.429,
+      "scale": 0.91,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 12
+      }
+    },
+    {
+      "id": "flowers-meadow-4-14",
+      "type": "flower-patch",
+      "x": -25.3974,
+      "y": 0.12,
+      "z": 8.5506,
+      "rotY": 198.6068,
+      "scale": 1.3187,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 13
+      }
+    },
+    {
+      "id": "flowers-meadow-4-15",
+      "type": "flower-patch",
+      "x": -6.6636,
+      "y": 0.12,
+      "z": -20.4564,
+      "rotY": 108.0428,
+      "scale": 1.3462,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 14
+      }
+    },
+    {
+      "id": "flowers-meadow-4-16",
+      "type": "flower-patch",
+      "x": 6.6114,
+      "y": 0.12,
+      "z": -13.5852,
+      "rotY": 64.0495,
+      "scale": 1.2587,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 15
+      }
+    },
+    {
+      "id": "flowers-meadow-4-17",
+      "type": "flower-patch",
+      "x": 9.7996,
+      "y": 0.12,
+      "z": -18.4463,
+      "rotY": 62.0204,
+      "scale": 1.0937,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 16
+      }
+    },
+    {
+      "id": "flowers-meadow-4-18",
+      "type": "flower-patch",
+      "x": 6.3424,
+      "y": 0.12,
+      "z": 11.987,
+      "rotY": 297.8838,
+      "scale": 1.0662,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 17
+      }
+    },
+    {
+      "id": "flowers-meadow-4-19",
+      "type": "flower-patch",
+      "x": 16.7306,
+      "y": 0.12,
+      "z": -2.4319,
+      "rotY": 8.2705,
+      "scale": 1.3831,
+      "props": {
+        "source": "expanded-flower",
+        "meshIndex": 3,
+        "instanceIndex": 18
+      }
+    },
+    {
+      "id": "lantern-town-01",
+      "type": "lantern-post",
+      "x": -7.1,
+      "y": 0.0,
+      "z": -3.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 0
+      }
+    },
+    {
+      "id": "lantern-town-02",
+      "type": "lantern-post",
+      "x": 7.1,
+      "y": 0.0,
+      "z": -3.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 1
+      }
+    },
+    {
+      "id": "lantern-town-03",
+      "type": "lantern-post",
+      "x": -7.1,
+      "y": 0.0,
+      "z": 3.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 2
+      }
+    },
+    {
+      "id": "lantern-town-04",
+      "type": "lantern-post",
+      "x": 7.1,
+      "y": 0.0,
+      "z": 3.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 3
+      }
+    },
+    {
+      "id": "lantern-town-05",
+      "type": "lantern-post",
+      "x": 13.0,
+      "y": 0.0,
+      "z": 1.0,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 4
+      }
+    },
+    {
+      "id": "lantern-town-06",
+      "type": "lantern-post",
+      "x": 13.0,
+      "y": 0.0,
+      "z": 9.0,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 5
+      }
+    },
+    {
+      "id": "lantern-town-07",
+      "type": "lantern-post",
+      "x": 21.0,
+      "y": 0.0,
+      "z": 1.0,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 6
+      }
+    },
+    {
+      "id": "lantern-town-08",
+      "type": "lantern-post",
+      "x": 21.0,
+      "y": 0.0,
+      "z": 9.0,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 7
+      }
+    },
+    {
+      "id": "lantern-town-09",
+      "type": "lantern-post",
+      "x": 7.5,
+      "y": 0.0,
+      "z": -5.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 8
+      }
+    },
+    {
+      "id": "lantern-town-10",
+      "type": "lantern-post",
+      "x": 17.0,
+      "y": 0.0,
+      "z": -5.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 9
+      }
+    },
+    {
+      "id": "lantern-town-11",
+      "type": "lantern-post",
+      "x": 7.5,
+      "y": 0.0,
+      "z": 1.15,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 10
+      }
+    },
+    {
+      "id": "lantern-town-12",
+      "type": "lantern-post",
+      "x": 17.0,
+      "y": 0.0,
+      "z": 1.15,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 11
+      }
+    },
+    {
+      "id": "lantern-town-13",
+      "type": "lantern-post",
+      "x": -10.2,
+      "y": 0.0,
+      "z": 4.3,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 12
+      }
+    },
+    {
+      "id": "lantern-town-14",
+      "type": "lantern-post",
+      "x": -16.8,
+      "y": 0.0,
+      "z": 4.3,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 13
+      }
+    },
+    {
+      "id": "lantern-town-15",
+      "type": "lantern-post",
+      "x": -10.2,
+      "y": 0.0,
+      "z": 8.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 14
+      }
+    },
+    {
+      "id": "lantern-town-16",
+      "type": "lantern-post",
+      "x": -16.8,
+      "y": 0.0,
+      "z": 8.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 0.18,
+        "source": "environment-lantern",
+        "instanceIndex": 15
+      }
+    },
+    {
+      "id": "lights-plaza-north",
+      "type": "string-light-run",
+      "x": 0.0,
+      "y": 0.0,
+      "z": -3.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "source": "string-light",
+        "sectionIndex": 0,
+        "height": 4.55,
+        "bulbs": 14,
+        "points": [
+          [
+            -7.1,
+            0.0
+          ],
+          [
+            7.1,
+            0.0
+          ]
+        ]
+      }
+    },
+    {
+      "id": "lights-plaza-south",
+      "type": "string-light-run",
+      "x": 0.0,
+      "y": 0.0,
+      "z": 3.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "source": "string-light",
+        "sectionIndex": 1,
+        "height": 4.45,
+        "bulbs": 14,
+        "points": [
+          [
+            -7.1,
+            0.0
+          ],
+          [
+            7.1,
+            0.0
+          ]
+        ]
+      }
+    },
+    {
+      "id": "lights-festival-west",
+      "type": "string-light-run",
+      "x": 13.0,
+      "y": 0.0,
+      "z": 5.0,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "source": "string-light",
+        "sectionIndex": 2,
+        "height": 4.5,
+        "bulbs": 10,
+        "points": [
+          [
+            0.0,
+            -4.0
+          ],
+          [
+            0.0,
+            4.0
+          ]
+        ]
+      }
+    },
+    {
+      "id": "lights-festival-east",
+      "type": "string-light-run",
+      "x": 21.0,
+      "y": 0.0,
+      "z": 5.0,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "source": "string-light",
+        "sectionIndex": 3,
+        "height": 4.5,
+        "bulbs": 10,
+        "points": [
+          [
+            0.0,
+            -4.0
+          ],
+          [
+            0.0,
+            4.0
+          ]
+        ]
+      }
+    },
+    {
+      "id": "lights-shop-row-north",
+      "type": "string-light-run",
+      "x": 12.25,
+      "y": 0.0,
+      "z": -5.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "source": "string-light",
+        "sectionIndex": 4,
+        "height": 4.15,
+        "bulbs": 11,
+        "points": [
+          [
+            -4.75,
+            0.0
+          ],
+          [
+            4.75,
+            0.0
+          ]
+        ]
+      }
+    },
+    {
+      "id": "lights-shop-row-south",
+      "type": "string-light-run",
+      "x": 12.25,
+      "y": 0.0,
+      "z": 1.15,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "source": "string-light",
+        "sectionIndex": 5,
+        "height": 4.15,
+        "bulbs": 11,
+        "points": [
+          [
+            -4.75,
+            0.0
+          ],
+          [
+            4.75,
+            0.0
+          ]
+        ]
+      }
+    },
+    {
+      "id": "lights-bridge-approach-north",
+      "type": "string-light-run",
+      "x": -13.5,
+      "y": 0.0,
+      "z": 4.3,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "source": "string-light",
+        "sectionIndex": 6,
+        "height": 4.05,
+        "bulbs": 9,
+        "points": [
+          [
+            3.3,
+            0.0
+          ],
+          [
+            -3.3,
+            0.0
+          ]
+        ]
+      }
+    },
+    {
+      "id": "lights-bridge-approach-south",
+      "type": "string-light-run",
+      "x": -13.5,
+      "y": 0.0,
+      "z": 8.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "source": "string-light",
+        "sectionIndex": 7,
+        "height": 4.05,
+        "bulbs": 9,
+        "points": [
+          [
+            3.3,
+            0.0
+          ],
+          [
+            -3.3,
+            0.0
+          ]
+        ]
+      }
+    },
+    {
+      "id": "grass-edge-001",
+      "type": "grass-tuft",
+      "x": 1.5702,
+      "y": 0.13,
+      "z": -28.5883,
+      "rotY": 227.1546,
+      "scale": 1.0987,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 0
+      }
+    },
+    {
+      "id": "grass-edge-002",
+      "type": "grass-tuft",
+      "x": -1.3896,
+      "y": 0.13,
+      "z": -28.5883,
+      "rotY": 227.1546,
+      "scale": 0.7411,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 1
+      }
+    },
+    {
+      "id": "flowers-path-1-01",
+      "type": "flower-patch",
+      "x": -1.725,
+      "y": 0.16,
+      "z": -28.5883,
+      "rotY": 227.1546,
+      "scale": 1.1821,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 0,
+        "instanceIndex": 0
+      }
+    },
+    {
+      "id": "grass-edge-003",
+      "type": "grass-tuft",
+      "x": 1.4614,
+      "y": 0.13,
+      "z": -26.365,
+      "rotY": 315.1991,
+      "scale": 0.9736,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 2
+      }
+    },
+    {
+      "id": "grass-edge-004",
+      "type": "grass-tuft",
+      "x": -1.4408,
+      "y": 0.13,
+      "z": -26.365,
+      "rotY": 315.1991,
+      "scale": 0.8145,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 3
+      }
+    },
+    {
+      "id": "grass-edge-005",
+      "type": "grass-tuft",
+      "x": 1.5614,
+      "y": 0.13,
+      "z": -24.1417,
+      "rotY": 228.5252,
+      "scale": 0.913,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 4
+      }
+    },
+    {
+      "id": "grass-edge-006",
+      "type": "grass-tuft",
+      "x": -1.5837,
+      "y": 0.13,
+      "z": -24.1417,
+      "rotY": 228.5252,
+      "scale": 1.1905,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 5
+      }
+    },
+    {
+      "id": "grass-edge-007",
+      "type": "grass-tuft",
+      "x": 1.4391,
+      "y": 0.13,
+      "z": -21.9183,
+      "rotY": 294.0694,
+      "scale": 0.9896,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 6
+      }
+    },
+    {
+      "id": "grass-edge-008",
+      "type": "grass-tuft",
+      "x": -1.4251,
+      "y": 0.13,
+      "z": -21.9183,
+      "rotY": 294.0694,
+      "scale": 1.0594,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 7
+      }
+    },
+    {
+      "id": "grass-edge-009",
+      "type": "grass-tuft",
+      "x": 1.5067,
+      "y": 0.13,
+      "z": -19.695,
+      "rotY": 279.7733,
+      "scale": 1.321,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 8
+      }
+    },
+    {
+      "id": "grass-edge-010",
+      "type": "grass-tuft",
+      "x": -1.5183,
+      "y": 0.13,
+      "z": -19.695,
+      "rotY": 279.7733,
+      "scale": 0.921,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 9
+      }
+    },
+    {
+      "id": "flowers-path-2-01",
+      "type": "flower-patch",
+      "x": -1.725,
+      "y": 0.16,
+      "z": -19.695,
+      "rotY": 353.8693,
+      "scale": 1.0233,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 1,
+        "instanceIndex": 0
+      }
+    },
+    {
+      "id": "grass-edge-011",
+      "type": "grass-tuft",
+      "x": 1.4441,
+      "y": 0.13,
+      "z": -17.4717,
+      "rotY": 187.5757,
+      "scale": 1.0961,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 10
+      }
+    },
+    {
+      "id": "grass-edge-012",
+      "type": "grass-tuft",
+      "x": -1.5302,
+      "y": 0.13,
+      "z": -17.4717,
+      "rotY": 187.5757,
+      "scale": 1.339,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 11
+      }
+    },
+    {
+      "id": "grass-edge-013",
+      "type": "grass-tuft",
+      "x": 1.4014,
+      "y": 0.13,
+      "z": -15.2483,
+      "rotY": 276.539,
+      "scale": 0.7737,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 12
+      }
+    },
+    {
+      "id": "grass-edge-014",
+      "type": "grass-tuft",
+      "x": -1.4718,
+      "y": 0.13,
+      "z": -15.2483,
+      "rotY": 276.539,
+      "scale": 0.9216,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 13
+      }
+    },
+    {
+      "id": "grass-edge-015",
+      "type": "grass-tuft",
+      "x": 1.4971,
+      "y": 0.13,
+      "z": -13.025,
+      "rotY": 268.5227,
+      "scale": 1.2586,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 14
+      }
+    },
+    {
+      "id": "grass-edge-016",
+      "type": "grass-tuft",
+      "x": -1.513,
+      "y": 0.13,
+      "z": -13.025,
+      "rotY": 268.5227,
+      "scale": 1.0566,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 15
+      }
+    },
+    {
+      "id": "grass-edge-017",
+      "type": "grass-tuft",
+      "x": 1.5727,
+      "y": 0.13,
+      "z": -10.8017,
+      "rotY": 229.898,
+      "scale": 1.3191,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 16
+      }
+    },
+    {
+      "id": "grass-edge-018",
+      "type": "grass-tuft",
+      "x": -1.5053,
+      "y": 0.13,
+      "z": -10.8017,
+      "rotY": 229.898,
+      "scale": 0.7521,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 17
+      }
+    },
+    {
+      "id": "flowers-path-3-01",
+      "type": "flower-patch",
+      "x": -1.725,
+      "y": 0.16,
+      "z": -10.8017,
+      "rotY": 289.4168,
+      "scale": 1.1904,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 2,
+        "instanceIndex": 0
+      }
+    },
+    {
+      "id": "grass-edge-019",
+      "type": "grass-tuft",
+      "x": 1.4809,
+      "y": 0.13,
+      "z": -8.5783,
+      "rotY": 284.2439,
+      "scale": 0.7216,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 18
+      }
+    },
+    {
+      "id": "grass-edge-020",
+      "type": "grass-tuft",
+      "x": -1.6141,
+      "y": 0.13,
+      "z": -8.5783,
+      "rotY": 284.2439,
+      "scale": 0.8936,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 19
+      }
+    },
+    {
+      "id": "grass-edge-021",
+      "type": "grass-tuft",
+      "x": 1.6307,
+      "y": 0.13,
+      "z": -6.355,
+      "rotY": 318.9743,
+      "scale": 1.073,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 20
+      }
+    },
+    {
+      "id": "grass-edge-022",
+      "type": "grass-tuft",
+      "x": -1.5433,
+      "y": 0.13,
+      "z": -6.355,
+      "rotY": 318.9743,
+      "scale": 1.2624,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 21
+      }
+    },
+    {
+      "id": "grass-edge-023",
+      "type": "grass-tuft",
+      "x": 1.5459,
+      "y": 0.13,
+      "z": -4.1317,
+      "rotY": 313.6787,
+      "scale": 1.3313,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 22
+      }
+    },
+    {
+      "id": "grass-edge-024",
+      "type": "grass-tuft",
+      "x": -1.4354,
+      "y": 0.13,
+      "z": -4.1317,
+      "rotY": 313.6787,
+      "scale": 0.9381,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 23
+      }
+    },
+    {
+      "id": "grass-edge-025",
+      "type": "grass-tuft",
+      "x": 1.4804,
+      "y": 0.13,
+      "z": -1.9083,
+      "rotY": 185.0395,
+      "scale": 1.0774,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 24
+      }
+    },
+    {
+      "id": "grass-edge-026",
+      "type": "grass-tuft",
+      "x": -1.6494,
+      "y": 0.13,
+      "z": -1.9083,
+      "rotY": 185.0395,
+      "scale": 0.9181,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 25
+      }
+    },
+    {
+      "id": "flowers-path-1-02",
+      "type": "flower-patch",
+      "x": -1.725,
+      "y": 0.16,
+      "z": -1.9083,
+      "rotY": 202.1424,
+      "scale": 1.0402,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 0,
+        "instanceIndex": 1
+      }
+    },
+    {
+      "id": "grass-edge-027",
+      "type": "grass-tuft",
+      "x": 1.4901,
+      "y": 0.13,
+      "z": 0.315,
+      "rotY": 321.4991,
+      "scale": 1.0861,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 26
+      }
+    },
+    {
+      "id": "grass-edge-028",
+      "type": "grass-tuft",
+      "x": -1.4197,
+      "y": 0.13,
+      "z": 0.315,
+      "rotY": 321.4991,
+      "scale": 0.9578,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 27
+      }
+    },
+    {
+      "id": "grass-edge-029",
+      "type": "grass-tuft",
+      "x": 1.6013,
+      "y": 0.13,
+      "z": 2.5383,
+      "rotY": 305.5937,
+      "scale": 1.2843,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 28
+      }
+    },
+    {
+      "id": "grass-edge-030",
+      "type": "grass-tuft",
+      "x": -1.4382,
+      "y": 0.13,
+      "z": 2.5383,
+      "rotY": 305.5937,
+      "scale": 1.224,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 29
+      }
+    },
+    {
+      "id": "grass-edge-031",
+      "type": "grass-tuft",
+      "x": 1.3995,
+      "y": 0.13,
+      "z": 4.7617,
+      "rotY": 284.4256,
+      "scale": 1.1439,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 30
+      }
+    },
+    {
+      "id": "grass-edge-032",
+      "type": "grass-tuft",
+      "x": -1.4034,
+      "y": 0.13,
+      "z": 4.7617,
+      "rotY": 284.4256,
+      "scale": 0.7413,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 31
+      }
+    },
+    {
+      "id": "grass-edge-033",
+      "type": "grass-tuft",
+      "x": 1.5583,
+      "y": 0.13,
+      "z": 6.985,
+      "rotY": 260.8502,
+      "scale": 0.7413,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 32
+      }
+    },
+    {
+      "id": "grass-edge-034",
+      "type": "grass-tuft",
+      "x": -1.4979,
+      "y": 0.13,
+      "z": 6.985,
+      "rotY": 260.8502,
+      "scale": 1.3361,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 33
+      }
+    },
+    {
+      "id": "flowers-path-2-02",
+      "type": "flower-patch",
+      "x": -1.725,
+      "y": 0.16,
+      "z": 6.985,
+      "rotY": 311.9561,
+      "scale": 0.8864,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 1,
+        "instanceIndex": 1
+      }
+    },
+    {
+      "id": "grass-edge-035",
+      "type": "grass-tuft",
+      "x": 1.4308,
+      "y": 0.13,
+      "z": 9.2083,
+      "rotY": 282.3108,
+      "scale": 1.3324,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 34
+      }
+    },
+    {
+      "id": "grass-edge-036",
+      "type": "grass-tuft",
+      "x": -1.638,
+      "y": 0.13,
+      "z": 9.2083,
+      "rotY": 282.3108,
+      "scale": 0.9693,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 35
+      }
+    },
+    {
+      "id": "grass-edge-037",
+      "type": "grass-tuft",
+      "x": 1.3861,
+      "y": 0.13,
+      "z": 11.4317,
+      "rotY": 292.1593,
+      "scale": 1.189,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 36
+      }
+    },
+    {
+      "id": "grass-edge-038",
+      "type": "grass-tuft",
+      "x": -1.5769,
+      "y": 0.13,
+      "z": 11.4317,
+      "rotY": 292.1593,
+      "scale": 1.2546,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 37
+      }
+    },
+    {
+      "id": "grass-edge-039",
+      "type": "grass-tuft",
+      "x": 1.4928,
+      "y": 0.13,
+      "z": 13.655,
+      "rotY": 326.5204,
+      "scale": 1.0357,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 38
+      }
+    },
+    {
+      "id": "grass-edge-040",
+      "type": "grass-tuft",
+      "x": -1.585,
+      "y": 0.13,
+      "z": 13.655,
+      "rotY": 326.5204,
+      "scale": 1.2411,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 39
+      }
+    },
+    {
+      "id": "grass-edge-041",
+      "type": "grass-tuft",
+      "x": 1.5923,
+      "y": 0.13,
+      "z": 15.8783,
+      "rotY": 326.3774,
+      "scale": 1.1802,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 40
+      }
+    },
+    {
+      "id": "grass-edge-042",
+      "type": "grass-tuft",
+      "x": -1.467,
+      "y": 0.13,
+      "z": 15.8783,
+      "rotY": 326.3774,
+      "scale": 0.9896,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 41
+      }
+    },
+    {
+      "id": "flowers-path-3-02",
+      "type": "flower-patch",
+      "x": -1.725,
+      "y": 0.16,
+      "z": 15.8783,
+      "rotY": 292.1484,
+      "scale": 0.8676,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 2,
+        "instanceIndex": 1
+      }
+    },
+    {
+      "id": "grass-edge-043",
+      "type": "grass-tuft",
+      "x": 1.6438,
+      "y": 0.13,
+      "z": 18.1017,
+      "rotY": 347.1096,
+      "scale": 0.9367,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 42
+      }
+    },
+    {
+      "id": "grass-edge-044",
+      "type": "grass-tuft",
+      "x": -1.5612,
+      "y": 0.13,
+      "z": 18.1017,
+      "rotY": 347.1096,
+      "scale": 1.2535,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 43
+      }
+    },
+    {
+      "id": "grass-edge-045",
+      "type": "grass-tuft",
+      "x": 1.5045,
+      "y": 0.13,
+      "z": 20.325,
+      "rotY": 225.6213,
+      "scale": 1.0127,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 44
+      }
+    },
+    {
+      "id": "grass-edge-046",
+      "type": "grass-tuft",
+      "x": -1.5182,
+      "y": 0.13,
+      "z": 20.325,
+      "rotY": 225.6213,
+      "scale": 1.0665,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 45
+      }
+    },
+    {
+      "id": "grass-edge-047",
+      "type": "grass-tuft",
+      "x": 1.5482,
+      "y": 0.13,
+      "z": 22.5483,
+      "rotY": 292.1383,
+      "scale": 0.8356,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 46
+      }
+    },
+    {
+      "id": "grass-edge-048",
+      "type": "grass-tuft",
+      "x": -1.6243,
+      "y": 0.13,
+      "z": 22.5483,
+      "rotY": 292.1383,
+      "scale": 1.2282,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 47
+      }
+    },
+    {
+      "id": "grass-edge-049",
+      "type": "grass-tuft",
+      "x": 1.6033,
+      "y": 0.13,
+      "z": 24.7717,
+      "rotY": 181.1398,
+      "scale": 0.761,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 48
+      }
+    },
+    {
+      "id": "grass-edge-050",
+      "type": "grass-tuft",
+      "x": -1.6282,
+      "y": 0.13,
+      "z": 24.7717,
+      "rotY": 181.1398,
+      "scale": 1.2079,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 49
+      }
+    },
+    {
+      "id": "flowers-path-1-03",
+      "type": "flower-patch",
+      "x": -1.725,
+      "y": 0.16,
+      "z": 24.7717,
+      "rotY": 256.4249,
+      "scale": 0.9516,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 0,
+        "instanceIndex": 2
+      }
+    },
+    {
+      "id": "grass-edge-051",
+      "type": "grass-tuft",
+      "x": 1.575,
+      "y": 0.13,
+      "z": 26.995,
+      "rotY": 225.65,
+      "scale": 1.1106,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 50
+      }
+    },
+    {
+      "id": "grass-edge-052",
+      "type": "grass-tuft",
+      "x": -1.5516,
+      "y": 0.13,
+      "z": 26.995,
+      "rotY": 225.65,
+      "scale": 1.1637,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 51
+      }
+    },
+    {
+      "id": "grass-edge-053",
+      "type": "grass-tuft",
+      "x": 1.5135,
+      "y": 0.13,
+      "z": 29.2183,
+      "rotY": 216.719,
+      "scale": 1.1307,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 52
+      }
+    },
+    {
+      "id": "grass-edge-054",
+      "type": "grass-tuft",
+      "x": -1.4061,
+      "y": 0.13,
+      "z": 29.2183,
+      "rotY": 216.719,
+      "scale": 0.9265,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 53
+      }
+    },
+    {
+      "id": "grass-edge-055",
+      "type": "grass-tuft",
+      "x": 1.4104,
+      "y": 0.13,
+      "z": 31.4417,
+      "rotY": 337.2033,
+      "scale": 0.9515,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 54
+      }
+    },
+    {
+      "id": "grass-edge-056",
+      "type": "grass-tuft",
+      "x": -1.4937,
+      "y": 0.13,
+      "z": 31.4417,
+      "rotY": 337.2033,
+      "scale": 0.8201,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 55
+      }
+    },
+    {
+      "id": "grass-edge-057",
+      "type": "grass-tuft",
+      "x": 1.5675,
+      "y": 0.13,
+      "z": 33.665,
+      "rotY": 287.2441,
+      "scale": 0.928,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 56
+      }
+    },
+    {
+      "id": "grass-edge-058",
+      "type": "grass-tuft",
+      "x": -1.6134,
+      "y": 0.13,
+      "z": 33.665,
+      "rotY": 287.2441,
+      "scale": 1.126,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 57
+      }
+    },
+    {
+      "id": "flowers-path-2-03",
+      "type": "flower-patch",
+      "x": -1.725,
+      "y": 0.16,
+      "z": 33.665,
+      "rotY": 247.3327,
+      "scale": 1.1753,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 1,
+        "instanceIndex": 2
+      }
+    },
+    {
+      "id": "grass-edge-059",
+      "type": "grass-tuft",
+      "x": 1.5788,
+      "y": 0.13,
+      "z": 35.8883,
+      "rotY": 208.447,
+      "scale": 0.7948,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 58
+      }
+    },
+    {
+      "id": "grass-edge-060",
+      "type": "grass-tuft",
+      "x": -1.4104,
+      "y": 0.13,
+      "z": 35.8883,
+      "rotY": 208.447,
+      "scale": 0.726,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 59
+      }
+    },
+    {
+      "id": "grass-edge-061",
+      "type": "grass-tuft",
+      "x": -34.8,
+      "y": 0.13,
+      "z": -1.5285,
+      "rotY": 350.6218,
+      "scale": 1.3002,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 60
+      }
+    },
+    {
+      "id": "grass-edge-062",
+      "type": "grass-tuft",
+      "x": -34.8,
+      "y": 0.13,
+      "z": 1.6547,
+      "rotY": 350.6218,
+      "scale": 0.7534,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 61
+      }
+    },
+    {
+      "id": "grass-edge-063",
+      "type": "grass-tuft",
+      "x": -32.4,
+      "y": 0.13,
+      "z": -1.5621,
+      "rotY": 309.0708,
+      "scale": 1.0349,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 62
+      }
+    },
+    {
+      "id": "grass-edge-064",
+      "type": "grass-tuft",
+      "x": -32.4,
+      "y": 0.13,
+      "z": 1.4471,
+      "rotY": 309.0708,
+      "scale": 1.1989,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 63
+      }
+    },
+    {
+      "id": "flowers-path-3-03",
+      "type": "flower-patch",
+      "x": -32.4,
+      "y": 0.16,
+      "z": -1.725,
+      "rotY": 247.1481,
+      "scale": 0.9029,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 2,
+        "instanceIndex": 2
+      }
+    },
+    {
+      "id": "grass-edge-065",
+      "type": "grass-tuft",
+      "x": -30.0,
+      "y": 0.13,
+      "z": -1.6456,
+      "rotY": 273.0237,
+      "scale": 1.1927,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 64
+      }
+    },
+    {
+      "id": "grass-edge-066",
+      "type": "grass-tuft",
+      "x": -30.0,
+      "y": 0.13,
+      "z": 1.5302,
+      "rotY": 273.0237,
+      "scale": 0.7996,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 65
+      }
+    },
+    {
+      "id": "grass-edge-067",
+      "type": "grass-tuft",
+      "x": -27.6,
+      "y": 0.13,
+      "z": -1.3898,
+      "rotY": 265.9349,
+      "scale": 0.8708,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 66
+      }
+    },
+    {
+      "id": "grass-edge-068",
+      "type": "grass-tuft",
+      "x": -27.6,
+      "y": 0.13,
+      "z": 1.4277,
+      "rotY": 265.9349,
+      "scale": 1.2687,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 67
+      }
+    },
+    {
+      "id": "grass-edge-069",
+      "type": "grass-tuft",
+      "x": -25.2,
+      "y": 0.13,
+      "z": -1.4584,
+      "rotY": 266.1225,
+      "scale": 1.0717,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 68
+      }
+    },
+    {
+      "id": "grass-edge-070",
+      "type": "grass-tuft",
+      "x": -25.2,
+      "y": 0.13,
+      "z": 1.6232,
+      "rotY": 266.1225,
+      "scale": 0.8641,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 69
+      }
+    },
+    {
+      "id": "grass-edge-071",
+      "type": "grass-tuft",
+      "x": -22.8,
+      "y": 0.13,
+      "z": -1.4831,
+      "rotY": 189.3768,
+      "scale": 1.307,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 70
+      }
+    },
+    {
+      "id": "grass-edge-072",
+      "type": "grass-tuft",
+      "x": -22.8,
+      "y": 0.13,
+      "z": 1.4978,
+      "rotY": 189.3768,
+      "scale": 1.1699,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 71
+      }
+    },
+    {
+      "id": "flowers-path-1-04",
+      "type": "flower-patch",
+      "x": -22.8,
+      "y": 0.16,
+      "z": -1.725,
+      "rotY": 265.7062,
+      "scale": 1.293,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 0,
+        "instanceIndex": 3
+      }
+    },
+    {
+      "id": "grass-edge-073",
+      "type": "grass-tuft",
+      "x": -20.4,
+      "y": 0.13,
+      "z": -1.5992,
+      "rotY": 183.3696,
+      "scale": 0.9871,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 72
+      }
+    },
+    {
+      "id": "grass-edge-074",
+      "type": "grass-tuft",
+      "x": -20.4,
+      "y": 0.13,
+      "z": 1.4467,
+      "rotY": 183.3696,
+      "scale": 1.2919,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 73
+      }
+    },
+    {
+      "id": "grass-edge-075",
+      "type": "grass-tuft",
+      "x": -18.0,
+      "y": 0.13,
+      "z": -1.4416,
+      "rotY": 197.736,
+      "scale": 1.3038,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 74
+      }
+    },
+    {
+      "id": "grass-edge-076",
+      "type": "grass-tuft",
+      "x": -18.0,
+      "y": 0.13,
+      "z": 1.6159,
+      "rotY": 197.736,
+      "scale": 1.1034,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 75
+      }
+    },
+    {
+      "id": "grass-edge-077",
+      "type": "grass-tuft",
+      "x": -15.6,
+      "y": 0.13,
+      "z": -1.638,
+      "rotY": 193.3527,
+      "scale": 0.8188,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 76
+      }
+    },
+    {
+      "id": "grass-edge-078",
+      "type": "grass-tuft",
+      "x": -15.6,
+      "y": 0.13,
+      "z": 1.4601,
+      "rotY": 193.3527,
+      "scale": 1.0726,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 77
+      }
+    },
+    {
+      "id": "grass-edge-079",
+      "type": "grass-tuft",
+      "x": -13.2,
+      "y": 0.13,
+      "z": -1.6391,
+      "rotY": 240.2637,
+      "scale": 0.8969,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 78
+      }
+    },
+    {
+      "id": "grass-edge-080",
+      "type": "grass-tuft",
+      "x": -13.2,
+      "y": 0.13,
+      "z": 1.5252,
+      "rotY": 240.2637,
+      "scale": 1.0692,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 79
+      }
+    },
+    {
+      "id": "flowers-path-2-04",
+      "type": "flower-patch",
+      "x": -13.2,
+      "y": 0.16,
+      "z": -1.725,
+      "rotY": 312.5477,
+      "scale": 0.9812,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 1,
+        "instanceIndex": 3
+      }
+    },
+    {
+      "id": "grass-edge-081",
+      "type": "grass-tuft",
+      "x": -10.8,
+      "y": 0.13,
+      "z": -1.4447,
+      "rotY": 186.213,
+      "scale": 1.1483,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 80
+      }
+    },
+    {
+      "id": "grass-edge-082",
+      "type": "grass-tuft",
+      "x": -10.8,
+      "y": 0.13,
+      "z": 1.5765,
+      "rotY": 186.213,
+      "scale": 1.1661,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 81
+      }
+    },
+    {
+      "id": "grass-edge-083",
+      "type": "grass-tuft",
+      "x": -8.4,
+      "y": 0.13,
+      "z": -1.6251,
+      "rotY": 312.5245,
+      "scale": 0.9885,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 82
+      }
+    },
+    {
+      "id": "grass-edge-084",
+      "type": "grass-tuft",
+      "x": -8.4,
+      "y": 0.13,
+      "z": 1.5157,
+      "rotY": 312.5245,
+      "scale": 1.2466,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 83
+      }
+    },
+    {
+      "id": "grass-edge-085",
+      "type": "grass-tuft",
+      "x": -6.0,
+      "y": 0.13,
+      "z": -1.637,
+      "rotY": 207.5891,
+      "scale": 1.0907,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 84
+      }
+    },
+    {
+      "id": "grass-edge-086",
+      "type": "grass-tuft",
+      "x": -6.0,
+      "y": 0.13,
+      "z": 1.449,
+      "rotY": 207.5891,
+      "scale": 1.1851,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 85
+      }
+    },
+    {
+      "id": "grass-edge-087",
+      "type": "grass-tuft",
+      "x": -3.6,
+      "y": 0.13,
+      "z": -1.4756,
+      "rotY": 305.5219,
+      "scale": 0.9702,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 86
+      }
+    },
+    {
+      "id": "grass-edge-088",
+      "type": "grass-tuft",
+      "x": -3.6,
+      "y": 0.13,
+      "z": 1.4693,
+      "rotY": 305.5219,
+      "scale": 0.8939,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 87
+      }
+    },
+    {
+      "id": "flowers-path-3-04",
+      "type": "flower-patch",
+      "x": -3.6,
+      "y": 0.16,
+      "z": -1.725,
+      "rotY": 238.7815,
+      "scale": 1.1677,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 2,
+        "instanceIndex": 3
+      }
+    },
+    {
+      "id": "grass-edge-089",
+      "type": "grass-tuft",
+      "x": -1.2,
+      "y": 0.13,
+      "z": -1.6205,
+      "rotY": 224.488,
+      "scale": 1.3301,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 88
+      }
+    },
+    {
+      "id": "grass-edge-090",
+      "type": "grass-tuft",
+      "x": -1.2,
+      "y": 0.13,
+      "z": 1.4342,
+      "rotY": 224.488,
+      "scale": 0.7687,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 89
+      }
+    },
+    {
+      "id": "grass-edge-091",
+      "type": "grass-tuft",
+      "x": 1.2,
+      "y": 0.13,
+      "z": -1.5595,
+      "rotY": 229.0001,
+      "scale": 1.182,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 90
+      }
+    },
+    {
+      "id": "grass-edge-092",
+      "type": "grass-tuft",
+      "x": 1.2,
+      "y": 0.13,
+      "z": 1.5847,
+      "rotY": 229.0001,
+      "scale": 1.2137,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 91
+      }
+    },
+    {
+      "id": "grass-edge-093",
+      "type": "grass-tuft",
+      "x": 3.6,
+      "y": 0.13,
+      "z": -1.6477,
+      "rotY": 223.1827,
+      "scale": 0.8304,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 92
+      }
+    },
+    {
+      "id": "grass-edge-094",
+      "type": "grass-tuft",
+      "x": 3.6,
+      "y": 0.13,
+      "z": 1.485,
+      "rotY": 223.1827,
+      "scale": 1.175,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 93
+      }
+    },
+    {
+      "id": "grass-edge-095",
+      "type": "grass-tuft",
+      "x": 6.0,
+      "y": 0.13,
+      "z": -1.5862,
+      "rotY": 320.2112,
+      "scale": 1.3378,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 94
+      }
+    },
+    {
+      "id": "grass-edge-096",
+      "type": "grass-tuft",
+      "x": 6.0,
+      "y": 0.13,
+      "z": 1.488,
+      "rotY": 320.2112,
+      "scale": 1.2005,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 95
+      }
+    },
+    {
+      "id": "flowers-path-1-05",
+      "type": "flower-patch",
+      "x": 6.0,
+      "y": 0.16,
+      "z": -1.725,
+      "rotY": 185.232,
+      "scale": 0.9722,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 0,
+        "instanceIndex": 4
+      }
+    },
+    {
+      "id": "grass-edge-097",
+      "type": "grass-tuft",
+      "x": 8.4,
+      "y": 0.13,
+      "z": -1.4003,
+      "rotY": 302.4773,
+      "scale": 1.0049,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 96
+      }
+    },
+    {
+      "id": "grass-edge-098",
+      "type": "grass-tuft",
+      "x": 8.4,
+      "y": 0.13,
+      "z": 1.4083,
+      "rotY": 302.4773,
+      "scale": 1.0565,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 97
+      }
+    },
+    {
+      "id": "grass-edge-099",
+      "type": "grass-tuft",
+      "x": 10.8,
+      "y": 0.13,
+      "z": -1.5592,
+      "rotY": 300.5759,
+      "scale": 1.1743,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 98
+      }
+    },
+    {
+      "id": "grass-edge-100",
+      "type": "grass-tuft",
+      "x": 10.8,
+      "y": 0.13,
+      "z": 1.4456,
+      "rotY": 300.5759,
+      "scale": 1.1653,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 99
+      }
+    },
+    {
+      "id": "grass-edge-101",
+      "type": "grass-tuft",
+      "x": 13.2,
+      "y": 0.13,
+      "z": -1.3995,
+      "rotY": 317.5177,
+      "scale": 0.8096,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 100
+      }
+    },
+    {
+      "id": "grass-edge-102",
+      "type": "grass-tuft",
+      "x": 13.2,
+      "y": 0.13,
+      "z": 1.4411,
+      "rotY": 317.5177,
+      "scale": 1.0211,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 101
+      }
+    },
+    {
+      "id": "grass-edge-103",
+      "type": "grass-tuft",
+      "x": 15.6,
+      "y": 0.13,
+      "z": -1.4548,
+      "rotY": 320.1263,
+      "scale": 0.8388,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 102
+      }
+    },
+    {
+      "id": "grass-edge-104",
+      "type": "grass-tuft",
+      "x": 15.6,
+      "y": 0.13,
+      "z": 1.5488,
+      "rotY": 320.1263,
+      "scale": 0.7763,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 103
+      }
+    },
+    {
+      "id": "flowers-path-2-05",
+      "type": "flower-patch",
+      "x": 15.6,
+      "y": 0.16,
+      "z": -1.725,
+      "rotY": 249.9992,
+      "scale": 1.0587,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 1,
+        "instanceIndex": 4
+      }
+    },
+    {
+      "id": "grass-edge-105",
+      "type": "grass-tuft",
+      "x": 18.0,
+      "y": 0.13,
+      "z": -1.5733,
+      "rotY": 319.0673,
+      "scale": 0.8181,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 104
+      }
+    },
+    {
+      "id": "grass-edge-106",
+      "type": "grass-tuft",
+      "x": 18.0,
+      "y": 0.13,
+      "z": 1.5246,
+      "rotY": 319.0673,
+      "scale": 1.0462,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 105
+      }
+    },
+    {
+      "id": "grass-edge-107",
+      "type": "grass-tuft",
+      "x": 20.4,
+      "y": 0.13,
+      "z": -1.5472,
+      "rotY": 314.1258,
+      "scale": 0.8593,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 106
+      }
+    },
+    {
+      "id": "grass-edge-108",
+      "type": "grass-tuft",
+      "x": 20.4,
+      "y": 0.13,
+      "z": 1.4343,
+      "rotY": 314.1258,
+      "scale": 0.9547,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 107
+      }
+    },
+    {
+      "id": "grass-edge-109",
+      "type": "grass-tuft",
+      "x": 22.8,
+      "y": 0.13,
+      "z": -1.4545,
+      "rotY": 227.8946,
+      "scale": 1.3089,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 108
+      }
+    },
+    {
+      "id": "grass-edge-110",
+      "type": "grass-tuft",
+      "x": 22.8,
+      "y": 0.13,
+      "z": 1.5426,
+      "rotY": 227.8946,
+      "scale": 1.2757,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 109
+      }
+    },
+    {
+      "id": "grass-edge-111",
+      "type": "grass-tuft",
+      "x": 25.2,
+      "y": 0.13,
+      "z": -1.4378,
+      "rotY": 198.0988,
+      "scale": 0.7427,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 110
+      }
+    },
+    {
+      "id": "grass-edge-112",
+      "type": "grass-tuft",
+      "x": 25.2,
+      "y": 0.13,
+      "z": 1.3846,
+      "rotY": 198.0988,
+      "scale": 0.9421,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 111
+      }
+    },
+    {
+      "id": "flowers-path-3-05",
+      "type": "flower-patch",
+      "x": 25.2,
+      "y": 0.16,
+      "z": -1.725,
+      "rotY": 252.5774,
+      "scale": 0.9674,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 2,
+        "instanceIndex": 4
+      }
+    },
+    {
+      "id": "grass-edge-113",
+      "type": "grass-tuft",
+      "x": 27.6,
+      "y": 0.13,
+      "z": -1.4828,
+      "rotY": 285.7428,
+      "scale": 0.9072,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 112
+      }
+    },
+    {
+      "id": "grass-edge-114",
+      "type": "grass-tuft",
+      "x": 27.6,
+      "y": 0.13,
+      "z": 1.3807,
+      "rotY": 285.7428,
+      "scale": 1.2418,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 113
+      }
+    },
+    {
+      "id": "grass-edge-115",
+      "type": "grass-tuft",
+      "x": 30.0,
+      "y": 0.13,
+      "z": -1.4776,
+      "rotY": 263.638,
+      "scale": 1.2155,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 114
+      }
+    },
+    {
+      "id": "grass-edge-116",
+      "type": "grass-tuft",
+      "x": 30.0,
+      "y": 0.13,
+      "z": 1.3953,
+      "rotY": 263.638,
+      "scale": 1.0328,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 115
+      }
+    },
+    {
+      "id": "grass-edge-117",
+      "type": "grass-tuft",
+      "x": 32.4,
+      "y": 0.13,
+      "z": -1.5579,
+      "rotY": 335.624,
+      "scale": 0.7587,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 116
+      }
+    },
+    {
+      "id": "grass-edge-118",
+      "type": "grass-tuft",
+      "x": 32.4,
+      "y": 0.13,
+      "z": 1.5615,
+      "rotY": 335.624,
+      "scale": 1.0384,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 117
+      }
+    },
+    {
+      "id": "grass-edge-119",
+      "type": "grass-tuft",
+      "x": 34.8,
+      "y": 0.13,
+      "z": -1.619,
+      "rotY": 234.2316,
+      "scale": 1.0078,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 118
+      }
+    },
+    {
+      "id": "grass-edge-120",
+      "type": "grass-tuft",
+      "x": 34.8,
+      "y": 0.13,
+      "z": 1.4495,
+      "rotY": 234.2316,
+      "scale": 1.1853,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 119
+      }
+    },
+    {
+      "id": "flowers-path-1-06",
+      "type": "flower-patch",
+      "x": 34.8,
+      "y": 0.16,
+      "z": -1.725,
+      "rotY": 251.7982,
+      "scale": 0.889,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 0,
+        "instanceIndex": 5
+      }
+    },
+    {
+      "id": "grass-edge-121",
+      "type": "grass-tuft",
+      "x": -8.3248,
+      "y": 0.13,
+      "z": 0.282,
+      "rotY": 343.3288,
+      "scale": 1.2672,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 120
+      }
+    },
+    {
+      "id": "grass-edge-122",
+      "type": "grass-tuft",
+      "x": -6.8623,
+      "y": 0.13,
+      "z": -1.3632,
+      "rotY": 343.3288,
+      "scale": 1.0581,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 121
+      }
+    },
+    {
+      "id": "grass-edge-123",
+      "type": "grass-tuft",
+      "x": -9.5388,
+      "y": 0.13,
+      "z": -0.7689,
+      "rotY": 262.9209,
+      "scale": 1.2082,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 122
+      }
+    },
+    {
+      "id": "grass-edge-124",
+      "type": "grass-tuft",
+      "x": -7.9996,
+      "y": 0.13,
+      "z": -2.5005,
+      "rotY": 262.9209,
+      "scale": 1.0086,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 123
+      }
+    },
+    {
+      "id": "grass-edge-125",
+      "type": "grass-tuft",
+      "x": -10.7799,
+      "y": 0.13,
+      "z": -1.7893,
+      "rotY": 312.7698,
+      "scale": 0.8447,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 124
+      }
+    },
+    {
+      "id": "grass-edge-126",
+      "type": "grass-tuft",
+      "x": -9.1222,
+      "y": 0.13,
+      "z": -3.6542,
+      "rotY": 312.7698,
+      "scale": 1.1577,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 125
+      }
+    },
+    {
+      "id": "flowers-path-2-06",
+      "type": "flower-patch",
+      "x": -9.0699,
+      "y": 0.16,
+      "z": -3.713,
+      "rotY": 292.1484,
+      "scale": 0.9554,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 1,
+        "instanceIndex": 5
+      }
+    },
+    {
+      "id": "grass-edge-127",
+      "type": "grass-tuft",
+      "x": -11.9627,
+      "y": 0.13,
+      "z": -2.8753,
+      "rotY": 327.4713,
+      "scale": 1.2176,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 126
+      }
+    },
+    {
+      "id": "grass-edge-128",
+      "type": "grass-tuft",
+      "x": -10.368,
+      "y": 0.13,
+      "z": -4.6693,
+      "rotY": 327.4713,
+      "scale": 0.7862,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 127
+      }
+    },
+    {
+      "id": "grass-edge-129",
+      "type": "grass-tuft",
+      "x": -13.2132,
+      "y": 0.13,
+      "z": -3.8851,
+      "rotY": 292.1233,
+      "scale": 0.9612,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 128
+      }
+    },
+    {
+      "id": "grass-edge-130",
+      "type": "grass-tuft",
+      "x": -11.6936,
+      "y": 0.13,
+      "z": -5.5947,
+      "rotY": 292.1233,
+      "scale": 1.1818,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 129
+      }
+    },
+    {
+      "id": "grass-edge-131",
+      "type": "grass-tuft",
+      "x": -14.4395,
+      "y": 0.13,
+      "z": -4.9223,
+      "rotY": 349.0034,
+      "scale": 0.7743,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 130
+      }
+    },
+    {
+      "id": "grass-edge-132",
+      "type": "grass-tuft",
+      "x": -12.7176,
+      "y": 0.13,
+      "z": -6.8594,
+      "rotY": 349.0034,
+      "scale": 0.83,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 131
+      }
+    },
+    {
+      "id": "grass-edge-133",
+      "type": "grass-tuft",
+      "x": -15.6362,
+      "y": 0.13,
+      "z": -5.9926,
+      "rotY": 288.4842,
+      "scale": 0.8961,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 132
+      }
+    },
+    {
+      "id": "grass-edge-134",
+      "type": "grass-tuft",
+      "x": -14.0673,
+      "y": 0.13,
+      "z": -7.7576,
+      "rotY": 288.4842,
+      "scale": 1.2161,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 133
+      }
+    },
+    {
+      "id": "flowers-path-3-06",
+      "type": "flower-patch",
+      "x": -13.8699,
+      "y": 0.16,
+      "z": -7.9797,
+      "rotY": 256.4249,
+      "scale": 0.9347,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 2,
+        "instanceIndex": 5
+      }
+    },
+    {
+      "id": "grass-edge-135",
+      "type": "grass-tuft",
+      "x": -16.8077,
+      "y": 0.13,
+      "z": -7.0914,
+      "rotY": 300.7864,
+      "scale": 0.8052,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 134
+      }
+    },
+    {
+      "id": "grass-edge-136",
+      "type": "grass-tuft",
+      "x": -15.2074,
+      "y": 0.13,
+      "z": -8.8917,
+      "rotY": 300.7864,
+      "scale": 0.9288,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 135
+      }
+    },
+    {
+      "id": "grass-edge-137",
+      "type": "grass-tuft",
+      "x": -18.0645,
+      "y": 0.13,
+      "z": -8.0941,
+      "rotY": 191.7502,
+      "scale": 1.0636,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 136
+      }
+    },
+    {
+      "id": "grass-edge-138",
+      "type": "grass-tuft",
+      "x": -16.3749,
+      "y": 0.13,
+      "z": -9.9949,
+      "rotY": 191.7502,
+      "scale": 1.032,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 137
+      }
+    },
+    {
+      "id": "grass-edge-139",
+      "type": "grass-tuft",
+      "x": -19.149,
+      "y": 0.13,
+      "z": -9.2907,
+      "rotY": 225.0248,
+      "scale": 1.0397,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 138
+      }
+    },
+    {
+      "id": "grass-edge-140",
+      "type": "grass-tuft",
+      "x": -17.5526,
+      "y": 0.13,
+      "z": -11.0867,
+      "rotY": 225.0248,
+      "scale": 1.2834,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 139
+      }
+    },
+    {
+      "id": "grass-edge-141",
+      "type": "grass-tuft",
+      "x": -20.4345,
+      "y": 0.13,
+      "z": -10.2612,
+      "rotY": 261.3529,
+      "scale": 1.1342,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 140
+      }
+    },
+    {
+      "id": "grass-edge-142",
+      "type": "grass-tuft",
+      "x": -18.7561,
+      "y": 0.13,
+      "z": -12.1494,
+      "rotY": 261.3529,
+      "scale": 0.8919,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 141
+      }
+    },
+    {
+      "id": "flowers-path-1-07",
+      "type": "flower-patch",
+      "x": -18.6699,
+      "y": 0.16,
+      "z": -12.2464,
+      "rotY": 247.3327,
+      "scale": 1.153,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 0,
+        "instanceIndex": 6
+      }
+    },
+    {
+      "id": "grass-edge-143",
+      "type": "grass-tuft",
+      "x": -21.6778,
+      "y": 0.13,
+      "z": -11.2792,
+      "rotY": 213.5206,
+      "scale": 0.7841,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 142
+      }
+    },
+    {
+      "id": "grass-edge-144",
+      "type": "grass-tuft",
+      "x": -19.9617,
+      "y": 0.13,
+      "z": -13.2098,
+      "rotY": 213.5206,
+      "scale": 0.779,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 143
+      }
+    },
+    {
+      "id": "grass-edge-145",
+      "type": "grass-tuft",
+      "x": -22.8014,
+      "y": 0.13,
+      "z": -12.4318,
+      "rotY": 350.6807,
+      "scale": 0.8957,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 144
+      }
+    },
+    {
+      "id": "grass-edge-146",
+      "type": "grass-tuft",
+      "x": -21.2287,
+      "y": 0.13,
+      "z": -14.2011,
+      "rotY": 350.6807,
+      "scale": 1.2168,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 145
+      }
+    },
+    {
+      "id": "grass-edge-147",
+      "type": "grass-tuft",
+      "x": -23.916,
+      "y": 0.13,
+      "z": -13.5945,
+      "rotY": 318.4154,
+      "scale": 0.7709,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 146
+      }
+    },
+    {
+      "id": "grass-edge-148",
+      "type": "grass-tuft",
+      "x": -22.459,
+      "y": 0.13,
+      "z": -15.2336,
+      "rotY": 318.4154,
+      "scale": 1.1234,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 147
+      }
+    },
+    {
+      "id": "grass-edge-149",
+      "type": "grass-tuft",
+      "x": -25.1399,
+      "y": 0.13,
+      "z": -14.6342,
+      "rotY": 272.0705,
+      "scale": 1.305,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 148
+      }
+    },
+    {
+      "id": "grass-edge-150",
+      "type": "grass-tuft",
+      "x": -23.5356,
+      "y": 0.13,
+      "z": -16.4392,
+      "rotY": 272.0705,
+      "scale": 0.964,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 149
+      }
+    },
+    {
+      "id": "flowers-path-2-07",
+      "type": "flower-patch",
+      "x": -23.4699,
+      "y": 0.16,
+      "z": -16.513,
+      "rotY": 339.2674,
+      "scale": 1.0506,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 1,
+        "instanceIndex": 6
+      }
+    },
+    {
+      "id": "grass-edge-151",
+      "type": "grass-tuft",
+      "x": 6.7437,
+      "y": 0.13,
+      "z": -1.3697,
+      "rotY": 251.9092,
+      "scale": 1.1521,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 150
+      }
+    },
+    {
+      "id": "grass-edge-152",
+      "type": "grass-tuft",
+      "x": 8.5138,
+      "y": 0.13,
+      "z": 0.2141,
+      "rotY": 251.9092,
+      "scale": 0.9287,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 151
+      }
+    },
+    {
+      "id": "flowers-path-1-08",
+      "type": "flower-patch",
+      "x": 8.61,
+      "y": 0.16,
+      "z": 0.3002,
+      "rotY": 299.1826,
+      "scale": 1.1821,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 0,
+        "instanceIndex": 7
+      }
+    },
+    {
+      "id": "grass-edge-153",
+      "type": "grass-tuft",
+      "x": 7.8101,
+      "y": 0.13,
+      "z": -2.6962,
+      "rotY": 348.6222,
+      "scale": 1.3067,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 152
+      }
+    },
+    {
+      "id": "grass-edge-154",
+      "type": "grass-tuft",
+      "x": 9.5327,
+      "y": 0.13,
+      "z": -1.1549,
+      "rotY": 348.6222,
+      "scale": 1.2278,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 153
+      }
+    },
+    {
+      "id": "grass-edge-155",
+      "type": "grass-tuft",
+      "x": 8.8876,
+      "y": 0.13,
+      "z": -4.0129,
+      "rotY": 199.4435,
+      "scale": 1.1603,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 154
+      }
+    },
+    {
+      "id": "grass-edge-156",
+      "type": "grass-tuft",
+      "x": 10.6509,
+      "y": 0.13,
+      "z": -2.4352,
+      "rotY": 199.4435,
+      "scale": 1.1131,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 155
+      }
+    },
+    {
+      "id": "grass-edge-157",
+      "type": "grass-tuft",
+      "x": 9.9844,
+      "y": 0.13,
+      "z": -5.3122,
+      "rotY": 197.4943,
+      "scale": 1.2822,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 156
+      }
+    },
+    {
+      "id": "grass-edge-158",
+      "type": "grass-tuft",
+      "x": 11.8284,
+      "y": 0.13,
+      "z": -3.6623,
+      "rotY": 197.4943,
+      "scale": 1.2073,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 157
+      }
+    },
+    {
+      "id": "grass-edge-159",
+      "type": "grass-tuft",
+      "x": 11.2612,
+      "y": 0.13,
+      "z": -6.4505,
+      "rotY": 339.5716,
+      "scale": 0.7679,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 158
+      }
+    },
+    {
+      "id": "grass-edge-160",
+      "type": "grass-tuft",
+      "x": 13.0201,
+      "y": 0.13,
+      "z": -4.8767,
+      "rotY": 339.5716,
+      "scale": 1.0666,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 159
+      }
+    },
+    {
+      "id": "flowers-path-2-08",
+      "type": "flower-patch",
+      "x": 13.1433,
+      "y": 0.16,
+      "z": -4.7665,
+      "rotY": 322.8438,
+      "scale": 1.0233,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 1,
+        "instanceIndex": 7
+      }
+    },
+    {
+      "id": "grass-edge-161",
+      "type": "grass-tuft",
+      "x": 12.2441,
+      "y": 0.13,
+      "z": -7.8517,
+      "rotY": 314.2108,
+      "scale": 0.9753,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 160
+      }
+    },
+    {
+      "id": "grass-edge-162",
+      "type": "grass-tuft",
+      "x": 14.1892,
+      "y": 0.13,
+      "z": -6.1114,
+      "rotY": 314.2108,
+      "scale": 0.8345,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 161
+      }
+    },
+    {
+      "id": "grass-edge-163",
+      "type": "grass-tuft",
+      "x": 13.5474,
+      "y": 0.13,
+      "z": -8.9663,
+      "rotY": 301.6593,
+      "scale": 1.037,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 162
+      }
+    },
+    {
+      "id": "grass-edge-164",
+      "type": "grass-tuft",
+      "x": 15.3022,
+      "y": 0.13,
+      "z": -7.3963,
+      "rotY": 301.6593,
+      "scale": 0.8725,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 163
+      }
+    },
+    {
+      "id": "grass-edge-165",
+      "type": "grass-tuft",
+      "x": 14.6385,
+      "y": 0.13,
+      "z": -10.2708,
+      "rotY": 209.7094,
+      "scale": 0.7378,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 164
+      }
+    },
+    {
+      "id": "grass-edge-166",
+      "type": "grass-tuft",
+      "x": 16.306,
+      "y": 0.13,
+      "z": -8.7789,
+      "rotY": 209.7094,
+      "scale": 1.2721,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 165
+      }
+    },
+    {
+      "id": "grass-edge-167",
+      "type": "grass-tuft",
+      "x": 15.7859,
+      "y": 0.13,
+      "z": -11.5249,
+      "rotY": 295.2193,
+      "scale": 0.9293,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 166
+      }
+    },
+    {
+      "id": "grass-edge-168",
+      "type": "grass-tuft",
+      "x": 17.5031,
+      "y": 0.13,
+      "z": -9.9885,
+      "rotY": 295.2193,
+      "scale": 1.2776,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 167
+      }
+    },
+    {
+      "id": "flowers-path-3-07",
+      "type": "flower-patch",
+      "x": 17.6767,
+      "y": 0.16,
+      "z": -9.8332,
+      "rotY": 220.6213,
+      "scale": 1.1904,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 2,
+        "instanceIndex": 6
+      }
+    },
+    {
+      "id": "grass-edge-169",
+      "type": "grass-tuft",
+      "x": 16.8881,
+      "y": 0.13,
+      "z": -12.8194,
+      "rotY": 185.3312,
+      "scale": 0.9496,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 168
+      }
+    },
+    {
+      "id": "grass-edge-170",
+      "type": "grass-tuft",
+      "x": 18.6578,
+      "y": 0.13,
+      "z": -11.236,
+      "rotY": 185.3312,
+      "scale": 1.1162,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 169
+      }
+    },
+    {
+      "id": "grass-edge-171",
+      "type": "grass-tuft",
+      "x": 17.9842,
+      "y": 0.13,
+      "z": -14.1194,
+      "rotY": 293.224,
+      "scale": 1.197,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 170
+      }
+    },
+    {
+      "id": "grass-edge-172",
+      "type": "grass-tuft",
+      "x": 19.7543,
+      "y": 0.13,
+      "z": -12.5356,
+      "rotY": 293.224,
+      "scale": 1.2754,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 171
+      }
+    },
+    {
+      "id": "grass-edge-173",
+      "type": "grass-tuft",
+      "x": 19.1532,
+      "y": 0.13,
+      "z": -15.3542,
+      "rotY": 221.2729,
+      "scale": 1.0181,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 172
+      }
+    },
+    {
+      "id": "grass-edge-174",
+      "type": "grass-tuft",
+      "x": 20.9044,
+      "y": 0.13,
+      "z": -13.7873,
+      "rotY": 221.2729,
+      "scale": 1.0745,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 173
+      }
+    },
+    {
+      "id": "grass-edge-175",
+      "type": "grass-tuft",
+      "x": 20.2191,
+      "y": 0.13,
+      "z": -16.6812,
+      "rotY": 257.6246,
+      "scale": 1.2868,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 174
+      }
+    },
+    {
+      "id": "grass-edge-176",
+      "type": "grass-tuft",
+      "x": 22.0311,
+      "y": 0.13,
+      "z": -15.0599,
+      "rotY": 257.6246,
+      "scale": 0.8405,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 175
+      }
+    },
+    {
+      "id": "flowers-path-1-09",
+      "type": "flower-patch",
+      "x": 22.21,
+      "y": 0.16,
+      "z": -14.8998,
+      "rotY": 283.8614,
+      "scale": 1.0402,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 0,
+        "instanceIndex": 8
+      }
+    },
+    {
+      "id": "grass-edge-177",
+      "type": "grass-tuft",
+      "x": 21.5168,
+      "y": 0.13,
+      "z": -17.8008,
+      "rotY": 307.6421,
+      "scale": 1.1969,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 176
+      }
+    },
+    {
+      "id": "grass-edge-178",
+      "type": "grass-tuft",
+      "x": 23.1657,
+      "y": 0.13,
+      "z": -16.3254,
+      "rotY": 307.6421,
+      "scale": 0.8273,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 177
+      }
+    },
+    {
+      "id": "grass-edge-179",
+      "type": "grass-tuft",
+      "x": 22.5878,
+      "y": 0.13,
+      "z": -19.1232,
+      "rotY": 210.2358,
+      "scale": 1.1035,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 178
+      }
+    },
+    {
+      "id": "grass-edge-180",
+      "type": "grass-tuft",
+      "x": 24.3147,
+      "y": 0.13,
+      "z": -17.5781,
+      "rotY": 210.2358,
+      "scale": 1.1615,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 179
+      }
+    },
+    {
+      "id": "grass-edge-181",
+      "type": "grass-tuft",
+      "x": -6.6086,
+      "y": 0.13,
+      "z": 1.4975,
+      "rotY": 353.8693,
+      "scale": 1.1776,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 180
+      }
+    },
+    {
+      "id": "grass-edge-182",
+      "type": "grass-tuft",
+      "x": -8.5229,
+      "y": 0.13,
+      "z": -0.3161,
+      "rotY": 353.8693,
+      "scale": 0.9631,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 181
+      }
+    },
+    {
+      "id": "grass-edge-183",
+      "type": "grass-tuft",
+      "x": -7.8337,
+      "y": 0.13,
+      "z": 2.5901,
+      "rotY": 202.2337,
+      "scale": 1.014,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 182
+      }
+    },
+    {
+      "id": "grass-edge-184",
+      "type": "grass-tuft",
+      "x": -9.5441,
+      "y": 0.13,
+      "z": 0.9697,
+      "rotY": 202.2337,
+      "scale": 1.0766,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 183
+      }
+    },
+    {
+      "id": "flowers-path-3-08",
+      "type": "flower-patch",
+      "x": -7.6712,
+      "y": 0.16,
+      "z": 2.7441,
+      "rotY": 323.2469,
+      "scale": 0.9029,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 2,
+        "instanceIndex": 7
+      }
+    },
+    {
+      "id": "grass-edge-185",
+      "type": "grass-tuft",
+      "x": -8.9122,
+      "y": 0.13,
+      "z": 3.8217,
+      "rotY": 181.4685,
+      "scale": 1.0167,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 184
+      }
+    },
+    {
+      "id": "grass-edge-186",
+      "type": "grass-tuft",
+      "x": -10.7422,
+      "y": 0.13,
+      "z": 2.088,
+      "rotY": 181.4685,
+      "scale": 1.0086,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 185
+      }
+    },
+    {
+      "id": "grass-edge-187",
+      "type": "grass-tuft",
+      "x": -10.0011,
+      "y": 0.13,
+      "z": 5.0434,
+      "rotY": 186.8454,
+      "scale": 1.1449,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 186
+      }
+    },
+    {
+      "id": "grass-edge-188",
+      "type": "grass-tuft",
+      "x": -11.7739,
+      "y": 0.13,
+      "z": 3.3639,
+      "rotY": 186.8454,
+      "scale": 0.9574,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 187
+      }
+    },
+    {
+      "id": "grass-edge-189",
+      "type": "grass-tuft",
+      "x": -11.1959,
+      "y": 0.13,
+      "z": 6.1647,
+      "rotY": 206.9997,
+      "scale": 0.837,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 188
+      }
+    },
+    {
+      "id": "grass-edge-190",
+      "type": "grass-tuft",
+      "x": -12.9932,
+      "y": 0.13,
+      "z": 4.462,
+      "rotY": 206.9997,
+      "scale": 1.2702,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 189
+      }
+    },
+    {
+      "id": "grass-edge-191",
+      "type": "grass-tuft",
+      "x": -12.3696,
+      "y": 0.13,
+      "z": 7.3061,
+      "rotY": 320.6046,
+      "scale": 0.7829,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 190
+      }
+    },
+    {
+      "id": "grass-edge-192",
+      "type": "grass-tuft",
+      "x": -14.0858,
+      "y": 0.13,
+      "z": 5.6802,
+      "rotY": 320.6046,
+      "scale": 1.3047,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 191
+      }
+    },
+    {
+      "id": "flowers-path-1-10",
+      "type": "flower-patch",
+      "x": -12.1712,
+      "y": 0.16,
+      "z": 7.4941,
+      "rotY": 358.5966,
+      "scale": 1.293,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 0,
+        "instanceIndex": 9
+      }
+    },
+    {
+      "id": "grass-edge-193",
+      "type": "grass-tuft",
+      "x": -13.4179,
+      "y": 0.13,
+      "z": 8.5662,
+      "rotY": 318.1769,
+      "scale": 0.796,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 192
+      }
+    },
+    {
+      "id": "grass-edge-194",
+      "type": "grass-tuft",
+      "x": -15.1253,
+      "y": 0.13,
+      "z": 6.9487,
+      "rotY": 318.1769,
+      "scale": 1.1965,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 193
+      }
+    },
+    {
+      "id": "grass-edge-195",
+      "type": "grass-tuft",
+      "x": -14.5078,
+      "y": 0.13,
+      "z": 9.787,
+      "rotY": 227.9268,
+      "scale": 1.1635,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 194
+      }
+    },
+    {
+      "id": "grass-edge-196",
+      "type": "grass-tuft",
+      "x": -16.3925,
+      "y": 0.13,
+      "z": 8.0015,
+      "rotY": 227.9268,
+      "scale": 0.8737,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 195
+      }
+    },
+    {
+      "id": "grass-edge-197",
+      "type": "grass-tuft",
+      "x": -15.7197,
+      "y": 0.13,
+      "z": 10.8922,
+      "rotY": 352.888,
+      "scale": 1.2049,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 196
+      }
+    },
+    {
+      "id": "grass-edge-198",
+      "type": "grass-tuft",
+      "x": -17.3632,
+      "y": 0.13,
+      "z": 9.3352,
+      "rotY": 352.888,
+      "scale": 1.2011,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 197
+      }
+    },
+    {
+      "id": "grass-edge-199",
+      "type": "grass-tuft",
+      "x": -16.8993,
+      "y": 0.13,
+      "z": 12.028,
+      "rotY": 297.0183,
+      "scale": 1.1597,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 198
+      }
+    },
+    {
+      "id": "grass-edge-200",
+      "type": "grass-tuft",
+      "x": -18.5235,
+      "y": 0.13,
+      "z": 10.4892,
+      "rotY": 297.0183,
+      "scale": 0.9903,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 199
+      }
+    },
+    {
+      "id": "flowers-path-2-09",
+      "type": "flower-patch",
+      "x": -16.6712,
+      "y": 0.16,
+      "z": 12.2441,
+      "rotY": 200.3203,
+      "scale": 0.9812,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 1,
+        "instanceIndex": 8
+      }
+    },
+    {
+      "id": "grass-edge-201",
+      "type": "grass-tuft",
+      "x": -17.9246,
+      "y": 0.13,
+      "z": 13.3099,
+      "rotY": 180.1677,
+      "scale": 1.119,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 200
+      }
+    },
+    {
+      "id": "grass-edge-202",
+      "type": "grass-tuft",
+      "x": -19.7119,
+      "y": 0.13,
+      "z": 11.6167,
+      "rotY": 180.1677,
+      "scale": 0.9822,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 201
+      }
+    },
+    {
+      "id": "grass-edge-203",
+      "type": "grass-tuft",
+      "x": -18.9823,
+      "y": 0.13,
+      "z": 14.5612,
+      "rotY": 346.0352,
+      "scale": 1.2517,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 202
+      }
+    },
+    {
+      "id": "grass-edge-204",
+      "type": "grass-tuft",
+      "x": -20.8824,
+      "y": 0.13,
+      "z": 12.7611,
+      "rotY": 346.0352,
+      "scale": 1.1212,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 203
+      }
+    },
+    {
+      "id": "grass-edge-205",
+      "type": "grass-tuft",
+      "x": -20.2459,
+      "y": 0.13,
+      "z": 15.6174,
+      "rotY": 269.41,
+      "scale": 0.7549,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 204
+      }
+    },
+    {
+      "id": "grass-edge-206",
+      "type": "grass-tuft",
+      "x": -21.8355,
+      "y": 0.13,
+      "z": 14.1115,
+      "rotY": 269.41,
+      "scale": 1.0122,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 205
+      }
+    },
+    {
+      "id": "grass-edge-207",
+      "type": "grass-tuft",
+      "x": -21.3643,
+      "y": 0.13,
+      "z": 16.8111,
+      "rotY": 201.6866,
+      "scale": 1.019,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 206
+      }
+    },
+    {
+      "id": "grass-edge-208",
+      "type": "grass-tuft",
+      "x": -23.1512,
+      "y": 0.13,
+      "z": 15.1183,
+      "rotY": 201.6866,
+      "scale": 1.0704,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 207
+      }
+    },
+    {
+      "id": "flowers-path-3-09",
+      "type": "flower-patch",
+      "x": -21.1712,
+      "y": 0.16,
+      "z": 16.9941,
+      "rotY": 246.0886,
+      "scale": 1.1677,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 2,
+        "instanceIndex": 8
+      }
+    },
+    {
+      "id": "grass-edge-209",
+      "type": "grass-tuft",
+      "x": -22.3869,
+      "y": 0.13,
+      "z": 18.0957,
+      "rotY": 210.6486,
+      "scale": 1.1404,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 208
+      }
+    },
+    {
+      "id": "grass-edge-210",
+      "type": "grass-tuft",
+      "x": -24.2626,
+      "y": 0.13,
+      "z": 16.3187,
+      "rotY": 210.6486,
+      "scale": 1.2648,
+      "props": {
+        "source": "ground-grass",
+        "instanceIndex": 209
+      }
+    },
+    {
+      "id": "flowers-path-2-10",
+      "type": "flower-patch",
+      "x": 8.5681,
+      "y": 0.16,
+      "z": 4.1621,
+      "rotY": 341.7653,
+      "scale": 0.9554,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 1,
+        "instanceIndex": 9
+      }
+    },
+    {
+      "id": "flowers-path-3-10",
+      "type": "flower-patch",
+      "x": 12.8181,
+      "y": 0.16,
+      "z": 9.4121,
+      "rotY": 351.7264,
+      "scale": 0.9347,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 2,
+        "instanceIndex": 9
+      }
+    },
+    {
+      "id": "flowers-path-1-11",
+      "type": "flower-patch",
+      "x": 17.0681,
+      "y": 0.16,
+      "z": 14.6621,
+      "rotY": 313.0458,
+      "scale": 1.153,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 0,
+        "instanceIndex": 10
+      }
+    },
+    {
+      "id": "flowers-path-2-11",
+      "type": "flower-patch",
+      "x": 21.3181,
+      "y": 0.16,
+      "z": 19.9121,
+      "rotY": 266.9377,
+      "scale": 1.0506,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 1,
+        "instanceIndex": 10
+      }
+    },
+    {
+      "id": "flowers-path-1-12",
+      "type": "flower-patch",
+      "x": -0.7031,
+      "y": 0.16,
+      "z": 6.175,
+      "rotY": 288.9733,
+      "scale": 1.1821,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 0,
+        "instanceIndex": 11
+      }
+    },
+    {
+      "id": "flowers-path-2-12",
+      "type": "flower-patch",
+      "x": -6.3281,
+      "y": 0.16,
+      "z": 6.175,
+      "rotY": 205.4549,
+      "scale": 1.0233,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 1,
+        "instanceIndex": 11
+      }
+    },
+    {
+      "id": "flowers-path-3-11",
+      "type": "flower-patch",
+      "x": 2.5031,
+      "y": 0.16,
+      "z": 3.475,
+      "rotY": 324.8753,
+      "scale": 0.9029,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 2,
+        "instanceIndex": 10
+      }
+    },
+    {
+      "id": "flowers-path-1-13",
+      "type": "flower-patch",
+      "x": 9.1781,
+      "y": 0.16,
+      "z": 3.475,
+      "rotY": 293.0283,
+      "scale": 1.293,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 0,
+        "instanceIndex": 12
+      }
+    },
+    {
+      "id": "flowers-path-2-13",
+      "type": "flower-patch",
+      "x": 0.875,
+      "y": 0.16,
+      "z": 10.225,
+      "rotY": 358.1966,
+      "scale": 0.9554,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 1,
+        "instanceIndex": 12
+      }
+    },
+    {
+      "id": "flowers-path-3-12",
+      "type": "flower-patch",
+      "x": 2.275,
+      "y": 0.16,
+      "z": 10.225,
+      "rotY": 186.213,
+      "scale": 0.9347,
+      "props": {
+        "source": "ground-flower",
+        "meshIndex": 2,
+        "instanceIndex": 11
+      }
+    },
+    {
+      "id": "npc-mayor-mayor",
+      "type": "npc-spawn",
+      "x": 3.7,
+      "y": 0.0,
+      "z": 1.8,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "npc": "Mayor Mayor",
+        "source": "base-npc"
+      }
+    },
+    {
+      "id": "npc-gideon",
+      "type": "npc-spawn",
+      "x": -5.4,
+      "y": 0.0,
+      "z": -1.35,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "npc": "Gideon",
+        "source": "base-npc"
+      }
+    },
+    {
+      "id": "npc-lyla-lens",
+      "type": "npc-spawn",
+      "x": -4.8,
+      "y": 0.0,
+      "z": -25.4,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "npc": "Lyla Lens",
+        "source": "roster-npc"
+      }
+    },
+    {
+      "id": "npc-chip-chance",
+      "type": "npc-spawn",
+      "x": 5.2,
+      "y": 0.0,
+      "z": -2.5,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "npc": "Chip Chance",
+        "source": "roster-npc"
+      }
+    },
+    {
+      "id": "npc-barnaby-bargain",
+      "type": "npc-spawn",
+      "x": 12.8,
+      "y": 0.0,
+      "z": -2.6,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "npc": "Barnaby Bargain",
+        "source": "roster-npc"
+      }
+    },
+    {
+      "id": "npc-pip-parade",
+      "type": "npc-spawn",
+      "x": 13.3,
+      "y": 0.0,
+      "z": 6.5,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "npc": "Pip Parade",
+        "source": "roster-npc"
+      }
+    },
+    {
+      "id": "npc-agnes-alley",
+      "type": "npc-spawn",
+      "x": 11.4,
+      "y": 0.0,
+      "z": 11.6,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "npc": "Agnes Alley",
+        "source": "roster-npc"
+      }
+    },
+    {
+      "id": "npc-dottie-daly",
+      "type": "npc-spawn",
+      "x": -3.7,
+      "y": 0.0,
+      "z": 2.8,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "npc": "Dottie Daly",
+        "source": "roster-npc"
+      }
+    },
+    {
+      "id": "npc-peggy-plank",
+      "type": "npc-spawn",
+      "x": -12.4,
+      "y": 0.0,
+      "z": 5.5,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "npc": "Peggy Plank",
+        "source": "roster-npc"
+      }
+    },
+    {
+      "id": "npc-mr-buck-coinsworth",
+      "type": "npc-spawn",
+      "x": 20.2,
+      "y": 0.0,
+      "z": 1.7,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "npc": "Mr. Buck Coinsworth",
+        "source": "roster-npc"
+      }
+    },
+    {
+      "id": "npc-fern-bramble",
+      "type": "npc-spawn",
+      "x": 2.3,
+      "y": 0.0,
+      "z": 8.6,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "npc": "Fern Bramble",
+        "source": "roster-npc"
+      }
+    },
+    {
+      "id": "npc-stanley-stamp",
+      "type": "npc-spawn",
+      "x": 2.8,
+      "y": 0.0,
+      "z": -4.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "npc": "Stanley Stamp",
+        "source": "roster-npc"
+      }
+    },
+    {
+      "id": "npc-bobby-gill",
+      "type": "npc-spawn",
+      "x": -12.7,
+      "y": 0.0,
+      "z": 10.7,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "npc": "Bobby Gill",
+        "source": "roster-npc"
+      }
+    },
+    {
+      "id": "minigame-anchor-01",
+      "type": "minigame-anchor",
+      "x": -3.2,
+      "y": 0.0,
+      "z": 2.8,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "game": "plaza-west",
+        "source": "base-minigame-anchor"
+      }
+    },
+    {
+      "id": "minigame-anchor-02",
+      "type": "minigame-anchor",
+      "x": 4.4,
+      "y": 0.0,
+      "z": 3.5,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "game": "plaza-east",
+        "source": "base-minigame-anchor"
+      }
+    },
+    {
+      "id": "minigame-anchor-03",
+      "type": "minigame-anchor",
+      "x": 0.0,
+      "y": 0.0,
+      "z": -4.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "game": "plaza-north",
+        "source": "base-minigame-anchor"
+      }
+    },
+    {
+      "id": "minigame-anchor-04",
+      "type": "minigame-anchor",
+      "x": -6.1,
+      "y": 0.0,
+      "z": -3.5,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "game": "west-lane",
+        "source": "base-minigame-anchor"
+      }
+    },
+    {
+      "id": "minigame-anchor-05",
+      "type": "minigame-anchor",
+      "x": 6.4,
+      "y": 0.0,
+      "z": -1.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "game": "east-lane",
+        "source": "base-minigame-anchor"
+      }
+    },
+    {
+      "id": "minigame-anchor-06",
+      "type": "minigame-anchor",
+      "x": -1.8,
+      "y": 0.0,
+      "z": 6.4,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "game": "pond-lane",
+        "source": "base-minigame-anchor"
+      }
+    },
+    {
+      "id": "minigame-anchor-07",
+      "type": "minigame-anchor",
+      "x": 5.2,
+      "y": 0.0,
+      "z": 6.1,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "game": "garden-lane",
+        "source": "base-minigame-anchor"
+      }
+    }
+  ]
+}

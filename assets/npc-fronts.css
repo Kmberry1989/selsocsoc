@@ -1,0 +1,10 @@
+/* NPC service fronts — named quest-giver / shopkeeper headers inside the
+   Society "Today" panel, so Dottie Daly and Barnaby Bargain have a visible
+   in-panel presence where their NPC actions land. */
+.society-npc-front{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:var(--soc-card);box-shadow:0 2px 8px rgba(33,45,36,.08);margin-bottom:14px}
+.society-npc-mark{flex:0 0 auto;width:42px;height:42px;border-radius:50%;background:var(--npc-color,#4f8a68);color:#fff;display:grid;place-items:center;font:900 14px Nunito,sans-serif;letter-spacing:.02em;box-shadow:inset 0 -4px 0 #00000018,0 0 0 2px #fff}
+.society-npc-front>div{min-width:0}
+.society-npc-front small{display:block;color:var(--soc-leaf-dark);font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.society-npc-front b{font-size:16px}
+.society-npc-front p{margin:4px 0 0;font-size:13px;line-height:1.4;color:var(--soc-ink)}
+#daily-market-shelf{scroll-margin-top:12px}

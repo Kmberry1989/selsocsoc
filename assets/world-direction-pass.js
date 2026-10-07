@@ -1,0 +1,324 @@
+(() => {
+  const builtScenes = new WeakSet();
+  const styledNpcGroups = new WeakSet();
+  const badgeTextures = new Map();
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  let parachuteState = null;
+
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  const easeOutCubic = (value) => 1 - Math.pow(1 - clamp(value, 0, 1), 3);
+
+  // Bloom captions (replaces the old word-fountain): words bloom into view
+  // in the caption line as they are spoken, instead of falling from the
+  // mouth. Same start/stop API so dialogue callers don't change.
+  const wordSpill = (() => {
+    const runs = new Map();
+    const stop = (target) => {
+      const run = runs.get(target);
+      if (!run) return;
+      run.cancelled = true;
+      clearTimeout(run.timer);
+      runs.delete(target);
+    };
+    const start = ({ text, target, source, duration = 2600 }) => {
+      if (!target || !text) return { stop() {} };
+      stop(target);
+      const words = String(text).match(/\S+/g) || [];
+      if (reducedMotion.matches || !words.length) {
+        target.textContent = text;
+        return { stop() {} };
+      }
+      target.textContent = "";
+      target.setAttribute("aria-label", String(text));
+      const run = { cancelled: false, timer: 0 };
+      runs.set(target, run);
+      const interval = clamp((duration - 350) / Math.max(1, words.length), 54, 240);
+      const spans = words.map((word) => {
+        const span = document.createElement("span");
+        span.className = "snug-bloom-word";
+        span.textContent = word;
+        target.appendChild(span);
+        target.appendChild(document.createTextNode(" "));
+        return span;
+      });
+      let index = 0;
+      const step = () => {
+        if (run.cancelled) return;
+        if (index < spans.length) {
+          spans[index].classList.add("is-bloomed");
+          index += 1;
+          run.timer = setTimeout(step, interval);
+        } else {
+          runs.delete(target);
+          target.removeAttribute("aria-label");
+        }
+      };
+      step();
+      return { stop: () => stop(target) };
+    };
+    return { start, stop };
+  })();
+  window.__snugWordSpill = wordSpill;
+
+  const makeTexture = (THREE, kind, color = "#e76854") => {
+    const key = `${kind}:${color}`;
+    if (badgeTextures.has(key)) return badgeTextures.get(key);
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = 256;
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, 256, 256);
+    if (kind === "visitor") {
+      ctx.fillStyle = "#fff7df"; ctx.strokeStyle = "#263432"; ctx.lineWidth = 16;
+      ctx.beginPath(); ctx.roundRect(38, 52, 180, 146, 28); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = color; ctx.fillRect(52, 70, 152, 30);
+      ctx.fillStyle = "#263432"; ctx.beginPath(); ctx.arc(92, 143, 25, 0, Math.PI * 2); ctx.fill();
+      ctx.fillRect(130, 125, 58, 14); ctx.fillRect(130, 153, 42, 12);
+    } else if (kind === "crest") {
+      ctx.fillStyle = color; ctx.strokeStyle = "#263432"; ctx.lineWidth = 16;
+      ctx.beginPath(); ctx.moveTo(128, 26); ctx.lineTo(216, 65); ctx.lineTo(197, 174); ctx.lineTo(128, 230); ctx.lineTo(59, 174); ctx.lineTo(40, 65); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#fff3c6"; ctx.beginPath(); ctx.arc(128, 112, 34, 0, Math.PI * 2); ctx.fill();
+      ctx.fillRect(113, 142, 30, 47);
+    }
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    badgeTextures.set(key, texture);
+    return texture;
+  };
+
+  const makeBiomeTexture = (THREE, colors, motif) => {
+    const canvas = document.createElement("canvas"); canvas.width = canvas.height = 256;
+    const ctx = canvas.getContext("2d");
+    const gradient = ctx.createRadialGradient(128, 128, 24, 128, 128, 128);
+    gradient.addColorStop(0, colors[0]); gradient.addColorStop(.56, colors[1]); gradient.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = gradient; ctx.fillRect(0, 0, 256, 256); ctx.globalAlpha = .42;
+    for (let index = 0; index < 76; index += 1) {
+      const x = (index * 73) % 224 + 16, y = (index * 47) % 224 + 16;
+      ctx.fillStyle = colors[2];
+      if (motif === "needles") { ctx.save(); ctx.translate(x, y); ctx.rotate((index % 9) * .34); ctx.fillRect(-1, -7, 2, 14); ctx.restore(); }
+      else if (motif === "petals") { ctx.beginPath(); ctx.arc(x, y, 2 + index % 3, 0, Math.PI * 2); ctx.fill(); }
+      else if (motif === "ripples") { ctx.strokeStyle = colors[2]; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(x, y, 7, 3, 0, 0, Math.PI * 2); ctx.stroke(); }
+      else ctx.fillRect(x, y, 3, 3);
+    }
+    const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace; return texture;
+  };
+
+  const buildBiomes = (world) => {
+    const THREE = window.__snugThree;
+    if (!THREE || !world?.scene || world.mode !== "village" || builtScenes.has(world.scene)) return false;
+    const group = new THREE.Group(); group.name = "CyclicalCityBiomes";
+    const specs = [
+      [-17, -10, 24, ["rgba(162,201,107,.72)", "rgba(126,177,91,.45)", "#e5df7b"], "petals", "Clover Commons"],
+      [16, -13, 26, ["rgba(82,135,88,.78)", "rgba(54,108,72,.42)", "#315b43"], "needles", "Whispering Wood"],
+      [-15, 18, 23, ["rgba(221,189,113,.7)", "rgba(198,149,82,.38)", "#885f3e"], "speckles", "Sunmeadow"],
+      [18, 19, 25, ["rgba(91,156,145,.68)", "rgba(73,130,128,.38)", "#e6f1ce"], "ripples", "Pondmarsh"],
+    ];
+    specs.forEach(([x, z, size, colors, motif, label]) => {
+      const material = new THREE.MeshStandardMaterial({ map: makeBiomeTexture(THREE, colors, motif), transparent: true, depthWrite: false, opacity: .72, roughness: 1 });
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(size, size, 1, 1), material);
+      mesh.name = `SnugBiome_${label.replace(/\s/g, "")}`; mesh.rotation.x = -Math.PI / 2; mesh.position.set(x, .018, z); mesh.renderOrder = 0;
+      mesh.userData = { biome: label, featheredBorder: true }; group.add(mesh);
+    });
+    world.scene.add(group); builtScenes.add(world.scene);
+    window.__snugBiomes = specs.map((entry) => entry[5]);
+    window.dispatchEvent(new CustomEvent("snug-biomes-ready", { detail: { names: window.__snugBiomes, group } }));
+    return true;
+  };
+
+  const addBadge = (THREE, root, kind, color, name, position, scale) => {
+    if (!root || root.getObjectByName(name)) return;
+    const material = new THREE.MeshStandardMaterial({ map: makeTexture(THREE, kind, color), transparent: true, alphaTest: .08, depthWrite: false, roughness: .9 });
+    const badge = new THREE.Mesh(new THREE.PlaneGeometry(scale, scale), material);
+    badge.name = name; badge.position.set(...position); badge.renderOrder = 5; badge.raycast = () => {}; root.add(badge);
+  };
+
+  const styleCharacters = (world) => {
+    const THREE = window.__snugThree;
+    if (!THREE || !world?.scene || world.mode !== "village") return;
+    const npcs = world.scene.getObjectByName("CylindricalCityNPCs");
+    if (npcs && !styledNpcGroups.has(npcs)) {
+      const colors = ["#e76854", "#5c8d65", "#e1a64e", "#5e8db8", "#c66f71", "#79946b"];
+      npcs.children.forEach((npc, index) => {
+        npc.userData.characterClass = "Cyclical City resident";
+        npc.userData.faceLanguage = "coin portrait, dot eyes, arched brows, warm cheek marks";
+        addBadge(THREE, npc, "crest", colors[index % colors.length], `TownCrest_${index}`, [.23, .82, .22], .22);
+      });
+      styledNpcGroups.add(npcs);
+    }
+    if (world.player) {
+      world.player.userData.characterClass = "visitor";
+      addBadge(THREE, world.player, "visitor", "#5aaab0", "VisitorPassportBadge", [-.26, .8, .3], .26);
+    }
+    (world.remotes?.children || []).forEach((remote, index) => {
+      remote.userData.characterClass = "visitor";
+      addBadge(THREE, remote, "visitor", index % 2 ? "#e76854" : "#5aaab0", `VisitorPassportBadge_${index}`, [-.26, .8, .3], .26);
+    });
+  };
+
+  const safeVisualClone = (source) => {
+    if (!source) return null;
+    const saved = [];
+    source.traverse((object) => { saved.push([object, object.userData]); object.userData = {}; });
+    let clone = null;
+    try { clone = source.clone(true); }
+    finally { saved.forEach(([object, userData]) => { object.userData = userData; }); }
+    clone?.traverse((object) => { object.userData = {}; object.castShadow = false; object.receiveShadow = false; });
+    return clone;
+  };
+
+  const createParachuteResources = (THREE, world) => {
+    const canopyGeometry = new THREE.SphereGeometry(1.55, 20, 10, 0, Math.PI * 2, 0, Math.PI * .52);
+    const canopyMaterial = new THREE.MeshStandardMaterial({ color: 0xe76854, roughness: .76, metalness: 0, side: 2 });
+    const lineGeometry = new THREE.BufferGeometry();
+    const positions = [];
+    [[-1.28, 2.95, 0], [1.28, 2.95, 0], [0, 2.95, -1.28], [0, 2.95, 1.28]].forEach(([x, y, z], index) => {
+      const harnessX = index < 2 ? x * .14 : (index === 2 ? -.18 : .18);
+      const harnessZ = index < 2 ? (index ? .15 : -.15) : z * .12;
+      positions.push(x, y, z, harnessX, .95, harnessZ);
+    });
+    lineGeometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x313a3a, transparent: true, opacity: .78 });
+    let template = null;
+    try { template = THREE.buildPegAvatar?.("#5c8fd8", undefined, undefined, "calm", { skinTone: "#c98f69", bodyMass: 1, height: 1 }); } catch {}
+    if (!template) template = world.player;
+    return { canopyGeometry, canopyMaterial, lineGeometry, lineMaterial, template };
+  };
+
+  const createParachutist = (THREE, resources, figureSource, name) => {
+    const rig = new THREE.Group(); rig.name = name; rig.visible = false;
+    const canopy = new THREE.Mesh(resources.canopyGeometry, resources.canopyMaterial);
+    canopy.name = "ParachuteCanopy3D"; canopy.position.y = 3; canopy.castShadow = true;
+    const shrouds = new THREE.LineSegments(resources.lineGeometry, resources.lineMaterial);
+    shrouds.name = "ParachuteShrouds3D";
+    const figure = safeVisualClone(figureSource || resources.template);
+    if (figure) { figure.name = "PegBodyParachutist3D"; figure.position.y = 0; figure.scale.multiplyScalar(.82); rig.add(figure); }
+    rig.add(canopy, shrouds);
+    rig.userData.motion = { age: 0, moving: false, readyFrame: 0, speed: 0, drift: 0, phase: 0 };
+    return rig;
+  };
+
+  const resetAmbient = (rig, index, frame, initial = false) => {
+    const motion = rig.userData.motion;
+    rig.visible = false;
+    if (initial) {
+      // Seed the first six across the menu camera's visible airspace; later
+      // respawns stay organic while the fixed population keeps streaming.
+      const initialX = [-7.5, -4.5, -1.4, 1.8, 4.8, 7.3];
+      const initialY = [9.2, 12.1, 15.4, 10.7, 17.2, 13.6];
+      const initialZ = [-13, -19, -25, -29, -17, -23];
+      rig.position.set(initialX[index], initialY[index], initialZ[index]);
+    } else {
+      rig.position.set(-9 + Math.random() * 18, 15 + Math.random() * 9, -31 + Math.random() * 25);
+    }
+    rig.rotation.set(0, Math.random() * Math.PI * 2, 0);
+    // Every descent starts from rest. The rigs are already staggered vertically,
+    // so varying age here would make some of them jump straight to full speed.
+    motion.age = 0;
+    motion.speed = 2.1 + Math.random() * 1.15;
+    motion.drift = (Math.random() - .5) * .72;
+    motion.phase = Math.random() * Math.PI * 2;
+    motion.readyFrame = frame + 1;
+    motion.motionFrame = frame + 2;
+    motion.moving = false;
+  };
+
+  const stopAmbient = ({ keepResources = false } = {}) => {
+    const state = parachuteState;
+    if (!state) return;
+    state.ambientActive = false;
+    state.ambient.forEach((rig) => rig.parent?.remove(rig));
+    state.ambient.length = 0;
+    if (!keepResources && !state.introActive) {
+      state.group.parent?.remove(state.group);
+      state.resources.canopyGeometry.dispose();
+      state.resources.canopyMaterial.dispose();
+      state.resources.lineGeometry.dispose();
+      state.resources.lineMaterial.dispose();
+      parachuteState = null;
+    }
+    window.__snugArrivalDebug = { ambientCount: 0, active: Boolean(state.introActive), sharedResources: true, mode: state.introActive ? "player-glide" : "idle" };
+  };
+
+  const ensureParachutes = () => {
+    // Parachuters removed (user-directed 2026-09-26): the menu no longer
+    // streams ambient parachutists. Kept as a no-op so callers don't break.
+    return false;
+  };
+
+  const cleanupParachutes = () => {
+    const state = parachuteState;
+    if (!state) return;
+    cancelAnimationFrame(state.raf);
+    state.group.parent?.remove(state.group);
+    state.resources.canopyGeometry.dispose();
+    state.resources.canopyMaterial.dispose();
+    state.resources.lineGeometry.dispose();
+    state.resources.lineMaterial.dispose();
+    parachuteState = null;
+    window.__snugArrivalDebug = { ambientCount: 0, active: false, sharedResources: true, mode: "complete" };
+  };
+
+  const waitForWorld = (limit = 180) => new Promise((resolve) => {
+    let attempts = 0;
+    const check = () => {
+      const world = window.__snugWorld, THREE = window.__snugThree;
+      if (world?.scene && world?.camera && world?.renderer && world?.player && THREE) resolve({ world, THREE });
+      else if (attempts++ >= limit) resolve(null);
+      else requestAnimationFrame(check);
+    };
+    check();
+  });
+
+  window.__snugArrivalIntro = async (mode = "town") => {
+    if (window.__snugArrivalPromise) return window.__snugArrivalPromise;
+    window.__snugArrivalPromise = (async () => {
+      // Parachute glide removed (user-directed 2026-09-26): a simple
+      // fade-through from the menu to the welcoming committee.
+      const fade = document.createElement("div");
+      fade.className = "snug-arrival-fade";
+      fade.setAttribute("aria-hidden", "true");
+      const status = document.createElement("span");
+      status.textContent = "Preparing Cyclical City…";
+      fade.appendChild(status);
+      document.body.appendChild(fade);
+      document.documentElement.classList.add("snug-arrival-active");
+      window.__snugWorldRenderPaused = true;
+      await new Promise((resolve) => setTimeout(resolve, 32));
+      fade.classList.add("is-black");
+      await new Promise((resolve) => setTimeout(resolve, reducedMotion.matches ? 120 : 520));
+      if (typeof window.__snugPrepareWorld === "function") await window.__snugPrepareWorld();
+      document.documentElement.classList.remove("snug-arrival-active");
+      fade.classList.add("is-out");
+      setTimeout(() => fade.remove(), reducedMotion.matches ? 80 : 520);
+      window.__snugArrivalDebug = { ambientCount: 0, active: false, sharedResources: true, mode: "fade" };
+      return { mode, sequence: "fade-arrival" };
+    })().finally(() => {
+      setTimeout(() => {
+        if (document.documentElement.classList.contains("snug-start-open")) window.__snugWorldRenderPaused = false;
+      }, 0);
+      window.__snugArrivalPromise = null;
+    });
+    return window.__snugArrivalPromise;
+  };
+
+  const applyPass = () => {
+    const world = window.__snugWorld;
+    if (!world || world.mode !== "village") return;
+    if (!buildBiomes(world) && !window.__snugThree) return setTimeout(applyPass, 120);
+    styleCharacters(world);
+    if (document.documentElement.classList.contains("snug-start-open") && !document.documentElement.classList.contains("snug-arrival-active")) ensureParachutes();
+  };
+
+  const classObserver = new MutationObserver(() => {
+    // While the arrival intro is settling (its promise is still pending) the
+    // menu classes shuffle during the handoff — never resurrect the ambient
+    // parachutist stream in that window; it would compile the whole scene
+    // and hitch right as the welcoming committee starts.
+    if (window.__snugArrivalPromise) return;
+    if (document.documentElement.classList.contains("snug-start-open") && !document.documentElement.classList.contains("snug-arrival-active")) ensureParachutes();
+    else if (parachuteState?.ambientActive && !parachuteState.introActive) stopAmbient();
+  });
+  classObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  ["snug-world-ready", "snug-world-expanded", "snug-npc-roster-ready", "snug-mode-change", "snug-plant-billboards-ready", "snug-avatar-ready"].forEach((name) => window.addEventListener(name, () => [0, 120, 520].forEach((delay) => setTimeout(applyPass, delay))));
+  window.addEventListener("load", applyPass, { once: true });
+  setInterval(applyPass, 1800);
+})();

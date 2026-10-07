@@ -1,0 +1,45 @@
+/* Runtime artwork supplied in assets/NEW WEBP, normalized into feature folders. */
+.garden-crop-mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 0;
+  background: var(--crop-image) center / contain no-repeat;
+  box-shadow: none;
+}
+.garden-crop-mark::before,
+.garden-crop-mark::after { display: none; }
+.garden-seed-art,
+.garden-produce-art {
+  background-image: var(--item-image);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.garden-seed-art::before,
+.garden-produce-art::before,
+.garden-produce-art::after { display: none; }
+.paint-tools button {
+  background-position: 8px center;
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
+  padding-left: 38px;
+}
+.paint-tools button[data-paint-tool="round"] { background-image: url("painting-art/paintbrush-rainbow.webp"); }
+.paint-tools button[data-paint-tool="square"] { background-image: url("painting-art/paint-roller-yellow.webp"); }
+.paint-tools button[data-paint-tool="eraser"] { background-image: url("painting-art/paint-bucket-teal.webp"); }
+.paint-color-row::before {
+  content: "";
+  width: 42px;
+  height: 42px;
+  flex: none;
+  background: url("painting-art/artist-palette.webp") center / contain no-repeat;
+}
+.fishing-loot-sprite img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+html.snug-welcome-active .app-shell,
+html.snug-welcome-active .room-dock,
+html.snug-welcome-active .voice-toggle-dock { pointer-events: none !important; }
+html.snug-welcome-active .welcome-cinematic { pointer-events: auto; }

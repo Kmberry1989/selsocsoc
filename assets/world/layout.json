@@ -1,0 +1,12 @@
+{
+  "format": "cylindric-world-layout",
+  "version": 1,
+  "units": "meters",
+  "axes": {
+    "x": "east",
+    "z": "south",
+    "y": "up",
+    "rotY": "degrees, clockwise seen from above, 0 = object's default facing"
+  },
+  "objects": []
+}

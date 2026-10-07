@@ -1,0 +1,72 @@
+/* Games Hub — consolidated game listing styles. Mobile-first, bottom-sheet friendly. */
+.snug-games-hub {
+  margin: 0 0 14px;
+  padding: 12px;
+  border-radius: 16px;
+  background: var(--surface, #fffdf8);
+  box-shadow: 0 2px 10px #29353612;
+}
+.snug-hub-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.snug-hub-head b { font-size: 17px; }
+.snug-hub-head small { color: var(--dim, #697376); font-size: 11px; }
+.snug-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.snug-hub-card {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  min-height: 76px;
+  padding: 10px;
+  border: 2px solid var(--border, #e8e2d7);
+  border-radius: 14px;
+  background: var(--surface-2, #f7f3ea);
+  color: var(--text, #2c3437);
+  text-align: left;
+  cursor: pointer;
+}
+.snug-hub-card:active { transform: scale(0.98); }
+.snug-hub-card > i {
+  display: grid;
+  place-items: center;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #26383b;
+  color: #fff;
+  font-size: 17px;
+  font-style: normal;
+}
+.snug-hub-card > span { display: grid; gap: 2px; min-width: 0; }
+.snug-hub-card b { font-size: 13px; line-height: 1.2; }
+.snug-hub-card small { font-size: 10px; line-height: 1.35; color: var(--dim, #626d70); }
+.snug-hub-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
+.snug-hub-tag {
+  padding: 2px 6px;
+  border-radius: 20px;
+  background: #5c8d65;
+  color: #fff;
+  font-size: 8px;
+  font-weight: 800;
+  font-style: normal;
+  letter-spacing: 0.04em;
+}
+@media (max-width: 380px) {
+  .snug-hub-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-color-scheme: dark) {
+  .snug-games-hub { background: #293233; }
+  .snug-hub-card { background: #374142; border-color: #4b595a; color: #f5f3ec; }
+  .snug-hub-card small { color: #b5bebe; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .snug-hub-card:active { transform: none; }
+}

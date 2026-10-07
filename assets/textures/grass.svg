@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#82b96b"/>
+  <g fill="none" stroke-linecap="round" opacity=".42">
+    <path d="M18 42l5-14m-5 14l-8-9M86 110l2-17m-2 17l-9-8M160 64l7-15m-7 15l-7-12M248 129l3-17m-3 17l-10-9M338 48l7-14m-7 14l-8-8M420 108l3-18m-3 18l-10-10M493 42l5-15m-5 15l-7-8M50 226l5-17m-5 17l-9-11M144 182l4-14m-4 14l-8-9M228 250l7-16m-7 16l-7-12M330 204l4-18m-4 18l-9-9M432 252l6-17m-6 17l-8-11M490 190l4-15m-4 15l-8-8M28 356l4-16m-4 16l-9-10M106 438l6-18m-6 18l-8-10M190 344l4-15m-4 15l-9-8M280 425l6-17m-6 17l-8-11M376 350l4-16m-4 16l-9-9M470 442l6-18m-6 18l-8-11" stroke="#4b8847" stroke-width="5"/>
+    <path d="M43 88l3-10m41 109l4-12m93-60l3-11m80 87l4-12m89-62l3-11m75 77l4-12M74 302l3-12m82 90l4-10m91-65l3-12m87 82l4-11m82-68l3-11" stroke="#bad68a" stroke-width="4"/>
+  </g>
+  <g fill="#679f58" opacity=".32"><circle cx="58" cy="52" r="5"/><circle cx="199" cy="152" r="4"/><circle cx="382" cy="161" r="6"/><circle cx="118" cy="275" r="5"/><circle cx="316" cy="290" r="4"/><circle cx="449" cy="356" r="5"/><circle cx="226" cy="472" r="6"/></g>
+</svg>
