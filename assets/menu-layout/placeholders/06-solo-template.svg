@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 180">
+  <rect x="4" y="4" width="212" height="172" rx="24" fill="#f5f0e7" stroke="#5c8d65" stroke-width="7"/>
+  <rect x="50" y="36" width="120" height="108" rx="15" fill="none" stroke="#5c8d65" stroke-width="3" stroke-dasharray="8 7"/>
+  <g fill="#30433d" font-family="system-ui,sans-serif" text-anchor="middle">
+    <text x="110" y="88" font-size="24" font-weight="750">SOLO</text>
+    <text x="110" y="116" font-size="15">220 × 180</text>
+  </g>
+</svg>

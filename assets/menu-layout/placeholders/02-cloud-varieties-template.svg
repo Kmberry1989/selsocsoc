@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800">
+  <rect width="1600" height="800" fill="#dff1f2" fill-opacity=".35"/>
+  <g fill="none" stroke="#527f9a" stroke-width="4" stroke-dasharray="12 10">
+    <path d="M400 0V800M800 0V800M1200 0V800M0 400H1600"/>
+  </g>
+  <g fill="#fff" stroke="#8db5c8" stroke-width="5" opacity=".9">
+    <path d="M85 260q24-74 96-54 24-92 117-54 79-3 90 108Z"/>
+    <path d="M493 270q17-85 103-61 35-74 111-18 62 3 86 79Z"/>
+    <path d="M870 273q24-55 86-45 26-96 118-46 62 7 78 91Z"/>
+    <path d="M1246 267q14-71 79-60 24-79 111-37 72 8 84 97Z"/>
+    <path d="M74 675q42-76 119-35 30-103 123-49 58 2 78 84Z"/>
+    <path d="M479 676q22-84 103-55 38-82 120-20 60 1 91 75Z"/>
+    <path d="M869 671q29-63 88-42 28-108 120-45 59 1 72 87Z"/>
+    <path d="M1255 674q20-78 89-49 26-88 108-31 56 4 70 80Z"/>
+  </g>
+  <g fill="#26383b" font-family="system-ui,sans-serif" text-anchor="middle" font-size="22">
+    <text x="200" y="44">CLOUD 1</text><text x="600" y="44">CLOUD 2</text><text x="1000" y="44">CLOUD 3</text><text x="1400" y="44">CLOUD 4</text>
+    <text x="200" y="444">CLOUD 5</text><text x="600" y="444">CLOUD 6</text><text x="1000" y="444">CLOUD 7</text><text x="1400" y="444">CLOUD 8</text>
+  </g>
+</svg>

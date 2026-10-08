@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180">
+  <rect x="4" y="4" width="312" height="172" rx="24" fill="#e76854" stroke="#fff" stroke-width="8"/>
+  <rect x="72" y="32" width="176" height="116" rx="16" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="9 7"/>
+  <g fill="#fff" font-family="system-ui,sans-serif" text-anchor="middle">
+    <text x="160" y="88" font-size="28" font-weight="750">TOWN ICON</text>
+    <text x="160" y="118" font-size="16">320 × 180</text>
+  </g>
+</svg>

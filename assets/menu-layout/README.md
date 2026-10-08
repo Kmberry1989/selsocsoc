@@ -9,6 +9,10 @@ button names and click behavior separately, so text inside artwork is decorative
 Work through the files in this order. Dimensions are width × height in pixels or
 equivalent SVG design units.
 
+Ready-to-edit guides are in [`placeholders/`](placeholders/) with matching
+numbered filenames. Copy the finished artwork into the corresponding live file;
+do not point the game at the guide templates themselves.
+
 | Order | File | Source canvas | Menu use |
 | ---: | --- | ---: | --- |
 | 1 | `background.svg` | 1600 × 900 | Full-screen 16:9 backdrop |
@@ -95,3 +99,14 @@ background, individual-cloud, plaque/frame, and four option-tile treatments.
 Use it for palette, softness, shape language, and detail density—not as a sprite
 sheet or exact layout template. The dimensions and filenames in this guide remain
 the source of truth.
+
+## Editable placeholder files
+
+1. [`01-background-template.svg`](placeholders/01-background-template.svg)
+2. [`02-cloud-varieties-template.svg`](placeholders/02-cloud-varieties-template.svg)
+3. [`03-logo-template.svg`](placeholders/03-logo-template.svg)
+4. [`04-options-frame-template.svg`](placeholders/04-options-frame-template.svg)
+5. [`05-town-template.svg`](placeholders/05-town-template.svg)
+6. [`06-solo-template.svg`](placeholders/06-solo-template.svg)
+7. [`07-family-template.svg`](placeholders/07-family-template.svg)
+8. [`08-board-template.svg`](placeholders/08-board-template.svg)

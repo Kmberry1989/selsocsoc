@@ -93,3 +93,5 @@ Original prompt: Compress the large texture and image files and save them as web
 - Kept all runtime filenames and SVG viewBoxes unchanged; this is a documentation-only update.
 - Generated `assets/menu-layout/menu-art-direction.webp` as a visual style board
   for background, cloud, logo/frame, and option-tile artwork guidance.
+- Added eight numbered, editable SVG guides under `assets/menu-layout/placeholders/`,
+  one for every documented menu asset, without changing the live artwork.
