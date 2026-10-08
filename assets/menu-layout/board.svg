@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 180">
+  <rect x="4" y="4" width="212" height="172" rx="24" fill="#f5f0e7" stroke="#d85845" stroke-width="7"/>
+  <path d="m110 34 12 25 28 4-20 20 5 28-25-13-25 13 5-28-20-20 28-4Z" fill="#e4aa38" stroke="#9b6820" stroke-width="5"/>
+  <text x="110" y="148" text-anchor="middle" fill="#30433d" font-family="sans-serif" font-size="18" font-weight="900">SNUG BOARD</text>
+</svg>

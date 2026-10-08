@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180">
+  <rect x="4" y="4" width="312" height="172" rx="24" fill="#e76854" stroke="#fff" stroke-width="8"/>
+  <path d="M106 105V70l54-38 54 38v35h-26V77h-56v28Z" fill="#fff7df"/><path d="M92 112h136v12H92z" fill="#fff7df"/>
+  <text x="160" y="151" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="19" font-weight="900">CYCLICAL CITY</text>
+</svg>

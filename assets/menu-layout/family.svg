@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 180">
+  <rect x="4" y="4" width="212" height="172" rx="24" fill="#f5f0e7" stroke="#527f9a" stroke-width="7"/>
+  <circle cx="87" cy="69" r="22" fill="#527f9a"/><circle cx="133" cy="69" r="22" fill="#e76854"/><path d="M55 115q32-39 64 0M101 115q32-39 64 0" fill="none" stroke="#30433d" stroke-width="12" stroke-linecap="round"/>
+  <text x="110" y="148" text-anchor="middle" fill="#30433d" font-family="sans-serif" font-size="18" font-weight="900">TOGETHER</text>
+</svg>

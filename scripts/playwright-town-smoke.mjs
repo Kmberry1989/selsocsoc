@@ -34,12 +34,16 @@ try {
     });
 
     await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
-    await page.locator(".snug-start-screen[aria-busy='false']").waitFor({ timeout: 15_000 });
-    assert.equal(await page.evaluate(() => typeof window.render_game_to_text), "function");
+    await page.locator(".snug-start-screen").waitFor({ state: "visible", timeout: 15_000 });
+    const townButton = page.getByRole("button", { name: "Enter Cyclical City" });
+    await townButton.waitFor({ state: "visible", timeout: 15_000 });
+    assert.equal(await townButton.isEnabled(), true, "town entry was not ready");
+    assert.equal(await page.evaluate(() => typeof window.__snugEnsureCoreReady), "function");
 
-    await page.getByRole("button", { name: "Enter Cyclical City" }).click();
+    await townButton.click();
     await page.getByRole("button", { name: "Confirm" }).click();
     await page.locator(".snug-start-screen").waitFor({ state: "detached", timeout: 12_000 });
+    assert.equal(await page.evaluate(() => typeof window.render_game_to_text), "function");
     await page.locator(".welcome-cinematic").waitFor({ state: "visible", timeout: 6_000 });
     if (!profile.liveTown) {
       const bounds = await page.locator(".welcome-cinematic").boundingBox();
