@@ -16,7 +16,7 @@ do not point the game at the guide templates themselves.
 | Order | File | Source canvas | Menu use |
 | ---: | --- | ---: | --- |
 | 1 | `background.svg` | 1600 × 900 | Full-screen 16:9 backdrop |
-| 2 | `cloud-varieties.webp` | 1774 × 887 | Transparent 4 × 2 sheet of eight individual clouds |
+| 2 | `cloud-varieties.webp` | 2296 × 1148 | Transparent 4 × 2 sheet of eight individual clouds |
 | 3 | `logo.svg` | 720 × 260 | Top-center logo, displayed up to 320 px wide |
 | 4 | `options-frame.svg` | 760 × 120 | Stretchable frame behind the bottom option dock |
 | 5 | `town.svg` | 320 × 180 | Enter Cyclical City tile |
