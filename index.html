@@ -565,6 +565,24 @@
         returningStatus.classList.toggle('is-error',isError);
         returningStatus.setAttribute('role',isError?'alert':'status');
       };
+      // The Google sign-in bridge is registered by the app bundle chunk. On slow
+      // connections the menu renders before that chunk finishes, so the button
+      // stays disabled until the bridge is ready instead of failing with a
+      // misleading auth/unknown-error after the 10s wait.
+      let googleBridgeReady=typeof window.__snugGoogleSignIn==='function';
+      const syncGoogleButton=()=>{if(googleButton)googleButton.disabled=!googleBridgeReady;};
+      const markGoogleBridgeReady=()=>{
+        if(googleBridgeReady)return;
+        googleBridgeReady=true;
+        syncGoogleButton();
+        if(returningStatus&&returningStatus.textContent==='Loading Google sign-in…')setLoginStatus('');
+      };
+      if(!googleBridgeReady){
+        syncGoogleButton();
+        setLoginStatus('Loading Google sign-in…');
+        addEventListener('snug-google-auth-ready',markGoogleBridgeReady,{once:true});
+        setTimeout(()=>{if(!googleBridgeReady)setLoginStatus('Google sign-in is taking too long to load. Reload the page and try again.',true);},60000);
+      }
       const describeSignInFailure=error=>{
         const rawCode=String(error?.code||'').trim();
         const code=rawCode?(rawCode.startsWith('auth/')?rawCode:`auth/${rawCode.replace(/^firebase:/i,'').replace(/^auth\//,'')}`):'auth/unknown-error';
@@ -578,6 +596,7 @@
           'auth/web-storage-unsupported':'This browser is blocking the storage Firebase needs. Try a normal Safari or Chrome tab.',
           'auth/invalid-api-key':'The Firebase web configuration is not valid for this project.',
           'auth/app-not-authorized':'This app is not authorized to use Firebase Authentication.'
+          ,'auth/bridge-not-ready':'The sign-in module is still loading. Wait a moment and try again.'
         };
         const firebaseMessage=String(error?.message||'').replace(/^Firebase:\s*/i,'').replace(/\s*\([^)]*\)\.?$/,'').trim();
         const hint=hints[code]||firebaseMessage||'Please try again. If it keeps failing, check Firebase Authentication settings and the authorized domain.';
@@ -614,7 +633,7 @@
       const waitForGoogleBridge=()=>new Promise((resolve,reject)=>{
         if(typeof window.__snugGoogleSignIn==='function'){resolve(window.__snugGoogleSignIn);return;}
         const ready=()=>{cleanup();resolve(window.__snugGoogleSignIn);};
-        const timer=setTimeout(()=>{cleanup();reject(Error('Google sign-in is still loading. Try again.'));},10000);
+        const timer=setTimeout(()=>{cleanup();const err=Error('Google sign-in is still loading. Try again.');err.code='auth/bridge-not-ready';reject(err);},10000);
         const cleanup=()=>{clearTimeout(timer);removeEventListener('snug-google-auth-ready',ready);};
         addEventListener('snug-google-auth-ready',ready,{once:true});
       });
