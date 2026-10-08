@@ -199,7 +199,7 @@
     .snug-start-scenery{position:fixed;z-index:0;overflow:hidden;min-height:0;pointer-events:none;inset:0;background:linear-gradient(125deg,#8bd5d018,#f2c37d18 48%,#e7685414)}
     .snug-menu-wallpaper,.snug-menu-wallpaper img,.snug-menu-wallpaper video,.snug-menu-shader{position:absolute;width:100%;height:100%;inset:0}
     .snug-menu-clouds{position:absolute;z-index:0;overflow:hidden;inset:0}
-    .snug-menu-cloud{position:absolute;top:var(--cloud-top);left:0;width:var(--cloud-width);aspect-ratio:1;opacity:var(--cloud-opacity);background-image:url('assets/menu-layout/cloud-varieties.webp');background-repeat:no-repeat;background-size:400% 200%;background-position:var(--cloud-x) var(--cloud-y);transform:translate3d(-35vw,0,0);animation:snugMenuCloudPass var(--cloud-speed) linear var(--cloud-delay) infinite;filter:blur(var(--cloud-blur,0)) drop-shadow(0 10px 16px #41636a24);will-change:transform}
+    .snug-menu-cloud{position:absolute;top:var(--cloud-top);left:0;width:calc(var(--cloud-width,140px)*var(--cloud-scale,1));aspect-ratio:1;opacity:var(--cloud-opacity);background-image:url('assets/menu-layout/cloud-varieties.webp');background-repeat:no-repeat;background-size:400% 200%;background-position:var(--cloud-x) var(--cloud-y);transform:translate3d(-35vw,0,0);animation:snugMenuCloudPass var(--cloud-speed) linear var(--cloud-delay) infinite;filter:blur(var(--cloud-blur,0)) drop-shadow(0 10px 16px #41636a24);will-change:transform}
     .snug-menu-layout-background{z-index:1}
     .snug-menu-wallpaper{z-index:2;opacity:0;background:#17282b;transition:opacity .6s ease}
     .snug-menu-wallpaper.has-wallpaper{opacity:1}
@@ -212,7 +212,7 @@
     .snug-start-signin svg{width:25px;height:25px;color:#5c8d65}.snug-start-signin span{display:grid;gap:1px;min-width:0}.snug-start-signin strong{font-size:12px}.snug-start-signin small{color:#687276;font-size:9px;line-height:1.25}.snug-start-signin[disabled]{opacity:.68}
     .snug-start-login-status{min-height:15px;margin:7px 4px 0!important;color:#526267!important;font-size:10px!important;text-align:center}
     @keyframes snugMenuDrift{0%{transform:translate3d(-2%,-1%,0) rotate(-2deg)}100%{transform:translate3d(3%,2%,0) rotate(2deg)}}
-    @keyframes snugMenuCloudPass{from{transform:translate3d(-35vw,0,0)}to{transform:translate3d(135vw,0,0)}}
+    @keyframes snugMenuCloudPass{from{transform:translate3d(calc(-35vw - 100%),0,0)}to{transform:translate3d(135vw,0,0)}}
     @media(min-width:760px){.snug-start-screen{align-items:center;justify-content:flex-end;padding:max(24px,env(safe-area-inset-top)) max(34px,calc((100vw - 1240px)/2 + 34px)) max(24px,env(safe-area-inset-bottom)) 48px}.snug-start-panel{width:min(470px,42vw);margin:0;padding:30px}.snug-start-screen:before{background:linear-gradient(90deg,#10282d0d 0 43%,#10282d6b 100%),linear-gradient(0deg,#162c3045,#162c3000 50%)}}
     @media(max-height:650px) and (max-width:759px){.snug-start-screen{display:flex;padding-bottom:8px}.snug-start-panel{margin-top:260px;margin-bottom:0}}
     @media(max-width:380px){.snug-start-panel{padding:17px;margin-top:48dvh}.snug-start-signin{grid-template-columns:28px minmax(0,1fr);padding-inline:9px}.snug-start-signin svg{width:22px;height:22px}}
@@ -330,14 +330,20 @@
   <main class="snug-start-screen" role="dialog" aria-modal="true" aria-labelledby="snug-start-title">
     <div class="snug-start-scenery" aria-hidden="true">
       <div class="snug-menu-clouds">
-        <span class="snug-menu-cloud" style="--cloud-x:0%;--cloud-y:0%;--cloud-top:4%;--cloud-width:230px;--cloud-opacity:0.8;--cloud-speed:96s;--cloud-delay:-63s;--cloud-rest:8vw"></span>
-        <span class="snug-menu-cloud" style="--cloud-x:33.333%;--cloud-y:0%;--cloud-top:11%;--cloud-width:190px;--cloud-opacity:0.72;--cloud-speed:137s;--cloud-delay:-18s;--cloud-blur:.5px;--cloud-rest:58vw"></span>
-        <span class="snug-menu-cloud" style="--cloud-x:66.667%;--cloud-y:0%;--cloud-top:25%;--cloud-width:125px;--cloud-opacity:0.66;--cloud-speed:79s;--cloud-delay:-41s;--cloud-rest:78vw"></span>
-        <span class="snug-menu-cloud" style="--cloud-x:100%;--cloud-y:0%;--cloud-top:34%;--cloud-width:260px;--cloud-opacity:0.58;--cloud-speed:166s;--cloud-delay:-122s;--cloud-blur:1.5px;--cloud-rest:32vw"></span>
-        <span class="snug-menu-cloud" style="--cloud-x:0%;--cloud-y:100%;--cloud-top:48%;--cloud-width:145px;--cloud-opacity:0.64;--cloud-speed:113s;--cloud-delay:-84s;--cloud-rest:66vw"></span>
-        <span class="snug-menu-cloud" style="--cloud-x:33.333%;--cloud-y:100%;--cloud-top:58%;--cloud-width:280px;--cloud-opacity:0.53;--cloud-speed:184s;--cloud-delay:-37s;--cloud-blur:2px;--cloud-rest:12vw"></span>
-        <span class="snug-menu-cloud" style="--cloud-x:66.667%;--cloud-y:100%;--cloud-top:67%;--cloud-width:165px;--cloud-opacity:0.57;--cloud-speed:149s;--cloud-delay:-101s;--cloud-blur:1px;--cloud-rest:45vw"></span>
-        <span class="snug-menu-cloud" style="--cloud-x:100%;--cloud-y:100%;--cloud-top:76%;--cloud-width:105px;--cloud-opacity:0.6;--cloud-speed:88s;--cloud-delay:-26s;--cloud-rest:82vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:0%;--cloud-y:0%;--cloud-top:3%;--cloud-width:140px;--cloud-scale:1;--cloud-opacity:.62;--cloud-speed:84s;--cloud-delay:-12s;--cloud-blur:0;--cloud-rest:8vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:33.333%;--cloud-y:0%;--cloud-top:9%;--cloud-width:140px;--cloud-scale:1.6;--cloud-opacity:.75;--cloud-speed:104s;--cloud-delay:-71s;--cloud-blur:.5px;--cloud-rest:88vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:66.667%;--cloud-y:0%;--cloud-top:15%;--cloud-width:140px;--cloud-scale:2.3;--cloud-opacity:.58;--cloud-speed:146s;--cloud-delay:-38s;--cloud-blur:1px;--cloud-rest:34vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:100%;--cloud-y:0%;--cloud-top:21%;--cloud-width:140px;--cloud-scale:1.3;--cloud-opacity:.8;--cloud-speed:92s;--cloud-delay:-55s;--cloud-blur:0;--cloud-rest:62vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:0%;--cloud-y:100%;--cloud-top:27%;--cloud-width:140px;--cloud-scale:2.9;--cloud-opacity:.55;--cloud-speed:178s;--cloud-delay:-120s;--cloud-blur:2px;--cloud-rest:15vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:33.333%;--cloud-y:100%;--cloud-top:33%;--cloud-width:140px;--cloud-scale:1.9;--cloud-opacity:.68;--cloud-speed:122s;--cloud-delay:-20s;--cloud-blur:.5px;--cloud-rest:74vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:66.667%;--cloud-y:100%;--cloud-top:39%;--cloud-width:140px;--cloud-scale:1.1;--cloud-opacity:.72;--cloud-speed:88s;--cloud-delay:-64s;--cloud-blur:0;--cloud-rest:46vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:100%;--cloud-y:100%;--cloud-top:45%;--cloud-width:140px;--cloud-scale:2.6;--cloud-opacity:.6;--cloud-speed:162s;--cloud-delay:-98s;--cloud-blur:1.5px;--cloud-rest:90vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:0%;--cloud-y:0%;--cloud-top:51%;--cloud-width:140px;--cloud-scale:1.5;--cloud-opacity:.66;--cloud-speed:100s;--cloud-delay:-33s;--cloud-blur:.5px;--cloud-rest:22vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:33.333%;--cloud-y:0%;--cloud-top:57%;--cloud-width:140px;--cloud-scale:3;--cloud-opacity:.53;--cloud-speed:185s;--cloud-delay:-150s;--cloud-blur:2px;--cloud-rest:58vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:66.667%;--cloud-y:0%;--cloud-top:62%;--cloud-width:140px;--cloud-scale:2;--cloud-opacity:.7;--cloud-speed:128s;--cloud-delay:-77s;--cloud-blur:1px;--cloud-rest:5vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:100%;--cloud-y:0%;--cloud-top:67%;--cloud-width:140px;--cloud-scale:1.2;--cloud-opacity:.78;--cloud-speed:90s;--cloud-delay:-8s;--cloud-blur:0;--cloud-rest:80vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:0%;--cloud-y:100%;--cloud-top:72%;--cloud-width:140px;--cloud-scale:2.4;--cloud-opacity:.57;--cloud-speed:152s;--cloud-delay:-110s;--cloud-blur:1.5px;--cloud-rest:40vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:33.333%;--cloud-y:100%;--cloud-top:77%;--cloud-width:140px;--cloud-scale:1.7;--cloud-opacity:.64;--cloud-speed:112s;--cloud-delay:-48s;--cloud-blur:.5px;--cloud-rest:68vw"></span>
       </div>
       <img class="snug-menu-layout-background" src="assets/menu-layout/background.svg" alt="">
       <div class="snug-menu-wallpaper"></div>
