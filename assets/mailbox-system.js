@@ -35,12 +35,6 @@
     { id: "barn-crew", name: "Barn Crew", achievement: "Contribute to a barn-raising", subject: "neighbors raising a timber house frame together", glyph: "house" },
     { id: "shutterbug", name: "Shutterbug", achievement: "Take 25 photo-mode pictures", subject: "vintage camera with a flash star", glyph: "camera" },
     { id: "cyclical-citizen", name: "Cyclical Citizen", achievement: "Complete the welcoming committee", subject: "town gate with a welcome banner", glyph: "gate" },
-    { id: "story-new-neighbor", name: "New Neighbor", achievement: "Complete Chapter 1 of the town story", subject: "town gate with a welcome banner", glyph: "gate" },
-    { id: "story-mayors-request", name: "Razzle-Dazzle", achievement: "Complete Chapter 2 of the town story", subject: "gold trophy star on a game board", glyph: "star" },
-    { id: "story-landslide", name: "Landslide Day", achievement: "Complete Chapter 3 of the town story", subject: "string of triangular bunting flags", glyph: "bunting" },
-    { id: "story-lost-tour", name: "Script Finder", achievement: "Complete Chapter 4 of the town story", subject: "envelope with a heart seal", glyph: "letter" },
-    { id: "story-encore", name: "Encore!", achievement: "Complete Chapter 5 of the town story", subject: "sleepy owl with a crescent moon", glyph: "moon" },
-    { id: "story-citizen", name: "Honorary Citizen", achievement: "Complete the town story", subject: "vintage camera with a flash star", glyph: "camera", rare: true },
   ];
   const BASE_PROMPT = "small circular postage stamp, perforated edge, storybook 3D icon in the center, pastel background, thin black toon outline, centered, plain white background, game collectible";
   const COLORS = ["#cf6655", "#5e8566", "#527f9a", "#d39f42", "#8a6b8d", "#735947"];
@@ -601,7 +595,6 @@
   window.addEventListener("snug-project-contribution",(event)=>{if(/bridge/i.test(event.detail?.project||""))unlockStamp("bridge-crew");});
   window.addEventListener("snug-project-contribution",(event)=>{if(/barn/i.test(event.detail?.project||""))unlockStamp("barn-crew");});
   window.addEventListener("snug-cat-adopted",()=>unlockStamp("cat-whisperer"));
-  window.addEventListener("snug-story-chapter",(event)=>{const id=event.detail?.stamp;if(id)unlockStamp(id);});
   window.addEventListener("snug-photo-captured",()=>{const box=normalizedMailbox();saveMailbox({...box,photoCount:Number(box.photoCount||0)+1},"").then(reconcileStamps);});
   async function unlockStamp(id){const box=normalizedMailbox();if(box.stamps.includes(id))return;await saveMailbox({...box,stamps:[...box.stamps,id]},"");showToast(`${STAMPS.find((stamp)=>stamp.id===id)?.name||"New"} stamp unlocked`);}
   if(window.__snugSession)attachSession(window.__snugSession);

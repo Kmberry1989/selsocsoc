@@ -405,12 +405,6 @@ window.__snugWardrobe = {
   setPaintedOutfit: (id = "") => {
     patchPlayer(p => ({ ...p, equippedAppearance: { ...(p.equippedAppearance || {}), paintedOutfit: String(id || "") } }));
   },
-  setPaintedFaceWear: (id = "") => {
-    patchPlayer(p => ({ ...p, equippedAppearance: { ...(p.equippedAppearance || {}), paintedFaceWear: String(id || "") } }));
-  },
-  setPaintedNeckwear: (id = "") => {
-    patchPlayer(p => ({ ...p, equippedAppearance: { ...(p.equippedAppearance || {}), paintedNeckwear: String(id || "") } }));
-  },
 };
 
 function npcFrontHeader(mark, color, role, name, line) {

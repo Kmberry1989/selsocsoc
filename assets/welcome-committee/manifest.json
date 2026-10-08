@@ -8,7 +8,7 @@
       "handAccessory": "mayor-mayor/hand-accessory-placeholder.glb",
       "shoes": "mayor-mayor/shoes-placeholder.glb",
       "faceSlot": "FaceSlot_MayorMayor",
-      "faceArtwork": "npc-faces/face-welcome-mayor-mayor.png"
+      "faceArtwork": null
     },
     "gideon": {
       "runtimePrefix": "Gideon",
@@ -17,7 +17,7 @@
       "handAccessory": "gideon/hand-accessory-placeholder.glb",
       "shoes": "gideon/shoes-placeholder.glb",
       "faceSlot": "FaceSlot_Gideon",
-      "faceArtwork": "npc-faces/face-welcome-gideon.png"
+      "faceArtwork": null
     },
     "lyla-lens": {
       "runtimePrefix": "LylaLens",
@@ -26,7 +26,7 @@
       "handAccessory": "lyla-lens/hand-accessory-placeholder.glb",
       "shoes": "lyla-lens/shoes-placeholder.glb",
       "faceSlot": "FaceSlot_LylaLens",
-      "faceArtwork": "npc-faces/face-welcome-lyla-lens.png"
+      "faceArtwork": null
     }
   }
 }

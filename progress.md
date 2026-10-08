@@ -75,3 +75,12 @@ Original prompt: Compress the large texture and image files and save them as web
 - Normalized Firebase Realtime Database bearer credentials to REST `auth` parameters and added an explicit local-only fallback for the deployment's denied presence path, eliminating repeated 400/401 network noise while leaving other authenticated data routes intact.
 - Fixed fast welcome dismissal so the entry observer cannot miss the ceremony and relaunch it.
 - The remaining `glCopySubTextureCHROMIUM` message is emitted by headless Chrome's GPU compositor during WebGL/DOM composition; the smoke gate excludes only that exact browser-driver diagnostic and now fails on all other warning/error console messages, page exceptions, and HTTP 4xx/5xx responses.
+
+## 2026-10-07 staged loading and asset-removal audit
+
+- Audited the staged removal of storyline, NPC portrait/outfit, player-emote, painted-accessory, and outfit assets; retained source has no direct references to those removed files or modules.
+- Replaced eager deferred loading with an explicit core/optional loader so the title screen can paint before the large world bundle, while all menu entry routes share a recoverable core-readiness gate.
+- Restored error recovery for failed arrival transitions.
+- Fixed broken dynamic import paths in mailbox-home and Whirl of Resources (`assets/assets/vendor` -> `assets/vendor`).
+- Restored omitted runtime wiring for multiplayer (core, required by Solo/Family/Board shortcuts) plus retained journal, fit review, minigame expansion, Family Feud, Nosy Neighbors, and painting feature modules.
+- Verification: `npm run build`, asset validation, syntax checks, and diff checks pass. Playwright screenshots visually confirmed the title confirmation and rendered town after Town/Board entry; the required multiplayer module now loads without console/page errors. Full authenticated board-lobby, camera, multiplayer, mobile, and physical-device GPU coverage remain open.

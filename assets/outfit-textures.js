@@ -16,135 +16,8 @@
     selectedId: '',
     activeBody: null,
     activeOverlay: null,
-    textureCache: new Map(),
-    panelRects: new Map()
+    textureCache: new Map()
   };
-
-  // Garment-fit: find each panel's painted garment bounds (excluding the panel
-  // backing, labels and gutters) so the garment stretches edge-to-edge on the
-  // cube body faces instead of floating in backing-colored margins.
-  function analyzePanels(image) {
-    const w = image.naturalWidth || image.width;
-    const h = image.naturalHeight || image.height;
-    if (!w || !h) return null;
-    const regions = atlasBands.map((band) => ({
-      // inset band region in image px (y down); insets already crop labels/gutters
-      x0: Math.floor(band.min * w),
-      x1: Math.ceil(band.max * w),
-      y0: Math.floor((1 - 0.907) * h),
-      y1: Math.ceil((1 - 0.094) * h)
-    }));
-    const scale = Math.min(1, 256 / w);
-    const cw = Math.max(1, Math.round(w * scale));
-    const ch = Math.max(1, Math.round(h * scale));
-    const canvas = document.createElement('canvas');
-    canvas.width = cw;
-    canvas.height = ch;
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    if (!ctx) return null;
-    ctx.drawImage(image, 0, 0, cw, ch);
-    let data;
-    try {
-      data = ctx.getImageData(0, 0, cw, ch).data;
-    } catch (err) {
-      return null;
-    }
-    const px = (x, y) => {
-      const i = (y * cw + x) * 4;
-      return [data[i], data[i + 1], data[i + 2]];
-    };
-    const rects = regions.map((r) => {
-      const x0 = Math.floor(r.x0 * scale), x1 = Math.ceil(r.x1 * scale);
-      const y0 = Math.floor(r.y0 * scale), y1 = Math.ceil(r.y1 * scale);
-      // background = median of region border pixels (robust to art touching edges)
-      const border = [];
-      for (let x = x0; x < x1; x += 2) {
-        border.push(px(x, y0), px(x, y1 - 1));
-      }
-      for (let y = y0; y < y1; y += 2) {
-        border.push(px(x0, y), px(x1 - 1, y));
-      }
-      const med = [0, 1, 2].map((c) => {
-        const vals = border.map((v) => v[c]).sort((a, b) => a - b);
-        return vals[Math.floor(vals.length / 2)] || 0;
-      });
-      const diff = (v) => Math.max(Math.abs(v[0] - med[0]), Math.abs(v[1] - med[1]), Math.abs(v[2] - med[2]));
-      // Connected components of non-background pixels: keeps the garment while
-      // dropping baked-in labels and markers (separate, much smaller blobs).
-      const rw = x1 - x0, rh = y1 - y0;
-      const cmask = new Uint8Array(rw * rh);
-      for (let yy = 0; yy < rh; yy += 1) {
-        for (let xx = 0; xx < rw; xx += 2) {
-          if (diff(px(x0 + xx, y0 + yy)) > 28) cmask[yy * rw + xx] = 1;
-        }
-      }
-      const cseen = new Uint8Array(rw * rh);
-      const ccomps = [];
-      const cstack = [];
-      for (let ci = 0; ci < rw * rh; ci += 1) {
-        if (!cmask[ci] || cseen[ci]) continue;
-        let cbx0 = rw, cby0 = rh, cbx1 = -1, cby1 = -1, carea = 0;
-        cstack.push(ci); cseen[ci] = 1;
-        while (cstack.length) {
-          const cc = cstack.pop();
-          const ccx = cc % rw, ccy = (cc / rw) | 0;
-          carea += 1;
-          if (ccx < cbx0) cbx0 = ccx; if (ccx > cbx1) cbx1 = ccx;
-          if (ccy < cby0) cby0 = ccy; if (ccy > cby1) cby1 = ccy;
-          if (ccx > 0 && cmask[cc - 1] && !cseen[cc - 1]) { cseen[cc - 1] = 1; cstack.push(cc - 1); }
-          if (ccx < rw - 1 && cmask[cc + 1] && !cseen[cc + 1]) { cseen[cc + 1] = 1; cstack.push(cc + 1); }
-          if (ccy > 0 && cmask[cc - rw] && !cseen[cc - rw]) { cseen[cc - rw] = 1; cstack.push(cc - rw); }
-          if (ccy < rh - 1 && cmask[cc + rw] && !cseen[cc + rw]) { cseen[cc + rw] = 1; cstack.push(cc + rw); }
-        }
-        ccomps.push({ area: carea, bx0: cbx0, by0: cby0, bx1: cbx1, by1: cby1 });
-      }
-      ccomps.sort((a, b) => b.area - a.area);
-      const biggest = ccomps.length ? ccomps[0].area : 0;
-      const keep = ccomps.filter((c) => c.area >= biggest * 0.4);
-      let bx0 = x1, by0 = y1, bx1 = x0, by1 = y0;
-      for (const kc of keep) {
-        if (kc.bx0 < bx0) bx0 = kc.bx0;
-        if (kc.by0 < by0) by0 = kc.by0;
-        if (kc.bx1 > bx1) bx1 = kc.bx1;
-        if (kc.by1 > by1) by1 = kc.by1;
-      }
-      bx0 += x0; by0 += y0; bx1 += x0; by1 += y0;
-      const area = (bx1 - bx0) * (by1 - by0);
-      const regionArea = (x1 - x0) * (y1 - y0);
-      if (!keep.length || area < regionArea * 0.12) {
-        bx0 = x0; by0 = y0; bx1 = x1; by1 = y1; // fallback: whole inset region
-      }
-      // pad slightly so anti-aliased garment edges are not clipped
-      const padX = Math.max(1, Math.round((bx1 - bx0) * 0.02));
-      const padY = Math.max(1, Math.round((by1 - by0) * 0.02));
-      bx0 = Math.max(x0, bx0 - padX); by0 = Math.max(y0, by0 - padY);
-      bx1 = Math.min(x1, bx1 + padX); by1 = Math.min(y1, by1 + padY);
-      // cap sample: inset corner closest to the background color
-      const corners = [[x0 + 2, y0 + 2], [x1 - 3, y0 + 2], [x0 + 2, y1 - 3], [x1 - 3, y1 - 3]];
-      let cap = corners[0], capD = Infinity;
-      for (const cpt of corners) {
-        const d = diff(px(cpt[0], cpt[1]));
-        if (d < capD) { capD = d; cap = cpt; }
-      }
-      const S = 1 / scale;
-      return {
-        uMin: (bx0 * S) / w,
-        uMax: (bx1 * S) / w,
-        vMin: 1 - (by1 * S) / h,
-        vMax: 1 - (by0 * S) / h,
-        capU: (cap[0] * S) / w,
-        capV: 1 - (cap[1] * S) / h
-      };
-    });
-    return rects;
-  }
-
-  function panelRectsFor(item, image) {
-    if (!state.panelRects.has(item.id)) {
-      state.panelRects.set(item.id, analyzePanels(image));
-    }
-    return state.panelRects.get(item.id);
-  }
 
   const escapeText = (value) => String(value ?? '');
   const wrapAngle = (angle) => {
@@ -155,7 +28,6 @@
   };
 
   function validOutfit(item) {
-    if (item?.npcOnly === true) return null; // NPC signature outfits never enter the player selector
     const id = String(item?.id || '');
     const name = String(item?.name || '');
     const path = String(item?.path || '');
@@ -209,7 +81,7 @@
     return state.textureCache.get(item.id);
   }
 
-  function makeAtlasGeometry(body, rects) {
+  function makeAtlasGeometry(body) {
     const source = body.geometry.index ? body.geometry.toNonIndexed() : body.geometry.clone();
     const position = source.getAttribute('position');
     const normal = source.getAttribute('normal');
@@ -234,31 +106,24 @@
         ny += normal.getY(start + corner);
         nz += normal.getZ(start + corner);
       }
-      const isCap = Math.abs(ny / 3) > 0.55;
+      const cap = Math.abs(ny / 3) > 0.55;
+      if (cap) {
+        for (let corner = 0; corner < 3; corner += 1) uv.setXY(start + corner, 0.995, 0.995);
+        continue;
+      }
+
       const triangleAngle = Math.atan2(nx, nz);
       let sector = Math.round(triangleAngle / (Math.PI / 2));
       sector = ((sector % 4) + 4) % 4;
-      const bandIndex = sector === 0 ? 0 : sector === 1 ? 1 : sector === 2 ? 2 : 3;
-      const band = atlasBands[bandIndex];
-      const rect = rects && rects[bandIndex];
-      if (isCap) {
-        const cu = rect ? rect.capU : 0.995;
-        const cv = rect ? rect.capV : 0.995;
-        for (let corner = 0; corner < 3; corner += 1) uv.setXY(start + corner, cu, cv);
-        continue;
-      }
+      const band = atlasBands[sector === 0 ? 0 : sector === 1 ? 1 : sector === 2 ? 2 : 3];
 
       for (let corner = 0; corner < 3; corner += 1) {
         const index = start + corner;
         const vertexAngle = Math.atan2(position.getX(index), position.getZ(index));
         const local = Math.max(-0.5, Math.min(0.5, wrapAngle(vertexAngle - band.center) / (Math.PI / 2)));
-        const u = rect
-          ? rect.uMin + (local + 0.5) * (rect.uMax - rect.uMin)
-          : band.min + (local + 0.5) * (band.max - band.min);
+        const u = band.min + (local + 0.5) * (band.max - band.min);
         const vertical = (position.getY(index) - minY) / height;
-        const v = rect
-          ? rect.vMin + vertical * (rect.vMax - rect.vMin)
-          : 0.094 + vertical * 0.813;
+        const v = 0.094 + vertical * 0.813;
         uv.setXY(index, u, v);
       }
     }
@@ -300,8 +165,7 @@
       if (state.selectedId !== item.id || currentAvatar()?.userData?.body !== body) return;
       const texture = makeTexture(body, image);
       if (!texture) return;
-      const rects = panelRectsFor(item, image);
-      const geometry = makeAtlasGeometry(body, rects);
+      const geometry = makeAtlasGeometry(body);
       const baseMaterial = Array.isArray(body.material) ? body.material[0] : body.material;
       const material = baseMaterial.clone();
       material.name = `PaintedOutfit_${item.id}`;

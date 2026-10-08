@@ -38,57 +38,6 @@
     { name: 'Charcoal', hex: '#4a4a52' },
   ];
 
-  const SEASONAL_PALETTES = [
-    {
-      id: 'spring', label: 'Spring', swatches: [
-        { name: 'Blossom', hex: '#f9c6d3' },
-        { name: 'Petal', hex: '#fde8ef' },
-        { name: 'Sprout', hex: '#b5d99c' },
-        { name: 'Meadow', hex: '#7fb069' },
-        { name: 'Robin egg', hex: '#a8d8d8' },
-        { name: 'Daffodil', hex: '#f7dc6f' },
-        { name: 'Wisteria', hex: '#b9a7e6' },
-        { name: 'Rain', hex: '#9db8c9' },
-      ],
-    },
-    {
-      id: 'summer', label: 'Summer', swatches: [
-        { name: 'Sunbeam', hex: '#ffd94d' },
-        { name: 'Coral', hex: '#ff7f6e' },
-        { name: 'Ocean', hex: '#4aa8de' },
-        { name: 'Palm', hex: '#3e9e6e' },
-        { name: 'Berry', hex: '#c94f7c' },
-        { name: 'Sand', hex: '#f0d9a8' },
-        { name: 'Sky', hex: '#7ec8f0' },
-        { name: 'Sunset', hex: '#ff9e5e' },
-      ],
-    },
-    {
-      id: 'fall', label: 'Fall', swatches: [
-        { name: 'Pumpkin', hex: '#e07b39' },
-        { name: 'Cider', hex: '#c46a2b' },
-        { name: 'Maple', hex: '#b8452c' },
-        { name: 'Hay', hex: '#e8c872' },
-        { name: 'Moss', hex: '#7a8b4f' },
-        { name: 'Bark', hex: '#6b4a35' },
-        { name: 'Cranberry', hex: '#a63d4f' },
-        { name: 'Fog', hex: '#b9b3a8' },
-      ],
-    },
-    {
-      id: 'winter', label: 'Winter', swatches: [
-        { name: 'Snow', hex: '#f4f8fb' },
-        { name: 'Frost', hex: '#c9dbe8' },
-        { name: 'Icicle', hex: '#9fc3e0' },
-        { name: 'Spruce', hex: '#3d6b4f' },
-        { name: 'Berry', hex: '#8e2f45' },
-        { name: 'Candle', hex: '#f5c86e' },
-        { name: 'Midnight', hex: '#2e3a5c' },
-        { name: 'Silver', hex: '#c0c8d0' },
-      ],
-    },
-  ];
-
   const state = {
     session: null,
     profile: {},
@@ -103,34 +52,6 @@
 
   const normalizeHex = (value) => (/^#[0-9a-f]{6}$/i.test(String(value || '')) ? String(value).toLowerCase() : WHITE);
   const currentAvatar = () => window.__snugPlayerAvatar || window.__snugWorld?.player || null;
-
-  // Active tint palette tab (view-only; the chosen tint is what persists).
-  let activePaletteId = 'cozy';
-
-  function palettesForTabs() {
-    return [{ id: 'cozy', label: 'Cozy', swatches: PALETTE }, ...SEASONAL_PALETTES];
-  }
-
-  function renderSwatchButtons(row, swatchesEl, entries) {
-    swatchesEl.innerHTML = '';
-    entries.forEach((entry) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'snug-tint-swatch' + (entry.reset ? ' snug-tint-none' : '');
-      button.dataset.tint = entry.hex;
-      button.title = entry.name;
-      button.setAttribute('aria-label', `${entry.name} tint`);
-      button.setAttribute('aria-pressed', 'false');
-      const dot = document.createElement('span');
-      dot.className = 'snug-tint-dot';
-      dot.style.background = entry.hex;
-      dot.setAttribute('aria-hidden', 'true');
-      button.appendChild(dot);
-      button.addEventListener('click', () => chooseTint(row, entry));
-      swatchesEl.appendChild(button);
-    });
-    syncPicker(row);
-  }
 
   function rowLabel(row) {
     return row.querySelector(':scope > span')?.textContent?.trim() || 'Item';
@@ -325,39 +246,26 @@
     swatches.setAttribute('role', 'group');
     swatches.setAttribute('aria-label', `Tint color for ${rowLabel(row)}`);
 
-    const tabs = document.createElement('div');
-    tabs.className = 'snug-tint-tabs';
-    tabs.setAttribute('role', 'tablist');
-    tabs.setAttribute('aria-label', 'Tint palettes');
-    palettesForTabs().forEach((pal) => {
-      const tab = document.createElement('button');
-      tab.type = 'button';
-      tab.className = 'snug-tint-tab' + (pal.id === activePaletteId ? ' active' : '');
-      tab.setAttribute('role', 'tab');
-      tab.setAttribute('aria-selected', pal.id === activePaletteId ? 'true' : 'false');
-      tab.textContent = pal.label;
-      tab.addEventListener('click', () => {
-        activePaletteId = pal.id;
-        document.querySelectorAll('.snug-tint-tab').forEach((t) => {
-          const on = t.textContent === pal.label;
-          t.classList.toggle('active', on);
-          t.setAttribute('aria-selected', on ? 'true' : 'false');
-        });
-        const active = palettesForTabs().find((p) => p.id === activePaletteId);
-        document.querySelectorAll('.snug-tint-picker').forEach((picker) => {
-          const r = picker.closest('.cosmetic-select-row');
-          const sw = picker.querySelector('.snug-tint-swatches');
-          if (r && sw && active) renderSwatchButtons(r, sw, active.swatches);
-        });
-      });
-      tabs.appendChild(tab);
+    PALETTE.forEach((entry) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'snug-tint-swatch' + (entry.reset ? ' snug-tint-none' : '');
+      button.dataset.tint = entry.hex;
+      button.title = entry.name;
+      button.setAttribute('aria-label', `${entry.name} tint`);
+      button.setAttribute('aria-pressed', 'false');
+      const dot = document.createElement('span');
+      dot.className = 'snug-tint-dot';
+      dot.style.background = entry.hex;
+      dot.setAttribute('aria-hidden', 'true');
+      button.appendChild(dot);
+      button.addEventListener('click', () => chooseTint(row, entry));
+      swatches.appendChild(button);
     });
 
-    const active = palettesForTabs().find((p) => p.id === activePaletteId) || palettesForTabs()[0];
-    renderSwatchButtons(row, swatches, active.swatches);
-
-    wrap.append(label, tabs, swatches);
+    wrap.append(label, swatches);
     row.appendChild(wrap);
+    syncPicker(row);
   }
 
   function scanRows() {
