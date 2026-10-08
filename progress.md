@@ -84,3 +84,12 @@ Original prompt: Compress the large texture and image files and save them as web
 - Fixed broken dynamic import paths in mailbox-home and Whirl of Resources (`assets/assets/vendor` -> `assets/vendor`).
 - Restored omitted runtime wiring for multiplayer (core, required by Solo/Family/Board shortcuts) plus retained journal, fit review, minigame expansion, Family Feud, Nosy Neighbors, and painting feature modules.
 - Verification: `npm run build`, asset validation, syntax checks, and diff checks pass. Playwright screenshots visually confirmed the title confirmation and rendered town after Town/Board entry; the required multiplayer module now loads without console/page errors. Full authenticated board-lobby, camera, multiplayer, mobile, and physical-device GPU coverage remain open.
+
+## 2026-10-07 menu artwork handoff
+
+- Expanded `assets/menu-layout/README.md` into an ordered asset-production guide.
+- Documented exact source dimensions, responsive display behavior, safe areas,
+  transparency/export guidance, and the menu's back-to-front visual stack.
+- Kept all runtime filenames and SVG viewBoxes unchanged; this is a documentation-only update.
+- Generated `assets/menu-layout/menu-art-direction.webp` as a visual style board
+  for background, cloud, logo/frame, and option-tile artwork guidance.
