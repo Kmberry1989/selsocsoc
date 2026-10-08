@@ -199,8 +199,7 @@
     .snug-start-scenery{position:fixed;z-index:0;overflow:hidden;min-height:0;pointer-events:none;inset:0;background:linear-gradient(125deg,#8bd5d018,#f2c37d18 48%,#e7685414)}
     .snug-menu-wallpaper,.snug-menu-wallpaper img,.snug-menu-wallpaper video,.snug-menu-shader{position:absolute;width:100%;height:100%;inset:0}
     .snug-menu-clouds{position:absolute;z-index:0;overflow:hidden;inset:0}
-    .snug-menu-cloud{position:absolute;top:var(--cloud-top);left:0;width:var(--cloud-width);opacity:var(--cloud-opacity);transform:translate3d(-35vw,0,0);animation:snugMenuCloudPass var(--cloud-speed) linear var(--cloud-delay) infinite;filter:blur(var(--cloud-blur,0));will-change:transform}
-    .snug-menu-cloud img{display:block;width:100%;height:auto;filter:drop-shadow(0 10px 16px #41636a24)}
+    .snug-menu-cloud{position:absolute;top:var(--cloud-top);left:0;width:var(--cloud-width);aspect-ratio:1;opacity:var(--cloud-opacity);background-image:url('assets/menu-layout/cloud-varieties.webp');background-repeat:no-repeat;background-size:400% 200%;background-position:var(--cloud-x) var(--cloud-y);transform:translate3d(-35vw,0,0);animation:snugMenuCloudPass var(--cloud-speed) linear var(--cloud-delay) infinite;filter:blur(var(--cloud-blur,0)) drop-shadow(0 10px 16px #41636a24);will-change:transform}
     .snug-menu-layout-background{z-index:1}
     .snug-menu-wallpaper{z-index:2;opacity:0;background:#17282b;transition:opacity .6s ease}
     .snug-menu-wallpaper.has-wallpaper{opacity:1}
@@ -331,12 +330,14 @@
   <main class="snug-start-screen" role="dialog" aria-modal="true" aria-labelledby="snug-start-title">
     <div class="snug-start-scenery" aria-hidden="true">
       <div class="snug-menu-clouds">
-        <span class="snug-menu-cloud" style="--cloud-top:8%;--cloud-width:150px;--cloud-opacity:.56;--cloud-speed:92s;--cloud-delay:-63s;--cloud-rest:8vw"><img src="assets/textures/cloud-puff.webp" alt=""></span>
-        <span class="snug-menu-cloud" style="--cloud-top:17%;--cloud-width:245px;--cloud-opacity:.45;--cloud-speed:138s;--cloud-delay:-18s;--cloud-blur:1px;--cloud-rest:58vw"><img src="assets/textures/cloud-cluster.webp" alt=""></span>
-        <span class="snug-menu-cloud" style="--cloud-top:31%;--cloud-width:110px;--cloud-opacity:.38;--cloud-speed:76s;--cloud-delay:-41s;--cloud-rest:78vw"><img src="assets/textures/cloud-puff.webp" alt=""></span>
-        <span class="snug-menu-cloud" style="--cloud-top:43%;--cloud-width:300px;--cloud-opacity:.28;--cloud-speed:164s;--cloud-delay:-122s;--cloud-blur:2px;--cloud-rest:32vw"><img src="assets/textures/cloud-cluster.webp" alt=""></span>
-        <span class="snug-menu-cloud" style="--cloud-top:59%;--cloud-width:175px;--cloud-opacity:.34;--cloud-speed:116s;--cloud-delay:-84s;--cloud-rest:66vw"><img src="assets/textures/cloud-puff.webp" alt=""></span>
-        <span class="snug-menu-cloud" style="--cloud-top:72%;--cloud-width:220px;--cloud-opacity:.24;--cloud-speed:182s;--cloud-delay:-37s;--cloud-blur:2.5px;--cloud-rest:12vw"><img src="assets/textures/cloud-cluster.webp" alt=""></span>
+        <span class="snug-menu-cloud" style="--cloud-x:0%;--cloud-y:0%;--cloud-top:4%;--cloud-width:230px;--cloud-opacity:.52;--cloud-speed:96s;--cloud-delay:-63s;--cloud-rest:8vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:33.333%;--cloud-y:0%;--cloud-top:11%;--cloud-width:190px;--cloud-opacity:.44;--cloud-speed:137s;--cloud-delay:-18s;--cloud-blur:.5px;--cloud-rest:58vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:66.667%;--cloud-y:0%;--cloud-top:25%;--cloud-width:125px;--cloud-opacity:.38;--cloud-speed:79s;--cloud-delay:-41s;--cloud-rest:78vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:100%;--cloud-y:0%;--cloud-top:34%;--cloud-width:260px;--cloud-opacity:.3;--cloud-speed:166s;--cloud-delay:-122s;--cloud-blur:1.5px;--cloud-rest:32vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:0%;--cloud-y:100%;--cloud-top:48%;--cloud-width:145px;--cloud-opacity:.36;--cloud-speed:113s;--cloud-delay:-84s;--cloud-rest:66vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:33.333%;--cloud-y:100%;--cloud-top:58%;--cloud-width:280px;--cloud-opacity:.25;--cloud-speed:184s;--cloud-delay:-37s;--cloud-blur:2px;--cloud-rest:12vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:66.667%;--cloud-y:100%;--cloud-top:67%;--cloud-width:165px;--cloud-opacity:.29;--cloud-speed:149s;--cloud-delay:-101s;--cloud-blur:1px;--cloud-rest:45vw"></span>
+        <span class="snug-menu-cloud" style="--cloud-x:100%;--cloud-y:100%;--cloud-top:76%;--cloud-width:105px;--cloud-opacity:.32;--cloud-speed:88s;--cloud-delay:-26s;--cloud-rest:82vw"></span>
       </div>
       <img class="snug-menu-layout-background" src="assets/menu-layout/background.svg" alt="">
       <div class="snug-menu-wallpaper"></div>

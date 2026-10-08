@@ -11,6 +11,8 @@ Illustrator, Inkscape, or any text editor while keeping the filenames stable.
 - `board.svg` — Snug Board button artwork.
 - `options-frame.svg` — decorative frame around the selectable option dock;
   design at 760 × 120 and keep the center transparent enough for buttons.
+- `cloud-varieties.webp` — transparent 4 × 2 sprite sheet containing eight
+  individual storybook cloud shapes used by the slow menu parallax.
 
 The game supplies accessible button names and click behavior separately, so text
 inside these SVGs is decorative. Preserve each SVG's `viewBox`; artwork can be
