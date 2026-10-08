@@ -247,7 +247,7 @@
       const thankYou = String(message.item || "").startsWith("__thank_you__");
       const tradeParcel = message.type === "trade-accepted";
       const social = message.type === "social-society";
-      return `<li class="${Number(message.createdAt || 0) > lastOpened ? "new" : ""}"><span class="parcel-wrap wrap-${esc(envelope.wrap)}" aria-hidden="true">${stamp ? stampSvg(stamp.glyph) : stampSvg("letter")}</span><div><small>${thankYou ? "Thank-you note" : tradeParcel ? "Trade parcel" : social ? "Social Society" : "Gift parcel"}</small><b>${esc(message.fromName || "Neighbor")}</b><p>${esc(thankYou ? "Sent a little note back." : tradeParcel ? `${displayName(message.want)} arrived via trade.` : social ? `Day ${Number(message.day || 1)} streak reward · +${Number(message.shells || 0)} shells` : displayName(message.item))}</p></div><button type="button" data-open-mail="${esc(message.id)}">${thankYou ? "Read" : "Unwrap"}</button></li>`;
+      return `<li class="${Number(message.createdAt || 0) > lastOpened ? "new" : ""}"><span class="parcel-wrap wrap-${esc(envelope.wrap)}" aria-hidden="true">${stamp ? stampSvg(stamp.glyph) : stampSvg("letter")}</span><div><small>${thankYou ? "Thank-you note" : tradeParcel ? "Trade parcel" : social ? "Social Society check" : "Gift parcel"}</small><b>${esc(message.fromName || "Neighbor")}</b><p>${esc(thankYou ? "Sent a little note back." : tradeParcel ? `${displayName(message.want)} arrived via trade.` : social ? `Day ${Number(message.day || 1)} streak check · +${Number(message.shells || 0)} shells` : displayName(message.item))}</p></div><button type="button" data-open-mail="${esc(message.id)}">${thankYou ? "Read" : "Unwrap"}</button></li>`;
     }).join("")}</ul>`;
   }
   function sendMarkup() {
@@ -347,7 +347,7 @@
     const social = message.type === "social-society";
     const overlay = document.createElement("div");
     overlay.className = "unwrap-backdrop";
-    overlay.innerHTML = `<section class="unwrap-card" role="dialog" aria-modal="true" aria-label="Opened mail"><div class="unwrap-parcel wrap-${esc(wrap)}"><span>${stampSvg(stamp?.glyph || "letter")}</span></div><small>${thankYou ? "A note from" : tradeParcel ? "A trade parcel from" : social ? "Your Social Society reward" : "A gift from"}</small><h3>${esc(message.fromName || "Neighbor")}</h3><p>${esc(thankYou ? "Thank you! Your parcel made my day." : social ? `Day ${Number(message.day || 1)} of your login streak (${Number(message.multiplier || 1)}x) · +${Number(message.shells || 0)} shells added.` : `${displayName(tradeParcel ? message.want : message.item)} is now in your collection.`)}</p><div><button type="button" data-unwrapped-done>Done</button>${thankYou || social ? "" : `<button type="button" class="mail-primary" data-send-thanks>Send thanks</button>`}</div></section>`;
+    overlay.innerHTML = `<section class="unwrap-card" role="dialog" aria-modal="true" aria-label="Opened mail"><div class="unwrap-parcel wrap-${esc(wrap)}"><span>${stampSvg(stamp?.glyph || "letter")}</span></div><small>${thankYou ? "A note from" : tradeParcel ? "A trade parcel from" : social ? "Your Social Society check" : "A gift from"}</small><h3>${esc(message.fromName || "Neighbor")}</h3><p>${esc(thankYou ? "Thank you! Your parcel made my day." : social ? `Day ${Number(message.day || 1)} of your login streak (${Number(message.multiplier || 1)}x) · +${Number(message.shells || 0)} shells added.` : `${displayName(tradeParcel ? message.want : message.item)} is now in your collection.`)}</p><div><button type="button" data-unwrapped-done>Done</button>${thankYou || social ? "" : `<button type="button" class="mail-primary" data-send-thanks>Send thanks</button>`}</div></section>`;
     document.body.appendChild(overlay);
     const close = () => overlay.remove();
     $("[data-unwrapped-done]", overlay)?.addEventListener("click", close);
@@ -376,7 +376,7 @@
     try {
       if (social) {
         const shells = Math.max(0, Math.round(Number(message.shells || 0)));
-        if (shells > 0) window.dispatchEvent(new CustomEvent("snug-award-coins", { detail: { amount: shells, message: `Social Society · Day ${Number(message.day || 1)} · +${shells} shells` } }));
+        if (shells > 0) window.dispatchEvent(new CustomEvent("snug-award-coins", { detail: { amount: shells, message: `Social Society check · Day ${Number(message.day || 1)} · +${shells} shells` } }));
       } else if (!thankYou && incoming) {
         const nextInventory = [...new Set([...inventory(), incoming])];
         state.profile.inventory = nextInventory;

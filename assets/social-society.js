@@ -1,5 +1,5 @@
 /* snug-social-society-daily-v1
- * Daily "Social Society" reward, delivered to every player's mailbox on login.
+ * Daily "Social Society check", delivered to every player's mailbox on login.
  * A 7-day login streak multiplies the shells: 1x, 1.25x, 1.5x, 1.75x, 2x, 2.5x, 3x.
  * Delivery is guarded once per calendar day via gameplay.socialSociety.
  */
@@ -55,7 +55,7 @@
       });
 
       window.dispatchEvent(new CustomEvent("snug-toast", {
-        detail: { message: `Your Social Society reward is in the mailbox · Day ${streak} (${multiplier}x)` },
+        detail: { message: `Your Social Society check is in the mailbox · Day ${streak} (${multiplier}x)` },
       }));
     } catch (error) {
       console.warn("[social society] delivery skipped", error);
