@@ -239,17 +239,19 @@
     .snug-start-primary:hover,.snug-start-mode:hover,.snug-start-signin:hover,.snug-start-google:hover{filter:brightness(.96)}
     .snug-start-primary:active,.snug-start-mode:active,.snug-start-signin:active,.snug-start-google:active{filter:brightness(.9)}
     .snug-start-primary[disabled],.snug-start-mode[disabled],.snug-start-signin[disabled],.snug-start-google[disabled]{opacity:.58}
+    .snug-start-signin{grid-template-columns:1fr}
+    .snug-start-signin .cs-custom-icon{width:clamp(23px,6.8vw,29px);height:clamp(23px,6.8vw,29px)}
     .snug-start-login-status{position:fixed;right:12px;bottom:calc(max(10px,env(safe-area-inset-bottom)) + clamp(60px,15vw,72px));left:12px;min-height:0;margin:0!important;padding:7px 10px;border-radius:10px;background:#203437d9;color:#fff!important;font-size:11px!important;line-height:1.3;text-align:center;box-shadow:0 5px 18px #10282d3d}
     .snug-start-login-status:empty{display:none}
     .snug-start-login-status.is-error{border:1px solid #ffb7aa;background:#7a2f27ed;color:#fff!important;font-size:12px!important;font-weight:700;line-height:1.45;box-shadow:0 8px 26px #2a0e0b66}
-    .snug-start-google-wrap{position:fixed;z-index:5;right:12px;bottom:calc(max(10px,env(safe-area-inset-bottom)) + clamp(60px,15vw,72px));left:12px;display:grid;gap:8px}
+    .snug-start-google-wrap{position:fixed;z-index:5;right:12px;bottom:calc(max(10px,env(safe-area-inset-bottom)) + clamp(44px,13vw,56px) + 34px);left:12px;display:grid;gap:8px}
     .snug-start-google-wide{display:flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:10px 16px;border:1px solid #d3ddd9;border-radius:14px;background:#fff;color:#3c4043;font-size:15px;font-weight:700;box-shadow:0 5px 18px #10282d3d}
     .snug-start-google-wide svg{flex:0 0 auto;width:24px;height:24px}
     .snug-start-google-wide:hover{filter:brightness(.96)}
     .snug-start-google-wide:active{filter:brightness(.9)}
     .snug-start-google-wide[disabled]{opacity:.58}
     .snug-start-google-wrap .snug-start-login-status{position:static;right:auto;bottom:auto;left:auto;margin:0!important}
-    @media(min-width:760px){.snug-start-screen{padding:0}.snug-start-panel{right:auto;bottom:max(18px,env(safe-area-inset-bottom));left:50%;width:auto;margin:0;padding:8px;transform:translateX(-50%)}.snug-start-screen>h1{top:max(24px,calc(env(safe-area-inset-top) + 12px));left:50%}.snug-start-login-status{bottom:calc(max(18px,env(safe-area-inset-bottom)) + 76px)}.snug-start-google-wrap{bottom:calc(max(18px,env(safe-area-inset-bottom)) + 76px)}}
+    @media(min-width:760px){.snug-start-screen{padding:0}.snug-start-panel{right:auto;bottom:max(18px,env(safe-area-inset-bottom));left:50%;width:auto;margin:0;padding:8px;transform:translateX(-50%)}.snug-start-screen>h1{top:max(24px,calc(env(safe-area-inset-top) + 12px));left:50%}.snug-start-login-status{bottom:calc(max(18px,env(safe-area-inset-bottom)) + 76px)}.snug-start-google-wrap{bottom:calc(max(18px,env(safe-area-inset-bottom)) + 84px)}}
     @media(max-height:420px){.snug-start-panel{right:max(8px,env(safe-area-inset-right));bottom:50%;left:auto;display:grid;grid-template-columns:repeat(2,44px);gap:5px;padding:6px;transform:translateY(50%)}.snug-start-screen>h1{top:max(10px,calc(env(safe-area-inset-top) + 6px));left:50%;max-width:220px;font-size:18px;transform:translateX(-50%)}.snug-start-primary,.snug-start-mode,.snug-start-signin,.snug-start-google{width:44px;height:44px}.snug-start-login-status{right:104px;bottom:max(8px,env(safe-area-inset-bottom));left:8px}.snug-start-google-wrap{right:104px;bottom:max(8px,env(safe-area-inset-bottom));left:8px}}
     @media(max-width:340px){.snug-start-panel{gap:3px;padding:5px}.snug-start-primary,.snug-start-mode,.snug-start-signin,.snug-start-google{width:44px;height:44px}}
     @media(prefers-color-scheme:dark){.snug-start-panel{border-color:#ffffff26;background:#202728d9}.snug-start-primary{background:#e76854}.snug-start-mode,.snug-start-signin{border-color:#40504c;background:#2b3734ed;color:#9cc6a4}.snug-start-mode.board{color:#f28570}.snug-start-google{border-color:#4a5553;background:#fff;color:#3c4043}.snug-start-screen>h1,.snug-start-login-status{color:#fff!important}}
@@ -672,12 +674,15 @@
         clearGoogleReturn();
         showSignInFailure(reason);
       });
-      if(googleReturn)setTimeout(()=>{
-        if(googleHandled)return;
-        googleHandled=true;
-        clearGoogleReturn();
-        showSignInFailure({code:'auth/redirect-result-missing',message:'Google returned without a signed-in account. Check that the Google provider is enabled and this domain is authorized in Firebase, then try again.'});
-      },12000);
+      if(googleReturn){
+        setLoginStatus('Completing Google sign-in…');
+        setTimeout(()=>{
+          if(googleHandled)return;
+          googleHandled=true;
+          clearGoogleReturn();
+          showSignInFailure({code:'auth/redirect-result-missing',message:'Google returned without a signed-in account. Check that the Google provider is enabled and this domain is authorized in Firebase, then try again.'});
+        },45000);
+      }
       if(restoredSession)showSession(restoredSession);
     })();
   </script>
