@@ -833,18 +833,24 @@
       const core = descriptors.filter(node => node.dataset.snugPhase === 'core');
       const features = descriptors.filter(node => node.dataset.snugPhase === 'feature');
       const loaded = new Set();
+      const inflight = new Map();
       const nextFrame = () => new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 0)));
-      const load = descriptor => new Promise((resolve, reject) => {
+      const load = descriptor => {
         const src = descriptor.dataset.src;
-        if (!src || loaded.has(src)) return resolve();
-        const script = document.createElement('script');
-        script.src = src;
-        if (descriptor.hasAttribute('data-snug-module')) script.type = 'module';
-        script.async = false;
-        script.addEventListener('load', () => { loaded.add(src); resolve(); }, { once: true });
-        script.addEventListener('error', () => reject(Error(`Failed to load ${src}`)), { once: true });
-        document.head.appendChild(script);
-      });
+        if (!src || loaded.has(src)) return Promise.resolve();
+        if (inflight.has(src)) return inflight.get(src);
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = src;
+          if (descriptor.hasAttribute('data-snug-module')) script.type = 'module';
+          script.async = false;
+          script.addEventListener('load', () => { loaded.add(src); inflight.delete(src); resolve(); }, { once: true });
+          script.addEventListener('error', () => { inflight.delete(src); reject(Error(`Failed to load ${src}`)); }, { once: true });
+          document.head.appendChild(script);
+        });
+        inflight.set(src, promise);
+        return promise;
+      };
       let corePromise;
       const loadFeatures = async () => {
         if (document.documentElement.classList.contains('snug-start-open')) {
@@ -867,6 +873,11 @@
         loadFeatures();
       })();
       window.__snugChunkLoader = { loadCore: window.__snugEnsureCoreReady, loadFeatures, loaded };
+      // The menu's Google sign-in lives in the app bundle, so start loading it
+      // now instead of waiting for town entry. loadCore() skips it via `loaded`,
+      // and `inflight` keeps a tap-to-enter during download from double-loading it.
+      const signinBundle = core.find(node => (node.dataset.src || '').includes('selfie-social-society-app.bundle.js'));
+      if (signinBundle) load(signinBundle).catch(error => console.error('Sign-in code failed to load.', error));
     })();
   </script>
   <script id="snug-cloud-billboards">
