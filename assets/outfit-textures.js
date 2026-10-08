@@ -178,7 +178,7 @@
       material.alphaTest = 0.02;
       material.depthWrite = false;
       material.premultipliedAlpha = false;
-      material.color?.set?.('#ffffff');
+      material.color?.set?.(item.tint || '#ffffff');
       material.roughness = 0.9;
       material.metalness = 0;
       material.needsUpdate = true;
@@ -328,6 +328,11 @@
     if (state.selectedId) clearThreeDimensionalOutfit();
     persistSelection();
     return applyCurrentOutfit(true);
+  };
+  // NPC outfit wiring reuses the same atlas geometry + tint defaults.
+  window.__snugPaintedOutfitAtlas = {
+    geometry: makeAtlasGeometry,
+    outfit: (id = '') => state.outfits.find((item) => item.id === id) || null,
   };
 
   loadManifest().finally(() => {
