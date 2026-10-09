@@ -680,7 +680,7 @@
           if(googleHandled)return;
           googleHandled=true;
           clearGoogleReturn();
-          showSignInFailure({code:'auth/redirect-result-missing',message:'Google returned without a signed-in account. Check that the Google provider is enabled and this domain is authorized in Firebase, then try again.'});
+          showSignInFailure({code:'auth/redirect-result-missing',message:'Google sign-in did not complete. Try again, and if it keeps failing open the game in Safari or Chrome directly instead of an in-app browser.'});
         },45000);
       }
       if(restoredSession)showSession(restoredSession);
@@ -770,7 +770,7 @@
   <script src="assets/cosmetic-tints.js"></script>
   <script src="assets/speaking-mouth.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/renderer-startup.js"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/selfie-social-society-app.bundle.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="core" data-src="assets/selfie-social-society-app.bundle.js?v=20261009"></script>
   <link rel="stylesheet" href="assets/town-life.css">
   <link rel="stylesheet" href="assets/society-plus.css">
   <link rel="stylesheet" href="assets/mailbox-system.css">
