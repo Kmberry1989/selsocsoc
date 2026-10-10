@@ -944,7 +944,7 @@ function enterPhotoMode() {
   const overlay = document.createElement("div");
   overlay.className = "photo-mode-ui";
   const poseNames = (window.__snugPoses && window.__snugPoses.poseNames) || ["neutral", "wave", "cheer", "bow"];
-  const poseLabels = { neutral: "Calm", wave: "Wave", bow: "Bow", cheer: "Cheer", point: "Point", shrug: "Shrug", think: "Think", curtsy: "Curtsy" };
+  const poseLabels = { neutral: "Calm", wave: "Wave", bow: "Bow", cheer: "Cheer", point: "Point", shrug: "Shrug", think: "Think", curtsy: "Curtsy", dance: "Dance", sit: "Sit" };
   const poseButtons = poseNames.map((name, i) => `<button type="button" data-pose="${name}"${i === 0 ? ' class="active"' : ""}>${poseLabels[name] || name}</button>`).join("");
   overlay.innerHTML = `<div class="photo-top"><button type="button" data-photo="close" aria-label="Exit photo mode">×</button><span><small>Photo mode</small><b>World paused</b></span></div><div class="photo-controls"><div class="pose-row">${poseButtons}</div><div class="camera-row"><button type="button" data-camera="left" aria-label="Rotate camera left">↶</button><label><span>Zoom</span><input type="range" min="3.8" max="9.5" step="0.1" value="${town.photoDistance}"></label><button type="button" data-camera="right" aria-label="Rotate camera right">↷</button><button type="button" class="photo-shutter" data-photo="capture"><i aria-hidden="true"></i><b>Take photo</b></button></div></div>`;
   document.body.appendChild(overlay);

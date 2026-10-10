@@ -22,6 +22,8 @@
   });
 
   // Additive transforms relative to the avatar's rest pose.
+  const REDUCED_MOTION = typeof window !== 'undefined' &&
+    window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const POSES = Object.freeze({
     neutral: complete(420, part(), part(), part(), part(), part(), part(), 'Neutral'),
     wave: complete(520,
@@ -51,7 +53,15 @@
     curtsy: complete(600,
       part([.025, -.10, 0], [0, 0, .09]), part([.03, -.07, 0], [0, 0, -.04]),
       part([-.12, .06, .02], [0, 0, .16]), part([.06, .18, .02], [0, 0, -.12]),
-      part([.11, 0, .035], [0, 0, .08]), part([-.09, -.025, -.07], [0, 0, -.12]), 'Curtsy')
+      part([.11, 0, .035], [0, 0, .08]), part([-.09, -.025, -.07], [0, 0, -.12]), 'Curtsy'),
+    dance: complete(500,
+      part([0, .03, 0], [0, .12, 0]), part([0, .02, 0], [0, -.12, .06]),
+      part([-.20, .48, .10], [0, 0, -.30]), part([.20, .48, .10], [0, 0, .30]),
+      part([-.05, .04, 0], [0, 0, -.06]), part([.05, .04, 0], [0, 0, .06]), 'Dance'),
+    sit: complete(600,
+      part([0, -.26, .10], [.18, 0, 0]), part([0, -.30, .12], [.12, 0, 0]),
+      part([-.08, -.08, .14], [.22, 0, 0]), part([.08, -.08, .14], [.22, 0, 0]),
+      part([0, -.14, .30], [.55, 0, 0]), part([0, -.14, .30], [.55, 0, 0]), 'Sit')
   });
 
   const PART_KEYS = ['body', 'head', 'leftHand', 'rightHand', 'leftFoot', 'rightFoot'];
@@ -103,7 +113,8 @@
         };
       });
       this.phase = Number.isFinite(options.phase) ? options.phase : Math.random() * Math.PI * 2;
-      this.alive = options.alive !== false;
+      // Reduced motion: no idle sway, poses snap instead of easing.
+      this.alive = options.alive !== false && !REDUCED_MOTION;
       this.pose = 'neutral';
       this.from = cloneOffsets(POSES.neutral.parts);
       this.to = cloneOffsets(POSES.neutral.parts);
@@ -124,7 +135,8 @@
       this.duration = POSES[name].duration;
     }
     _sample(now) {
-      const t = this.duration ? ease((now - this.started) / this.duration) : 1;
+      // Reduced motion: snap to the target pose instead of easing.
+      const t = REDUCED_MOTION ? 1 : (this.duration ? ease((now - this.started) / this.duration) : 1);
       this.current = mixOffsets(this.from, this.to, t);
     }
     update(now) {
@@ -149,6 +161,14 @@
           PART_KEYS.forEach(key => motion[key].position[1] += hop);
           motion.leftHand.rotation[2] += Math.sin(seconds * 5.2 + phase) * .035;
           motion.rightHand.rotation[2] -= Math.sin(seconds * 5.2 + phase) * .035;
+        }
+        if (this.pose === 'dance') {
+          const beat = Math.sin(seconds * 7 + phase);
+          motion.body.position[1] += Math.abs(beat) * .04;
+          motion.body.rotation[2] += beat * .06;
+          motion.leftHand.position[1] += Math.max(0, beat) * .10;
+          motion.rightHand.position[1] += Math.max(0, -beat) * .10;
+          motion.head.rotation[2] += beat * .05;
         }
       }
       PART_KEYS.forEach(key => {
@@ -215,8 +235,8 @@
   // Game emote bar (wave, dance, cheer, laugh, love, sleepy, party, heart)
   // mapped onto the pose library. Call triggerEmote(name) with the player avatar.
   const EMOTE_POSES = Object.freeze({
-    wave: 'wave', dance: 'cheer', cheer: 'cheer', laugh: 'cheer',
-    love: 'bow', sleepy: 'neutral', party: 'cheer', heart: 'bow'
+    wave: 'wave', dance: 'dance', cheer: 'cheer', laugh: 'cheer',
+    love: 'bow', sleepy: 'neutral', party: 'dance', heart: 'bow'
   });
   function triggerEmote(emoteName, avatar) {
     const target = avatar || (window.__snugWorld && window.__snugWorld.player) || window.__snugPlayerAvatar;
