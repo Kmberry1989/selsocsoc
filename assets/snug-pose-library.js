@@ -224,15 +224,9 @@
     return setPose(target, EMOTE_POSES[String(emoteName || '').toLowerCase()] || 'neutral');
   }
 
-  // Auto-attach to the player when the world is ready so poses work immediately.
-  function autoAttach() {
-    const player = (window.__snugWorld && window.__snugWorld.player) || window.__snugPlayerAvatar;
-    if (player && !attached.has(player)) {
-      try { attach(player); } catch (_) {}
-    }
-  }
-  if (window.__snugWorld && window.__snugWorld.player) autoAttach();
-  window.addEventListener('snug-world-ready', autoAttach);
+  // Explicit opt-in only: call attach()/setPose() when a system (photo mode,
+  // emotes, cutscenes) wants pose control. No auto-attach, so the game's
+  // own avatar animation is never fought.
 
   window.__snugPoses = Object.freeze({
     POSES, GamePoseController, NPC_POSES, EMOTE_POSES,

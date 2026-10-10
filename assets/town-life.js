@@ -943,13 +943,19 @@ function enterPhotoMode() {
   renderDock();
   const overlay = document.createElement("div");
   overlay.className = "photo-mode-ui";
-  overlay.innerHTML = `<div class="photo-top"><button type="button" data-photo="close" aria-label="Exit photo mode">×</button><span><small>Photo mode</small><b>World paused</b></span></div><div class="photo-controls"><div class="pose-row"><button type="button" data-pose="calm" class="active">Calm</button><button type="button" data-pose="wave">Wave</button><button type="button" data-pose="cheer">Cheer</button><button type="button" data-pose="laugh">Laugh</button></div><div class="camera-row"><button type="button" data-camera="left" aria-label="Rotate camera left">↶</button><label><span>Zoom</span><input type="range" min="3.8" max="9.5" step="0.1" value="${town.photoDistance}"></label><button type="button" data-camera="right" aria-label="Rotate camera right">↷</button><button type="button" class="photo-shutter" data-photo="capture"><i aria-hidden="true"></i><b>Take photo</b></button></div></div>`;
+  const poseNames = (window.__snugPoses && window.__snugPoses.poseNames) || ["neutral", "wave", "cheer", "bow"];
+  const poseLabels = { neutral: "Calm", wave: "Wave", bow: "Bow", cheer: "Cheer", point: "Point", shrug: "Shrug", think: "Think", curtsy: "Curtsy" };
+  const poseButtons = poseNames.map((name, i) => `<button type="button" data-pose="${name}"${i === 0 ? ' class="active"' : ""}>${poseLabels[name] || name}</button>`).join("");
+  overlay.innerHTML = `<div class="photo-top"><button type="button" data-photo="close" aria-label="Exit photo mode">×</button><span><small>Photo mode</small><b>World paused</b></span></div><div class="photo-controls"><div class="pose-row">${poseButtons}</div><div class="camera-row"><button type="button" data-camera="left" aria-label="Rotate camera left">↶</button><label><span>Zoom</span><input type="range" min="3.8" max="9.5" step="0.1" value="${town.photoDistance}"></label><button type="button" data-camera="right" aria-label="Rotate camera right">↷</button><button type="button" class="photo-shutter" data-photo="capture"><i aria-hidden="true"></i><b>Take photo</b></button></div></div>`;
   document.body.appendChild(overlay);
   overlay.querySelector("[data-photo='close']")?.addEventListener("click", exitPhotoMode);
   overlay.querySelector("[data-photo='capture']")?.addEventListener("click", capturePhoto);
   overlay.querySelectorAll("[data-pose]").forEach((button) => button.addEventListener("click", () => {
     town.photoPose = button.dataset.pose;
     overlay.querySelectorAll("[data-pose]").forEach((item) => item.classList.toggle("active", item === button));
+    if (window.__snugPoses && town.world?.player) {
+      try { window.__snugPoses.setPose(town.world.player, button.dataset.pose); } catch (_) {}
+    }
     reactCat();
   }));
   overlay.querySelector("[data-camera='left']")?.addEventListener("click", () => { town.photoAzimuth -= 15; updatePhotoCamera(); });
@@ -970,6 +976,16 @@ function applyPhotoPose(time) {
   if (!town.photoMode || !town.world?.player) return;
   const player = town.world.player;
   player.position.copy(town.photoFrozenPosition);
+  // When the pose library is active it owns the avatar transforms (via
+  // onBeforeRender); skip the legacy hardcoded poses to avoid fighting it.
+  // Map legacy pose names to library poses.
+  if (window.__snugPoses) {
+    const legacyMap = { calm: "neutral", laugh: "cheer" };
+    const pose = legacyMap[town.photoPose] || town.photoPose || "neutral";
+    try { window.__snugPoses.setPose(player, pose); } catch (_) {}
+    updatePhotoCamera();
+    return;
+  }
   const data = player.userData || {};
   const pulse = Math.sin(time * 0.004);
   if (data.coinHead) data.coinHead.rotation.z = town.photoPose === "laugh" ? pulse * 0.08 : 0;
@@ -1000,6 +1016,10 @@ function exitPhotoMode() {
   if (town.photoCamera && town.world?.camera) {
     town.world.camera.position.copy(town.photoCamera.position);
     town.world.camera.quaternion.copy(town.photoCamera.quaternion);
+  }
+  // Release the photo pose so the avatar resumes its normal animation.
+  if (window.__snugPoses && town.world?.player) {
+    try { window.__snugPoses.detach(town.world.player); } catch (_) {}
   }
   $(".photo-mode-ui")?.remove();
   $(".photo-preview-backdrop")?.remove();
