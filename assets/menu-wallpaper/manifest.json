@@ -1,4 +1,9 @@
 {
-  "poster": "",
-  "videos": []
+  "poster": "assets/menu-wallpaper/menu.png",
+  "videos": [
+    {
+      "path": "assets/menu-wallpaper/menu.mp4",
+      "type": "video/mp4"
+    }
+  ]
 }
