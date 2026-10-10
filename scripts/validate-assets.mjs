@@ -48,7 +48,7 @@ for (const [path, source] of referenced) if (!await exists(path)) errors.push(`M
 
 const runtimePngs = files
   .map((path) => relative(root, path).replaceAll('\\', '/'))
-  .filter((path) => path.endsWith('.png') && !path.startsWith('assets/outfit-textures/') && !path.startsWith('assets/sprites/') && !path.startsWith('assets/npc-outfits/'));
+  .filter((path) => path.endsWith('.png') && !path.startsWith('assets/outfit-textures/') && !path.startsWith('assets/sprites/') && !path.startsWith('assets/npc-outfits/') && !path.startsWith('assets/menu-wallpaper/'));
 for (const path of runtimePngs) errors.push(`Unexpected runtime PNG: ${path}`);
 
 const textureManifest = JSON.parse(await readFile(join(root, 'assets/textures/manifest.json'), 'utf8'));
