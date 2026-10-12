@@ -39,9 +39,9 @@
       const shells = Math.round(BASE_SHELLS * multiplier);
 
       // Persist the once-per-day guard before posting.
-      const gameplay = { ...(readProfile().gameplay || {}), socialSociety: { date: key, streak } };
-      window.dispatchEvent(new CustomEvent("snug-player-patch", {
-        detail: (player) => ({ ...player, gameplay }),
+      window.__snugWardrobe?.updateGameplay?.((gameplay) => ({
+        ...gameplay,
+        socialSociety: { date: key, streak },
       }));
 
       await mailboxUI.post({

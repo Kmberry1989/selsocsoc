@@ -398,6 +398,11 @@ window.__snugDailyLoop = {
 window.__snugWardrobe = {
   inventory: () => inventory(),
   profile: () => ({ ...state.profile }),
+  updateGameplay: (patch) => {
+    const next = typeof patch === "function" ? patch(state.gameplay || {}) : patch;
+    state.gameplay = { ...(state.gameplay || {}), ...(next || {}) };
+    queueSave();
+  },
   owns: (id) => inventory().includes(id),
   activeSeason: () => activeSeason(),
   seasonalOutfits: (season) => seasonalOutfits(season),
