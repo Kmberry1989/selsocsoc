@@ -62,5 +62,20 @@
     }
   }
 
-  window.addEventListener("snug-session", () => setTimeout(deliver, 2500));
+  // Retry until the session and mailbox UI are both ready, so a missed
+  // snug-session event or slow module init can't silently skip delivery.
+  // Gives up after ~30s; the once-per-day guard prevents duplicates.
+  function attemptDelivery(attempt = 0) {
+    const session = window.__snugSession;
+    const mailboxUI = window.__snugMailboxUI;
+    if (!session?.uid || typeof mailboxUI?.post !== "function") {
+      if (attempt < 20) setTimeout(() => attemptDelivery(attempt + 1), 1500);
+      return;
+    }
+    deliver();
+  }
+
+  window.addEventListener("snug-session", () => setTimeout(() => attemptDelivery(), 2500));
+  // Fallback in case the session event fired before this module loaded.
+  setTimeout(() => attemptDelivery(), 8000);
 })();
