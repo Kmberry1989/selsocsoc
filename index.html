@@ -17,6 +17,42 @@
     @media(prefers-color-scheme:dark){.room-dock{background:#1f2728f0;border-color:#ffffff1a}.multi-error{background:#4d2b27;color:#ffd1c8}.family-invite,.family-arrival{background:#2b3935}.family-code{background:#202728}}
     @media(prefers-reduced-motion:reduce){.multiplayer-toast{transition:none}}
   </style>
+  <style id="snug-jam-styles">
+    .jam-backdrop{position:fixed;z-index:140;display:flex;align-items:flex-end;inset:0;background:#17202166}
+    .jam-sheet{overflow:auto;width:100%;max-height:86dvh;padding:8px 16px calc(max(env(safe-area-inset-bottom),16px) + 6px);border-radius:24px 24px 0 0;background:var(--surface);color:var(--text);box-shadow:0 -10px 40px #16202133}
+    .jam-head{display:flex;align-items:center;gap:10px;padding:4px 0 8px}
+    .jam-head h2{margin:0;font-size:19px;line-height:1.1;flex:1}
+    .jam-head h2 small{display:block;font-size:10px;font-weight:700;color:var(--dim)}
+    .jam-close{display:grid;place-items:center;width:38px;height:38px;border:0;border-radius:50%;background:var(--surface-2);font-size:20px;line-height:1}
+    .jam-sec{margin:10px 0}
+    .jam-sec>small{display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);font-size:9px;font-weight:900}
+    .jam-instruments{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .jam-instruments button{display:grid;place-items:center;gap:2px;min-height:64px;border:2px solid transparent;border-radius:14px;background:var(--surface-2);font-size:11px;font-weight:800;color:var(--text)}
+    .jam-instruments button i{font-style:normal;font-size:26px}
+    .jam-instruments button.active{border-color:var(--accent);box-shadow:0 2px 8px #28323222}
+    .jam-pads{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+    .jam-pads button{min-height:58px;border:0;border-radius:14px;background:var(--surface-2);font-size:15px;font-weight:900;color:var(--text)}
+    .jam-pads button:active{transform:scale(.94);background:var(--accent);color:#fff}
+    .jam-transport{display:flex;gap:8px;margin-bottom:8px}
+    .jam-transport button{min-height:44px;flex:1;border:0;border-radius:12px;background:var(--surface-2);font-size:13px;font-weight:900;color:var(--text)}
+    .jam-transport button.primary{background:var(--accent);color:#fff}
+    .jam-gridwrap{overflow-x:auto;border-radius:12px;background:var(--surface-2);padding:8px}
+    .jam-grid{display:grid;gap:4px;min-width:max-content}
+    .jam-row{display:grid;grid-template-columns:26px repeat(16,30px);gap:4px;align-items:center}
+    .jam-row>span{display:grid;place-items:center;font-size:14px}
+    .jam-step{width:30px;height:30px;border:0;border-radius:8px;background:#ffffff2e;font-size:0}
+    .jam-step.on{background:var(--accent)}
+    .jam-step.now{outline:3px solid #fff;outline-offset:-1px}
+    .jam-row.beat .jam-step:nth-child(4n+2){background:#ffffff4d}
+    .jam-row.beat .jam-step.on:nth-child(4n+2){background:var(--accent)}
+    .jam-jammers{display:flex;flex-wrap:wrap;gap:8px}
+    .jam-chip{display:flex;align-items:center;gap:7px;min-height:40px;padding:4px 6px 4px 4px;border-radius:20px;background:var(--surface-2);font-size:12px;font-weight:800}
+    .jam-chip>i{font-style:normal;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;color:#fff;font-size:13px;font-weight:900}
+    .jam-chip button{min-width:44px;min-height:32px;border:0;border-radius:16px;background:#ffffff2e;font-size:11px;font-weight:800;color:var(--text)}
+    .jam-chip button.muted{background:#c2604e;color:#fff}
+    .jam-note{font-size:10px;color:var(--dim);line-height:1.4;margin-top:6px}
+    @media(min-width:700px){.jam-sheet{max-width:480px;margin:auto;border-radius:24px}}
+  </style>
   <style id="snug-voice-chat-styles">
     .room-dock{right:56px}.voice-toggle-dock{position:fixed;z-index:25;top:max(calc(env(safe-area-inset-top) + 58px),68px);right:12px;display:grid;place-items:center;width:36px;height:36px;border:1px solid color-mix(in srgb,var(--green) 48%,#fff);border-radius:50%;background:var(--surface);color:var(--green);box-shadow:0 5px 18px #26394038,0 0 0 2px #ffffff70}.voice-toggle-dock:before{content:"";width:10px;height:14px;border:2px solid currentColor;border-radius:7px}.voice-toggle-dock:after{content:"";position:absolute;width:16px;height:10px;border:2px solid currentColor;border-top:0;border-radius:0 0 10px 10px;bottom:6px}.voice-toggle-dock.off{color:var(--dim)}.voice-toggle-dock.off span{position:absolute;width:22px;height:2px;border-radius:2px;background:#b84233;transform:rotate(-45deg)}.voice-toggle-dock.busy{opacity:.65}.voice-toggle-dock.speaking{background:var(--green);color:#fff;box-shadow:0 0 0 4px #5c8d6540,0 5px 18px #26394038}.voice-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;margin:0 0 11px;padding:10px 11px;border-radius:13px;background:var(--surface-2)}.voice-row>span{display:grid;gap:2px}.voice-row b{font-size:13px}.voice-row small{color:var(--dim);font-size:10px;line-height:1.35}.voice-row button{min-width:92px;height:38px;padding:0 12px;border:0;border-radius:11px;background:var(--green);color:#fff;font-size:11px;font-weight:900}.voice-row button.leave{background:#e4e7e5;color:var(--text)}.voice-row button:disabled{opacity:.6}.voice-tune-row{margin-top:-7px}.voice-tune-row button[aria-checked="true"]{box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 22%,transparent)}.voice-indicator{display:inline-block;width:7px;height:7px;margin-right:5px;border-radius:50%;background:#a9b1b1;vertical-align:1px}.voice-indicator.live{background:var(--green)}.voice-indicator.speaking{background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 24%,transparent)}.multi-people li small{display:flex;align-items:center}.voice-error{margin:-3px 0 10px;color:#8d3427;font-size:10px;line-height:1.35}.voice-audio{display:none}
     @media(min-width:700px){.room-dock{right:max(66px,calc((100vw - 1040px)/2 + 66px))}.voice-toggle-dock{top:84px;right:max(22px,calc((100vw - 1040px)/2 + 22px))}}
@@ -792,6 +828,7 @@
   <link rel="stylesheet" href="assets/painting-mode.css">
   <link rel="stylesheet" href="assets/orientation-fix.css">
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/snug-audio.js"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/snug-jam.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/snug-pose-library.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/snug-pose-emotes.js"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/game-show-audio.js"></script>

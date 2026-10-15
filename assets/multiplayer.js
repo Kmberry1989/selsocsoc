@@ -311,6 +311,8 @@ async function switchRoom(roomId, roomName, isPrivate) {
   state.roomId = roomId;
   state.roomName = roomName;
   state.isPrivate = isPrivate;
+  window.__snugRoomId = roomId;
+  window.dispatchEvent(new CustomEvent("snug-room-changed", { detail: { roomId, roomName, isPrivate } }));
   if (!isPrivate) state.inviteArrival = false;
   state.players = [];
   state.messages = [];
@@ -3970,3 +3972,5 @@ if (window.__snugSession) attachSession(window.__snugSession);
 
 // Public entry for the Games Hub (and tutorial): open Snug Board directly.
 window.__snugBoard = { open: openBoardMode, close: closeBoardMode };
+// Current room id for feature modules (jam, etc.). Updated on every room switch.
+if (!window.__snugRoomId) window.__snugRoomId = state.roomId;

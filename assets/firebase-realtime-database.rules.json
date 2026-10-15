@@ -121,6 +121,42 @@
         }
       }
     },
+    "jam": {
+      "$roomId": {
+        ".read": "auth != null && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",
+        ".indexOn": [
+          "updatedAt"
+        ],
+        "$uid": {
+          ".write": "auth != null && $uid === auth.uid && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",
+          ".validate": "!newData.exists() || (newData.hasChildren(['uid','name','instrument','pattern','anchor','updatedAt']) && newData.child('uid').val() === auth.uid && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 18 && newData.child('instrument').isNumber() && newData.child('instrument').val() >= 0 && newData.child('instrument').val() <= 3 && newData.child('pattern').isString() && newData.child('pattern').val().matches(/^([0-9a-f]{16})$/) && newData.child('anchor').isNumber() && newData.child('updatedAt').isNumber())",
+          "uid": {
+            ".validate": "newData.isString() && newData.val() === auth.uid"
+          },
+          "name": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 18"
+          },
+          "outfit": {
+            ".validate": "newData.isString() && newData.val().length <= 32"
+          },
+          "instrument": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 3"
+          },
+          "pattern": {
+            ".validate": "newData.isString() && newData.val().length === 16 && newData.val().matches(/^([0-9a-f]{16})$/)"
+          },
+          "anchor": {
+            ".validate": "newData.isNumber()"
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
+    },
     "social": {
       "$roomId": {
         ".read": "auth != null && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",
