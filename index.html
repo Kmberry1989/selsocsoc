@@ -314,11 +314,14 @@
 /* v4 auth-first flow: sign in on this screen, then a fresh menu of choices */
 .snug-start-panel{flex-direction:column;align-items:center}
 #snug-auth-phase{display:grid;gap:10px;justify-items:center;width:min(340px,88vw)}
-#snug-auth-phase[hidden],#snug-mode-phase[hidden]{display:none}
+#snug-auth-phase[hidden],#snug-mode-phase[hidden],#snug-home-phase[hidden],#snug-options-phase[hidden]{display:none}
 #snug-auth-phase .snug-start-google-wide{width:100%}
 #snug-auth-phase .snug-start-login-status{position:static;min-height:15px;margin:0;padding:0;border-radius:0;background:none;box-shadow:none;color:#fff!important;font-size:11px;text-shadow:0 1px 4px #0a1a1ecc}
 .snug-guest-link{background:none;border:0;padding:8px;color:#fff;font-size:13px;font-weight:700;text-decoration:underline;text-shadow:0 1px 4px #0a1a1ecc}
 #snug-mode-phase{display:grid;gap:8px;width:min(340px,88vw)}
+#snug-home-phase{display:grid;gap:8px;width:min(340px,88vw)}
+#snug-options-phase{display:grid;gap:8px;width:min(340px,88vw)}
+.snug-mode-card .snug-opt-state{margin-left:auto;font-size:12px;font-weight:800;color:#8aa39b}
 .snug-mode-kicker{margin:0 2px;color:#fff;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 1px 4px #0a1a1ecc}
 .snug-mode-card{display:grid;grid-template-columns:52px minmax(0,1fr) 20px;align-items:center;gap:12px;padding:9px 14px 9px 9px;border:0;border-radius:18px;background:#fffdf8f5;color:#1f2a26;text-align:left;box-shadow:0 8px 22px #0d1e2333}
 .snug-mode-card>img{display:block;width:52px;height:52px;border-radius:50%;object-fit:cover}
@@ -452,6 +455,16 @@
         <p class="snug-start-login-status" aria-live="assertive" role="status"></p>
         <button class="snug-guest-link" type="button" data-guest>Continue as guest</button>
       </div>
+      <div id="snug-home-phase" hidden>
+        <button class="snug-mode-card" type="button" data-home="play" aria-label="Play - choose your adventure"><img src="assets/menu-layout/dock-town-v4.webp" alt="" aria-hidden="true"><span><b>Play</b><small>Choose your adventure</small></span><svg class="snug-mode-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="snug-mode-card" type="button" data-home="options" aria-label="Options"><img src="assets/menu-layout/dock-return-v4.webp" alt="" aria-hidden="true"><span><b>Options</b><small>Music and sound</small></span><svg class="snug-mode-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+      <div id="snug-options-phase" hidden>
+        <p class="snug-mode-kicker">Options</p>
+        <button class="snug-mode-card" type="button" data-opt="music" aria-label="Toggle music"><img src="assets/menu-layout/dock-solo-v5.webp" alt="" aria-hidden="true"><span><b>Music</b><small>Background music</small></span><b class="snug-opt-state" data-opt-state="music">On</b></button>
+        <button class="snug-mode-card" type="button" data-opt="sfx" aria-label="Toggle sound effects"><img src="assets/menu-layout/dock-together-v5.webp" alt="" aria-hidden="true"><span><b>Sound</b><small>Sound effects</small></span><b class="snug-opt-state" data-opt-state="sfx">On</b></button>
+        <button class="snug-mode-card" type="button" data-back="home" aria-label="Back to menu"><img src="assets/menu-layout/dock-return-v4.webp" alt="" aria-hidden="true"><span><b>Back</b><small>Return to menu</small></span><svg class="snug-mode-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
       <div id="snug-mode-phase" hidden>
         <p class="snug-mode-kicker">Choose your adventure</p>
         <button class="snug-mode-card" type="button" data-returning-player hidden><img src="assets/menu-layout/dock-return-v4.webp" alt="" aria-hidden="true"><span><b>Continue</b><small>Restore your saved player</small></span><svg class="snug-mode-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -459,6 +472,7 @@
         <button class="snug-mode-card" type="button" data-start-mode="solo" aria-label="Solo practice"><img src="assets/menu-layout/dock-solo-v5.webp" alt="" aria-hidden="true"><span><b>Solo practice</b><small>Play with computer players</small></span><svg class="snug-mode-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button class="snug-mode-card" type="button" data-start-mode="family" aria-label="Play together"><img src="assets/menu-layout/dock-together-v5.webp" alt="" aria-hidden="true"><span><b>Play together</b><small>Join rooms with friends</small></span><svg class="snug-mode-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button class="snug-mode-card" type="button" data-start-mode="board" aria-label="Snug Board"><img src="assets/menu-layout/dock-board-v5.webp" alt="" aria-hidden="true"><span><b>Snug Board</b><small>Board game lobby</small></span><svg class="snug-mode-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="snug-mode-card" type="button" data-back="home" aria-label="Back to menu"><img src="assets/menu-layout/dock-return-v4.webp" alt="" aria-hidden="true"><span><b>Back</b><small>Return to menu</small></span><svg class="snug-mode-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </section>
     <div class="snug-menu-confirm" role="dialog" aria-modal="true" aria-labelledby="snug-menu-confirm-title" aria-describedby="snug-menu-confirm-copy" hidden>
@@ -652,8 +666,18 @@
       screen.addEventListener('keydown',event=>{if(event.key==='Escape'&&!menuConfirm?.hidden){event.preventDefault();closeMenuConfirm();}});
       const authPhase=screen.querySelector('#snug-auth-phase');
       const modePhase=screen.querySelector('#snug-mode-phase');
-      const showPhase=name=>{if(authPhase)authPhase.hidden=name!=='auth';if(modePhase)modePhase.hidden=name!=='modes';};
-      screen.querySelector('[data-guest]')?.addEventListener('click',()=>showPhase('modes'));
+      const homePhase=screen.querySelector('#snug-home-phase');
+      const optionsPhase=screen.querySelector('#snug-options-phase');
+      const showPhase=name=>{if(authPhase)authPhase.hidden=name!=='auth';if(modePhase)modePhase.hidden=name!=='modes';if(homePhase)homePhase.hidden=name!=='home';if(optionsPhase)optionsPhase.hidden=name!=='options';};
+      screen.querySelector('[data-guest]')?.addEventListener('click',()=>showPhase('home'));
+      screen.querySelectorAll('[data-home]').forEach(button=>button.addEventListener('click',()=>{const next=button.dataset.home==='play'?'modes':'options';showPhase(next);if(next==='options')syncOptStates();}));
+      screen.querySelectorAll('[data-back]').forEach(button=>button.addEventListener('click',()=>showPhase('home')));
+      const syncOptStates=()=>{const state=window.__snugAudio?.state;if(!state)return;screen.querySelectorAll('[data-opt-state]').forEach(el=>{const on=el.dataset.optState==='music'?state.musicEnabled:state.sfxEnabled;el.textContent=on?'On':'Off';});};
+      screen.querySelectorAll('[data-opt]').forEach(button=>button.addEventListener('click',()=>{
+        const audio=window.__snugAudio;if(!audio)return;
+        if(button.dataset.opt==='music')audio.toggleMusic();else audio.toggleSfx();
+        syncOptStates();
+      }));
       screen.querySelectorAll('[data-start-mode]').forEach(button=>button.addEventListener('click',()=>{
         const mode=button.dataset.startMode;
         askMenuConfirmation(button,modeNames[mode]||'Continue',modePrompts[mode]||'Ready to continue?',()=>enter(mode));
@@ -720,7 +744,7 @@
       const showSession=session=>{
         restoredSession=session;
         if(returningButton){returningButton.disabled=false;if(session?.returningPlayer){const name=session.playerName||'saved player';returningButton.hidden=false;const rlabel=returningButton.querySelector('b');if(rlabel)rlabel.textContent=`Continue as ${name}`;returningButton.setAttribute('aria-label',`Continue as ${name}`);returningButton.title=`Continue as ${name}`;}}
-        if(session?.user&&(isGoogleSession(session)||session.returningPlayer))showPhase('modes');
+        if(session?.user&&(isGoogleSession(session)||session.returningPlayer))showPhase('home');
         if(googleReturn&&!googleHandled&&isGoogleSession(session)){
           googleHandled=true;clearGoogleReturn();
           if(session.returningPlayer){setLoginStatus('Google sign-in complete — restoring your town.');setTimeout(()=>enter('town',{returning:true}),80);}
