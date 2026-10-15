@@ -1,17 +1,14 @@
-# Peg-body painted outfit textures
+# Player painted outfit textures
 
-This folder is the drop-in source for 2D outfits painted directly over the peg body. It is additive: the existing `assets/cosmetics/outfits/` GLB pipeline remains available in the Style menu.
+This folder is the drop-in source for 2D outfits painted directly over the player body. It is additive: the existing `assets/cosmetics/outfits/` GLB pipeline remains available in the Style menu.
 
 ## Template
 
-Start from `peg-body-uv-template.png` (1024 × 1024 RGBA). Its four vertical islands map to the peg body as follows:
+Each outfit is ONE continuous wraparound texture, **2240 × 1120** (2:1), grayscale (monochrome) — the tint renderer multiplies the player's chosen tint over it, so no color in the texture itself.
 
-1. **FRONT** — the avatar-facing front quarter
-2. **RIGHT SIDE** — the avatar's right quarter
-3. **BACK** — the rear quarter
-4. **LEFT SIDE** — the avatar's left quarter
+Image layout, left to right: **BACK (seam) | RIGHT SIDE | FRONT | LEFT SIDE**, with FRONT centered. The left and right edges must match so the back wraps seamlessly. Fabric fills the entire image edge to edge — no gaps, no background.
 
-The top of each island maps to the top shoulder/collar edge; the bottom maps to the hem/foot edge. Keep the area outside the four islands transparent. Transparent pixels reveal the body color beneath, so cutouts, short hems, and painted collars do not require a second mesh. The body cap remains the underlying body color.
+The runtime (`assets/outfit-textures.js`) maps the body's angle around Y to u (front = 0.5) with RepeatWrapping, so no custom UV work is needed.
 
 ## Naming and catalog rules
 

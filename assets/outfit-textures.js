@@ -4,12 +4,12 @@
   const MANIFEST_PATH = 'assets/outfit-textures/manifest.json';
   const OVERLAY_NAME = 'SnugPaintedOutfitOverlay';
   const ROW_ID = 'snug-painted-outfit-row';
-  const atlasBands = [
-    { name: 'front', min: 0.047, max: 0.234, center: 0 },
-    { name: 'right', min: 0.281, max: 0.469, center: Math.PI / 2 },
-    { name: 'back', min: 0.531, max: 0.719, center: Math.PI },
-    { name: 'left', min: 0.766, max: 0.953, center: -Math.PI / 2 }
-  ];
+  // Wraparound layout (same as NPC outfits): the texture is one continuous
+  // 2:1 image, left->right = BACK (seam) | RIGHT SIDE | FRONT | LEFT SIDE,
+  // with FRONT centered at u=0.5. The body's angle around Y maps directly:
+  // angle 0 (front, +Z) -> u 0.5; +angle toward the avatar's right -> -u.
+  const WRAP_FRONT_U = 0.5;
+  const WRAP_TWO_PI = Math.PI * 2;
 
   const state = {
     outfits: [],
@@ -112,18 +112,13 @@
         continue;
       }
 
-      const triangleAngle = Math.atan2(nx, nz);
-      let sector = Math.round(triangleAngle / (Math.PI / 2));
-      sector = ((sector % 4) + 4) % 4;
-      const band = atlasBands[sector === 0 ? 0 : sector === 1 ? 1 : sector === 2 ? 2 : 3];
-
       for (let corner = 0; corner < 3; corner += 1) {
         const index = start + corner;
         const vertexAngle = Math.atan2(position.getX(index), position.getZ(index));
-        const local = Math.max(-0.5, Math.min(0.5, wrapAngle(vertexAngle - band.center) / (Math.PI / 2)));
-        const u = band.min + (local + 0.5) * (band.max - band.min);
+        // Wraparound: FRONT at u=0.5, avatar's right toward -u, BACK at the u=0/1 seam.
+        const u = WRAP_FRONT_U - wrapAngle(vertexAngle) / WRAP_TWO_PI;
         const vertical = (position.getY(index) - minY) / height;
-        const v = 0.094 + vertical * 0.813;
+        const v = vertical;
         uv.setXY(index, u, v);
       }
     }
@@ -136,11 +131,13 @@
     const baseMap = Array.isArray(body.material) ? body.material[0]?.map : body.material?.map;
     if (!baseMap?.constructor) return null;
     const texture = new baseMap.constructor(image);
-    texture.name = 'PaintedOutfitAtlas';
+    texture.name = 'PaintedOutfitWrap';
     texture.colorSpace = baseMap.colorSpace;
     texture.flipY = true;
     texture.premultiplyAlpha = false;
     texture.anisotropy = baseMap.anisotropy || 1;
+    const THREE = window.__snugThree;
+    if (THREE && texture.wrapS !== undefined) texture.wrapS = THREE.RepeatWrapping;
     texture.needsUpdate = true;
     return texture;
   }
@@ -329,7 +326,7 @@
     persistSelection();
     return applyCurrentOutfit(true);
   };
-  // NPC outfit wiring reuses the same atlas geometry + tint defaults.
+  // NPC outfit wiring reuses the same wraparound geometry + tint defaults.
   window.__snugPaintedOutfitAtlas = {
     geometry: makeAtlasGeometry,
     outfit: (id = '') => state.outfits.find((item) => item.id === id) || null,
