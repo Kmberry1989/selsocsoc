@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no" />
   <meta name="theme-color" content="#b8dff0" />
   <meta name="description" content="Step into a cozy 3D world full of little surprises." />
   <link rel="icon" href="data:," />
@@ -338,6 +338,12 @@
   </style>
   <link rel="stylesheet" href="assets/fit-review.css">
   <style id="snug-viewport-fit-styles">
+    /* Device gesture lockdown: no browser zoom, selection, or callout. */
+    html,body{-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important;overscroll-behavior:none!important}
+    input,textarea,[contenteditable]{-webkit-user-select:text!important;user-select:text!important;-webkit-touch-callout:default!important}
+    canvas{touch-action:none!important}
+    button,a,[role=button]{touch-action:manipulation!important;-webkit-tap-highlight-color:transparent!important}
+    .sheet,.multiplayer-sheet,.town-life-sheet,.fit-review-sheet,.panel-overlay,.play-panel,.style-panel{touch-action:pan-x pan-y!important}
     /* Keep every screen and overlay inside the browser's actually visible viewport. */
     :root{--snug-viewport-width:100vw;--snug-viewport-height:100dvh;--snug-viewport-top:0px;--snug-viewport-left:0px;--snug-safe-top:max(env(safe-area-inset-top),8px);--snug-safe-right:max(env(safe-area-inset-right),8px);--snug-safe-bottom:max(env(safe-area-inset-bottom),8px);--snug-safe-left:max(env(safe-area-inset-left),8px)}
     html,body,#root,[data-generated-space-root],.app-shell{width:100%;height:var(--snug-viewport-height)!important;max-height:var(--snug-viewport-height)!important;min-height:0!important;overflow:hidden!important;overscroll-behavior:none}
@@ -1054,5 +1060,6 @@
     })();
   </script>
   <script src="assets/modal-interaction-guard.js"></script>
+  <script src="assets/snug-gesture-lock.js"></script>
 </body>
 </html>
