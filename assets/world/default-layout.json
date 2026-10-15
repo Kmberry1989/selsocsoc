@@ -4504,6 +4504,20 @@
         "game": "garden-lane",
         "source": "base-minigame-anchor"
       }
+    },
+    {
+      "id": "lyla-studio",
+      "type": "building-studio",
+      "x": -8.0,
+      "y": 0.0,
+      "z": -30.0,
+      "rotY": 0.0,
+      "scale": 1.0,
+      "props": {
+        "collisionRadius": 2.4,
+        "source": "named-object",
+        "name": "LylaStudio"
+      }
     }
   ]
 }
