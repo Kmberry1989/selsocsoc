@@ -53,6 +53,27 @@
     .jam-note{font-size:10px;color:var(--dim);line-height:1.4;margin-top:6px}
     @media(min-width:700px){.jam-sheet{max-width:480px;margin:auto;border-radius:24px}}
   </style>
+  <style id="snug-vinyl-styles">
+    .vinyl-field{display:grid;gap:6px;margin:8px 0}
+    .vinyl-field>span{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.09em;color:var(--dim)}
+    .vinyl-field input{min-height:48px;border:0;border-radius:12px;background:var(--surface-2);color:var(--text);font-size:15px;font-weight:700;padding:0 12px;width:100%;box-sizing:border-box}
+    .vinyl-sum{font-size:11px;color:var(--dim);margin:6px 0;font-weight:700}
+    .vinyl-status{font-size:12px;font-weight:700;margin-top:6px;min-height:18px}
+    .vinyl-list{display:grid;gap:8px}
+    .vinyl-row{display:flex;align-items:center;gap:10px;width:100%;min-height:60px;border:0;border-radius:14px;background:var(--surface-2);color:var(--text);font-size:13px;font-weight:700;padding:8px 12px;text-align:left;box-sizing:border-box}
+    .vinyl-row .vicon{font-size:26px;font-style:normal}
+    .vinyl-row .vmeta{flex:1;min-width:0}
+    .vinyl-row .vmeta b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+    .vinyl-row .vmeta small{color:var(--dim);font-weight:700}
+    .vinyl-row .vstate{font-size:14px;color:var(--dim)}
+    .vinyl-row.playing{outline:2px solid var(--accent)}
+    .vinyl-row.playing .vstate{color:var(--accent)}
+    .vinyl-empty{font-size:12px;color:var(--dim);padding:14px 4px;line-height:1.5}
+    .jukebox-pos{display:flex;gap:8px;align-items:stretch}
+    .jukebox-pos .vinyl-row{flex:1}
+    .jukebox-num{display:grid;place-items:center;min-width:30px;font-size:13px;font-weight:900;color:var(--dim)}
+    .jukebox-skip{min-height:60px;min-width:68px;border:0;border-radius:14px;background:var(--surface-2);color:var(--text);font-size:12px;font-weight:900}
+  </style>
   <style id="snug-voice-chat-styles">
     .room-dock{right:56px}.voice-toggle-dock{position:fixed;z-index:25;top:max(calc(env(safe-area-inset-top) + 58px),68px);right:12px;display:grid;place-items:center;width:36px;height:36px;border:1px solid color-mix(in srgb,var(--green) 48%,#fff);border-radius:50%;background:var(--surface);color:var(--green);box-shadow:0 5px 18px #26394038,0 0 0 2px #ffffff70}.voice-toggle-dock:before{content:"";width:10px;height:14px;border:2px solid currentColor;border-radius:7px}.voice-toggle-dock:after{content:"";position:absolute;width:16px;height:10px;border:2px solid currentColor;border-top:0;border-radius:0 0 10px 10px;bottom:6px}.voice-toggle-dock.off{color:var(--dim)}.voice-toggle-dock.off span{position:absolute;width:22px;height:2px;border-radius:2px;background:#b84233;transform:rotate(-45deg)}.voice-toggle-dock.busy{opacity:.65}.voice-toggle-dock.speaking{background:var(--green);color:#fff;box-shadow:0 0 0 4px #5c8d6540,0 5px 18px #26394038}.voice-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;margin:0 0 11px;padding:10px 11px;border-radius:13px;background:var(--surface-2)}.voice-row>span{display:grid;gap:2px}.voice-row b{font-size:13px}.voice-row small{color:var(--dim);font-size:10px;line-height:1.35}.voice-row button{min-width:92px;height:38px;padding:0 12px;border:0;border-radius:11px;background:var(--green);color:#fff;font-size:11px;font-weight:900}.voice-row button.leave{background:#e4e7e5;color:var(--text)}.voice-row button:disabled{opacity:.6}.voice-tune-row{margin-top:-7px}.voice-tune-row button[aria-checked="true"]{box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 22%,transparent)}.voice-indicator{display:inline-block;width:7px;height:7px;margin-right:5px;border-radius:50%;background:#a9b1b1;vertical-align:1px}.voice-indicator.live{background:var(--green)}.voice-indicator.speaking{background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 24%,transparent)}.multi-people li small{display:flex;align-items:center}.voice-error{margin:-3px 0 10px;color:#8d3427;font-size:10px;line-height:1.35}.voice-audio{display:none}
     @media(min-width:700px){.room-dock{right:max(66px,calc((100vw - 1040px)/2 + 66px))}.voice-toggle-dock{top:84px;right:max(22px,calc((100vw - 1040px)/2 + 22px))}}
