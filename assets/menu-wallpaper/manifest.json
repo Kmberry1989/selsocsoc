@@ -2,7 +2,7 @@
   "poster": "assets/menu-wallpaper/menu.png",
   "videos": [
     {
-      "path": "assets/menu-wallpaper/menu.mp4",
+      "path": "assets/menu-wallpaper/menu-loop.mp4",
       "type": "video/mp4"
     }
   ]
