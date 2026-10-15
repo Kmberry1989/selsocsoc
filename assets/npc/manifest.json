@@ -9,7 +9,8 @@
       "name": "Mayor Mayor",
       "outfitNotes": "Formal tailcoat, bow tie, sash of office with medallion; colored wraparound texture",
       "outfitUrl": "assets/npc-outfits/npc-mayor-mayor-v2.png",
-      "role": "mayor"
+      "role": "mayor",
+      "accessoryGlb": "assets/npc-accessories/gavel.glb"
     },
     {
       "accessory": "tour pennant flag",
@@ -19,7 +20,8 @@
       "name": "Gideon",
       "outfitNotes": "Multi-pocket field vest, neckerchief, tour badge; colored wraparound texture",
       "outfitUrl": "assets/npc-outfits/npc-gideon-v2.png",
-      "role": "tour guide"
+      "role": "tour guide",
+      "accessoryGlb": "assets/npc-accessories/flag.glb"
     },
     {
       "accessory": "camera (in roster bundle)",
@@ -29,7 +31,8 @@
       "name": "Lyla Lens",
       "outfitNotes": "Photographer vest, colored wraparound texture",
       "outfitUrl": "assets/npc-outfits/npc-lyla-lens-v2.png",
-      "role": "newspaper photographer"
+      "role": "newspaper photographer",
+      "accessoryGlb": "assets/npc-accessories/camera.glb"
     },
     {
       "accessory": "die (in roster bundle)",
@@ -39,7 +42,8 @@
       "name": "Chip Chance",
       "outfitNotes": "Tuxedo, colored wraparound texture",
       "outfitUrl": "assets/npc-outfits/npc-chip-chance-v2.png",
-      "role": "minigame host"
+      "role": "minigame host",
+      "accessoryGlb": "assets/npc-accessories/die.glb"
     },
     {
       "accessory": "gold coin",
@@ -49,7 +53,8 @@
       "name": "Barnaby Bargain",
       "outfitNotes": "Signature colored design, 4-island UV",
       "outfitUrl": "assets/npc-outfits/npc-barnaby-bargain-v2.png",
-      "role": "shopkeeper"
+      "role": "shopkeeper",
+      "accessoryGlb": "assets/npc-accessories/coin.glb"
     },
     {
       "accessory": "balloon",
@@ -59,7 +64,8 @@
       "name": "Pip Parade",
       "outfitNotes": "Signature colored design, 4-island UV",
       "outfitUrl": "assets/npc-outfits/npc-pip-parade-v2.png",
-      "role": "festival organizer"
+      "role": "festival organizer",
+      "accessoryGlb": "assets/npc-accessories/balloon.glb"
     },
     {
       "accessory": "yarn ball",
@@ -69,7 +75,8 @@
       "name": "Agnes Alley",
       "outfitNotes": "Cardigan, colored wraparound texture",
       "outfitUrl": "assets/npc-outfits/npc-agnes-alley-v2.png",
-      "role": "cat shelter keeper"
+      "role": "cat shelter keeper",
+      "accessoryGlb": "assets/npc-accessories/yarn.glb"
     },
     {
       "accessory": "quest scroll",
@@ -79,7 +86,8 @@
       "name": "Dottie Daly",
       "outfitNotes": "Signature colored design, 4-island UV",
       "outfitUrl": "assets/npc-outfits/npc-dottie-daly-v2.png",
-      "role": "quest giver"
+      "role": "quest giver",
+      "accessoryGlb": "assets/npc-accessories/scroll.glb"
     },
     {
       "accessory": "hammer (in roster bundle)",
@@ -89,7 +97,8 @@
       "name": "Peggy Plank",
       "outfitNotes": "Signature colored design, 4-island UV",
       "outfitUrl": "assets/npc-outfits/npc-peggy-plank-v2.png",
-      "role": "bridge foreman"
+      "role": "bridge foreman",
+      "accessoryGlb": "assets/npc-accessories/hammer.glb"
     },
     {
       "accessory": "gold bar",
@@ -99,7 +108,8 @@
       "name": "Mr. Buck Coinsworth",
       "outfitNotes": "Signature colored design, 4-island UV",
       "outfitUrl": "assets/npc-outfits/npc-mr-buck-coinsworth-v2.png",
-      "role": "banker"
+      "role": "banker",
+      "accessoryGlb": "assets/npc-accessories/goldbar.glb"
     },
     {
       "accessory": "potted flower",
@@ -109,7 +119,8 @@
       "name": "Fern Bramble",
       "outfitNotes": "Signature colored design, 4-island UV",
       "outfitUrl": "assets/npc-outfits/npc-fern-bramble-v2.png",
-      "role": "gardener"
+      "role": "gardener",
+      "accessoryGlb": "assets/npc-accessories/flower.glb"
     },
     {
       "accessory": "envelope",
@@ -119,7 +130,8 @@
       "name": "Stanley Stamp",
       "outfitNotes": "Signature colored design, 4-island UV",
       "outfitUrl": "assets/npc-outfits/npc-stanley-stamp-v2.png",
-      "role": "mail carrier"
+      "role": "mail carrier",
+      "accessoryGlb": "assets/npc-accessories/envelope.glb"
     },
     {
       "accessory": "fishing rod with bobber",
@@ -129,11 +141,12 @@
       "name": "Bobby Gill",
       "outfitNotes": "Fishing vest, colored wraparound texture",
       "outfitUrl": "assets/npc-outfits/npc-bobby-gill-v2.png",
-      "role": "fishing mentor"
+      "role": "fishing mentor",
+      "accessoryGlb": "assets/npc-accessories/rod.glb"
     }
   ],
   "game": "Selfie Social Society",
   "note": "Face PNGs are 1600x1600 grayscale-stylized, no mouths (animated speaking-mouth mesh sits separately). Outfit PNGs are grayscale on the 4-island UV layout (multiplicative tint renderer). All 13 NPCs are full 3D in-world characters. Mayor Mayor and Gideon's welcome-cinematic figures still use procedural canvas faces (window.__snugCinematicFaceDraw in assets/npc-faces.js).",
   "town": "Cyclical City",
-  "version": 5
+  "version": 6
 }

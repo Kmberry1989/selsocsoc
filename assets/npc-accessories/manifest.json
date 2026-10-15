@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "accessories": [
+    {
+      "id": "gavel",
+      "name": "Ceremonial Gavel",
+      "slot": "hand",
+      "file": "assets/npc-accessories/gavel.glb"
+    },
+    {
+      "id": "flag",
+      "name": "Tour Pennant",
+      "slot": "hand",
+      "file": "assets/npc-accessories/flag.glb"
+    },
+    {
+      "id": "coin",
+      "name": "Gold Coin",
+      "slot": "hand",
+      "file": "assets/npc-accessories/coin.glb"
+    },
+    {
+      "id": "balloon",
+      "name": "Balloon",
+      "slot": "hand",
+      "file": "assets/npc-accessories/balloon.glb"
+    },
+    {
+      "id": "yarn",
+      "name": "Ball of Yarn",
+      "slot": "hand",
+      "file": "assets/npc-accessories/yarn.glb"
+    },
+    {
+      "id": "scroll",
+      "name": "Quest Scroll",
+      "slot": "hand",
+      "file": "assets/npc-accessories/scroll.glb"
+    },
+    {
+      "id": "goldbar",
+      "name": "Gold Bar",
+      "slot": "hand",
+      "file": "assets/npc-accessories/goldbar.glb"
+    },
+    {
+      "id": "flower",
+      "name": "Potted Flower",
+      "slot": "hand",
+      "file": "assets/npc-accessories/flower.glb"
+    },
+    {
+      "id": "envelope",
+      "name": "Envelope",
+      "slot": "hand",
+      "file": "assets/npc-accessories/envelope.glb"
+    },
+    {
+      "id": "rod",
+      "name": "Fishing Rod",
+      "slot": "hand",
+      "file": "assets/npc-accessories/rod.glb"
+    },
+    {
+      "id": "camera",
+      "name": "Camera",
+      "slot": "hand",
+      "file": "assets/npc-accessories/camera.glb"
+    },
+    {
+      "id": "die",
+      "name": "Lucky Die",
+      "slot": "hand",
+      "file": "assets/npc-accessories/die.glb"
+    },
+    {
+      "id": "hammer",
+      "name": "Hammer",
+      "slot": "hand",
+      "file": "assets/npc-accessories/hammer.glb"
+    },
+    {
+      "id": "cane",
+      "name": "Walking Cane",
+      "slot": "handL",
+      "file": "assets/npc-accessories/cane.glb"
+    },
+    {
+      "id": "tophat",
+      "name": "Tall Top Hat",
+      "slot": "head",
+      "file": "assets/npc-accessories/tophat.glb"
+    },
+    {
+      "id": "mailcap",
+      "name": "Mail Cap",
+      "slot": "head",
+      "file": "assets/npc-accessories/mailcap.glb"
+    },
+    {
+      "id": "buckethat",
+      "name": "Bucket Hat",
+      "slot": "head",
+      "file": "assets/npc-accessories/buckethat.glb"
+    },
+    {
+      "id": "strawhat",
+      "name": "Straw Sun Hat",
+      "slot": "head",
+      "file": "assets/npc-accessories/strawhat.glb"
+    },
+    {
+      "id": "tourcap",
+      "name": "Tour Cap",
+      "slot": "head",
+      "file": "assets/npc-accessories/tourcap.glb"
+    },
+    {
+      "id": "cape",
+      "name": "Crimson Cape",
+      "slot": "back",
+      "file": "assets/npc-accessories/cape.glb"
+    },
+    {
+      "id": "hair-short",
+      "name": "Short Hair",
+      "slot": "hair",
+      "file": "assets/npc-accessories/hair-short.glb"
+    },
+    {
+      "id": "hair-bob",
+      "name": "Bob Cut",
+      "slot": "hair",
+      "file": "assets/npc-accessories/hair-bob.glb"
+    },
+    {
+      "id": "hair-long",
+      "name": "Long Hair",
+      "slot": "hair",
+      "file": "assets/npc-accessories/hair-long.glb"
+    },
+    {
+      "id": "hair-curly",
+      "name": "Curly Hair",
+      "slot": "hair",
+      "file": "assets/npc-accessories/hair-curly.glb"
+    },
+    {
+      "id": "hair-bun",
+      "name": "Hair Bun",
+      "slot": "hair",
+      "file": "assets/npc-accessories/hair-bun.glb"
+    },
+    {
+      "id": "hair-sides",
+      "name": "Balding Sides",
+      "slot": "hair",
+      "file": "assets/npc-accessories/hair-sides.glb"
+    }
+  ]
+}
