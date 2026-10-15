@@ -395,7 +395,7 @@ function renderDock() {
     dock.className = "town-life-dock";
     dock.innerHTML = `<i aria-hidden="true"><span></span></i><b>Town Life</b>`;
     dock.addEventListener("click", () => openPanel());
-    document.body.appendChild(dock);
+    window.__snugEnsureDockRow().appendChild(dock);
   }
   const worldReady = town.world?.mode === "village";
   dock.hidden = !worldReady || town.photoMode;
