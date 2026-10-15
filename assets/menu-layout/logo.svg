@@ -4,7 +4,7 @@
   <g stroke="#26383b" stroke-linejoin="round">
     <text x="260" y="64" text-anchor="middle" fill="#fffdf8" stroke-width="10" paint-order="stroke" font-family="Avenir Next Rounded,Avenir Next,Segoe UI,sans-serif" font-size="78" font-weight="900" letter-spacing="1">SELFIE</text>
     <text x="172" y="139" text-anchor="middle" fill="#e76854" stroke-width="10" paint-order="stroke" font-family="Avenir Next Rounded,Avenir Next,Segoe UI,sans-serif" font-size="68" font-weight="900" letter-spacing="-2">S</text>
-    <g transform="translate(207 87)">
+    <g transform="translate(227 87)">
       <path fill="#5c8d65" stroke-width="8" d="M-22 52c2-24 12-34 27-34s25 10 27 34z"/>
       <circle fill="#f2c86f" stroke-width="8" cx="5" cy="8" r="27"/>
       <circle fill="#26383b" stroke="none" cx="-4" cy="5" r="3.5"/>
