@@ -15,6 +15,23 @@ Put looping environment tracks in `assets/audio/music/` using these filenames:
 
 Music loops automatically and crossfades when the environment changes. Trim silence from the start and end so the loop joins cleanly.
 
+## Area tracks (optional)
+
+These play when the player is near the matching place. If a file is missing,
+the game falls back to silence for that area (the plaza track does not cover
+it), so add only the ones you have built:
+
+- `pond.wav` — near the fishing pond (Bobby Gill)
+- `garden.wav` — near Fern Bramble's garden
+- `footbridge.wav` — near the Moonlight Footbridge site (Peggy Plank)
+- `cat-shelter.wav` — near Agnes Alley's cat shelter
+- `bank.wav` — near Mr. Buck Coinsworth's bank
+- `festival.wav` — while a town festival is active (Fireworks Night, Meteor
+  Shower, or the Costume Parade)
+
+Area music yields to the title screen, board game, minigame, shop, and home
+music — those always win when they apply.
+
 ## Custom sound effects
 
 A file in `assets/audio/sfx/` takes priority over the procedural version with the same ID. Use these canonical filenames to replace individual synthesized sounds:

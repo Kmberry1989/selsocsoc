@@ -479,12 +479,65 @@ class GameSoundEngine {
     }
   }
 
+  // Area music zones. Each zone is anchored to the NPC whose post marks the
+  // place; positions are read live from the scene so the world layout stays
+  // the source of truth. Festival music is event-driven, not proximity-driven.
+  const AREA_MUSIC_ZONES = [
+    { id: "pond", npc: "bobby-gill" }, // Bobby Gill, fishing mentor at the pond
+    { id: "garden", npc: "fern-bramble" }, // Fern Bramble, gardener
+    { id: "footbridge", npc: "peggy-plank" }, // Peggy Plank, bridge foreman
+    { id: "cat-shelter", npc: "agnes-alley" }, // Agnes Alley, cat shelter keeper
+    { id: "bank", npc: "mr-buck-coinsworth" }, // Mr. Buck Coinsworth, banker
+  ];
+  const AREA_MUSIC_RADIUS = 7;
+  const FESTIVAL_SCENE_NAMES = ["TownFestivalFireworks", "TownFestivalMeteors", "TownFestivalParade"];
+
+  let areaZoneCache = null; // [{ id, x, z }], built once NPCs are spawned
+
+  function buildAreaZoneCache() {
+    const group = window.__snugWorld?.scene?.getObjectByName?.("CylindricalCityNPCs");
+    if (!group) return false;
+    const zones = [];
+    for (const zone of AREA_MUSIC_ZONES) {
+      const npc = group.children.find((child) => child.userData?.npcId === zone.npc);
+      if (!npc) continue;
+      zones.push({ id: zone.id, x: npc.userData?.baseX ?? npc.position.x, z: npc.position.z });
+    }
+    if (!zones.length) return false;
+    areaZoneCache = zones;
+    return true;
+  }
+
+  function festivalMusicActive() {
+    const scene = window.__snugWorld?.scene;
+    if (!scene?.getObjectByName) return false;
+    return FESTIVAL_SCENE_NAMES.some((name) => scene.getObjectByName(name));
+  }
+
+  function areaMusicContext() {
+    const world = window.__snugWorld;
+    if (!world || world.mode === "home") return null;
+    if (festivalMusicActive()) return "festival";
+    const position = world.player?.position;
+    if (!position) return null;
+    if (!areaZoneCache && !buildAreaZoneCache()) return null;
+    let best = null;
+    let bestDist = AREA_MUSIC_RADIUS;
+    for (const zone of areaZoneCache) {
+      const dist = Math.hypot(position.x - zone.x, position.z - zone.z);
+      if (dist < bestDist) { bestDist = dist; best = zone.id; }
+    }
+    return best;
+  }
+
   function musicContext() {
     if (document.querySelector(".snug-start-screen:not(.is-leaving)")) return "title-screen";
     if (document.querySelector(".snug-board-backdrop")) return "board-game";
     if (document.querySelector(".room-game-hud,.party-arena-backdrop,.solo-result-backdrop")) return "minigames";
     const shopTitle = [...document.querySelectorAll(".sheet-head h2")].find((node) => /Meadow Market|Curl & Comb|Pocket Mall|Hearth & Home|Green Nook/.test(node.textContent || ""));
     if (shopTitle) return "shops";
+    const area = areaMusicContext();
+    if (area) return area;
     if (window.__snugWorld?.mode === "home") return "home";
     return "plaza";
   }
@@ -643,6 +696,14 @@ class GameSoundEngine {
     }
     lastPlayerPosition = { x: position.x, z: position.z };
   }, 180);
+
+  // Re-evaluate the music context on a slow poll so walking into an area
+  // music zone switches tracks even when nothing in the DOM changed.
+  // syncMusic() is a no-op when the context is unchanged.
+  setInterval(() => {
+    if (document.hidden) return;
+    syncMusic();
+  }, 2000);
 
   const lastText = new WeakMap();
   let dialogueAt = 0;
