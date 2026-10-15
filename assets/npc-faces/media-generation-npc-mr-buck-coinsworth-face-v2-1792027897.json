@@ -1,0 +1,4 @@
+{
+  "text": "{\"error_format_version\":1,\"error\":{\"code\":\"internal\",\"retryable\":false,\"detail\":\"An unexpected error occurred.\",\"downstream_status\":500,\"attempt_id\":\"8af56264-69da-45b0-805d-3f6b2e641407\",\"origin_stage\":\"worker_inference\",\"root_cause_known\":true,\"fallback_emitted\":true,\"source_error_code\":\"worker_job_failed\",\"failure_kind\":\"stream\",\"source_retryable\":false,\"downstream_request_id\":\"8af56264-69da-45b0-805d-3f6b2e641407\",\"generated_attachment_count\":0}}",
+  "attachments": []
+}
