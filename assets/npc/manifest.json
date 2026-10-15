@@ -1,1 +1,139 @@
-{"assetBase": "https://raw.githubusercontent.com/Kmberry1989/selsocsoc/main/", "characters": [{"accessory": "ceremonial gavel", "faceNotes": "Showman: big arched brows, wide starry eyes with glints, beauty mark", "faceUrl": "assets/npc-faces/npc-mayor-mayor-face.png", "id": "mayor-mayor", "name": "Mayor Mayor", "outfitNotes": "Formal tailcoat, bow tie, sash of office with medallion; grayscale 4-island UV", "outfitUrl": "assets/npc-outfits/npc-mayor-mayor.png", "role": "mayor"}, {"accessory": "tour pennant flag", "faceNotes": "Bushy brows, kind droopy eyes, smile lines", "faceUrl": "assets/npc-faces/npc-gideon-face.png", "id": "gideon", "name": "Gideon", "outfitNotes": "Multi-pocket field vest, neckerchief, tour badge; grayscale 4-island UV", "outfitUrl": "assets/npc-outfits/npc-gideon.png", "role": "tour guide"}, {"accessory": "camera (in roster bundle)", "faceNotes": "Sharp observant eyes, angled brows", "faceUrl": "assets/npc-faces/npc-lyla-lens-face.png", "id": "lyla-lens", "name": "Lyla Lens", "outfitNotes": "Photographer vest, grayscale 4-island UV", "outfitUrl": "assets/npc-outfits/npc-lyla-lens.png", "role": "newspaper photographer"}, {"accessory": "die (in roster bundle)", "faceNotes": "Wide excited eyes, raised brows", "faceUrl": "assets/npc-faces/npc-chip-chance-face.png", "id": "chip-chance", "name": "Chip Chance", "outfitNotes": "Tuxedo, grayscale 4-island UV", "outfitUrl": "assets/npc-outfits/npc-chip-chance.png", "role": "minigame host"}, {"accessory": "gold coin", "faceNotes": "Shrewd narrowed eyes, curled mustache", "faceUrl": "assets/npc-faces/npc-barnaby-bargain-face.png", "id": "barnaby-bargain", "name": "Barnaby Bargain", "outfitNotes": "Signature grayscale design, 4-island UV", "outfitUrl": "assets/npc-outfits/npc-barnaby-bargain.png", "role": "shopkeeper"}, {"accessory": "balloon", "faceNotes": "Sparkling eyes, confetti-dot cheeks", "faceUrl": "assets/npc-faces/npc-pip-parade-face.png", "id": "pip-parade", "name": "Pip Parade", "outfitNotes": "Signature grayscale design, 4-island UV", "outfitUrl": "assets/npc-outfits/npc-pip-parade.png", "role": "festival organizer"}, {"accessory": "yarn ball", "faceNotes": "Soft kind eyes, whisker dots", "faceUrl": "assets/npc-faces/npc-agnes-alley-face.png", "id": "agnes-alley", "name": "Agnes Alley", "outfitNotes": "Cardigan, grayscale 4-island UV", "outfitUrl": "assets/npc-outfits/npc-agnes-alley.png", "role": "cat shelter keeper"}, {"accessory": "quest scroll", "faceNotes": "Crinkled smiling eyes, laugh lines", "faceUrl": "assets/npc-faces/npc-dottie-daly-face.png", "id": "dottie-daly", "name": "Dottie Daly", "outfitNotes": "Signature grayscale design, 4-island UV", "outfitUrl": "assets/npc-outfits/npc-dottie-daly.png", "role": "quest giver"}, {"accessory": "hammer (in roster bundle)", "faceNotes": "Strong brows, sawdust smudge", "faceUrl": "assets/npc-faces/npc-peggy-plank-face.png", "id": "peggy-plank", "name": "Peggy Plank", "outfitNotes": "Signature grayscale design, 4-island UV", "outfitUrl": "assets/npc-outfits/npc-peggy-plank.png", "role": "bridge foreman"}, {"accessory": "gold bar", "faceNotes": "Half-lidded eyes, golden monocle", "faceUrl": "assets/npc-faces/npc-mr-buck-coinsworth-face.png", "id": "mr-buck-coinsworth", "name": "Mr. Buck Coinsworth", "outfitNotes": "Signature grayscale design, 4-island UV", "outfitUrl": "assets/npc-outfits/npc-mr-buck-coinsworth.png", "role": "banker"}, {"accessory": "potted flower", "faceNotes": "Gentle eyes, freckles, leaf on cheek", "faceUrl": "assets/npc-faces/npc-fern-bramble-face.png", "id": "fern-bramble", "name": "Fern Bramble", "outfitNotes": "Signature grayscale design, 4-island UV", "outfitUrl": "assets/npc-outfits/npc-fern-bramble.png", "role": "gardener"}, {"accessory": "envelope", "faceNotes": "Bright friendly eyes, stamp beauty mark", "faceUrl": "assets/npc-faces/npc-stanley-stamp-face.png", "id": "stanley-stamp", "name": "Stanley Stamp", "outfitNotes": "Signature grayscale design, 4-island UV", "outfitUrl": "assets/npc-outfits/npc-stanley-stamp.png", "role": "mail carrier"}, {"accessory": "fishing rod with bobber", "faceNotes": "Droopy wise eyes, bushy gray brows, stubble", "faceUrl": "assets/npc-faces/npc-bobby-gill-face.png", "id": "bobby-gill", "name": "Bobby Gill", "outfitNotes": "Fishing vest, grayscale 4-island UV", "outfitUrl": "assets/npc-outfits/npc-bobby-gill.png", "role": "fishing mentor"}], "game": "Selfie Social Society", "note": "Face PNGs are 1600x1600 grayscale-stylized, no mouths (animated speaking-mouth mesh sits separately). Outfit PNGs are grayscale on the 4-island UV layout (multiplicative tint renderer). All 13 NPCs are full 3D in-world characters. Mayor Mayor and Gideon's welcome-cinematic figures still use procedural canvas faces (window.__snugCinematicFaceDraw in assets/npc-faces.js).", "town": "Cyclical City", "version": 2}
+{
+  "assetBase": "https://raw.githubusercontent.com/Kmberry1989/selsocsoc/main/",
+  "characters": [
+    {
+      "accessory": "ceremonial gavel",
+      "faceNotes": "Showman: big arched brows, wide starry eyes with glints, beauty mark",
+      "faceUrl": "assets/npc-faces/npc-mayor-mayor-face.png",
+      "id": "mayor-mayor",
+      "name": "Mayor Mayor",
+      "outfitNotes": "Formal tailcoat, bow tie, sash of office with medallion; grayscale 4-island UV",
+      "outfitUrl": "assets/npc-outfits/npc-mayor-mayor.png",
+      "role": "mayor"
+    },
+    {
+      "accessory": "tour pennant flag",
+      "faceNotes": "Bushy brows, kind droopy eyes, smile lines",
+      "faceUrl": "assets/npc-faces/npc-gideon-face.png",
+      "id": "gideon",
+      "name": "Gideon",
+      "outfitNotes": "Multi-pocket field vest, neckerchief, tour badge; grayscale 4-island UV",
+      "outfitUrl": "assets/npc-outfits/npc-gideon.png",
+      "role": "tour guide"
+    },
+    {
+      "accessory": "camera (in roster bundle)",
+      "faceNotes": "Sharp observant eyes, angled brows",
+      "faceUrl": "assets/npc-faces/npc-lyla-lens-face-v2.png",
+      "id": "lyla-lens",
+      "name": "Lyla Lens",
+      "outfitNotes": "Photographer vest, grayscale 4-island UV",
+      "outfitUrl": "assets/npc-outfits/npc-lyla-lens.png",
+      "role": "newspaper photographer"
+    },
+    {
+      "accessory": "die (in roster bundle)",
+      "faceNotes": "Wide excited eyes, raised brows",
+      "faceUrl": "assets/npc-faces/npc-chip-chance-face.png",
+      "id": "chip-chance",
+      "name": "Chip Chance",
+      "outfitNotes": "Tuxedo, grayscale 4-island UV",
+      "outfitUrl": "assets/npc-outfits/npc-chip-chance.png",
+      "role": "minigame host"
+    },
+    {
+      "accessory": "gold coin",
+      "faceNotes": "Shrewd narrowed eyes, curled mustache",
+      "faceUrl": "assets/npc-faces/npc-barnaby-bargain-face-v2.png",
+      "id": "barnaby-bargain",
+      "name": "Barnaby Bargain",
+      "outfitNotes": "Signature grayscale design, 4-island UV",
+      "outfitUrl": "assets/npc-outfits/npc-barnaby-bargain.png",
+      "role": "shopkeeper"
+    },
+    {
+      "accessory": "balloon",
+      "faceNotes": "Sparkling eyes, confetti-dot cheeks",
+      "faceUrl": "assets/npc-faces/npc-pip-parade-face-v2.png",
+      "id": "pip-parade",
+      "name": "Pip Parade",
+      "outfitNotes": "Signature grayscale design, 4-island UV",
+      "outfitUrl": "assets/npc-outfits/npc-pip-parade.png",
+      "role": "festival organizer"
+    },
+    {
+      "accessory": "yarn ball",
+      "faceNotes": "Soft kind eyes, whisker dots",
+      "faceUrl": "assets/npc-faces/npc-agnes-alley-face-v2.png",
+      "id": "agnes-alley",
+      "name": "Agnes Alley",
+      "outfitNotes": "Cardigan, grayscale 4-island UV",
+      "outfitUrl": "assets/npc-outfits/npc-agnes-alley.png",
+      "role": "cat shelter keeper"
+    },
+    {
+      "accessory": "quest scroll",
+      "faceNotes": "Crinkled smiling eyes, laugh lines",
+      "faceUrl": "assets/npc-faces/npc-dottie-daly-face-v2.png",
+      "id": "dottie-daly",
+      "name": "Dottie Daly",
+      "outfitNotes": "Signature grayscale design, 4-island UV",
+      "outfitUrl": "assets/npc-outfits/npc-dottie-daly.png",
+      "role": "quest giver"
+    },
+    {
+      "accessory": "hammer (in roster bundle)",
+      "faceNotes": "Strong brows, sawdust smudge",
+      "faceUrl": "assets/npc-faces/npc-peggy-plank-face-v2.png",
+      "id": "peggy-plank",
+      "name": "Peggy Plank",
+      "outfitNotes": "Signature grayscale design, 4-island UV",
+      "outfitUrl": "assets/npc-outfits/npc-peggy-plank.png",
+      "role": "bridge foreman"
+    },
+    {
+      "accessory": "gold bar",
+      "faceNotes": "Half-lidded eyes, golden monocle",
+      "faceUrl": "assets/npc-faces/npc-mr-buck-coinsworth-face.png",
+      "id": "mr-buck-coinsworth",
+      "name": "Mr. Buck Coinsworth",
+      "outfitNotes": "Signature grayscale design, 4-island UV",
+      "outfitUrl": "assets/npc-outfits/npc-mr-buck-coinsworth.png",
+      "role": "banker"
+    },
+    {
+      "accessory": "potted flower",
+      "faceNotes": "Gentle eyes, freckles, leaf on cheek",
+      "faceUrl": "assets/npc-faces/npc-fern-bramble-face-v2.png",
+      "id": "fern-bramble",
+      "name": "Fern Bramble",
+      "outfitNotes": "Signature grayscale design, 4-island UV",
+      "outfitUrl": "assets/npc-outfits/npc-fern-bramble.png",
+      "role": "gardener"
+    },
+    {
+      "accessory": "envelope",
+      "faceNotes": "Bright friendly eyes, stamp beauty mark",
+      "faceUrl": "assets/npc-faces/npc-stanley-stamp-face-v2.png",
+      "id": "stanley-stamp",
+      "name": "Stanley Stamp",
+      "outfitNotes": "Signature grayscale design, 4-island UV",
+      "outfitUrl": "assets/npc-outfits/npc-stanley-stamp.png",
+      "role": "mail carrier"
+    },
+    {
+      "accessory": "fishing rod with bobber",
+      "faceNotes": "Droopy wise eyes, bushy gray brows, stubble",
+      "faceUrl": "assets/npc-faces/npc-bobby-gill-face-v2.png",
+      "id": "bobby-gill",
+      "name": "Bobby Gill",
+      "outfitNotes": "Fishing vest, grayscale 4-island UV",
+      "outfitUrl": "assets/npc-outfits/npc-bobby-gill.png",
+      "role": "fishing mentor"
+    }
+  ],
+  "game": "Selfie Social Society",
+  "note": "Face PNGs are 1600x1600 grayscale-stylized, no mouths (animated speaking-mouth mesh sits separately). Outfit PNGs are grayscale on the 4-island UV layout (multiplicative tint renderer). All 13 NPCs are full 3D in-world characters. Mayor Mayor and Gideon's welcome-cinematic figures still use procedural canvas faces (window.__snugCinematicFaceDraw in assets/npc-faces.js).",
+  "town": "Cyclical City",
+  "version": 3
+}

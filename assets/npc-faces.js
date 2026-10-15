@@ -43,7 +43,8 @@
         const npc = (group.children || []).find((child) => child.userData?.npcId === id);
         const mesh = npc ? npc.getObjectByName(`PrimitiveFace_${mark}`) : null;
         if (!mesh || !mesh.material) continue;
-        const img = await loadImage(`assets/npc-faces/npc-${id}-face.png`);
+        const v2 = new Set(['lyla-lens','barnaby-bargain','pip-parade','agnes-alley','dottie-daly','peggy-plank','fern-bramble','stanley-stamp','bobby-gill']);
+        const img = await loadImage(`assets/npc-faces/npc-${id}-face${v2.has(id) ? '-v2' : ''}.png`);
         if (!img) continue;
         const texture = new THREE.Texture(img);
         texture.colorSpace = THREE.SRGBColorSpace;
