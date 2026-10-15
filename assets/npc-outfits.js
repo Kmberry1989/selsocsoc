@@ -1,5 +1,5 @@
 /* snug-npc-outfits-v1
- * Dresses the 11 roster NPCs in their painted outfit textures.
+ * Dresses the 13 roster NPCs in their painted outfit textures.
  * Reuses the player outfit atlas geometry (window.__snugPaintedOutfitAtlas)
  * so the 4-island UV layout maps onto each NPC's primitive body.
  * NPC outfits stay untinted (grayscale as authored); only the player's
@@ -10,6 +10,8 @@
   window.__snugNpcOutfits = true;
 
   const MARKS = {
+    'mayor-mayor': 'MM',
+    'gideon': 'GD',
     'lyla-lens': 'LL',
     'chip-chance': 'CC',
     'barnaby-bargain': 'BB',

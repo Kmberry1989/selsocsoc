@@ -1,15 +1,18 @@
 /* snug-npc-faces-v1
- * Gives each of the 11 roster NPCs their own unique face artwork.
+ * Gives each of the 13 roster NPCs their own unique face artwork.
  * Replaces the generic procedural canvas face on `PrimitiveFace_<MARK>`
  * with the NPC's painted face PNG from assets/npc-faces/.
- * Mayor Mayor and Gideon (welcome-cinematic figures) are handled via
- * window.__snugCinematicFaceDraw, hooked into the cinematic bundle.
+ * Mayor Mayor and Gideon are full 3D NPCs now; their welcome-cinematic
+ * figures still use window.__snugCinematicFaceDraw, hooked into the
+ * cinematic bundle.
  */
 (() => {
   if (window.__snugNpcFaces) return;
   window.__snugNpcFaces = true;
 
   const FACES = {
+    'mayor-mayor': 'MM',
+    'gideon': 'GD',
     'lyla-lens': 'LL',
     'chip-chance': 'CC',
     'barnaby-bargain': 'BB',

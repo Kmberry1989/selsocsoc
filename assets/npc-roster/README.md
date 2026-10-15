@@ -1,6 +1,6 @@
 # Cyclical City NPC replacement slots
 
-The eleven named townspeople render with procedural placeholder bodies and faces. Each exposes stable Three.js attachment groups so developer-authored art can replace a primitive without changing dialogue or role wiring.
+The thirteen named townspeople render with procedural placeholder bodies and faces. Each exposes stable Three.js attachment groups so developer-authored art can replace a primitive without changing dialogue or role wiring.
 
 ## Runtime slots
 

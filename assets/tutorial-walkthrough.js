@@ -62,6 +62,7 @@
     doneStops: [],
     sawWelcome: false,
     started: false,
+    noReward: false,        // replay via Gideon: no shell payout if already completed
     tut: {},                // persisted {started, step, complete, skipped}
     uid: "",
     cleanup: [],
@@ -399,8 +400,17 @@
     state.phase = "intro";
     state.stopIndex = 0;
     state.doneStops = [];
+    state.noReward = false;
     saveTut({ started: true, step: 0 });
     showLine(INTRO_LINE, "", "Start the tour", () => showStop(0));
+  }
+  // Replay requested from Gideon's in-world "Take the tour" action.
+  // Replays the full 8 stops; the 50-shell reward only pays on a first completion.
+  function replayTour() {
+    if (state.active) return;
+    const alreadyDone = isDone();
+    startTour();
+    state.noReward = alreadyDone;
   }
   function resumeTour() {
     if (state.active) return;
@@ -422,13 +432,15 @@
     clearStepWatchers();
     hidePanel();
     saveTut({ complete: true, step: STOPS.length });
+    if (!state.noReward) {
+      try {
+        window.dispatchEvent(new CustomEvent("snug-award-coins", {
+          detail: { amount: REWARD_SHELLS, message: `Tour complete! +${REWARD_SHELLS} shells` },
+        }));
+      } catch (_) {}
+    }
     try {
-      window.dispatchEvent(new CustomEvent("snug-award-coins", {
-        detail: { amount: REWARD_SHELLS, message: `Tour complete! +${REWARD_SHELLS} shells` },
-      }));
-    } catch (_) {}
-    try {
-      window.dispatchEvent(new CustomEvent("snug-tutorial-complete", { detail: { reward: REWARD_SHELLS } }));
+      window.dispatchEvent(new CustomEvent("snug-tutorial-complete", { detail: { reward: state.noReward ? 0 : REWARD_SHELLS } }));
     } catch (_) {}
   }
   function skipTour() {
@@ -498,6 +510,7 @@
     // Public API for debugging / external hooks.
     window.__snugTutorial = {
       start: startTour,
+      replay: replayTour,
       skip: skipTour,
       state: () => ({ active: state.active, phase: state.phase, stop: state.stopIndex, tut: { ...state.tut } }),
     };

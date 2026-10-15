@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "game": "Selfie Social Society",
   "town": "Cyclical City",
   "characters": {
@@ -134,6 +134,30 @@
       "heldItem": "bobby-gill/held-item-placeholder.glb",
       "faceSlot": "FaceSlot_BG",
       "faceArtwork": "assets/npc-faces/npc-bobby-gill-face.png"
+    },
+    "mayor-mayor": {
+      "name": "Mayor Mayor",
+      "role": "mayor",
+      "runtimePrefix": "MM",
+      "outfit": "mayor-mayor/outfit-placeholder.glb",
+      "headAccessory": "mayor-mayor/head-accessory-placeholder.glb",
+      "handAccessory": "mayor-mayor/hand-accessory-placeholder.glb",
+      "shoes": "mayor-mayor/shoes-placeholder.glb",
+      "heldItem": "mayor-mayor/held-item-placeholder.glb",
+      "faceSlot": "FaceSlot_MM",
+      "faceArtwork": "assets/npc-faces/npc-mayor-mayor-face.png"
+    },
+    "gideon": {
+      "name": "Gideon",
+      "role": "tour guide",
+      "runtimePrefix": "GD",
+      "outfit": "gideon/outfit-placeholder.glb",
+      "headAccessory": "gideon/head-accessory-placeholder.glb",
+      "handAccessory": "gideon/hand-accessory-placeholder.glb",
+      "shoes": "gideon/shoes-placeholder.glb",
+      "heldItem": "gideon/held-item-placeholder.glb",
+      "faceSlot": "FaceSlot_GD",
+      "faceArtwork": "assets/npc-faces/npc-gideon-face.png"
     }
   }
 }

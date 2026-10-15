@@ -1,9 +1,9 @@
 /* snug-npc-accessories-v1
- * Gives the 8 roster NPCs who lack one a signature held accessory.
+ * Gives the 10 roster NPCs who lack one a signature held accessory.
  * Lyla (camera), Chip (die) and Peggy (hammer) already have theirs from
- * the roster bundle; this adds Barnaby, Pip, Agnes, Dottie, Buck, Fern,
- * Stanley and Bobby. Built from primitives in the game's toon style,
- * attached to each NPC's HeldItemSlot_<MARK> (right hand).
+ * the roster bundle; this adds Mayor Mayor, Gideon, Barnaby, Pip, Agnes,
+ * Dottie, Buck, Fern, Stanley and Bobby. Built from primitives in the
+ * game's toon style, attached to each NPC's HeldItemSlot_<MARK> (right hand).
  */
 (() => {
   if (window.__snugNpcAccessories) return;
@@ -20,6 +20,37 @@
   }
 
   const BUILDERS = {
+    // Mayor Mayor: a ceremonial gavel.
+    'mayor-mayor'(THREE) {
+      const g = new THREE.Group();
+      const handle = mesh(THREE, new THREE.CylinderGeometry(0.022, 0.026, 0.42, 10), mat(THREE, 0x8a5a34, 0.6), 0, 0.1, 0);
+      handle.rotation.z = 0.5;
+      const head = mesh(THREE, new THREE.CylinderGeometry(0.055, 0.055, 0.16, 14), mat(THREE, 0x6e4526, 0.55), 0.13, 0.28, 0);
+      head.rotation.z = 0.5;
+      const band1 = mesh(THREE, new THREE.CylinderGeometry(0.058, 0.058, 0.02, 14), mat(THREE, 0xe4aa38, 0.35), 0.1, 0.245, 0);
+      band1.rotation.z = 0.5;
+      const band2 = mesh(THREE, new THREE.CylinderGeometry(0.058, 0.058, 0.02, 14), mat(THREE, 0xe4aa38, 0.35), 0.16, 0.315, 0);
+      band2.rotation.z = 0.5;
+      g.add(handle, head, band1, band2);
+      return g;
+    },
+    // Gideon (tour guide): a tour pennant flag.
+    'gideon'(THREE) {
+      const g = new THREE.Group();
+      const pole = mesh(THREE, new THREE.CylinderGeometry(0.016, 0.016, 0.85, 8), mat(THREE, 0x8a6a4a, 0.7), 0, 0.32, 0);
+      const flagShape = new THREE.Shape();
+      flagShape.moveTo(0, 0);
+      flagShape.lineTo(0.34, 0.09);
+      flagShape.lineTo(0, 0.18);
+      flagShape.lineTo(0, 0);
+      const flagGeo = new THREE.ShapeGeometry(flagShape);
+      const flag = new THREE.Mesh(flagGeo, mat(THREE, 0xb07a3f, 0.7));
+      flag.position.set(0.016, 0.58, 0);
+      flag.castShadow = true;
+      const tip = mesh(THREE, new THREE.SphereGeometry(0.028, 10, 8), mat(THREE, 0xe4aa38, 0.4), 0, 0.76, 0);
+      g.add(pole, flag, tip);
+      return g;
+    },
     // Barnaby Bargain (shopkeeper): a fat gold coin.
     'barnaby-bargain'(THREE) {
       const g = new THREE.Group();
@@ -112,6 +143,8 @@
   };
 
   const MARKS = {
+    'mayor-mayor': 'MM',
+    'gideon': 'GD',
     'barnaby-bargain': 'BB',
     'pip-parade': 'PP',
     'agnes-alley': 'AA',
