@@ -34,7 +34,7 @@
     {
       "accessory": "die (in roster bundle)",
       "faceNotes": "Wide excited eyes, raised brows",
-      "faceUrl": "assets/npc-faces/npc-chip-chance-face.png",
+      "faceUrl": "assets/npc-faces/npc-chip-chance-face-v2.png",
       "id": "chip-chance",
       "name": "Chip Chance",
       "outfitNotes": "Tuxedo, grayscale 4-island UV",
@@ -94,7 +94,7 @@
     {
       "accessory": "gold bar",
       "faceNotes": "Half-lidded eyes, golden monocle",
-      "faceUrl": "assets/npc-faces/npc-mr-buck-coinsworth-face.png",
+      "faceUrl": "assets/npc-faces/npc-mr-buck-coinsworth-face-v2.png",
       "id": "mr-buck-coinsworth",
       "name": "Mr. Buck Coinsworth",
       "outfitNotes": "Signature grayscale design, 4-island UV",
@@ -135,5 +135,5 @@
   "game": "Selfie Social Society",
   "note": "Face PNGs are 1600x1600 grayscale-stylized, no mouths (animated speaking-mouth mesh sits separately). Outfit PNGs are grayscale on the 4-island UV layout (multiplicative tint renderer). All 13 NPCs are full 3D in-world characters. Mayor Mayor and Gideon's welcome-cinematic figures still use procedural canvas faces (window.__snugCinematicFaceDraw in assets/npc-faces.js).",
   "town": "Cyclical City",
-  "version": 3
+  "version": 4
 }
