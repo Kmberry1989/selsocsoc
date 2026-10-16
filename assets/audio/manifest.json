@@ -1,29 +1,50 @@
 {
-  "music": [
-    {
-      "id": "board-game",
-      "file": "assets/audio/music/board-game.wav"
-    },
-    {
-      "id": "home",
-      "file": "assets/audio/music/home.wav"
-    },
-    {
-      "id": "minigames",
-      "file": "assets/audio/music/minigames.wav"
-    },
-    {
-      "id": "plaza",
-      "file": "assets/audio/music/plaza.wav"
-    },
-    {
-      "id": "shops",
-      "file": "assets/audio/music/shops.wav"
-    },
-    {
-      "id": "title-screen",
-      "file": "assets/audio/music/title-screen.wav"
-    }
-  ],
-  "sfx": []
+ "music": [
+  {
+   "id": "board-game",
+   "file": "assets/audio/music/board-game.wav"
+  },
+  {
+   "id": "home",
+   "file": "assets/audio/music/home.wav"
+  },
+  {
+   "id": "minigames",
+   "file": "assets/audio/music/minigames.wav"
+  },
+  {
+   "id": "plaza",
+   "file": "assets/audio/music/plaza.wav"
+  },
+  {
+   "id": "shops",
+   "file": "assets/audio/music/shops.wav"
+  },
+  {
+   "id": "title-screen",
+   "file": "assets/audio/music/title-screen.wav"
+  }
+ ],
+ "sfx": [
+  {
+   "id": "ui-tap",
+   "file": "assets/audio/sfx/ui-tap.wav"
+  },
+  {
+   "id": "ui-confirm",
+   "file": "assets/audio/sfx/ui-confirm.wav"
+  },
+  {
+   "id": "ui-back",
+   "file": "assets/audio/sfx/ui-back.wav"
+  },
+  {
+   "id": "menu-open",
+   "file": "assets/audio/sfx/menu-open.wav"
+  },
+  {
+   "id": "game-start",
+   "file": "assets/audio/sfx/game-start.wav"
+  }
+ ]
 }
