@@ -120,42 +120,6 @@
       "name": "Crimson Cape",
       "slot": "back",
       "file": "assets/npc-accessories/cape.glb"
-    },
-    {
-      "id": "hair-short",
-      "name": "Short Hair",
-      "slot": "hair",
-      "file": "assets/npc-accessories/hair-short.glb"
-    },
-    {
-      "id": "hair-bob",
-      "name": "Bob Cut",
-      "slot": "hair",
-      "file": "assets/npc-accessories/hair-bob.glb"
-    },
-    {
-      "id": "hair-long",
-      "name": "Long Hair",
-      "slot": "hair",
-      "file": "assets/npc-accessories/hair-long.glb"
-    },
-    {
-      "id": "hair-curly",
-      "name": "Curly Hair",
-      "slot": "hair",
-      "file": "assets/npc-accessories/hair-curly.glb"
-    },
-    {
-      "id": "hair-bun",
-      "name": "Hair Bun",
-      "slot": "hair",
-      "file": "assets/npc-accessories/hair-bun.glb"
-    },
-    {
-      "id": "hair-sides",
-      "name": "Balding Sides",
-      "slot": "hair",
-      "file": "assets/npc-accessories/hair-sides.glb"
     }
   ]
 }
