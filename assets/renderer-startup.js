@@ -189,7 +189,19 @@
   };
   addEventListener("snug-start-welcome", (event) => {
     event.stopImmediatePropagation();
-    showLightweightWelcome();
+    // Prefer the staged 3D welcoming committee; fall back to the lightweight
+    // CSS ceremony if WebGL or Three.js is unavailable.
+    const cinematic = window.__snugWelcomeCinematic3d;
+    if (cinematic && typeof cinematic.launch === "function") {
+      Promise.resolve()
+        .then(() => cinematic.launch())
+        .catch((error) => {
+          console.warn("3D welcome unavailable, using lightweight ceremony.", error);
+          showLightweightWelcome();
+        });
+    } else {
+      showLightweightWelcome();
+    }
   });
   addEventListener("snug-start-entered", () => {
     if (window.__snugWelcomeActive || window.__snugWelcomePending) return;
