@@ -21,7 +21,7 @@ const COTTAGES = [
 ];
 // User-directed 2026-10-03: no 3D trees. The 2D sprite billboards stay;
 // only the instanced 3D trunk/crown geometry is skipped. Model files untouched.
-const ENABLE_3D_TREES = false;
+const ENABLE_3D_TREES = true;
 let activeExpansion = null;
 
 function seeded(seed) {
