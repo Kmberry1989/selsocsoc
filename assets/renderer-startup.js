@@ -188,8 +188,18 @@
     console.info("Using the lightweight welcoming ceremony.");
   };
   addEventListener("snug-start-welcome", (event) => {
+    // Prefer the classic welcoming committee bundle when it has loaded; it
+    // registers its own listener for this event (landslide speech + hat tip).
+    // Fall through to the staged 3D cinematic only when the classic is absent.
+    const classicLoaded =
+      window.__snugChunkLoader &&
+      window.__snugChunkLoader.loaded &&
+      window.__snugChunkLoader.loaded.has("assets/selfie-social-society-welcome.bundle.js");
+    if (classicLoaded) {
+      return;
+    }
     event.stopImmediatePropagation();
-    // Prefer the staged 3D welcoming committee; fall back to the lightweight
+    // Fall back to the staged 3D welcoming committee, then the lightweight
     // CSS ceremony if WebGL or Three.js is unavailable.
     const cinematic = window.__snugWelcomeCinematic3d;
     if (cinematic && typeof cinematic.launch === "function") {
