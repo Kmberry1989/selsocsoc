@@ -3041,7 +3041,37 @@ function setupEnvironment() {
   group.name = "SnugLivingWorld";
   const sun = new THREE.Mesh(new THREE.SphereGeometry(0.78, 48, 32), new THREE.MeshBasicMaterial({ color: 0xffd66f, toneMapped: false }));
   sun.name = "SnugRoundSun";
-  const moon = new THREE.Mesh(new THREE.SphereGeometry(0.55, 24, 18), new THREE.MeshBasicMaterial({ color: 0xd9e5ff, toneMapped: false }));
+  const moon = new THREE.Mesh(
+    new THREE.SphereGeometry(0.55, 24, 18),
+    new THREE.ShaderMaterial({
+      transparent: true,
+      uniforms: { uPhase: { value: 0.5 } },
+      vertexShader: `
+        varying vec3 vNormal;
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float uPhase;
+        varying vec3 vNormal;
+        void main() {
+          // uPhase: 0 = new moon, 0.5 = full moon, 1 = new moon.
+          // The terminator sweeps across the disc as the phase advances.
+          float phaseAngle = uPhase * 6.28318;
+          vec3 lightDir = normalize(vec3(cos(phaseAngle), 0.18, 0.35));
+          float lit = smoothstep(-0.12, 0.28, dot(normalize(vNormal), lightDir));
+          vec3 moonColor = vec3(0.85, 0.90, 1.0);
+          vec3 darkColor = vec3(0.05, 0.07, 0.13);
+          vec3 color = mix(darkColor, moonColor, lit);
+          float alpha = mix(0.18, 1.0, lit);
+          gl_FragColor = vec4(color, alpha);
+        }
+      `,
+    })
+  );
+  moon.name = "SnugPhasedMoon";
   const skyDome = makeSkyDome();
   const rainbow = makeRainbow();
   const shootingStars = makeShootingStars();
@@ -3068,7 +3098,42 @@ function setupEnvironment() {
     starPositions.push(Math.cos(angle) * radius, 14 + seeded(index * 8.4) * 18, Math.sin(angle) * radius);
   }
   starGeometry.setAttribute("position", new THREE.Float32BufferAttribute(starPositions, 3));
-  const stars = new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0xf6f3d0, size: 0.09, transparent: true, opacity: 0 }));
+  const starPhases = [];
+  const starSpeeds = [];
+  for (let index = 0; index < 180; index += 1) {
+    starPhases.push(seeded(index * 13.3 + 7.7) * Math.PI * 2);
+    starSpeeds.push(0.8 + seeded(index * 5.1 + 2.9) * 2.2);
+  }
+  starGeometry.setAttribute("twinklePhase", new THREE.Float32BufferAttribute(starPhases, 1));
+  starGeometry.setAttribute("twinkleSpeed", new THREE.Float32BufferAttribute(starSpeeds, 1));
+  const starMaterial = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    uniforms: { uTime: { value: 0 }, uOpacity: { value: 0 } },
+    vertexShader: `
+      attribute float twinklePhase;
+      attribute float twinkleSpeed;
+      uniform float uTime;
+      varying float vTwinkle;
+      void main() {
+        vTwinkle = 0.55 + 0.45 * sin(uTime * twinkleSpeed + twinklePhase);
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        gl_PointSize = 2.4 * (140.0 / -mvPosition.z);
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    `,
+    fragmentShader: `
+      varying float vTwinkle;
+      uniform float uOpacity;
+      void main() {
+        float dist = length(gl_PointCoord - 0.5);
+        float alpha = smoothstep(0.5, 0.12, dist) * vTwinkle * uOpacity;
+        gl_FragColor = vec4(0.96, 0.95, 0.82, alpha);
+      }
+    `,
+  });
+  const stars = new THREE.Points(starGeometry, starMaterial);
+  stars.name = "SnugTwinklingStars";
   group.add(stars);
   const clouds = [];
   const cloudPuffGeometry = new THREE.SphereGeometry(1, 10, 7);
@@ -3243,7 +3308,15 @@ function tickEnvironment(time = performance.now()) {
   env.moon.position.set(-env.sun.position.x, 34 - env.sun.position.y, 28);
   env.sun.visible = !phase.isNight;
   env.moon.visible = phase.isNight;
-  env.stars.material.opacity = phase.isNight ? Math.min(0.9, (1 - phase.daylight) * 1.3) : 0;
+  // Lunar cycle: 8 game days per full cycle (game day = 2h, so 16h real time).
+  if (env.moon.material.uniforms?.uPhase) {
+    env.moon.material.uniforms.uPhase.value = (now / (8 * 7200000)) % 1;
+  }
+  // Twinkling stars: shader-driven twinkle, faded in at night.
+  if (env.stars.material.uniforms) {
+    env.stars.material.uniforms.uTime.value = elapsed;
+    env.stars.material.uniforms.uOpacity.value = phase.isNight ? Math.min(0.9, (1 - phase.daylight) * 1.3) : 0;
+  }
   env.lights.forEach(({ node, base }) => { node.intensity = base * (0.28 + phase.daylight * 0.72); });
   const stormMix = phase.weather === "Thunderstorm" ? env.weatherIntensity : 0;
   env.latestStormMix = stormMix;
