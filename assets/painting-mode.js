@@ -50,7 +50,24 @@
   function nearEasel() {
     const player = window.__snugWorld?.player;
     if (!player?.position) return false;
-    return EASEL_SPOTS.some(([x, z]) => Math.hypot(player.position.x - x, player.position.z - z) < EASEL_RANGE);
+    if (EASEL_SPOTS.some(([x, z]) => Math.hypot(player.position.x - x, player.position.z - z) < EASEL_RANGE)) return true;
+    // Also detect player-placed easel furniture in the 3D scene (home or town).
+    const scene = window.__snugWorld?.scene;
+    if (scene) {
+      let found = false;
+      scene.traverse((obj) => {
+        if (found || !obj.isMesh) return;
+        const name = (obj.name || '').toLowerCase();
+        const uid = String(obj.userData?.itemId || obj.userData?.furnitureId || '').toLowerCase();
+        if (!name.includes('easel') && !uid.includes('easel')) return;
+        obj.updateWorldMatrix(true, false);
+        const px = obj.matrixWorld.elements[12];
+        const pz = obj.matrixWorld.elements[14];
+        if (Math.hypot(player.position.x - px, player.position.z - pz) < EASEL_RANGE) found = true;
+      });
+      if (found) return true;
+    }
+    return false;
   }
   function syncPaintFab() {
     const fab = document.querySelector('.paint-fab');
