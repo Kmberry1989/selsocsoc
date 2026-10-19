@@ -3175,6 +3175,29 @@ function setupEnvironment() {
   const weather = new THREE.Points(weatherGeometry, new THREE.PointsMaterial({ color: 0xaed4e9, size: 0.045, transparent: true, opacity: 0, depthWrite: false, sizeAttenuation: true }));
   weather.name = "SnugWeatherParticles";
   group.add(weather);
+  // Autumn leaves: like snow, but colored and tied to the Autumn season (user 2026-10-18).
+  const leafCount = 420;
+  const leafGeometry = new THREE.BufferGeometry();
+  const leafPositions = new Float32Array(leafCount * 3);
+  const leafColors = new Float32Array(leafCount * 3);
+  const leafData = { baseX: new Float32Array(leafCount), baseZ: new Float32Array(leafCount), speed: new Float32Array(leafCount), phase: new Float32Array(leafCount) };
+  const leafPalette = [[0.85, 0.45, 0.15], [0.78, 0.28, 0.12], [0.92, 0.65, 0.2], [0.72, 0.35, 0.1], [0.88, 0.55, 0.25]];
+  for (let i = 0; i < leafCount; i += 1) {
+    const x = (seeded(i * 7.31 + 1.7) - 0.5) * 92;
+    const z = (seeded(i * 3.97 + 4.2) - 0.5) * 88;
+    leafPositions[i * 3] = leafData.baseX[i] = x;
+    leafPositions[i * 3 + 1] = -1.4 + seeded(i * 5.83 + 9.1) * 11;
+    leafPositions[i * 3 + 2] = leafData.baseZ[i] = z;
+    leafData.speed[i] = 0.55 + seeded(i * 9.17 + 3.3) * 0.5;
+    leafData.phase[i] = seeded(i * 4.61 + 8.8) * Math.PI * 2;
+    const c = leafPalette[Math.floor(seeded(i * 11.3 + 6.6) * leafPalette.length)];
+    leafColors[i * 3] = c[0]; leafColors[i * 3 + 1] = c[1]; leafColors[i * 3 + 2] = c[2];
+  }
+  leafGeometry.setAttribute("position", new THREE.BufferAttribute(leafPositions, 3));
+  leafGeometry.setAttribute("color", new THREE.BufferAttribute(leafColors, 3));
+  const leaves = new THREE.Points(leafGeometry, new THREE.PointsMaterial({ size: 0.09, vertexColors: true, transparent: true, opacity: 0, depthWrite: false, sizeAttenuation: true }));
+  leaves.name = "SnugAutumnLeaves";
+  group.add(leaves);
   const snowMaskTexture = makeSnowMaskTexture();
   const snowUniform = { value: 0 };
   const wildlife = makeWildlife();
@@ -3191,7 +3214,7 @@ function setupEnvironment() {
   const globeBaseColor = globe.material.color.clone();
   const startingPhase = environmentPhase();
   state.environment = {
-    group, skyDome, sun, moon, stars, shootingStars, rainbow, clouds, weather, weatherData, terrain, terrainBaseColor, globe, globeBaseColor,
+    group, skyDome, sun, moon, stars, shootingStars, rainbow, clouds, weather, weatherData, leaves, leafData, terrain, terrainBaseColor, globe, globeBaseColor,
     snowMaskTexture, snowUniform, snowVisualAmount: 0, snowSurfaceRefreshAt: 0,
     wildlife: wildlife.creatures, lights: ambient, lastLightning: 0, lightningUntil: 0,
     displayWeather: startingPhase.weather === "Clear" ? "Rain" : startingPhase.weather,
@@ -3366,6 +3389,25 @@ function tickEnvironment(time = performance.now()) {
       particles.setZ(i, env.weatherData.baseZ[i] + Math.cos(phaseOffset * 0.73) * (isSnow ? 0.28 : 0.06));
     }
     particles.needsUpdate = true;
+  }
+  // Autumn leaves fall during Autumn (seasonIndex 2), like snow in Winter.
+  const leafParticles = env.leaves.geometry.attributes.position;
+  const isAutumn = phase.seasonIndex === 2;
+  env.leaves.visible = isAutumn;
+  const targetLeafOpacity = isAutumn ? 0.85 : 0;
+  env.leaves.material.opacity += (targetLeafOpacity - env.leaves.material.opacity) * (1 - Math.exp(-elapsed / 3));
+  if (isAutumn && env.leaves.material.opacity > 0.02) {
+    const lower = -1.4;
+    const span = 11;
+    for (let i = 0; i < leafParticles.count; i += 1) {
+      let y = leafParticles.getY(i) - env.leafData.speed[i] * 0.85 * elapsed;
+      while (y < lower) y += span;
+      const phaseOffset = time * 0.0009 + env.leafData.phase[i];
+      leafParticles.setY(i, y);
+      leafParticles.setX(i, env.leafData.baseX[i] + Math.sin(phaseOffset) * 0.65);
+      leafParticles.setZ(i, env.leafData.baseZ[i] + Math.cos(phaseOffset * 0.61) * 0.5);
+    }
+    leafParticles.needsUpdate = true;
   }
   env.wildlife.forEach((creature, index) => {
     const t = now * creature.userData.speed + creature.userData.phase;

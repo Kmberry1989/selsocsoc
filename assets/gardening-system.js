@@ -292,6 +292,28 @@
     state.data.dishes[id]-=1;window.dispatchEvent(new CustomEvent("snug-award-coins",{detail:{amount:recipe.value,message:`${recipe.name} served · +${recipe.value} shells`}}));
     try{await save();toast(`${recipe.value} shells earned`);}catch{}
   }
+  // Eat a dish for a temporary buff (user 2026-10-18: cooking expansion).
+  const BUFFS = {
+    gardenSalad: { name: "Speedy Steps", desc: "Move 25% faster", minutes: 5, effect: "speed" },
+    harvestPie: { name: "Lucky Bite", desc: "Better rewards", minutes: 5, effect: "luck" },
+    moonTea: { name: "Moonlit Energy", desc: "Night bonus", minutes: 5, effect: "energy" },
+  };
+  async function eatDish(id) {
+    const recipe=RECIPES[id];if(!recipe||Number(state.data.dishes[id]||0)<1||state.busy)return;
+    state.data.dishes[id]-=1;
+    const buff=BUFFS[id];
+    const until=Date.now()+buff.minutes*60000;
+    // Store active buff where other systems can read it.
+    window.__snugMealBuff={ effect: buff.effect, until, name: buff.name };
+    try{ localStorage.setItem("snug-meal-buff", JSON.stringify(window.__snugMealBuff)); }catch{}
+    window.dispatchEvent(new CustomEvent("snug-meal-buff",{detail:window.__snugMealBuff}));
+    try{await save();toast(`${recipe.name} eaten · ${buff.name} for ${buff.minutes} min`);}catch{}
+  }
+  // Restore buff on load if still active.
+  try{
+    const saved=JSON.parse(localStorage.getItem("snug-meal-buff")||"null");
+    if(saved&&saved.until>Date.now())window.__snugMealBuff=saved;
+  }catch{}
   async function packGift(id) {
     if(Number(state.data.produce[id]||0)<1||state.busy)return;
     const inventory=Array.isArray(state.profile.inventory)?[...state.profile.inventory]:Array.isArray(state.profile.owned)?[...state.profile.owned]:[];
@@ -360,7 +382,7 @@
   }
   function inventoryStrip() {return `<div class="garden-inventory-strip">${Object.entries(CROPS).map(([id,crop])=>`<span>${esc(crop.name)} · ${state.data.produce[id]||0}</span>`).join("")}</div>`;}
   function marketMarkup() {return `<div class="garden-market"><div class="market-banner"><span><b>Barnaby’s daily market board</b><small>Prices reset with the local day. Cooked dishes pay more than raw crops.</small></span><strong>${dayKey()}</strong></div>${inventoryStrip()}${Object.entries(CROPS).map(([id,crop])=>`<article class="garden-market-row" style="--item-color:${crop.color};--item-image:url('${crop.seedArt||crop.art||""}')"><i class="garden-produce-art" aria-hidden="true"></i><span><b>${esc(crop.name)}</b><small>${priceTrend(id)} · ${state.data.produce[id]||0} in basket</small><strong>${marketPrice(id)} shells each</strong></span><div><button type="button" class="garden-sell" data-sell="${id}" ${!state.data.produce[id]||state.busy?"disabled":""}>Sell one</button><button type="button" class="garden-gift" data-gift="${id}" ${!state.data.produce[id]||state.busy?"disabled":""}>Pack gift</button></div></article>`).join("")}</div>`;}
-  function kitchenMarkup(){return `<div class="garden-recipes">${inventoryStrip()}${Object.entries(RECIPES).map(([id,recipe])=>{const needed=Object.entries(recipe.needs).map(([crop,amount])=>`${amount} ${CROPS[crop].name}`).join(" + ");const can=Object.entries(recipe.needs).every(([crop,amount])=>Number(state.data.produce[crop]||0)>=amount);return `<article class="garden-recipe" style="--item-color:${recipe.color}"><i class="garden-recipe-art" aria-hidden="true"></i><span><b>${esc(recipe.name)}</b><small>${esc(needed)} · serves for ${recipe.value} shells</small><strong>${state.data.dishes[id]||0} cooked</strong></span><div><button type="button" class="garden-cook" data-cook="${id}" ${!can||state.busy?"disabled":""}>Cook</button><button type="button" class="garden-sell" data-sell-dish="${id}" ${!state.data.dishes[id]||state.busy?"disabled":""}>Serve</button></div></article>`;}).join("")}</div>`;}
+  function kitchenMarkup(){return `<div class="garden-recipes">${inventoryStrip()}${Object.entries(RECIPES).map(([id,recipe])=>{const needed=Object.entries(recipe.needs).map(([crop,amount])=>`${amount} ${CROPS[crop].name}`).join(" + ");const can=Object.entries(recipe.needs).every(([crop,amount])=>Number(state.data.produce[crop]||0)>=amount);const buff=BUFFS[id];return `<article class="garden-recipe" style="--item-color:${recipe.color}"><i class="garden-recipe-art" aria-hidden="true"></i><span><b>${esc(recipe.name)}</b><small>${esc(needed)} · serves for ${recipe.value} shells${buff?` · eat for ${esc(buff.name)}`:''}</small><strong>${state.data.dishes[id]||0} cooked</strong></span><div><button type="button" class="garden-cook" data-cook="${id}" ${!can||state.busy?"disabled":""}>Cook</button><button type="button" class="garden-eat" data-eat-dish="${id}" ${!state.data.dishes[id]||state.busy?"disabled":""}>Eat</button><button type="button" class="garden-sell" data-sell-dish="${id}" ${!state.data.dishes[id]||state.busy?"disabled":""}>Serve</button></div></article>`;}).join("")}</div>`;}
   function socialMarkup(){const friends=state.players.filter(p=>p.uid&&p.uid!==state.session?.uid);return `<div class="garden-social"><div class="garden-streak"><strong>${state.data.streak||0}</strong><span><b>day green-thumb streak</b><small>Water at least one crop each local day. Rain counts.</small></span></div><div class="garden-project-card"><span><b>Helpful points · ${state.data.helpfulPoints||0}</b><small>Visit a neighbor and water their next thirsty crop. Both gardeners earn XP.</small></span></div>${friends.length?friends.map(friend=>`<article class="garden-friend"><span class="garden-seed-art" style="--item-color:${esc(friend.outfit||"#6f9670")}" aria-hidden="true"></span><span><b>${esc(friend.name||"Neighbor")}</b><small>Online in this room · watering visit</small></span><button type="button" class="garden-help" data-help="${esc(friend.uid)}" data-help-name="${esc(friend.name||"Neighbor")}">Water</button></article>`).join(""):'<div class="garden-empty">No friends are in this room right now. Their gardens will appear here when they join.</div>'}</div>`;}
   function projectMarkup(){const percent=Math.min(100,Math.round(state.community.total/PROJECT.goal*100));const produceOptions=Object.entries(CROPS).filter(([id])=>Number(state.data.produce[id]||0)>0);return `<div class="garden-social"><article class="garden-project-card"><span><b>${PROJECT.name}</b><small>Everyone’s harvested crops fill one shared table for Pip Parade’s festival.</small></span><strong>${state.community.total}/${PROJECT.goal}</strong><div class="garden-project-meter" style="--project-progress:${percent}%"><i></i></div></article>${produceOptions.length?produceOptions.map(([id,crop])=>`<article class="garden-market-row" style="--item-color:${crop.color};--item-image:url('${crop.seedArt||crop.art||""}')"><i class="garden-produce-art" aria-hidden="true"></i><span><b>Donate ${esc(crop.name)}</b><small>${state.data.produce[id]} available · your total ${state.data.communityDonated||0}</small></span><button type="button" class="garden-donate" data-donate="${id}">Donate one</button></article>`).join(""):'<div class="garden-empty">Harvest a crop, then bring one here for the shared feast.</div>'}<div class="garden-eyebrow">Garden contributors</div>${state.community.people.length?`<ul class="garden-community-list">${state.community.people.map(person=>`<li><span>${esc(person.name)}</span><b>${person.amount} crops</b></li>`).join("")}</ul>`:'<div class="garden-empty">No crops have been donated yet. The first serving platter is waiting.</div>'}</div>`;}
   function render(){
@@ -385,6 +407,7 @@
     panel.querySelectorAll("[data-sell]").forEach(button=>button.addEventListener("click",()=>sell(button.dataset.sell)));
     panel.querySelectorAll("[data-gift]").forEach(button=>button.addEventListener("click",()=>packGift(button.dataset.gift)));
     panel.querySelectorAll("[data-cook]").forEach(button=>button.addEventListener("click",()=>cook(button.dataset.cook)));
+    panel.querySelectorAll("[data-eat-dish]").forEach(button=>button.addEventListener("click",()=>eatDish(button.dataset.eatDish)));
     panel.querySelectorAll("[data-sell-dish]").forEach(button=>button.addEventListener("click",()=>sellDish(button.dataset.sellDish)));
     panel.querySelectorAll("[data-donate]").forEach(button=>button.addEventListener("click",()=>donate(button.dataset.donate)));
     panel.querySelectorAll("[data-help]").forEach(button=>button.addEventListener("click",()=>sendHelp(button.dataset.help,button.dataset.helpName)));
