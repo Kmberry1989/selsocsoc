@@ -68,4 +68,21 @@
   window.addEventListener('snug-npc-roster-ready', (event) => {
     dress(event.detail?.group);
   });
+
+  // Fallback: the roster chunk can build the NPC group before this module
+  // loads (chunk order), missing the one-shot event. Poll the scene and
+  // dress any group instance that appears.
+  const dressedGroups = new WeakSet();
+  const dressWhenFound = () => {
+    if (!window.__snugThree) return;
+    const group = window.__snugWorld?.scene?.getObjectByName?.('CylindricalCityNPCs');
+    if (!group || dressedGroups.has(group)) return;
+    dressedGroups.add(group);
+    dress(group);
+  };
+  let attempts = 0;
+  const timer = setInterval(() => {
+    dressWhenFound();
+    if (++attempts >= 90) clearInterval(timer);
+  }, 2000);
 })();
