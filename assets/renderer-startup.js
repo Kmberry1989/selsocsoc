@@ -23,10 +23,12 @@
     }
     nativeWarn(...args);
   };
-  // The bundled ceremony watches the portrait sheet and starts its own second
-  // WebGL scene. Suppress that path; the staged, accessible ceremony below is
-  // launched by the explicit entry event instead.
-  window.__snugSkipWelcome = true;
+  // The bundled (classic) welcoming committee is the default ceremony: it is
+  // triggered by the onboarding portrait sheet and must NOT be suppressed
+  // here. The staged ceremony below only runs when the classic bundle is
+  // absent (see the snug-start-welcome listener). Deliberate skips still set
+  // window.__snugSkipWelcome from the start screen (returning players and
+  // the solo/family/board shortcuts).
 
   const coordinate = (value) => Number.isFinite(value) ? Math.round(value * 1000) / 1000 : null;
   const readState = () => {
