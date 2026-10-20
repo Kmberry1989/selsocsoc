@@ -217,10 +217,18 @@
     next?.click();
   }
 
+  let contactSignature = "";
   function buildContactSheet(studio) {
-    studio.querySelector(".portrait-contact-sheet")?.remove();
     const tabs = [...studio.querySelectorAll(".expression-photo-tabs button")];
-    if (tabs.filter((button) => /ready/i.test(button.textContent || "")).length !== EXPRESSIONS.length) return;
+    if (tabs.filter((button) => /ready/i.test(button.textContent || "")).length !== EXPRESSIONS.length) {
+      contactSignature = "";
+      studio.querySelector(".portrait-contact-sheet")?.remove();
+      return;
+    }
+    const signature = tabs.map((button) => button.querySelector("img")?.src || "").join("|");
+    if (signature === contactSignature && studio.querySelector(".portrait-contact-sheet")) return;
+    contactSignature = signature;
+    studio.querySelector(".portrait-contact-sheet")?.remove();
     const sheet = document.createElement("section");
     sheet.className = "portrait-contact-sheet";
     sheet.setAttribute("aria-label", "Completed portrait contact sheet");
@@ -320,11 +328,25 @@
       const shareControl = [...studio.querySelectorAll("input[type=checkbox]")].find((input) => /share/i.test(input.closest("label")?.textContent || ""));
       if (shareControl) portraitSet.sharing = shareControl.checked === true;
       savePortraitSet();
-      intro.querySelector(".portrait-progress").textContent = `${count} of ${EXPRESSIONS.length} portraits ready${count === EXPRESSIONS.length ? " · set complete" : " · progress saves as you go"}`;
+      const progressEl = intro.querySelector(".portrait-progress");
+      const progressText = `${count} of ${EXPRESSIONS.length} portraits ready${count === EXPRESSIONS.length ? " · set complete" : " · progress saves as you go"}`;
+      if (progressEl.textContent !== progressText) progressEl.textContent = progressText;
       addDirectEditor(studio);
       buildContactSheet(studio);
     };
-    new MutationObserver(refresh).observe(studio, { subtree: true, childList: true, characterData: true, attributes: true });
+    // The observer must disconnect while refresh() runs: refresh writes text
+    // and rebuilds nodes inside the observed studio, which used to re-trigger
+    // itself endlessly and hard-freeze the page on sheet open (2026-10-20).
+    let refreshing = false;
+    const studioObserver = new MutationObserver(() => {
+      if (refreshing) return;
+      refreshing = true;
+      studioObserver.disconnect();
+      try { refresh(); } catch {}
+      studioObserver.observe(studio, { subtree: true, childList: true, characterData: true, attributes: true });
+      refreshing = false;
+    });
+    studioObserver.observe(studio, { subtree: true, childList: true, characterData: true, attributes: true });
     refresh();
   }
 
