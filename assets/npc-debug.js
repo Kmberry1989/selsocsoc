@@ -83,6 +83,13 @@
       lines.push("t=" + stamp() + " events: " + (events.join(" ") || "none"));
       lines.push("modFaces=" + !!window.__snugNpcFaces + " three=" + !!window.__snugThree + " chunksReady=" + !!window.__snugFeatureChunksReady);
       lines.push("stanley face=" + stanleyFace);
+      if (group) {
+        for (const [id, mark] of [["stanley-stamp", "SS"], ["fern-bramble", "FB"], ["barnaby-bargain", "BB"], ["mayor-mayor", "MM"]]) {
+          const n = group.children.find((c) => c.userData && c.userData.npcId === id);
+          const slot = n && n.getObjectByName("HeldItemSlot_" + mark);
+          lines.push(id + " held=" + (slot ? slot.children.map((c) => c.name).join(",") || "EMPTY" : "noslot"));
+        }
+      }
       lines.push("manual: " + manualResult);
       panel.textContent = "NPC DEBUG\n" + lines.join("\n");
     } catch (error) {
