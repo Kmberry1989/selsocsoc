@@ -9,6 +9,18 @@
   if (window.__snugNpcAccessories) return;
   window.__snugNpcAccessories = true;
 
+  // The shared window.__snugThree can be a partial shim planted by the app
+  // bundle (missing e.g. BoxGeometry/TorusGeometry), so load the real
+  // Three module directly.
+  let realThreePromise = null;
+  const getRealThree = () => {
+    if (!realThreePromise) {
+      realThreePromise = import(new URL("assets/vendor/three/three.module.js", document.baseURI).href)
+        .catch(() => null);
+    }
+    return realThreePromise;
+  };
+
   function mat(THREE, color, roughness = 0.6) {
     return new THREE.MeshStandardMaterial({ color, roughness, metalness: 0.05 });
   }
@@ -155,8 +167,8 @@
     'bobby-gill': 'BG',
   };
 
-  function dress(group) {
-    const THREE = window.__snugThree;
+  async function dress(group) {
+    const THREE = (await getRealThree()) || window.__snugThree;
     if (!THREE || !group) return;
     for (const [id, build] of Object.entries(BUILDERS)) {
       try {
@@ -183,7 +195,6 @@
   // dress any group instance that appears.
   const dressedGroups = new WeakSet();
   const dressWhenFound = () => {
-    if (!window.__snugThree) return;
     const group = window.__snugWorld?.scene?.getObjectByName?.('CylindricalCityNPCs');
     if (!group || dressedGroups.has(group)) return;
     dressedGroups.add(group);

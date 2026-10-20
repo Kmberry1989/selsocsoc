@@ -26,6 +26,17 @@
     'bobby-gill': 'BG',
   };
 
+  // The shared window.__snugThree can be a partial shim planted by the app
+  // bundle (no Texture constructor), so load the real Three module directly.
+  let realThreePromise = null;
+  const getRealThree = () => {
+    if (!realThreePromise) {
+      realThreePromise = import(new URL("assets/vendor/three/three.module.js", document.baseURI).href)
+        .catch(() => null);
+    }
+    return realThreePromise;
+  };
+
   function loadImage(url) {
     return new Promise((resolve) => {
       const img = new Image();
@@ -36,7 +47,7 @@
   }
 
   async function applyFaces(group) {
-    const THREE = window.__snugThree;
+    const THREE = (await getRealThree()) || window.__snugThree;
     if (!THREE || !group) return;
     for (const [id, mark] of Object.entries(FACES)) {
       try {
@@ -120,7 +131,6 @@
   // dress any group instance that appears.
   const dressedGroups = new WeakSet();
   const dressWhenFound = () => {
-    if (!window.__snugThree) return;
     const group = window.__snugWorld?.scene?.getObjectByName?.('CylindricalCityNPCs');
     if (!group || dressedGroups.has(group)) return;
     dressedGroups.add(group);
