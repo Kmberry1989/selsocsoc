@@ -1,11 +1,12 @@
 /* Temporary NPC dressing diagnostic — only activates with ?npcdebug=1.
- * Renders a small readout panel so a visual checker can report the
- * internal state of the NPC face/outfit/accessory pipeline. */
+ * Reports the internal state of the NPC face/outfit/accessory pipeline,
+ * tracks whether the roster group object is replaced over time, and
+ * test-loads a face PNG the same way the faces module does. */
 (() => {
   if (!/[?&]npcdebug=1/.test(location.search)) return;
   const panel = document.createElement("div");
   panel.id = "npc-debug-panel";
-  panel.style.cssText = "position:fixed;left:8px;top:8px;z-index:99999;background:#111;color:#7dff8a;font:12px/1.5 monospace;padding:8px 10px;border-radius:8px;max-width:78vw;white-space:pre-wrap;";
+  panel.style.cssText = "position:fixed;left:8px;top:8px;z-index:99999;background:#111;color:#7dff8a;font:12px/1.5 monospace;padding:8px 10px;border-radius:8px;max-width:82vw;white-space:pre-wrap;";
   panel.textContent = "npcdebug: starting…";
   const mount = () => document.body && document.body.appendChild(panel);
   if (document.body) mount();
@@ -22,17 +23,31 @@
     return img.constructor ? img.constructor.name : "unknown";
   };
 
+  // Track group identity + test-load the Stanley face exactly like the module.
+  let groupUuid = null;
+  let groupChanges = 0;
+  let imgTest = "untested";
+  const testImg = new Image();
+  testImg.onload = () => { imgTest = `OK ${testImg.naturalWidth}x${testImg.naturalHeight} src=${testImg.src.slice(-48)}`; };
+  testImg.onerror = () => { imgTest = `FAILED src=${testImg.src.slice(-48)}`; };
+  testImg.src = "assets/npc-faces/npc-stanley-stamp-face-v2.png";
+
   const tick = () => {
     try {
       const scene = window.__snugWorld && window.__snugWorld.scene;
       const group = scene && scene.getObjectByName ? scene.getObjectByName("CylindricalCityNPCs") : null;
+      if (group) {
+        if (groupUuid !== null && group.uuid !== groupUuid) groupChanges += 1;
+        groupUuid = group.uuid;
+      }
       const lines = [];
-      lines.push("mode=" + (window.__snugWorld ? window.__snugWorld.mode : "?"));
+      lines.push("base=" + document.baseURI.slice(0, 60));
       lines.push("modFaces=" + !!window.__snugNpcFaces + " modOutfits=" + !!window.__snugNpcOutfits + " modAcc=" + !!window.__snugNpcAccessories);
       lines.push("three=" + !!window.__snugThree + " chunksReady=" + !!window.__snugFeatureChunksReady);
-      lines.push("group=" + !!group + " npcs=" + (group ? group.children.length : 0));
+      lines.push("group=" + !!group + " npcs=" + (group ? group.children.length : 0) + " groupChanges=" + groupChanges);
+      lines.push("imgTest=" + imgTest);
       if (group) {
-        for (const [id, mark] of [["stanley-stamp", "SS"], ["fern-bramble", "FB"], ["lyla-lens", "LL"]]) {
+        for (const [id, mark] of [["stanley-stamp", "SS"], ["fern-bramble", "FB"]]) {
           const npc = group.children.find((c) => c.userData && c.userData.npcId === id);
           if (!npc) { lines.push(id + ": MISSING"); continue; }
           const slot = npc.getObjectByName("HeldItemSlot_" + mark);
