@@ -2,14 +2,15 @@
   if (window.__snugSeasonalEvents) return;
   // Seasonal Events: the 4-season cycle (90s each) drives themed activities.
   // Spring: Flower Festival (collect petals, turn in to Fern Bramble).
-  // Summer: Fishing Tournament (biggest catch wins).
+  // Summer: Fishing Tournament (most catches wins — catches are prizes and
+  // pond oddities, never fish; user canon 2026-10-20).
   // Autumn: Harvest Market (seasonal shop; leaves already fall in multiplayer.js).
   // Winter: Snowball Championship (snowball toss scoring).
   const SEASON_LENGTH = 90000;
   const SEASONS = ["Spring", "Summer", "Autumn", "Winter"];
   const EVENTS = [
     { name: "Flower Festival", emoji: "\u{1F338}", blurb: "Petals are drifting! Tap them to collect, then visit Fern Bramble to turn them in for shells." },
-    { name: "Fishing Tournament", emoji: "\u{1F3A3}", blurb: "Biggest catch wins! Every fish you land counts toward the tournament." },
+    { name: "Fishing Tournament", emoji: "\u{1F3A3}", blurb: "Every catch counts! Fishing lands prizes and pond oddities — most catches takes the tournament." },
     { name: "Harvest Market", emoji: "\u{1F342}", blurb: "The Harvest Market is open! Autumn-themed decor, only while leaves fall." },
     { name: "Snowball Championship", emoji: "\u2744\uFE0F", blurb: "Snowball fight season! Play Snowball Toss \u2014 most hits takes the crown." },
   ];
@@ -19,8 +20,8 @@
     session: null,
     petals: 0,          // spring: petals held
     petalsTurnedIn: 0,  // spring: lifetime turn-ins this season
-    catches: 0,         // summer: fish caught this season
-    biggestCatch: 0,    // summer: largest catch size this season
+    catches: 0,         // summer: prizes/oddities landed this season
+    catchShells: 0,     // summer: shells those catches were worth
     snowHits: 0,        // winter: snowball hits this season
     totals: loadTotals(),
     petalTimer: null,
@@ -88,7 +89,7 @@
   }
   function seasonStatsHtml(season) {
     if (season === 0) return `<span><b>${state.petals}</b><small>petals held</small></span><span><b>${state.petalsTurnedIn}</b><small>turned in</small></span>`;
-    if (season === 1) return `<span><b>${state.catches}</b><small>fish caught</small></span><span><b>${state.biggestCatch.toFixed(1)}in</b><small>biggest</small></span>`;
+    if (season === 1) return `<span><b>${state.catches}</b><small>catches</small></span><span><b>${state.catchShells}</b><small>shells from catches</small></span>`;
     if (season === 2) return `<span><b>${state.totals.autumn}</b><small>market visits</small></span>`;
     return `<span><b>${state.snowHits}</b><small>snowball hits</small></span>`;
   }
@@ -146,11 +147,11 @@
     const detail = e.detail || {};
     state.catches += 1;
     state.totals.summer += 1; saveTotals();
-    // Size isn't in the event payload; derive a fun tournament size.
-    const size = 4 + Math.random() * 20 + (String(detail.name || "").length % 7);
-    if (size > state.biggestCatch) {
-      state.biggestCatch = size;
-      toast(`Tournament! New biggest catch \u00b7 ${size.toFixed(1)}in`);
+    // Catches are prizes and pond oddities, never fish — track how many
+    // landed and what they were worth, no invented sizes.
+    state.catchShells += Number(detail.shells || 0);
+    if (state.catches % 5 === 0) {
+      toast(`Tournament! ${state.catches} catches so far`);
     }
   }
   // ---- Autumn: Harvest Market ------------------------------------------
@@ -209,7 +210,7 @@
     payoutSeason(state.season);
     state.season = season;
     state.petals = 0; state.petalsTurnedIn = 0;
-    state.catches = 0; state.biggestCatch = 0;
+    state.catches = 0; state.catchShells = 0;
     state.snowHits = 0;
     const ev = EVENTS[season];
     showBanner(season);
@@ -226,7 +227,7 @@
   }
   function payoutSeason(season) {
     if (season === 1 && state.catches > 0) {
-      const prize = 20 + Math.round(state.biggestCatch * 2);
+      const prize = 20 + state.catches * 5;
       awardShells(prize, `Fishing Tournament prize \u00b7 +${prize} shells`);
     }
     if (season === 3 && state.snowHits >= 10) {
@@ -321,7 +322,7 @@
     openPanel,
     getSeason,
     get stats() {
-      return { petals: state.petals, petalsTurnedIn: state.petalsTurnedIn, catches: state.catches, biggestCatch: state.biggestCatch, snowHits: state.snowHits, totals: { ...state.totals } };
+      return { petals: state.petals, petalsTurnedIn: state.petalsTurnedIn, catches: state.catches, catchShells: state.catchShells, snowHits: state.snowHits, totals: { ...state.totals } };
     },
   };
 })();
