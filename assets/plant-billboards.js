@@ -1,6 +1,6 @@
 (() => {
   const SPRITES = {
-    trees: ["tree-oak.webp", "tree-apple.webp", "tree-birch.webp", "tree-maple.webp", "tree-pine.webp", "tree-willow.webp", "prop-tree-cherry-blossom.webp", "prop-tree-oak.webp", "prop-tree-pine.webp"],
+    trees: ["tree-oak.webp", "tree-apple.webp", "tree-birch.webp", "tree-maple.webp", "tree-pine.webp", "tree-willow.webp"],
     bushes: ["bush-1.png", "bush-2.png", "bush-3.png", "bush-4.png", "prop-plant-fern.webp", "prop-plant-monstera.webp", "prop-plant-snake-plant.webp"],
     flowers: ["flower-mixed-1.png", "flower-mixed-2.png", "flower-mixed-3.png", "flower-mixed-4.png", "flower-mixed-5.png", "flower-branch-3.png", "flower-branch-5.png", "flower-branch-6.png"],
     grass: ["grass-tuft-1.webp"],
