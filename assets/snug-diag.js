@@ -85,6 +85,17 @@
       return `${child.name || "?"}[${geo}${child.isInstancedMesh ? ` x${child.count}` : ""} vis=${child.visible !== false}]`;
     });
     const hiddenCount = (countryside?.children || []).filter((child) => child.visible === false).length;
+    // Scene-wide: where do the OTHER visible trees live (second tree system)?
+    const treeLike = [];
+    let expandedGroups = 0;
+    world?.scene?.traverse?.((object) => {
+      if (object.name === "SnugExpandedCountryside") expandedGroups += 1;
+      if (/tree|pine|canopy|blossom|bush|flower|grass/i.test(object.name || "") && treeLike.length < 30) {
+        const geo = object.geometry?.type || object.type || "?";
+        treeLike.push(`${object.name || "?"}[parent=${object.parent?.name || "?"} ${geo}${object.isInstancedMesh ? ` x${object.count}` : ""} vis=${object.visible !== false}]`);
+      }
+    });
+    const sceneRoots = (world?.scene?.children || []).slice(0, 25).map((child) => child.name || "?");
     const lines = [
       "SNUG DIAG",
       `chunks: billboards=${loaded?.has("assets/plant-billboards.js") ?? "?"} flare=${loaded?.has("assets/bokeh-flare.js") ?? "?"} envUpgrade=${loaded?.has("assets/environment-upgrade.js") ?? "?"} total=${loaded?.size ?? "?"}`,
@@ -97,6 +108,9 @@
       `dir light: ${lightInfo}`,
       `countryside: ${countryside ? `children=${countryside.children.length} hidden=${hiddenCount}` : "no-group"}`,
       `countryside kids: ${countrysideKids.length ? countrysideKids.join(" ; ") : "none"}`,
+      `expanded groups: ${expandedGroups}`,
+      `scene roots: ${sceneRoots.join(" ; ")}`,
+      `tree-like: ${treeLike.length ? treeLike.join(" ; ") : "none"}`,
       `flare: ${flareState ? `count=${flareState.count} visible=${flareState.visible} strength=${flareState.strength}` : "absent"}`,
       `errors: ${errors.length ? errors.join(" | ") : "none captured"}`,
     ];
