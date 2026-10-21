@@ -78,6 +78,13 @@
         lightInfo = `pos=(${Number(p.x || 0).toFixed(1)},${Number(p.y || 0).toFixed(1)},${Number(p.z || 0).toFixed(1)}) target=(${Number(t.x || 0).toFixed(1)},${Number(t.y || 0).toFixed(1)},${Number(t.z || 0).toFixed(1)})`;
       }
     });
+    // What plant objects remain in the countryside group (and are they hidden)?
+    const countryside = world?.scene?.getObjectByName?.("SnugExpandedCountryside");
+    const countrysideKids = (countryside?.children || []).slice(0, 20).map((child) => {
+      const geo = child.geometry?.type || child.type || "?";
+      return `${child.name || "?"}[${geo}${child.isInstancedMesh ? ` x${child.count}` : ""} vis=${child.visible !== false}]`;
+    });
+    const hiddenCount = (countryside?.children || []).filter((child) => child.visible === false).length;
     const lines = [
       "SNUG DIAG",
       `chunks: billboards=${loaded?.has("assets/plant-billboards.js") ?? "?"} flare=${loaded?.has("assets/bokeh-flare.js") ?? "?"} envUpgrade=${loaded?.has("assets/environment-upgrade.js") ?? "?"} total=${loaded?.size ?? "?"}`,
@@ -88,6 +95,8 @@
       `nearest sprite: ${nearest}`,
       `sun candidates: ${sunNames.length ? sunNames.join(" ; ") : "none"}`,
       `dir light: ${lightInfo}`,
+      `countryside: ${countryside ? `children=${countryside.children.length} hidden=${hiddenCount}` : "no-group"}`,
+      `countryside kids: ${countrysideKids.length ? countrysideKids.join(" ; ") : "none"}`,
       `flare: ${flareState ? `count=${flareState.count} visible=${flareState.visible} strength=${flareState.strength}` : "absent"}`,
       `errors: ${errors.length ? errors.join(" | ") : "none captured"}`,
     ];

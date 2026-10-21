@@ -59,13 +59,15 @@
     // code took the first directional light and used its raw position, which
     // can project off-screen while the disc itself is on-screen — so the
     // flare never appeared when looking at the actual sun.
-    let mesh = null;
-    scene.traverse((object) => {
-      if (!mesh && object.isMesh && /sun/i.test(object.name || "")) mesh = object;
-    });
-    if (mesh) return mesh;
     const namedSun = scene.getObjectByName?.("SnugRoundSun");
     if (namedSun) return namedSun;
+    let mesh = null;
+    scene.traverse((object) => {
+      if (mesh || !object.isMesh) return;
+      const name = object.name || "";
+      if (/sun/i.test(name) && !/biome|meadow|sky|gradient|ground/i.test(name)) mesh = object;
+    });
+    if (mesh) return mesh;
     let light = null;
     scene.traverse((object) => {
       if (!light && object.isDirectionalLight) light = object;
