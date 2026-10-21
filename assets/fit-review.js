@@ -568,12 +568,15 @@ window.addEventListener('snug-world-ready', (event) => {
   sourceAvatar = event.detail?.player || sourceAvatar;
   gameplayReady = Boolean(sourceAvatar);
   syncReviewGate();
-  if (queue.some((item) => item.fitPending)) scheduleAutomaticReview();
+  // No automatic popup: the review opens only from the "Fit review" button.
+  // Auto-opening barged into town (and, before the portraits gate, into
+  // onboarding); the button stays as the way in.
 });
 
 const gateObserver = new MutationObserver(syncReviewGate);
 gateObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'], childList: true, subtree: true });
 syncReviewGate();
 refreshCloudMode();
-if (gameplayReady && queue.length) scheduleAutomaticReview();
+// No automatic popup on load either (see the snug-world-ready note above);
+// the "Fit review" button is the only way in.
 })();

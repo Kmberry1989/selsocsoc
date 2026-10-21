@@ -125,23 +125,29 @@
       setTimeout(init, 400);
       return;
     }
-    const THREE = state.THREE || await getThree();
-    state.THREE = THREE;
-    window.__snugThree = THREE;
+    try {
+      const THREE = state.THREE || await getThree();
+      state.THREE = THREE;
+      window.__snugThree = THREE;
 
-    if (!state.ready) {
-      state.ready = true;
-      state.tmp = {
-        sunWorld: new THREE.Vector3(),
-        ndc: new THREE.Vector3(),
-        camDir: new THREE.Vector3(),
-        toSun: new THREE.Vector3(),
-        ray: new THREE.Vector3(),
-      };
-      ensureBrightenLayer();
-      requestAnimationFrame(update);
+      if (!state.ready) {
+        state.ready = true;
+        state.tmp = {
+          sunWorld: new THREE.Vector3(),
+          ndc: new THREE.Vector3(),
+          camDir: new THREE.Vector3(),
+          toSun: new THREE.Vector3(),
+          ray: new THREE.Vector3(),
+        };
+        ensureBrightenLayer();
+        requestAnimationFrame(update);
+      }
+      installForWorld(THREE, world);
+    } catch (error) {
+      // A transient module/texture failure used to kill the flare for the
+      // whole session (no retry was scheduled on this path). Retry instead.
+      setTimeout(init, 1600);
     }
-    installForWorld(THREE, world);
   };
 
   const update = (now) => {

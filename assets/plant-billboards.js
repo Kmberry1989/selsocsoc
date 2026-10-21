@@ -280,6 +280,10 @@
   setInterval(() => {
     const world = window.__snugWorld;
     if (!world?.scene || world.mode !== "village") return;
+    // Self-healing retry: if the world was created before this chunk loaded
+    // (or an earlier build attempt failed partway), the one-shot event
+    // passes above never run for this scene, so rebuild until a group exists.
+    if (!sceneGroups.get(world.scene)) buildWorldSprites(world).catch(() => {});
     prepareAssets().then(({ THREE, assets }) => patchGarden(world.scene, THREE, assets)).catch(() => {});
   }, 1600);
   schedulePass();
