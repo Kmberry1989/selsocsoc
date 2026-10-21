@@ -18,7 +18,10 @@
     THREE: null,
   };
   let threePromise;
-  const getThree = () => threePromise ||= import("./vendor/three/three.module.js");
+  // Loaded as a plain script, a relative import would resolve against the
+  // page URL (site root) instead of this file, so load the real module by
+  // its full path from the page — the same fix npc-faces.js already uses.
+  const getThree = () => threePromise ||= import(new URL("assets/vendor/three/three.module.js", document.baseURI).href);
 
   const clamp01 = (value) => Math.max(0, Math.min(1, value));
   const smoothstep = (edge0, edge1, value) => {

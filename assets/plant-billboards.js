@@ -24,7 +24,10 @@
   let layoutPromise;
   let assetsPromise;
 
-  const getThree = () => threePromise ||= import("./vendor/three/three.module.js");
+  // Loaded as a plain script, a relative import would resolve against the
+  // page URL (site root) instead of this file, so load the real module by
+  // its full path from the page — the same fix npc-faces.js already uses.
+  const getThree = () => threePromise ||= import(new URL("assets/vendor/three/three.module.js", document.baseURI).href);
   const getLayout = () => layoutPromise ||= fetch("assets/world/default-layout.json", { cache: "no-store" })
     .then((response) => response.ok ? response.json() : Promise.reject(new Error(String(response.status))))
     .then((layout) => Array.isArray(layout?.objects) ? layout.objects : []);
