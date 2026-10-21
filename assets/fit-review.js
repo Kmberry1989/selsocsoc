@@ -420,7 +420,12 @@ function refreshLauncher() {
 function reviewIsBlocked() {
   return !gameplayReady
     || document.documentElement.classList.contains('snug-start-open')
-    || Boolean(document.querySelector('.welcome-cinematic'));
+    || Boolean(document.querySelector('.welcome-cinematic'))
+    // The portraits appointment runs right after the ceremony, when the
+    // ceremony overlay is already gone: keep the automatic review from
+    // barging in over it too (the flag lives on the sheet backdrop and
+    // disappears with the sheet, so the gate reopens in free town).
+    || Boolean(document.querySelector('[data-portrait-step-flow="true"]'));
 }
 
 function syncReviewGate() {
