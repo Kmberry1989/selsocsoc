@@ -45,12 +45,49 @@
     const group = world?.scene?.getObjectByName?.("SnugPlantBillboards");
     const bill = window.__snugPlantBillboards;
     const flareState = window.__snugBokehFlareState;
+    // Sample a few billboard sprites: are they full-size or stuck tiny, and
+    // how far are they from the player? Plus sun candidates for the flare.
+    let scaleSample = "none";
+    let nearest = "none";
+    const player = world?.player;
+    if (group && player) {
+      const samples = [];
+      let best = Infinity;
+      group.children.forEach((child) => {
+        const data = child.userData || {};
+        const base = data.baseScale ? data.baseScale[1] : 0;
+        const cur = child.scale ? child.scale.y : 0;
+        if (base > 0) samples.push(`${child.name || "?"} scale=${cur.toFixed(2)}/${base.toFixed(2)}`);
+        const dx = (child.position?.x || 0) - (player.position?.x || 0);
+        const dz = (child.position?.z || 0) - (player.position?.z || 0);
+        const d = Math.hypot(dx, dz);
+        if (d < best) best = d;
+      });
+      scaleSample = samples.slice(0, 4).join(" ; ") || "none";
+      nearest = best === Infinity ? "none" : `${best.toFixed(1)}u`;
+    }
+    const sunNames = [];
+    let lightInfo = "none";
+    world?.scene?.traverse?.((object) => {
+      if (/sun|sky|disc|glow/i.test(object.name || "") && sunNames.length < 10) {
+        sunNames.push(`${object.name}(${object.type || "?"})`);
+      }
+      if (object.isDirectionalLight && lightInfo === "none") {
+        const p = object.position || {};
+        const t = object.target?.position || {};
+        lightInfo = `pos=(${Number(p.x || 0).toFixed(1)},${Number(p.y || 0).toFixed(1)},${Number(p.z || 0).toFixed(1)}) target=(${Number(t.x || 0).toFixed(1)},${Number(t.y || 0).toFixed(1)},${Number(t.z || 0).toFixed(1)})`;
+      }
+    });
     const lines = [
       "SNUG DIAG",
       `chunks: billboards=${loaded?.has("assets/plant-billboards.js") ?? "?"} flare=${loaded?.has("assets/bokeh-flare.js") ?? "?"} envUpgrade=${loaded?.has("assets/environment-upgrade.js") ?? "?"} total=${loaded?.size ?? "?"}`,
-      `world: mode=${world?.mode ?? "?"} scene=${Boolean(world?.scene)} camera=${Boolean(world?.camera)}`,
+      `world: mode=${world?.mode ?? "?"} scene=${Boolean(world?.scene)} camera=${Boolean(world?.camera)} playerPos=${player ? `(${Number(player.position?.x || 0).toFixed(1)},${Number(player.position?.z || 0).toFixed(1)})` : "?"}`,
       `billboards: state=${bill ? `trees=${bill.trees} bushes=${bill.bushes} flowers=${bill.flowers} grass=${bill.grass} decor=${bill.decor} count=${bill.count}` : "absent"} groupChildren=${group ? group.children.length : "no-group"}`,
       `sprites in scene: total=${counts.sprites} snug=${counts.billboards} flare=${counts.flare}`,
+      `sprite scales: ${scaleSample}`,
+      `nearest sprite: ${nearest}`,
+      `sun candidates: ${sunNames.length ? sunNames.join(" ; ") : "none"}`,
+      `dir light: ${lightInfo}`,
       `flare: ${flareState ? `count=${flareState.count} visible=${flareState.visible} strength=${flareState.strength}` : "absent"}`,
       `errors: ${errors.length ? errors.join(" | ") : "none captured"}`,
     ];
