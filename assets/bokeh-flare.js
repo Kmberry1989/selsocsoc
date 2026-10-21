@@ -55,6 +55,15 @@
   };
 
   const findSun = (scene) => {
+    // Prefer the VISIBLE sun disc: a mesh with "sun" in its name. The old
+    // code took the first directional light and used its raw position, which
+    // can project off-screen while the disc itself is on-screen — so the
+    // flare never appeared when looking at the actual sun.
+    let mesh = null;
+    scene.traverse((object) => {
+      if (!mesh && object.isMesh && /sun/i.test(object.name || "")) mesh = object;
+    });
+    if (mesh) return mesh;
     const namedSun = scene.getObjectByName?.("SnugRoundSun");
     if (namedSun) return namedSun;
     let light = null;
@@ -161,7 +170,15 @@
     const tmp = state.tmp;
     state.sun ||= findSun(world.scene);
 
-    if (state.sun?.getWorldPosition) {
+    if (state.sun?.isDirectionalLight) {
+      // Directional light: aim along its shine direction, not at its raw
+      // position (which can project off-screen while the sun disc is visible).
+      const targetPos = state.sun.target?.position || { x: 0, y: 0, z: 0 };
+      tmp.toSun.copy(state.sun.position).sub(targetPos);
+      if (tmp.toSun.lengthSq() < 0.0001) tmp.toSun.set(0.42, 0.62, -0.66);
+      tmp.toSun.normalize();
+      tmp.sunWorld.copy(camera.position).addScaledVector(tmp.toSun, 180);
+    } else if (state.sun?.getWorldPosition) {
       state.sun.getWorldPosition(tmp.sunWorld);
       tmp.toSun.copy(tmp.sunWorld).sub(camera.position);
     } else {
