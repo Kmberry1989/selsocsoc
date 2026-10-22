@@ -1,4 +1,4 @@
-/* snug-npc-mouth-states-v1
+/* snug-npc-mouth-states-v2
  * Gives each of the 13 roster NPCs a real mouth when they are NOT speaking.
  * The v2 face art deliberately leaves the mouth area blank (brows + eyes
  * only), and the speaking mouth paints just a small resting blob when
@@ -8,9 +8,24 @@
  * idle mouth hides and the speaking mouth takes over; when they stop,
  * the idle mouth returns.
  *
+ * Mouths are ALIVE, not fixed, and follow three rules:
+ *  - Distance: farther than 8 units from the player, the mouth relaxes
+ *    to neutral. Walk up and the NPC's real expression returns.
+ *  - Interaction: walking right up to a smiling NPC (within ~2.2 units)
+ *    earns a brief laugh greeting (once a minute per NPC); finishing a
+ *    conversation ends on a short laugh too. Speaking always wins over
+ *    both while the NPC talks.
+ *  - Idle animation: even at rest the mouth gently breathes (a slow
+ *    scale pulse), so no neighbor ever sits frozen. Under
+ *    prefers-reduced-motion the breathing is skipped; states still
+ *    change, they just do not pulse.
+ *
  * States: neutral, smile, laugh, grin, frown, surprise, smirk, ooh.
- * Default for every NPC is "smile". Change one any time:
+ * Every NPC's base expression defaults to "smile". Change a base any
+ * time, or set a temporary mood that expires on its own:
  *   window.__snugNpcMouths.set('lyla-lens', 'frown')
+ *   window.__snugNpcMouths.setMood('gideon', 'laugh', 20)  // 20 seconds
+ *   window.__snugNpcMouths.get('mayor-mayor')  // currently displayed
  */
 (() => {
   if (window.__snugNpcMouths) return;
@@ -32,6 +47,13 @@
   };
   const STATES = ['neutral', 'smile', 'laugh', 'grin', 'frown', 'surprise', 'smirk', 'ooh'];
   const DEFAULT_STATE = 'smile';
+  const FAR_UNITS = 8;        // beyond this, the mouth relaxes to neutral
+  const GREET_UNITS = 2.2;    // walking this close earns a laugh greeting
+  const GREET_COOLDOWN_MS = 60000;
+  const GREET_SECONDS = 4;
+  const POST_TALK_SECONDS = 6;
+  const EVAL_MS = 500;        // distance/mood re-evaluation interval
+  const POP_MS = 320;         // greeting / state-change scale pop
 
   // The shared window.__snugThree can be a partial shim planted by the app
   // bundle (no Texture constructor), so load the real Three module directly.
@@ -43,6 +65,9 @@
     }
     return realThreePromise;
   };
+
+  const reducedMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const INK = '#2b2118';
   const MOUTH_DARK = '#3a1214';
@@ -125,9 +150,45 @@
     return canvas;
   }
 
-  // npcId -> { npc, mesh, speakingMesh, state }
+  // npcId -> { npc, mesh, speakingMesh, base, mood, moodUntil, effective,
+  //            wasSpeaking, wasNear, lastGreet, phase, popUntil }
   const registry = new Map();
   let textures = null;
+
+  function playerPosition() {
+    const p = window.__snugWorld?.player?.position;
+    return (p && typeof p.x === 'number' && typeof p.z === 'number') ? p : null;
+  }
+
+  function applyState(entry, state) {
+    if (!textures || entry.effective === state) return;
+    entry.effective = state;
+    entry.mesh.material.map = textures[state];
+    entry.mesh.material.needsUpdate = true;
+    entry.popUntil = performance.now() + POP_MS;
+  }
+
+  // One re-evaluation: mood wins, then distance, then base.
+  function resolveEntry(entry, now) {
+    if (entry.mood && now >= entry.moodUntil) entry.mood = null;
+    const player = playerPosition();
+    const npcPos = entry.npc.position;
+    let dist = 0;
+    if (player && npcPos) {
+      dist = Math.hypot(player.x - npcPos.x, player.z - npcPos.z);
+    }
+    const isNear = dist <= GREET_UNITS;
+    if (isNear && !entry.wasNear &&
+        entry.base === 'smile' && now >= entry.lastGreet + GREET_COOLDOWN_MS) {
+      entry.mood = 'laugh';
+      entry.moodUntil = now + GREET_SECONDS * 1000;
+      entry.lastGreet = now;
+    }
+    entry.wasNear = isNear;
+    const far = player && npcPos && dist > FAR_UNITS;
+    const next = entry.mood || (far ? 'neutral' : entry.base);
+    applyState(entry, next);
+  }
 
   async function dress(group) {
     const THREE = (await getRealThree()) || window.__snugThree;
@@ -141,6 +202,7 @@
         textures[state] = texture;
       }
     }
+    let index = 0;
     for (const [id, mark] of Object.entries(MARKS)) {
       try {
         if (registry.has(id)) continue;
@@ -166,22 +228,55 @@
           npc,
           mesh,
           speakingMesh: npc.userData?.mouth?.mesh || null,
-          state: DEFAULT_STATE,
+          base: DEFAULT_STATE,
+          mood: null,
+          moodUntil: 0,
+          effective: DEFAULT_STATE,
+          wasSpeaking: false,
+          wasNear: false,
+          lastGreet: 0,
+          phase: index * 1.7,
+          popUntil: 0,
         });
+        index += 1;
       } catch (error) {
         console.warn('[npc mouths] could not dress', id, error);
       }
     }
     if (!dress.loopStarted) {
       dress.loopStarted = true;
-      // One cheap pass per frame: idle mouth shows exactly when the NPC
-      // is not speaking; the speaking mouth takes over while they talk.
-      const sync = () => {
+      let lastEval = 0;
+      const sync = (now) => {
         requestAnimationFrame(sync);
+        const t = now / 1000;
+        if (now - lastEval >= EVAL_MS) {
+          lastEval = now;
+          for (const entry of registry.values()) {
+            const speaking = !!entry.npc.userData?.voiceSpeaking;
+            // Finishing a conversation ends on a short laugh.
+            if (entry.wasSpeaking && !speaking && entry.base === 'smile') {
+              entry.mood = 'laugh';
+              entry.moodUntil = now + POST_TALK_SECONDS * 1000;
+            }
+            entry.wasSpeaking = speaking;
+            resolveEntry(entry, now);
+          }
+        }
         for (const entry of registry.values()) {
           const speaking = !!entry.npc.userData?.voiceSpeaking;
           entry.mesh.visible = !speaking;
           if (entry.speakingMesh) entry.speakingMesh.visible = speaking;
+          if (reducedMotion || speaking) {
+            entry.mesh.scale.set(1, 1, 1);
+            continue;
+          }
+          // Idle breathing: a slow, subtle pulse so no mouth sits frozen.
+          let scale = 1 + 0.03 * Math.sin(t * 1.1 + entry.phase);
+          if (now < entry.popUntil) {
+            const progress = 1 - (entry.popUntil - now) / POP_MS;
+            scale *= 1 + 0.25 * Math.sin(Math.PI * progress);
+          }
+          entry.mesh.scale.set(scale, scale, 1);
         }
       };
       requestAnimationFrame(sync);
@@ -192,17 +287,26 @@
     if (!STATES.includes(state)) return false;
     const entry = registry.get(id);
     if (!entry || !textures) return false;
-    entry.mesh.material.map = textures[state];
-    entry.mesh.material.needsUpdate = true;
-    entry.state = state;
+    entry.base = state;
+    resolveEntry(entry, performance.now());
+    return true;
+  }
+
+  function setMood(id, state, seconds) {
+    if (!STATES.includes(state)) return false;
+    const entry = registry.get(id);
+    if (!entry || !textures) return false;
+    entry.mood = state;
+    entry.moodUntil = performance.now() + Math.max(0, seconds || 0) * 1000;
+    resolveEntry(entry, performance.now());
     return true;
   }
 
   function get(id) {
-    return registry.get(id)?.state || null;
+    return registry.get(id)?.effective || null;
   }
 
-  window.__snugNpcMouths = Object.freeze({ set, get, states: [...STATES] });
+  window.__snugNpcMouths = Object.freeze({ set, get, setMood, states: [...STATES] });
 
   window.addEventListener('snug-npc-roster-ready', (event) => {
     dress(event.detail?.group);
