@@ -254,5 +254,9 @@
  "wallpaper-damask-burgundy": {
   "path": "assets/textures/wallpaper-damask-burgundy.webp",
   "appliedTo": "reserved housing wallpaper material"
+ },
+ "material-slate": {
+  "path": "assets/textures/material-slate.webp",
+  "appliedTo": "reserved housing flooring/roofing material"
  }
 }
