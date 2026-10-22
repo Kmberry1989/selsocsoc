@@ -138,6 +138,7 @@
       : new THREE.MeshBasicMaterial({ color: DEFAULT_SKIN });
     var face = new THREE.Mesh(new THREE.CircleGeometry(0.30, 40), faceMat);
     face.position.z = 0.083; head.add(face);
+    var living = addLivingFace(THREE, head, spec.id);
 
     function hand(side) {
       var h = new THREE.Mesh(new THREE.SphereGeometry(0.13, 14, 10), skin);
@@ -151,12 +152,102 @@
     var fig = {
       group: g, head: head, handL: hand(-1), handR: hand(1),
       shoeL: shoe(-1), shoeR: shoe(1),
+      mouth: living ? living.mouth : null,
+      lids: living ? living.lids : null,
+      blink: { next: 0, start: 0 },
       base: { x: 0, y: 0, z: 0, rotY: 0 },
       home: null
     };
     fig.home = snapshot(fig);
     scene.add(g);
     return fig;
+  }
+
+  // Living faces, matching the game roster + the studio: a canvas smile
+  // on every actor, skin-colored blink lids over the 13 NPCs' measured
+  // eye spots. Eye fractions measured from the v2 face PNGs (same table
+  // as npc-blinking.js); if a face PNG is ever redrawn, re-measure.
+  var EYES = {
+    'mayor-mayor': { l: [0.29, 0.55], r: [0.71, 0.545], w: 0.22, h: 0.105, skin: '#c88c5e' },
+    'gideon': { l: [0.33, 0.42], r: [0.68, 0.42], w: 0.135, h: 0.065, skin: '#b27b59' },
+    'lyla-lens': { l: [0.29, 0.47], r: [0.73, 0.45], w: 0.25, h: 0.10, skin: '#ca8d5f' },
+    'chip-chance': { l: [0.32, 0.62], r: [0.68, 0.62], w: 0.14, h: 0.035, skin: '#cc9a6c' },
+    'barnaby-bargain': { l: [0.28, 0.46], r: [0.71, 0.46], w: 0.22, h: 0.06, skin: '#c88c5c' },
+    'pip-parade': { l: [0.31, 0.435], r: [0.69, 0.43], w: 0.18, h: 0.07, skin: '#ca8d5f' },
+    'agnes-alley': { l: [0.29, 0.53], r: [0.70, 0.53], w: 0.22, h: 0.11, skin: '#ca8d5f' },
+    'dottie-daly': { l: [0.30, 0.51], r: [0.70, 0.51], w: 0.19, h: 0.03, skin: '#daa576' },
+    'peggy-plank': { l: [0.28, 0.40], r: [0.72, 0.40], w: 0.245, h: 0.09, skin: '#ca8d5f' },
+    'mr-buck-coinsworth': { l: [0.30, 0.46], r: [0.72, 0.46], w: 0.22, h: 0.05, skin: '#c68a5d' },
+    'fern-bramble': { l: [0.28, 0.46], r: [0.71, 0.46], w: 0.20, h: 0.04, skin: '#ce986f' },
+    'stanley-stamp': { l: [0.29, 0.445], r: [0.70, 0.44], w: 0.195, h: 0.10, skin: '#d29567' },
+    'bobby-gill': { l: [0.29, 0.43], r: [0.71, 0.43], w: 0.19, h: 0.07, skin: '#be815a' }
+  };
+
+  function addLivingFace(THREE, head, npcId) {
+    var out = { mouth: null, lids: null };
+    try {
+      var canvas = document.createElement('canvas');
+      canvas.width = 256; canvas.height = 128;
+      var ctx = canvas.getContext('2d');
+      ctx.strokeStyle = '#3a1214'; ctx.lineWidth = 14; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(64, 44);
+      ctx.quadraticCurveTo(128, 108, 192, 44); ctx.stroke();
+      var tex = new THREE.CanvasTexture(canvas);
+      if (THREE.SRGBColorSpace) tex.colorSpace = THREE.SRGBColorSpace;
+      var mouth = new THREE.Mesh(
+        new THREE.PlaneGeometry(0.26, 0.13),
+        new THREE.MeshStandardMaterial({
+          map: tex, transparent: true, depthWrite: false,
+          alphaTest: 0.02, roughness: 0.92, color: '#ffffff'
+        }));
+      mouth.position.set(0, -0.135, 0.10);
+      mouth.renderOrder = 13;
+      mouth.frustumCulled = false;
+      head.add(mouth);
+      out.mouth = mouth;
+      var spec = EYES[npcId];
+      if (spec) {
+        var lidW = spec.w * 0.60 * 1.3;
+        var lidH = Math.max(spec.h * 0.60 * 1.8, 0.05);
+        var mat = new THREE.MeshStandardMaterial({ color: spec.skin, roughness: 1 });
+        out.lids = ['l', 'r'].map(function (key) {
+          var fx = spec[key][0], fy = spec[key][1];
+          var lid = new THREE.Mesh(new THREE.PlaneGeometry(lidW, lidH), mat);
+          lid.position.set((2 * fx - 1) * 0.30, (1 - 2 * fy) * 0.30, 0.095);
+          lid.visible = false;
+          head.add(lid);
+          return lid;
+        });
+      }
+    } catch (e) {
+      console.warn('[cinematic-player] living face failed for', npcId, e);
+    }
+    return out;
+  }
+
+  function updateLivingFace(fig, t, now, reducedMotion) {
+    if (reducedMotion) return;
+    if (fig.mouth) {
+      var s = 1 + Math.sin(t * 2.2) * 0.03;
+      fig.mouth.scale.set(s, s, 1);
+    }
+    if (fig.lids) {
+      var b = fig.blink;
+      if (!b.next) b.next = now + 1500 + Math.random() * 4000;
+      if (!b.start && now >= b.next) b.start = now;
+      if (b.start) {
+        var e = now - b.start, o = 0;
+        if (e < 60) o = e / 60;
+        else if (e < 150) o = 1;
+        else if (e < 210) o = 1 - (e - 150) / 60;
+        else { o = 0; b.start = 0; b.next = now + 2500 + Math.random() * 4000; }
+        var show = o > 0;
+        fig.lids.forEach(function (lid) {
+          lid.visible = show;
+          if (show) lid.scale.set(1, Math.max(o, 0.02), 1);
+        });
+      }
+    }
   }
 
   function snapshot(fig) {
@@ -426,6 +517,8 @@
     };
     document.addEventListener('visibilitychange', state.onVis);
     current = state;
+    var reducedMotion = !!(window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
     function frame(now) {
       if (current !== state) return;
@@ -434,6 +527,7 @@
 
       actors.forEach(function (a) {
         resetPose(a.fig);
+        updateLivingFace(a.fig, t, now, reducedMotion);
         var g = a.fig.group;
         // Start from the spawn spot; a beat with move:true walks the actor
         // to center stage over its duration, and they stay there after.
