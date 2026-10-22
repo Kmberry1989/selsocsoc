@@ -246,5 +246,9 @@
  "material-tile": {
   "path": "assets/textures/material-tile.webp",
   "appliedTo": "reserved housing flooring material"
+ },
+ "material-stone-wall": {
+  "path": "assets/textures/material-stone-wall.webp",
+  "appliedTo": "reserved housing wall material"
  }
 }
