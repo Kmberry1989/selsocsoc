@@ -95,6 +95,12 @@
     fan.setAttribute("aria-hidden", "true");
   }
 
+  // Public close for the UI shell (assets/snug-ui-shell.js). Collapsing the
+  // fan from outside must go through closeFan so the internal `open` flag
+  // stays in sync; stripping the classes directly would leave `open` true
+  // and cost the player an extra tap to re-open.
+  window.__snugDockClusterClose = closeFan;
+
   function toggle() {
     if (open) closeFan();
     else openFan();
