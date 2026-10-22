@@ -33,6 +33,14 @@
     let moved = false;
     for (const d of docks()) {
       if (d.parentElement !== fan) { fan.appendChild(d); moved = true; }
+      // The fan hides each button's text label (icon-only circles),
+      // which leaves the buttons unnamed in the accessibility tree.
+      // Carry the label over as an aria-label so every fanned button
+      // stays identifiable (and so its badge number isn't its whole name).
+      if (!d.getAttribute("aria-label")) {
+        const label = (d.querySelector("b")?.textContent || "").trim();
+        if (label) d.setAttribute("aria-label", label);
+      }
     }
     return moved;
   }

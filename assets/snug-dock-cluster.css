@@ -21,7 +21,15 @@ body.snug-dir-open .snug-dock-cluster,
 body.snug-dir-open .snug-dock-fan{display:none!important}
 .snug-dock-cluster span{display:block;transform:translateY(-1px)}
 .snug-dock-cluster.open span{transform:translateY(-1px) rotate(45deg)}
-.snug-dock-fan{position:fixed;z-index:80;left:0;top:0;width:0;height:0;pointer-events:none}
+.snug-dock-fan{position:fixed;z-index:80;inset:0;pointer-events:none}
+/* NOTE: the fan container must cover the viewport (inset:0), not sit
+ * at 0x0 in the corner. The JS positions buttons with left/bottom
+ * viewport coordinates, and bottom is measured from the container's
+ * bottom edge — with a 0-height container that edge is the top of
+ * the screen, so bottom values would push every button above the
+ * viewport instead of fanning them around the cluster. The container
+ * itself never blocks taps (pointer-events:none); only its buttons
+ * take pointer events. */
 .snug-dock-fan.open{pointer-events:auto}
 /* Fan items: circular icon-only buttons, positioned by JS along an arc.
  * NOTE: left/right/top/bottom must NOT be !important here — the JS sets
