@@ -23,14 +23,20 @@ body.snug-dir-open .snug-dock-fan{display:none!important}
 .snug-dock-cluster.open span{transform:translateY(-1px) rotate(45deg)}
 .snug-dock-fan{position:fixed;z-index:80;left:0;top:0;width:0;height:0;pointer-events:none}
 .snug-dock-fan.open{pointer-events:auto}
-/* Fan items: circular icon-only buttons, positioned by JS along an arc. */
+/* Fan items: circular icon-only buttons, positioned by JS along an arc.
+ * NOTE: left/right/top/bottom must NOT be !important here — the JS sets
+ * them as inline styles per button, and an !important auto in this rule
+ * would override the inline values and pile every button at the
+ * container origin (top-left corner). The higher specificity of this
+ * rule (vs the dock buttons' own left/bottom) already neutralizes the
+ * docks' own coordinates without !important. */
 .snug-dock-fan .town-life-dock,
 .snug-dock-fan .garden-dock,
 .snug-dock-fan .housing-dock,
 .snug-dock-fan .mailbox-dock,
 .snug-dock-fan .society-dock{
-  position:absolute!important;left:auto!important;right:auto!important;
-  bottom:auto!important;top:auto!important;
+  position:absolute!important;left:auto;right:auto;
+  bottom:auto;top:auto;
   width:48px!important;height:48px!important;
   min-width:48px!important;min-height:48px!important;
   margin:0!important;padding:0!important;border-radius:50%!important;
