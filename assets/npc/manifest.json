@@ -4,22 +4,22 @@
     {
       "accessory": "ceremonial gavel",
       "faceNotes": "Showman: big arched brows, wide starry eyes with glints, beauty mark",
-      "faceUrl": "assets/npc-faces/npc-mayor-mayor-face.png",
+      "faceUrl": "assets/npc-faces/npc-mayor-mayor-face-v2.png",
       "id": "mayor-mayor",
       "name": "Mayor Mayor",
       "outfitNotes": "Formal tailcoat, bow tie, sash of office with medallion; colored wraparound texture",
-      "outfitUrl": "assets/npc-outfits/npc-mayor-mayor-v2.png",
+      "outfitUrl": "assets/npc-outfits/npc-mayor-mayor-outfit-v2.png",
       "role": "mayor",
       "accessoryGlb": "assets/npc-accessories/gavel.glb"
     },
     {
       "accessory": "tour pennant flag",
       "faceNotes": "Bushy brows, kind droopy eyes, smile lines",
-      "faceUrl": "assets/npc-faces/npc-gideon-face.png",
+      "faceUrl": "assets/npc-faces/npc-gideon-face-v2.png",
       "id": "gideon",
       "name": "Gideon",
       "outfitNotes": "Multi-pocket field vest, neckerchief, tour badge; colored wraparound texture",
-      "outfitUrl": "assets/npc-outfits/npc-gideon-v2.png",
+      "outfitUrl": "assets/npc-outfits/npc-gideon-outfit-v2.png",
       "role": "tour guide",
       "accessoryGlb": "assets/npc-accessories/flag.glb"
     },
@@ -30,7 +30,7 @@
       "id": "lyla-lens",
       "name": "Lyla Lens",
       "outfitNotes": "Photographer vest, colored wraparound texture",
-      "outfitUrl": "assets/npc-outfits/npc-lyla-lens-v2.png",
+      "outfitUrl": "assets/npc-outfits/npc-lyla-lens-outfit-v2.png",
       "role": "newspaper photographer",
       "accessoryGlb": "assets/npc-accessories/camera.glb"
     },
@@ -41,7 +41,7 @@
       "id": "chip-chance",
       "name": "Chip Chance",
       "outfitNotes": "Tuxedo, colored wraparound texture",
-      "outfitUrl": "assets/npc-outfits/npc-chip-chance-v2.png",
+      "outfitUrl": "assets/npc-outfits/npc-chip-chance-outfit-v2.png",
       "role": "minigame host",
       "accessoryGlb": "assets/npc-accessories/die.glb"
     },
@@ -52,7 +52,7 @@
       "id": "barnaby-bargain",
       "name": "Barnaby Bargain",
       "outfitNotes": "Signature colored design, 4-island UV",
-      "outfitUrl": "assets/npc-outfits/npc-barnaby-bargain-v2.png",
+      "outfitUrl": "assets/npc-outfits/npc-barnaby-bargain-outfit-v2.png",
       "role": "shopkeeper",
       "accessoryGlb": "assets/npc-accessories/coin.glb"
     },
@@ -63,7 +63,7 @@
       "id": "pip-parade",
       "name": "Pip Parade",
       "outfitNotes": "Signature colored design, 4-island UV",
-      "outfitUrl": "assets/npc-outfits/npc-pip-parade-v2.png",
+      "outfitUrl": "assets/npc-outfits/npc-pip-parade-outfit-v2.png",
       "role": "festival organizer",
       "accessoryGlb": "assets/npc-accessories/balloon.glb"
     },
@@ -74,7 +74,7 @@
       "id": "agnes-alley",
       "name": "Agnes Alley",
       "outfitNotes": "Cardigan, colored wraparound texture",
-      "outfitUrl": "assets/npc-outfits/npc-agnes-alley-v2.png",
+      "outfitUrl": "assets/npc-outfits/npc-agnes-alley-outfit-v2.png",
       "role": "cat shelter keeper",
       "accessoryGlb": "assets/npc-accessories/yarn.glb"
     },
@@ -85,7 +85,7 @@
       "id": "dottie-daly",
       "name": "Dottie Daly",
       "outfitNotes": "Signature colored design, 4-island UV",
-      "outfitUrl": "assets/npc-outfits/npc-dottie-daly-v2.png",
+      "outfitUrl": "assets/npc-outfits/npc-dottie-daly-outfit-v2.png",
       "role": "quest giver",
       "accessoryGlb": "assets/npc-accessories/scroll.glb"
     },
@@ -96,7 +96,7 @@
       "id": "peggy-plank",
       "name": "Peggy Plank",
       "outfitNotes": "Signature colored design, 4-island UV",
-      "outfitUrl": "assets/npc-outfits/npc-peggy-plank-v2.png",
+      "outfitUrl": "assets/npc-outfits/npc-peggy-plank-outfit-v2.png",
       "role": "bridge foreman",
       "accessoryGlb": "assets/npc-accessories/hammer.glb"
     },
@@ -107,7 +107,7 @@
       "id": "mr-buck-coinsworth",
       "name": "Mr. Buck Coinsworth",
       "outfitNotes": "Signature colored design, 4-island UV",
-      "outfitUrl": "assets/npc-outfits/npc-mr-buck-coinsworth-v2.png",
+      "outfitUrl": "assets/npc-outfits/npc-mr-buck-coinsworth-outfit-v2.png",
       "role": "banker",
       "accessoryGlb": "assets/npc-accessories/goldbar.glb"
     },
@@ -118,7 +118,7 @@
       "id": "fern-bramble",
       "name": "Fern Bramble",
       "outfitNotes": "Signature colored design, 4-island UV",
-      "outfitUrl": "assets/npc-outfits/npc-fern-bramble-v2.png",
+      "outfitUrl": "assets/npc-outfits/npc-fern-bramble-outfit-v2.png",
       "role": "gardener",
       "accessoryGlb": "assets/npc-accessories/flower.glb"
     },
@@ -129,7 +129,7 @@
       "id": "stanley-stamp",
       "name": "Stanley Stamp",
       "outfitNotes": "Signature colored design, 4-island UV",
-      "outfitUrl": "assets/npc-outfits/npc-stanley-stamp-v2.png",
+      "outfitUrl": "assets/npc-outfits/npc-stanley-stamp-outfit-v2.png",
       "role": "mail carrier",
       "accessoryGlb": "assets/npc-accessories/envelope.glb"
     },
@@ -140,7 +140,7 @@
       "id": "bobby-gill",
       "name": "Bobby Gill",
       "outfitNotes": "Fishing vest, colored wraparound texture",
-      "outfitUrl": "assets/npc-outfits/npc-bobby-gill-v2.png",
+      "outfitUrl": "assets/npc-outfits/npc-bobby-gill-outfit-v2.png",
       "role": "fishing mentor",
       "accessoryGlb": "assets/npc-accessories/rod.glb"
     }

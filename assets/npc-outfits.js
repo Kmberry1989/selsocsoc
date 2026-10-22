@@ -56,7 +56,7 @@
         const npc = (group.children || []).find((child) => child.userData?.npcId === id);
         const mesh = npc ? npc.getObjectByName(`PrimitiveOutfit_${mark}`) : null;
         if (!mesh || !mesh.geometry || !mesh.material) continue;
-        const img = await loadImage(`assets/npc-outfits/npc-${id}-v2.png`);
+        const img = await loadImage(`assets/npc-outfits/npc-${id}-outfit-v2.png`);
         if (!img) continue;
         const texture = new THREE.Texture(img);
         texture.colorSpace = THREE.SRGBColorSpace;
