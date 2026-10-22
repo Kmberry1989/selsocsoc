@@ -138,6 +138,18 @@
     return true;
   }
 
+  /* Auto-wire: the My Home tabbar button. Covers both the Town Directory's
+     "My Home" row (which clicks this button) and direct tab taps. The guard
+     marks seen at show-time, so the onDone re-click passes straight through. */
+  document.addEventListener("click", function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest(".tabbar button") : null;
+    if (!btn || !/^My Home$/i.test((btn.textContent || "").trim())) return;
+    if (play("home", null, function () { btn.click(); })) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
+
   window.addEventListener("snug-session", function (e) {
     if (e && e.detail && e.detail.uid) { state.uid = e.detail.uid; load(); }
   });

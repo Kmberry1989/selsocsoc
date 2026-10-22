@@ -471,7 +471,7 @@
   window.addEventListener("snug-session",event=>attach(event.detail));
   window.addEventListener("snug-remote-players",event=>{state.players=Array.isArray(event.detail?.players)?event.detail.players:[];if(state.open&&state.view==="neighbors")render();});
   ["snug-world-ready","snug-world-expanded","cylindric-world-layout-applied"].forEach(name=>window.addEventListener(name,event=>{state.world=event.detail||window.__snugWorld;[0,180,700].forEach(delay=>setTimeout(()=>syncWorld(true),delay));renderDock();}));
-  window.addEventListener("pointerdown",event=>{const button=event.target.closest?.("[data-town-view='garden']");if(!button)return;event.preventDefault();event.stopImmediatePropagation();$(".town-life-backdrop")?.remove();open("plots");},true);
+  window.addEventListener("pointerdown",event=>{const button=event.target.closest?.("[data-town-view='garden']");if(!button)return;event.preventDefault();event.stopImmediatePropagation();$(".town-life-backdrop")?.remove();if(window.__snugFirstCine&&window.__snugFirstCine.play("garden",null,()=>open("plots")))return;open("plots");},true);
   window.addEventListener("keydown",event=>{if(event.key==="Escape"&&state.open)close();});
   if(window.__snugSession)attach(window.__snugSession);else state.data=defaults();
   renderDock();requestAnimationFrame(animate);

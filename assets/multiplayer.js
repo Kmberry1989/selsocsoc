@@ -1590,6 +1590,7 @@ async function startSoloGame(game) {
     showToast("Head to the village plaza to practice");
     return;
   }
+  if (game === "fishing" && window.__snugFirstCine && window.__snugFirstCine.play("fishing", null, () => startSoloGame(game))) return;
   state.rolling = true;
   state.soloResult = null;
   state.soloBalanceBefore = readCoinBalance();
