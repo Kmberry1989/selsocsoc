@@ -250,5 +250,9 @@
  "material-stone-wall": {
   "path": "assets/textures/material-stone-wall.webp",
   "appliedTo": "reserved housing wall material"
+ },
+ "wallpaper-damask-burgundy": {
+  "path": "assets/textures/wallpaper-damask-burgundy.webp",
+  "appliedTo": "reserved housing wallpaper material"
  }
 }
