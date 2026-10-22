@@ -1,24 +1,28 @@
-/* Ceremony face hook — MUST stay a plain early script, not a feature chunk.
+/* Ceremony face + outfit preload — MUST stay a plain early script, not a feature chunk.
  *
  * Why: the chunk loader's loadFeatures() waits for 'snug-start-entered',
  * which fires only AFTER the welcoming ceremony closes. A feature chunk
  * (npc-faces.js) therefore loads after the ceremony is already built and
- * disposed, so a hook registered there can never reach the ceremony
+ * disposed, so anything registered there can never reach the ceremony
  * figures. This script runs at page parse time — before any user click —
- * so the hook is registered and the three PNGs are preloading long
- * before the ceremony builds.
+ * so the hook is registered and the face + outfit PNGs are preloading
+ * long before the ceremony builds.
  *
- * How: the classic ceremony bundle draws each figure's face on a 256px
+ * Faces: the classic ceremony bundle draws each figure's face on a 256px
  * canvas through window.__snugCinematicFaceDraw(ctx, kind) when present
  * (kinds: mayor | gideon | press). This hook drawImages the detailed
  * v2 face PNG synchronously when it is complete, and falls back to the
  * primitive drawing (same faces the bundle draws on its own) when the
  * image is not ready yet — never a blank face.
  *
- * Limit: only faces have a hook. The ceremony figures' bodies are built
- * with flat colors inside the bundle's private scene (disposed when the
- * ceremony closes), so there is no reachable way to texture them without
- * editing the bundle itself. Faces = v2, bodies = flat colors.
+ * Outfits: the bundle was patched (2026-10-22) so its figure builder
+ * textures the body cylinder with the v2 outfit PNG (wraparound, FRONT
+ * at image center) and no longer adds the old primitive hat, cap,
+ * beard, or chest medallion — the ceremony figures now match the town
+ * characters. The patched builder reads the preloaded outfit images
+ * from window.__snugCeremonyOutfitImgs when they are complete, and
+ * loads the PNG itself otherwise. Ceremony staging and trim (collars,
+ * stitch outlines, shoulders) stay as the bundle builds them.
  */
 (function () {
   var KIND_TO_ID = { mayor: 'mayor-mayor', gideon: 'gideon', press: 'lyla-lens' };
@@ -27,6 +31,14 @@
     var img = new Image();
     img.src = 'assets/npc-faces/npc-' + KIND_TO_ID[kind] + '-face-v2.png';
     imgs[kind] = img;
+  });
+
+  // Outfit PNGs for the patched ceremony builder (same ids, outfit files).
+  window.__snugCeremonyOutfitImgs = {};
+  Object.keys(KIND_TO_ID).forEach(function (kind) {
+    var img = new Image();
+    img.src = 'assets/npc-outfits/npc-' + KIND_TO_ID[kind] + '-outfit-v2.png';
+    window.__snugCeremonyOutfitImgs[KIND_TO_ID[kind]] = img;
   });
 
   function drawPrimitive(ctx, kind) {
