@@ -281,6 +281,7 @@
     await saveMailbox(next, "");
   }
   function openPanel(view = state.view) {
+    if (view === "inbox" && window.__snugFirstCine && window.__snugFirstCine.play("mailbox", null, () => openPanel(view))) return;
     state.view = view;
     closePanel();
     const backdrop = document.createElement("div");

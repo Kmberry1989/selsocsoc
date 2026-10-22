@@ -1266,6 +1266,7 @@
     } catch { /* keep local */ }
   }
   function openJukebox() {
+    if (window.__snugFirstCine && window.__snugFirstCine.play("jukebox", null, () => openJukebox())) return;
     closeRecordPlayer();
     vstate.jbPanelOpen = true;
     if (!vstate.jbPanel) {

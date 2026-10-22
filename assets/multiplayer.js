@@ -2534,6 +2534,7 @@ function setupVillageShops() {
 
 function openExistingShop(shop) {
   if (!shop) return;
+  if (window.__snugFirstCine && window.__snugFirstCine.play("shop-" + shop.id, { title: shop.name }, () => openExistingShop(shop))) return;
   const closeRoom = $(".multiplayer-backdrop");
   if (closeRoom) closePanel();
   const tab = [...document.querySelectorAll(".tabbar button")].find((button) => button.textContent.trim() === "Style");
