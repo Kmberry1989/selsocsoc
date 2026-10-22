@@ -96,6 +96,23 @@
       }
     });
     const sceneRoots = (world?.scene?.children || []).slice(0, 25).map((child) => child.name || "?");
+    // Flare anchor check: every sun disc in traversal order — the FIRST is
+    // the one the flare anchors to. Position comes from matrixWorld so no
+    // Vector3 is needed; a hidden or oddly placed first disc means the
+    // flare is tracking the wrong sun.
+    const sunDiscs = [];
+    const camPos = world?.camera?.position;
+    world?.scene?.traverse?.((object) => {
+      if (object.name !== "SnugRoundSun") return;
+      const e = object.matrixWorld?.elements;
+      const wx = e ? e[12] : NaN;
+      const wy = e ? e[13] : NaN;
+      const wz = e ? e[14] : NaN;
+      const dist = (camPos && Number.isFinite(wx))
+        ? Math.hypot(wx - camPos.x, wy - camPos.y, wz - camPos.z).toFixed(1)
+        : "?";
+      sunDiscs.push(`disc[parent=${object.parent?.name || "?"} vis=${object.visible !== false} pos=(${Number(wx).toFixed(1)},${Number(wy).toFixed(1)},${Number(wz).toFixed(1)}) dist=${dist}u]`);
+    });
     const lines = [
       "SNUG DIAG",
       `chunks: billboards=${loaded?.has("assets/plant-billboards.js") ?? "?"} flare=${loaded?.has("assets/bokeh-flare.js") ?? "?"} envUpgrade=${loaded?.has("assets/environment-upgrade.js") ?? "?"} total=${loaded?.size ?? "?"}`,
@@ -105,6 +122,7 @@
       `sprite scales: ${scaleSample}`,
       `nearest sprite: ${nearest}`,
       `sun candidates: ${sunNames.length ? sunNames.join(" ; ") : "none"}`,
+      `sun discs: ${sunDiscs.length ? sunDiscs.join(" ; ") : "none"}`,
       `dir light: ${lightInfo}`,
       `countryside: ${countryside ? `children=${countryside.children.length} hidden=${hiddenCount}` : "no-group"}`,
       `countryside kids: ${countrysideKids.length ? countrysideKids.join(" ; ") : "none"}`,
