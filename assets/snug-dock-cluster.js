@@ -69,8 +69,13 @@
         dx = Math.cos(a) * RADIUS;
         dy = Math.sin(a) * RADIUS;
       }
-      d.style.left = `${(c.x + dx - ITEM / 2).toFixed(1)}px`;
-      d.style.bottom = `${(c.y + dy - ITEM / 2).toFixed(1)}px`;
+      // Clamp into the viewport (8px margin, covering badge overhang):
+      // a tall stack or a wide arc on a short screen used to push the
+      // top button partly off-screen.
+      const px = Math.max(8, Math.min(window.innerWidth - ITEM - 8, c.x + dx - ITEM / 2));
+      const pb = Math.max(8, Math.min(window.innerHeight - ITEM - 8, c.y + dy - ITEM / 2));
+      d.style.left = `${px.toFixed(1)}px`;
+      d.style.bottom = `${pb.toFixed(1)}px`;
       d.style.top = "auto";
       d.style.right = "auto";
     });

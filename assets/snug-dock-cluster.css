@@ -13,6 +13,12 @@
   touch-action:manipulation;-webkit-tap-highlight-color:transparent;
 }
 .snug-dock-cluster[hidden]{display:none!important}
+/* While the directory sheet is open it covers the bottom of the screen,
+ * so the cluster button (and any fanned buttons) would sit on top of it.
+ * Hide both until the sheet closes; the fan keeps its open state and
+ * returns as it was. */
+body.snug-dir-open .snug-dock-cluster,
+body.snug-dir-open .snug-dock-fan{display:none!important}
 .snug-dock-cluster span{display:block;transform:translateY(-1px)}
 .snug-dock-cluster.open span{transform:translateY(-1px) rotate(45deg)}
 .snug-dock-fan{position:fixed;z-index:80;left:0;top:0;width:0;height:0;pointer-events:none}
