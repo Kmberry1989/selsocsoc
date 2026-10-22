@@ -382,6 +382,7 @@
       <div id="snug-home-phase" hidden>
         <button class="snug-mode-card" type="button" data-home="play" aria-label="Play - choose your adventure"><img src="assets/menu-layout/dock-town-v4.webp" alt="" aria-hidden="true"><span><b>Play</b><small>Choose your adventure</small></span><svg class="snug-mode-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <button class="snug-mode-card" type="button" data-home="options" aria-label="Options"><img src="assets/menu-layout/dock-return-v4.webp" alt="" aria-hidden="true"><span><b>Options</b><small>Music and sound</small></span><svg class="snug-mode-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="snug-mode-card" type="button" data-alpha-mode hidden aria-label="Alpha or beta mode"><span><b>Alpha</b></span></button>
       </div>
       <div id="snug-options-phase" hidden>
         <p class="snug-mode-kicker">Options</p>
@@ -660,6 +661,8 @@
           if(session.returningPlayer){setLoginStatus('Google sign-in complete — restoring your town.');setTimeout(()=>enter('town',{returning:true}),80);}
           else{setLoginStatus('Google account ready.');showPhase('home');}
         }
+        syncAlphaGateControl();
+        maybeAlphaGate();
       };
       // condensed menu phases: auth -> Play/Options -> modes or options
       const authPhase=screen.querySelector('#snug-auth-phase');
@@ -670,6 +673,53 @@
       screen.querySelector('[data-guest]')?.addEventListener('click',()=>showPhase('home'));
       screen.querySelectorAll('[data-home]').forEach(button=>button.addEventListener('click',()=>{const next=button.dataset.home==='play'?'modes':'options';showPhase(next);if(next==='options')syncOptStates();}));
       screen.querySelectorAll('[data-back]').forEach(button=>button.addEventListener('click',()=>showPhase('home')));
+      // Alpha gate: while alpha is on, Kyle's sign-in lands on the welcoming
+      // committee. One tap on the menu control flips his account to beta and
+      // back, stored per account, with no code or config edits. Other players
+      // never see the control and their flow is unchanged.
+      const ALPHA_GATE_EMAIL='kylematthewberry@gmail.com';
+      const alphaGateEmail=session=>{
+        const user=session?.user;if(!user)return null;
+        const emails=[user.email,...((user.providerData||[]).map(provider=>provider.email))];
+        const found=emails.find(email=>typeof email==='string'&&email.toLowerCase()===ALPHA_GATE_EMAIL);
+        return found?found.toLowerCase():null;
+      };
+      const alphaGateMode=email=>{try{return localStorage.getItem('snug-alpha-mode:'+email)||'alpha';}catch{return 'alpha';}};
+      const alphaGateSetMode=(email,mode)=>{try{localStorage.setItem('snug-alpha-mode:'+email,mode);}catch{}};
+      const alphaGateButton=screen.querySelector('[data-alpha-mode]');
+      const syncAlphaGateControl=()=>{
+        if(!alphaGateButton)return;
+        const email=alphaGateEmail(restoredSession);
+        alphaGateButton.hidden=!email;
+        if(email)alphaGateButton.querySelector('b').textContent=alphaGateMode(email)==='alpha'?'Alpha':'Beta';
+      };
+      alphaGateButton?.addEventListener('click',()=>{
+        const email=alphaGateEmail(restoredSession);if(!email)return;
+        alphaGateSetMode(email,alphaGateMode(email)==='alpha'?'beta':'alpha');
+        syncAlphaGateControl();
+      });
+      const maybeAlphaGate=()=>{
+        const email=alphaGateEmail(restoredSession);if(!email)return;
+        if(alphaGateMode(email)!=='alpha')return;
+        if(!screen||!screen.isConnected)return;
+        if(window.__snugWelcomeActive||window.__snugWelcomePending||window.__snugSkipWelcome)return;
+        window.__snugSkipWelcome=false;
+        window.__snugWelcomePending=true;
+        window.dispatchEvent(new Event('snug-start-welcome'));
+        setTimeout(()=>{
+          if(window.__snugWelcomeActive)return;
+          if(document.querySelector('script[data-snug-alpha-gate-bundle]'))return;
+          const script=document.createElement('script');
+          script.src='assets/selfie-social-society-welcome.bundle.js';
+          script.setAttribute('data-snug-alpha-gate-bundle','');
+          script.addEventListener('load',()=>{
+            window.__snugSkipWelcome=false;
+            window.__snugWelcomePending=true;
+            window.dispatchEvent(new Event('snug-start-welcome'));
+          });
+          document.head.appendChild(script);
+        },900);
+      };
       const syncOptStates=()=>{const state=window.__snugAudio?.state;if(!state)return;screen.querySelectorAll('[data-opt-state]').forEach(el=>{const on=el.dataset.optState==='music'?state.musicEnabled:state.sfxEnabled;el.textContent=on?'On':'Off';});};
       screen.querySelectorAll('[data-opt]').forEach(button=>button.addEventListener('click',()=>{
         const audio=window.__snugAudio;if(!audio)return;
