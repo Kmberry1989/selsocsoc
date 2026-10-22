@@ -3,7 +3,7 @@
   position: fixed;
   z-index: 60;
   right: max(12px, env(safe-area-inset-right));
-  bottom: 118px;
+  bottom: 152px;
   width: 52px;
   height: 52px;
   border: 0;
@@ -84,7 +84,7 @@
   position: fixed;
   z-index: 60;
   right: max(12px, env(safe-area-inset-right));
-  bottom: 182px;
+  bottom: 260px;
   width: 48px; height: 48px;
   border: 0; border-radius: 50%;
   background: #fffdf8ee; color: #26383b;

@@ -12,10 +12,14 @@
 
   const style = document.createElement("style");
   style.textContent = `
-    .snug-drawer-handle{position:fixed;z-index:144;right:0;top:50%;transform:translateY(-50%);
+    .snug-drawer-handle{position:fixed;z-index:144;right:max(0px,env(safe-area-inset-right));top:50%;transform:translateY(-50%);
       width:22px;height:64px;border:1px solid #d3ddd9;border-right:0;border-radius:12px 0 0 12px;
       background:#fffdf8f2;color:#426d4b;font-size:15px;font-weight:900;cursor:pointer;
       box-shadow:-3px 4px 14px #1c2d3226;display:grid;place-items:center;padding:0}
+    /* While the drawer is open it covers the whole right edge, including
+     * the season/weather pill at top-right — hide the pill until the
+     * drawer closes so it is never half-covered. */
+    body.snug-drawer-open .world-weather{display:none}
     .snug-drawer-scrim{position:fixed;inset:0;z-index:148;background:#17202159;opacity:0;pointer-events:none;transition:opacity .22s ease}
     .snug-drawer{position:fixed;z-index:149;top:0;right:0;height:100dvh;width:min(240px,72vw);
       background:#fffdf8;color:#26383b;box-shadow:-12px 0 34px #16202133;
@@ -56,8 +60,8 @@
     <div class="snug-drawer-row" data-slot="season"><small>Season event</small></div>
   `;
 
-  const open = () => { drawer.classList.add("open"); scrim.classList.add("open"); };
-  const close = () => { drawer.classList.remove("open"); scrim.classList.remove("open"); };
+  const open = () => { drawer.classList.add("open"); scrim.classList.add("open"); document.body.classList.add("snug-drawer-open"); };
+  const close = () => { drawer.classList.remove("open"); scrim.classList.remove("open"); document.body.classList.remove("snug-drawer-open"); };
   handle.addEventListener("click", open);
   scrim.addEventListener("click", close);
   drawer.querySelector(".snug-drawer-close").addEventListener("click", close);
