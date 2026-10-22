@@ -118,14 +118,14 @@
     // Disc head (game avatar style): cylinder facing the camera.
     const head = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.24, 24), skin);
     head.rotation.x = Math.PI / 2;
-    head.position.y = 1.62;
+    head.position.y = 1.75;
     head.name = `PrimitiveFace_${spec.prefix}`;
     group.add(head);
 
     // Face slot: front-facing plane for developer-authored face art.
     const faceSlot = new THREE.Group();
     faceSlot.name = `FaceSlot_${spec.prefix}`;
-    faceSlot.position.set(0, 1.62, 0.13);
+    faceSlot.position.set(0, 1.75, 0.13);
     // Placeholder eyes + smile so the primitive reads as a face.
     const eyeGeo = new THREE.SphereGeometry(0.035, 10, 10);
     const eyeMat = mat(THREE, 0x2b2b2b, { roughness: 0.4 });
@@ -182,7 +182,7 @@
     // Head accessory slot (hats, hair).
     const headSlot = new THREE.Group();
     headSlot.name = `HeadAccessorySlot_${spec.prefix}`;
-    headSlot.position.y = 1.78;
+    headSlot.position.y = 1.91;
     group.add(headSlot);
 
     // Held-item slot, parented to the right hand.

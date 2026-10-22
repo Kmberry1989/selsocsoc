@@ -823,9 +823,9 @@ function makeParade() {
     body.position.y = 0.58;
     const head = new THREE.Mesh(new THREE.CylinderGeometry(0.31, 0.31, 0.13, 24), new THREE.MeshStandardMaterial({ color: 0xe5b38a, roughness: 0.8 }));
     head.rotation.x = Math.PI / 2;
-    head.position.y = 1.18;
+    head.position.y = 1.43;
     const hat = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.58, 8), new THREE.MeshStandardMaterial({ color: colors[(index + 2) % colors.length], roughness: 0.7 }));
-    hat.position.y = 1.58;
+    hat.position.y = 1.83;
     walker.add(body, head, hat);
     walker.userData.phase = index / 5 * Math.PI * 2;
     group.add(walker);
