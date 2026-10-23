@@ -13,7 +13,7 @@
    "shoes": "lyla-lens/shoes-placeholder.glb",
    "heldItem": "lyla-lens/held-item.glb",
    "faceSlot": "FaceSlot_LL",
-   "faceArtwork": "assets/npc-faces/npc-lyla-lens-face.png"
+   "faceArtwork": "assets/npc-faces/npc-lyla-lens-face-v2.png"
   },
   "chip-chance": {
    "name": "Chip Chance",
@@ -25,7 +25,7 @@
    "shoes": "chip-chance/shoes-placeholder.glb",
    "heldItem": "chip-chance/held-item.glb",
    "faceSlot": "FaceSlot_CC",
-   "faceArtwork": "assets/npc-faces/npc-chip-chance-face.png"
+   "faceArtwork": "assets/npc-faces/npc-chip-chance-face-v2.png"
   },
   "barnaby-bargain": {
    "name": "Barnaby Bargain",
@@ -37,7 +37,7 @@
    "shoes": "barnaby-bargain/shoes-placeholder.glb",
    "heldItem": "barnaby-bargain/held-item.glb",
    "faceSlot": "FaceSlot_BB",
-   "faceArtwork": "assets/npc-faces/npc-barnaby-bargain-face.png"
+   "faceArtwork": "assets/npc-faces/npc-barnaby-bargain-face-v2.png"
   },
   "pip-parade": {
    "name": "Pip Parade",
@@ -49,7 +49,7 @@
    "shoes": "pip-parade/shoes-placeholder.glb",
    "heldItem": "pip-parade/held-item.glb",
    "faceSlot": "FaceSlot_PP",
-   "faceArtwork": "assets/npc-faces/npc-pip-parade-face.png"
+   "faceArtwork": "assets/npc-faces/npc-pip-parade-face-v2.png"
   },
   "agnes-alley": {
    "name": "Agnes Alley",
@@ -61,7 +61,7 @@
    "shoes": "agnes-alley/shoes-placeholder.glb",
    "heldItem": "agnes-alley/held-item.glb",
    "faceSlot": "FaceSlot_AA",
-   "faceArtwork": "assets/npc-faces/npc-agnes-alley-face.png"
+   "faceArtwork": "assets/npc-faces/npc-agnes-alley-face-v2.png"
   },
   "dottie-daly": {
    "name": "Dottie Daly",
@@ -73,7 +73,7 @@
    "shoes": "dottie-daly/shoes-placeholder.glb",
    "heldItem": "dottie-daly/held-item.glb",
    "faceSlot": "FaceSlot_DD",
-   "faceArtwork": "assets/npc-faces/npc-dottie-daly-face.png"
+   "faceArtwork": "assets/npc-faces/npc-dottie-daly-face-v2.png"
   },
   "peggy-plank": {
    "name": "Peggy Plank",
@@ -85,7 +85,7 @@
    "shoes": "peggy-plank/shoes-placeholder.glb",
    "heldItem": "peggy-plank/held-item.glb",
    "faceSlot": "FaceSlot_PG",
-   "faceArtwork": "assets/npc-faces/npc-peggy-plank-face.png"
+   "faceArtwork": "assets/npc-faces/npc-peggy-plank-face-v2.png"
   },
   "mr-buck-coinsworth": {
    "name": "Mr. Buck Coinsworth",
@@ -97,7 +97,7 @@
    "shoes": "mr-buck-coinsworth/shoes-placeholder.glb",
    "heldItem": "mr-buck-coinsworth/held-item.glb",
    "faceSlot": "FaceSlot_BC",
-   "faceArtwork": "assets/npc-faces/npc-mr-buck-coinsworth-face.png"
+   "faceArtwork": "assets/npc-faces/npc-mr-buck-coinsworth-face-v2.png"
   },
   "fern-bramble": {
    "name": "Fern Bramble",
@@ -109,7 +109,7 @@
    "shoes": "fern-bramble/shoes-placeholder.glb",
    "heldItem": "fern-bramble/held-item.glb",
    "faceSlot": "FaceSlot_FB",
-   "faceArtwork": "assets/npc-faces/npc-fern-bramble-face.png"
+   "faceArtwork": "assets/npc-faces/npc-fern-bramble-face-v2.png"
   },
   "stanley-stamp": {
    "name": "Stanley Stamp",
@@ -121,7 +121,7 @@
    "shoes": "stanley-stamp/shoes-placeholder.glb",
    "heldItem": "stanley-stamp/held-item.glb",
    "faceSlot": "FaceSlot_SS",
-   "faceArtwork": "assets/npc-faces/npc-stanley-stamp-face.png"
+   "faceArtwork": "assets/npc-faces/npc-stanley-stamp-face-v2.png"
   },
   "bobby-gill": {
    "name": "Bobby Gill",
@@ -133,7 +133,7 @@
    "shoes": "bobby-gill/shoes-placeholder.glb",
    "heldItem": "bobby-gill/held-item.glb",
    "faceSlot": "FaceSlot_BG",
-   "faceArtwork": "assets/npc-faces/npc-bobby-gill-face.png"
+   "faceArtwork": "assets/npc-faces/npc-bobby-gill-face-v2.png"
   },
   "mayor-mayor": {
    "name": "Mayor Mayor",
@@ -145,7 +145,7 @@
    "shoes": "mayor-mayor/shoes-placeholder.glb",
    "heldItem": "mayor-mayor/held-item.glb",
    "faceSlot": "FaceSlot_MM",
-   "faceArtwork": "assets/npc-faces/npc-mayor-mayor-face.png"
+   "faceArtwork": "assets/npc-faces/npc-mayor-mayor-face-v2.png"
   },
   "gideon": {
    "name": "Gideon",
@@ -157,7 +157,7 @@
    "shoes": "gideon/shoes-placeholder.glb",
    "heldItem": "gideon/held-item.glb",
    "faceSlot": "FaceSlot_GD",
-   "faceArtwork": "assets/npc-faces/npc-gideon-face.png"
+   "faceArtwork": "assets/npc-faces/npc-gideon-face-v2.png"
   }
  }
 }

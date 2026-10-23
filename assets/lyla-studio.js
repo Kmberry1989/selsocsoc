@@ -23,11 +23,17 @@
     const chip = document.querySelector(".profile-chip");
     if (!chip) return false;
     chip.click();
-    setTimeout(() => {
+    const started = Date.now();
+    const poll = setInterval(() => {
       const button = [...document.querySelectorAll("button")]
         .find((entry) => /portrait|expression photos/i.test((entry.textContent || "").trim()));
-      if (button) button.click();
-    }, 150);
+      if (button) {
+        clearInterval(poll);
+        button.click();
+      } else if (Date.now() - started >= 3000) {
+        clearInterval(poll);
+      }
+    }, 100);
     return true;
   }
 
