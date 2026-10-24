@@ -258,5 +258,9 @@
  "material-slate": {
   "path": "assets/textures/material-slate.webp",
   "appliedTo": "reserved housing flooring/roofing material"
+ },
+ "material-brick": {
+  "path": "assets/textures/material-brick.webp",
+  "appliedTo": "reserved housing wall material"
  }
 }
