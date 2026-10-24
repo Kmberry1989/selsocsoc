@@ -262,5 +262,9 @@
  "material-brick": {
   "path": "assets/textures/material-brick.webp",
   "appliedTo": "reserved housing wall material"
+ },
+ "material-stucco": {
+  "path": "assets/textures/material-stucco.webp",
+  "appliedTo": "reserved housing wall material"
  }
 }
