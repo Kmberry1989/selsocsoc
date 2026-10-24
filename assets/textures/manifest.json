@@ -266,5 +266,9 @@
  "material-stucco": {
   "path": "assets/textures/material-stucco.webp",
   "appliedTo": "reserved housing wall material"
+ },
+ "ground-autumn": {
+  "path": "assets/textures/ground-autumn.webp",
+  "appliedTo": "autumn biome ground texture"
  }
 }
