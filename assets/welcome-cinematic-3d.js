@@ -291,7 +291,7 @@
     const roof = new THREE.Mesh(new THREE.ConeGeometry(4.6, 1.7, 4), mat(THREE, 0x78908a));
     roof.position.y = 4.05;
     roof.rotation.y = Math.PI / 4;
-    roof.scale.z = 0.72;
+    roof.scale.z = 1.0;
     const door = new THREE.Mesh(new THREE.BoxGeometry(1.3, 2.0, 0.14), trimMat);
     door.position.set(0, 1.0, 2.02);
     door.name = "TownHallDoor";
