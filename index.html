@@ -1011,6 +1011,13 @@
       if (signinBundle) load(signinBundle).catch(error => console.error('Sign-in code failed to load.', error));
     })();
   </script>
+  <!-- roster-player-override: plain script (not a snug-chunk) on purpose.
+       It executes at HTML parse time, before any core chunk loads, so its
+       snug-avatar-ready listener is registered before town setup runs.
+       As a chunk it would depend on chunk-phase ordering; as a plain
+       script it cannot miss the event. It converts only the local
+       avatar and __snugWorld.remotes — never NPCs. -->
+  <script src="assets/roster-player-override.js"></script>
   <script id="snug-cloud-billboards">
     (() => {
       const patchedWorlds = new WeakSet();

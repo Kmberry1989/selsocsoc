@@ -6,9 +6,11 @@
  *
  * Playback runs in its own overlay scene (same pattern as the welcome
  * cinematic) so it never fights the town camera, the roster bob tick, or
- * player input: figures are roster-style (capsule body, floating coin head
- * at 1.66, painted face + wraparound outfit from the live NPC manifest),
- * poses are the studio's 8 poses, camera keys drive an overlay camera,
+ * player input: figures are roster-style (capsule body r 0.29, floating
+ * coin head at 1.66, face circle 0.30, hands ±0.46, box feet, shoulder
+ * disc; NPC painted face + wraparound outfit from the live NPC manifest,
+ * player outfit from the outfit-textures manifest), poses are the
+ * studio's poses, camera keys drive an overlay camera,
  * lighting keys scale the overlay lights, and dialogue lines show as
  * subtitles. Input locks during playback (Skip button + Esc end early)
  * unless playback.nonInteractive is false. Everything is guarded: a bad
@@ -42,6 +44,34 @@
         .catch(function () { return null; });
     }
     return manifestPromise;
+  }
+
+  // Player outfit manifest (assets/outfit-textures/manifest.json). Roster
+  // unification 2026-10-27: the player figure now wears a real outfit
+  // instead of the blue-grey fallback. Default is the studio's intended
+  // harvest tunic; a sequence may override via actor.outfitId or
+  // actor.outfit (id or path).
+  var outfitManifestPromise = null;
+  function getOutfitManifest() {
+    if (!outfitManifestPromise) {
+      outfitManifestPromise = fetch(new URL('assets/outfit-textures/manifest.json', document.baseURI).href)
+        .then(function (r) { if (!r.ok) throw new Error('outfit manifest ' + r.status); return r.json(); })
+        .catch(function () { return null; });
+    }
+    return outfitManifestPromise;
+  }
+  function resolvePlayerOutfit(spec, outfitManifest) {
+    if (spec.outfit) {
+      if (/\.png$/i.test(spec.outfit)) return spec.outfit;
+      spec = Object.assign({}, spec, { outfitId: spec.outfit });
+    }
+    var list = (outfitManifest && outfitManifest.outfits) || [];
+    var byId = null, i;
+    for (i = 0; i < list.length; i++) if (list[i].id === spec.outfitId) byId = list[i];
+    if (byId) return byId.path;
+    for (i = 0; i < list.length; i++) if (list[i].id === 'outfit-harvest-tunic') return list[i].path;
+    if (list.length) return list[0].path;
+    return 'assets/outfit-textures/outfit-harvest-tunic-v2.png';
   }
 
   function toast(msg) {
@@ -111,11 +141,23 @@
       if (char && char.outfitUrl) {
         outfitTex = await makeTexture(THREE, new URL(char.outfitUrl, document.baseURI).href);
         outfitTex.wrapS = THREE.RepeatWrapping;
+      } else if (spec.id === 'player') {
+        // Roster unification: player wears a real outfit on the same
+        // wraparound capsule. Blue-grey is now only the failure fallback.
+        var om = await getOutfitManifest();
+        var outfitPath = resolvePlayerOutfit(spec, om);
+        outfitTex = await makeTexture(THREE, new URL(outfitPath, document.baseURI).href);
+        outfitTex.wrapS = THREE.RepeatWrapping;
       }
     } catch (_) { outfitTex = null; }
     try {
       if (char && char.faceUrl) {
         faceTex = await makeTexture(THREE, new URL(char.faceUrl, document.baseURI).href);
+      } else if (spec.id === 'player' && spec.faceUrl) {
+        // A sequence (or future town handoff) may supply the player's
+        // selfie face; it sits on the same 0.30 circle as NPC faces.
+        // Without one, the face stays the plain skin circle below.
+        faceTex = await makeTexture(THREE, new URL(spec.faceUrl, document.baseURI).href);
       }
     } catch (_) { faceTex = null; }
 
@@ -346,7 +388,11 @@
         var rtarget = next && next.rotationDegrees ? next.rotationDegrees : k.rotationDegrees;
         rot = [lerp(k.rotationDegrees[0], rtarget[0], f), lerp(k.rotationDegrees[1], rtarget[1], f), lerp(k.rotationDegrees[2], rtarget[2], f)];
       }
-      if (k.lens !== undefined) fov = k.lens;
+      // Roster unification: the studio's lens is a focal length in mm,
+      // not degrees. Convert exactly as the studio does
+      // (fov = 2*atan(12/lens)); the old code used mm as degrees, so a
+      // 52mm key played at 52deg instead of ~26deg.
+      if (k.lens !== undefined && k.lens > 0) fov = 2 * Math.atan(12 / k.lens) * 180 / Math.PI;
       else if (k.frame && FRAME_FOV[k.frame]) fov = FRAME_FOV[k.frame];
     }
     return { pos: pos, rot: rot, fov: fov };
@@ -445,8 +491,40 @@
       new THREE.MeshStandardMaterial({ color: 0x2c3838, roughness: 1 }));
     ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
 
+    // Roster unification: stage the studio's set props for the only set
+    // the studio exports today (cyclical-city-gate), using the game's
+    // environment-props GLBs at the studio's positions. Any failure is
+    // non-fatal: figures still play on the bare ground.
+    if (seq.set && seq.set.id === 'cyclical-city-gate') {
+      try {
+        var gltfMod = await import(new URL('assets/vendor/three/GLTFLoader.js', document.baseURI).href);
+        var loader = new gltfMod.GLTFLoader();
+        var propBase = 'assets/environment-props/props/';
+        var propDefs = [
+          { file: 'fence-gate.glb', pos: [-3.4, 0, 2.4], rotY: Math.PI / 2 },
+          { file: 'fence-gate.glb', pos: [3.4, 0, 2.4], rotY: 0 },
+          { file: 'lantern-post.glb', pos: [-2.4, 0, -1.6], rotY: 0 },
+          { file: 'lantern-post.glb', pos: [2.4, 0, -1.6], rotY: 0 },
+          { file: 'park-bench.glb', pos: [3.2, 0, -2.2], rotY: -0.5 },
+          { file: 'signpost.glb', pos: [-3.2, 0, -2.2], rotY: 0.5 }
+        ];
+        for (var pi = 0; pi < propDefs.length; pi++) {
+          try {
+            var gltf = await loader.loadAsync(new URL(propBase + propDefs[pi].file, document.baseURI).href);
+            var obj = gltf.scene;
+            obj.position.set(propDefs[pi].pos[0], propDefs[pi].pos[1], propDefs[pi].pos[2]);
+            obj.rotation.y = propDefs[pi].rotY;
+            obj.traverse(function (n) { if (n.isMesh) { n.castShadow = true; n.receiveShadow = true; } });
+            scene.add(obj);
+          } catch (e) { console.warn('[cinematic-player] set prop failed', propDefs[pi].file, e); }
+        }
+      } catch (e) { console.warn('[cinematic-player] set props unavailable', e); }
+    }
+
     // Cast: one figure per actor. Roster NPCs resolve through the manifest;
-    // 'player' gets a plain figure. Spawn positions are studio-stage spots.
+    // 'player' now wears a real outfit (see buildFigure) and keeps the
+    // skin face circle unless a sequence supplies a selfie faceUrl.
+    // Spawn positions are studio-stage spots.
     var actors = [];
     var list = Array.isArray(seq.actors) ? seq.actors : [];
     for (var ai = 0; ai < list.length; ai++) {
