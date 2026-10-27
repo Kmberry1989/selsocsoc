@@ -88,6 +88,22 @@
   function lerp(a, b, t) { return a + (b - a) * t; }
   function clamp01(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
   function smooth(x) { return x * x * (3 - 2 * x); }
+  // Per-beat easing from the studio export (beats[].easing). The studio
+  // writes its global easing select per beat: 'Smooth in / out',
+  // 'Ease in', 'Ease out', or 'Linear' (canonical 'ease-in-out' etc.
+  // also accepted). Missing/unknown values fall back to smooth, which
+  // is exactly what the player did before, so old sequences play
+  // unchanged. Pure timing math — no visual asset involved.
+  function easeValue(easing, t) {
+    var e = (easing === undefined || easing === null) ? '' : String(easing).toLowerCase();
+    if (e.indexOf('linear') !== -1) return t;
+    if (e.indexOf('smooth') !== -1) return smooth(t);
+    var hasIn = e.indexOf('in') !== -1, hasOut = e.indexOf('out') !== -1;
+    if (hasIn && hasOut) return smooth(t);
+    if (hasOut) return 1 - (1 - t) * (1 - t);
+    if (hasIn) return t * t;
+    return smooth(t);
+  }
   // Envelope: ramps a beat's pose in over 0.25s and out over its last 0.25s.
   function envelope(local, dur) {
     if (dur <= 0) return 1;
@@ -622,7 +638,7 @@
           var dur = active.duration || 0;
           var env = envelope(local, dur);
           if (active.move && dur > 0) {
-            var f = smooth(clamp01(local / dur));
+            var f = easeValue(active.easing, clamp01(local / dur));
             g.position.set(
               lerp(a.fig.base.x, 0, f),
               lerp(a.fig.base.y, 0, f),
@@ -660,7 +676,23 @@
 
       resize();
       renderer.render(scene, camera);
-      if (t >= duration) { stop(); return; }
+      if (t >= duration) {
+        // playback.loop: restart from t=0 instead of stopping. Reset
+        // movedHome so a walk-in beat walks in again on each pass
+        // rather than snapping to centre stage. Note: the studio
+        // currently exports loop:false always (its Loop toggle is
+        // preview-only), so this only fires for sequences that
+        // actually set playback.loop — a future studio export change
+        // (outside this file) is needed before studio files loop.
+        if (seq.playback && seq.playback.loop) {
+          actors.forEach(function (a) { a.movedHome = false; });
+          startAt = now;
+          state.t = 0;
+          state.raf = requestAnimationFrame(frame);
+          return;
+        }
+        stop(); return;
+      }
       state.raf = requestAnimationFrame(frame);
     }
     state.raf = requestAnimationFrame(frame);
