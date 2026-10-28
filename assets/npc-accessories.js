@@ -32,17 +32,17 @@
   }
 
   const BUILDERS = {
-    // Mayor Mayor: a ceremonial gavel.
+    // Mayor Mayor: a ceremonial gavel (upright redesign 2026-10-27:
+    // vertical handle through the grip, larger head centred on top).
     'mayor-mayor'(THREE) {
       const g = new THREE.Group();
-      const handle = mesh(THREE, new THREE.CylinderGeometry(0.022, 0.026, 0.42, 10), mat(THREE, 0x8a5a34, 0.6), 0, 0.1, 0);
-      handle.rotation.z = 0.5;
-      const head = mesh(THREE, new THREE.CylinderGeometry(0.055, 0.055, 0.16, 14), mat(THREE, 0x6e4526, 0.55), 0.13, 0.28, 0);
-      head.rotation.z = 0.5;
-      const band1 = mesh(THREE, new THREE.CylinderGeometry(0.058, 0.058, 0.02, 14), mat(THREE, 0xe4aa38, 0.35), 0.1, 0.245, 0);
-      band1.rotation.z = 0.5;
-      const band2 = mesh(THREE, new THREE.CylinderGeometry(0.058, 0.058, 0.02, 14), mat(THREE, 0xe4aa38, 0.35), 0.16, 0.315, 0);
-      band2.rotation.z = 0.5;
+      const handle = mesh(THREE, new THREE.CylinderGeometry(0.022, 0.026, 0.42, 10), mat(THREE, 0x411a09, 0.8), 0, 0.08, 0);
+      const head = mesh(THREE, new THREE.CylinderGeometry(0.075, 0.075, 0.22, 20), mat(THREE, 0x280f05, 0.8), 0, 0.30, 0);
+      head.rotation.z = Math.PI / 2;
+      const band1 = mesh(THREE, new THREE.CylinderGeometry(0.078, 0.078, 0.024, 20), mat(THREE, 0xc6670a, 0.35), -0.075, 0.30, 0);
+      band1.rotation.z = Math.PI / 2;
+      const band2 = mesh(THREE, new THREE.CylinderGeometry(0.078, 0.078, 0.024, 20), mat(THREE, 0xc6670a, 0.35), 0.075, 0.30, 0);
+      band2.rotation.z = Math.PI / 2;
       g.add(handle, head, band1, band2);
       return g;
     },
