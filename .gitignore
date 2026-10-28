@@ -1,3 +1,5 @@
 
 # macOS Finder metadata
 .DS_Store
+
+.firebase/logs/
