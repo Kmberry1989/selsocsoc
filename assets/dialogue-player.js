@@ -100,7 +100,23 @@
       var node = byId[nodeId];
       if (!node) { stop('done'); return; }
       speaker.textContent = node.speaker || '';
-      line.textContent = node.line || '';
+      // Emoticon signals (user-directed 2026-10-28): a :) :D :P ;) :O :(
+      // etc. in the line sets the speaker's mouth expression, and the
+      // emoticon itself is stripped from the displayed line.
+      var rawLine = node.line || '';
+      var emo = null;
+      var emoMap = [[':-)', 'smile'], [':)', 'smile'], [':-D', 'laugh'], [':D', 'laugh'], ['XD', 'grin'], ['xD', 'grin'], [':-P', 'tongue'], [':P', 'tongue'], [';-)', 'wink'], [';)', 'wink'], [':-O', 'surprise'], [':O', 'surprise'], [':-(', 'frown'], [':(', 'frown'], [':-|', 'neutral'], [':|', 'neutral'], [':-/', 'smirk'], [':/', 'smirk']];
+      for (var ei = 0; ei < emoMap.length; ei++) {
+        if (rawLine.indexOf(emoMap[ei][0]) >= 0) { emo = emoMap[ei]; break; }
+      }
+      var mouth = node.mouth || (emo && emo[1]);
+      if (mouth && window.__snugNpcMouths && window.__snugNpcMouths.set) {
+        var speakerId = String(node.speaker || '').toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-|-$/g, '');
+        window.__snugNpcMouths.set(speakerId, mouth);
+      }
+      var shownLine = rawLine;
+      if (emo) shownLine = rawLine.split(emo[0]).join('').replace(/\s{2,}/g, ' ').trim();
+      line.textContent = shownLine;
       while (actions.firstChild) actions.removeChild(actions.firstChild);
       var choices = Array.isArray(node.choices) ? node.choices : [];
       if (choices.length) {
