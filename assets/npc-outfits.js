@@ -48,6 +48,28 @@
     });
   }
 
+  // Capsule UV fix (2026-10-27): the capsule's built-in v runs the full
+  // meridian (bottom pole -> top pole, arc length 1.45m), so only the
+  // middle ~37% of the outfit image lands on the cylindrical torso and
+  // the shoulders/hem are squeezed over the caps — the outfit reads
+  // stretched and does not fit the figure. Remap v from the vertex
+  // height instead: the cylinder section (local y -0.27..+0.27, body
+  // centre 0.66) gets the full image height, and the caps clamp to the
+  // image's top/bottom edge colours. Computed from position, so
+  // re-dressing is idempotent. u is untouched (offset.x = 0.25 already
+  // puts FRONT at the image centre, facing +z).
+  function remapCapsuleUVs(mesh) {
+    const pos = mesh.geometry?.attributes?.position;
+    const uv = mesh.geometry?.attributes?.uv;
+    if (!pos || !uv) return;
+    for (let i = 0; i < pos.count; i++) {
+      const y = pos.getY(i);
+      const v = Math.min(1, Math.max(0, (y + 0.27) / 0.54));
+      uv.setY(i, v);
+    }
+    uv.needsUpdate = true;
+  }
+
   async function dress(group) {
     const THREE = (await getRealThree()) || window.__snugThree;
     if (!THREE || !group) return;
@@ -65,6 +87,7 @@
         texture.offset.x = 0.25; // FRONT at image center, BACK split at the seam
         texture.anisotropy = 4;
         texture.needsUpdate = true;
+        remapCapsuleUVs(mesh);
         mesh.material.map = texture;
         if (mesh.material.color && typeof mesh.material.color.set === 'function') {
           mesh.material.color.set('#ffffff');

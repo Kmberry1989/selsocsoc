@@ -153,6 +153,13 @@
   <style id="snug-start-screen-styles">
     html.snug-start-open,[data-generated-space-root][inert]{overflow:hidden}
     .snug-start-screen{position:fixed;z-index:500;display:grid;grid-template-rows:minmax(210px,1fr) auto;overflow:auto;inset:0;background:#b8dff0;color:#2c3437;overscroll-behavior:contain;transition:opacity .24s ease,visibility .24s ease}
+    .snug-menu-loading{position:fixed;z-index:600;inset:0;display:grid;place-items:center;background:#b8dff0}
+    .snug-menu-loading[hidden]{display:none}
+    .snug-menu-loading-card{display:grid;justify-items:center;gap:10px;padding:28px 34px;border-radius:22px;background:#fffdf8f4;box-shadow:0 18px 50px #24373d33;text-align:center}
+    .snug-menu-loading-card strong{font-size:18px}
+    .snug-menu-loading-mode{margin:0;color:#586468;font-size:13px}
+    .snug-menu-spinner{width:38px;height:38px;border-radius:50%;border:4px solid #d9dedb;border-top-color:#e76854;animation:snugMenuSpin .8s linear infinite}
+    @keyframes snugMenuSpin{to{transform:rotate(360deg)}}
     .snug-start-screen.is-leaving{opacity:0;visibility:hidden;pointer-events:none}
     .snug-start-scenery{position:relative;overflow:hidden;min-height:240px;background:linear-gradient(#9fd3e9 0 64%,#9fc87e 64%)}
     .snug-start-sun{position:absolute;top:10%;right:12%;width:76px;height:76px;border-radius:50%;background:#ffe58b;box-shadow:0 0 0 12px #ffe58b2b}
@@ -189,7 +196,7 @@
     @media(min-width:760px){.snug-start-screen{grid-template-columns:minmax(0,1.15fr) minmax(380px,.85fr);grid-template-rows:1fr;align-items:stretch}.snug-start-scenery{min-height:100%}.snug-start-panel{align-self:center;width:min(470px,calc(100% - 36px));margin:24px 24px 24px -48px;padding:30px}.snug-start-town{bottom:18%;transform:none}.snug-start-avatars{right:18%;bottom:13%;transform:scale(1.15)}}
     @media(max-width:380px){.snug-start-panel{padding:17px}.snug-start-panel h1{font-size:29px}.snug-start-panel>p{margin-bottom:14px;font-size:13px}.snug-start-mode{grid-template-columns:30px minmax(0,1fr);padding-inline:8px}.snug-start-mode svg{width:23px;height:23px}.snug-start-mode strong{font-size:12px}.snug-start-avatars{right:5%;transform:scale(.86);transform-origin:bottom right}}
     @media(max-height:650px) and (max-width:759px){.snug-start-screen{grid-template-rows:190px auto}.snug-start-scenery{min-height:190px}.snug-start-panel{margin-top:-24px}.snug-start-town{transform:translateX(3%) scale(.78);transform-origin:bottom left}.snug-start-avatars{transform:scale(.76);transform-origin:bottom right}}
-    @media(prefers-color-scheme:dark){.snug-start-screen{background:#6d99aa;color:#f5f3ec}.snug-start-panel{background:#202728f4;border-color:#ffffff1a}.snug-start-panel>p,.snug-start-mode small,.snug-start-foot{color:#abb5b5!important}.snug-start-mode{background:#2b3435;border-color:#3c494a}.snug-start-mode svg{color:#8bb093}}
+    @media(prefers-color-scheme:dark){.snug-start-screen{background:#6d99aa;color:#f5f3ec}.snug-start-panel{background:#202728;border-color:#ffffff1a}.snug-start-panel>p,.snug-start-mode small,.snug-start-foot{color:#abb5b5!important}.snug-start-mode{background:#2b3435;border-color:#3c494a}.snug-start-mode svg{color:#8bb093}}
     @media(prefers-reduced-motion:reduce){.snug-start-screen{transition:none}.snug-start-avatar{animation:none}}
     /* Title screen: the live Three.js village remains visible underneath this layer. */
     html.snug-start-open [data-generated-space-root]{overflow:hidden}
@@ -222,7 +229,6 @@
     .snug-start-screen{overflow:hidden;padding:0;background:transparent}
     .snug-start-screen:before{background:linear-gradient(0deg,#10282d7a 0,transparent 26%),linear-gradient(135deg,#10282d3b 0,transparent 28%)}
     .snug-start-panel{position:fixed;z-index:4;right:auto;bottom:max(10px,env(safe-area-inset-bottom));left:50%;display:flex;align-items:center;gap:clamp(4px,1.3vw,8px);width:auto;max-width:calc(100vw - 12px);margin:0;padding:12px;border:0;border-radius:24px;background:#fffdf8c7;box-shadow:0 10px 30px #14282e4f;transform:translateX(-50%);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);isolation:isolate}
-    .snug-menu-frame{position:absolute;z-index:-1;pointer-events:none;inset:-5px;width:calc(100% + 10px);height:calc(100% + 10px);object-fit:fill;filter:drop-shadow(0 4px 7px #15303633)}
     .snug-start-panel>button,.snug-start-panel>.snug-start-modes{position:relative;z-index:1}
     .snug-start-screen>h1{position:fixed;top:max(18px,calc(env(safe-area-inset-top) + 10px));left:50%;max-width:min(360px,calc(100vw - 32px));margin:0;padding:8px 12px;border:1px solid #ffffff80;border-radius:14px;background:#203437b8;color:#fffdf8;font-size:clamp(18px,4vw,28px);line-height:1.05;letter-spacing:-.025em;text-shadow:0 1px 2px #0005;box-shadow:0 7px 22px #10282d36;transform:translateX(-50%);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
     .snug-menu-layout-background{position:absolute;width:100%;height:100%;inset:0;object-fit:cover;opacity:.42}
@@ -373,7 +379,6 @@
     </div>
     <h1 id="snug-start-title" class="snug-logo-wrap"><img class="snug-main-logo" src="assets/menu-layout/logo.svg" alt="Selfie Social Society — Cyclical City"></h1>
     <section class="snug-start-panel" aria-label="Choose how to play">
-      <img class="snug-menu-frame" src="assets/menu-layout/options-frame.svg" alt="" aria-hidden="true">
       <div id="snug-auth-phase">
         <button class="snug-start-google-wide" type="button" data-google-signin aria-label="Sign in with Google"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#4285F4" d="M28.4 16.3c0-1-.1-1.9-.3-2.8H16v5.3h6.9a5.9 5.9 0 0 1-2.6 3.9v3.4h4.4c2.6-2.4 3.7-5.8 3.7-9.8Z"/><path fill="#34A853" d="M16 28.8c3.5 0 6.5-1.2 8.7-3.2l-4.4-3.4c-1.2.8-2.7 1.3-4.3 1.3-3.4 0-6.3-2.3-7.3-5.4H4.2v3.5A13.1 13.1 0 0 0 16 28.8Z"/><path fill="#FBBC05" d="M8.7 18.1a7.9 7.9 0 0 1 0-5V9.6H4.2a13 13 0 0 0 0 12l4.5-3.5Z"/><path fill="#EA4335" d="M16 7.7c1.9 0 3.7.7 5 2l3.8-3.7A12.7 12.7 0 0 0 4.2 9.6l4.5 3.5c1-3.1 3.9-5.4 7.3-5.4Z"/></svg><span>Sign in with Google</span></button>
         <p class="snug-start-login-status" aria-live="assertive" role="status"></p>
@@ -400,6 +405,7 @@
         <button class="snug-mode-card" type="button" data-back="home" aria-label="Back to menu"><img src="assets/menu-layout/dock-return-v4.webp" alt="" aria-hidden="true"><span><b>Back</b><small>Return to menu</small></span><svg class="snug-mode-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </section>
+    <div class="snug-menu-loading" role="status" aria-live="polite" hidden><div class="snug-menu-loading-card"><span class="snug-menu-spinner" aria-hidden="true"></span><strong>Loading…</strong><p class="snug-menu-loading-mode"></p></div></div>
     <div class="snug-menu-confirm" role="dialog" aria-modal="true" aria-labelledby="snug-menu-confirm-title" aria-describedby="snug-menu-confirm-copy" hidden>
       <div class="snug-menu-confirm-card">
         <p class="snug-menu-confirm-kicker">Selected mode</p>
@@ -490,8 +496,31 @@
         const welcomeHelp=document.querySelector('.welcome-cinematic .welcome-help');
         if(welcomeHelp){welcomeHelp.click();setTimeout(()=>document.querySelector('.snug-help-skip')?.click(),0);}
       };
+      // Loading screen (2026-10-27): the moment a mode is confirmed, the
+      // menu choices are replaced by a solid loading overlay instead of
+      // staying on screen while core chunks / the arrival fade load in
+      // the background. It is dismissed on every error path (never a
+      // hung spinner) and by a 30s watchdog if a load stalls silently.
+      const loadingEl=screen.querySelector('.snug-menu-loading');
+      const loadingModeEl=screen.querySelector('.snug-menu-loading-mode');
+      let loadingToken=0;
+      const showMenuLoading=(mode)=>{
+        if(!loadingEl)return;
+        loadingToken+=1;
+        const token=loadingToken;
+        if(loadingModeEl)loadingModeEl.textContent=modeNames[mode]||'';
+        loadingEl.hidden=false;
+        setTimeout(()=>{
+          if(token!==loadingToken||!loadingEl||loadingEl.hidden||screen.classList.contains('is-leaving'))return;
+          loadingEl.hidden=true;
+          screen.querySelectorAll('button').forEach(button=>button.disabled=false);
+          setLoginStatus('That is taking longer than usual. Please try again.',true);
+        },30000);
+      };
+      const hideMenuLoading=()=>{if(loadingEl)loadingEl.hidden=true;};
       const enter=(mode,{returning=false,afterArrival=false}={})=>{
         if(screen.classList.contains('is-leaving'))return;
+        showMenuLoading(mode);
         if(!window.__snugCoreReady){
           screen.querySelectorAll('button').forEach(button=>button.disabled=true);
           setLoginStatus('Preparing Cyclical City…');
@@ -501,6 +530,7 @@
             enter(mode,{returning,afterArrival});
           }).catch(error=>{
             console.error('Could not prepare Cyclical City',error);
+            hideMenuLoading();
             screen.querySelectorAll('button').forEach(button=>button.disabled=false);
             setLoginStatus('The town could not finish loading. Please refresh and try again.',true);
           });
@@ -512,6 +542,7 @@
             .then(()=>enter(mode,{returning,afterArrival:true}))
             .catch(error=>{
               console.error('Could not enter Cyclical City',error);
+              hideMenuLoading();
               screen.querySelectorAll('button').forEach(button=>button.disabled=false);
               setLoginStatus('The town could not open. Please try again.',true);
             });
@@ -894,7 +925,7 @@
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/selfie-social-society-addons.bundle.js"></script>
   <link rel="stylesheet" href="assets/npc-roster.css">
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-roster.js?v=20261020"></script>
-  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-outfits.js?v=20261020b"></script>
+  <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-outfits.js?v=20261027"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-faces.js?v=20261020b"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-accessories.js?v=20261020b"></script>
   <script type="application/x-snug-chunk" data-snug-phase="feature" data-src="assets/npc-mouth-states.js?v=20261022"></script>
