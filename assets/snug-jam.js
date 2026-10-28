@@ -470,6 +470,17 @@
       body.position.y = 0.45; body.castShadow = true; g.add(body);
       const neck = new T.Mesh(new T.BoxGeometry(0.12, 1.1, 0.1), mat(0x4a3526));
       neck.position.set(0.18, 1.15, 0); neck.rotation.z = -0.28; g.add(neck);
+    } else if (idx === 3) {
+      // Flute: vertical body + mouthpiece + 6 finger holes (matches the new flute.glb: body y 0.025-1.075, mouthpiece to 1.18, holes at y 0.35-0.85)
+      const body = new T.Mesh(new T.CylinderGeometry(0.035, 0.035, 1.05, 14), accent);
+      body.position.y = 0.55; body.castShadow = true; g.add(body);
+      const mouth = new T.Mesh(new T.CylinderGeometry(0.02, 0.02, 0.12, 10), mat(0x2f4a55, 0.6));
+      mouth.position.y = 1.12; g.add(mouth);
+      const holeMat = mat(0x17303a, 0.9);
+      [0.35, 0.45, 0.55, 0.65, 0.75, 0.85].forEach((y) => {
+        const hole = new T.Mesh(new T.CylinderGeometry(0.012, 0.012, 0.012, 8), holeMat);
+        hole.rotation.x = Math.PI / 2; hole.position.set(0, y, 0.036); g.add(hole);
+      });
     } else if (idx === 4) {
       // Piano: upright cabinet + white key strip
       const cab = new T.Mesh(new T.BoxGeometry(0.95, 0.85, 0.5), mat(0x2f2f3d, 0.5));
@@ -1092,6 +1103,7 @@
           <button class="jam-close" aria-label="Close record player">×</button>
         </div>
         <div class="jam-sec"><div class="vinyl-list"></div></div>
+        <div class="jam-sec"><small>Import vinyl file (from the Plaza Jam studio)</small><label class="jam-import-label"><span class="jam-import-btn">⬆ Import vinyls</span><input class="vinyl-import" type="file" accept=".json" hidden></label><div class="vinyl-import-status" role="status"></div></div>
       </div>`;
     document.body.appendChild(backdrop);
     vstate.rpPanel = backdrop;
@@ -1105,6 +1117,32 @@
       if (vstate.rpPlaying === vinyl.id) stopRecordPlayback();
       else startRecordPlayback(vinyl);
       window.dispatchEvent(new CustomEvent("snug-sfx", { detail: { id: "ui-tap" } }));
+    });
+    backdrop.querySelector(".vinyl-import").addEventListener("change", (e) => {
+      const file = e.target.files && e.target.files[0];
+      const status = backdrop.querySelector(".vinyl-import-status");
+      if (!file) return;
+      if (!state.session?.user) { status.textContent = "Sign in to import vinyls."; return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          const arr = Array.isArray(data) ? data : data.vinyls;
+          if (!Array.isArray(arr)) throw new Error("bad file");
+          const good = arr.filter(validVinyl);
+          if (!good.length) throw new Error("no vinyls");
+          // Vinyls are pattern data only: importing stores the pattern, and
+          // playback re-synthesizes it procedurally through the game voices.
+          const have = new Set((vstate.vinyls || []).map((v) => v.id));
+          const fresh = good.filter((v) => !have.has(v.id));
+          const merged = [...fresh, ...(vstate.vinyls || [])].slice(0, MAX_VINYLS);
+          window.dispatchEvent(new CustomEvent("snug-player-patch", { detail: (player) => ({ ...player, vinyls: merged }) }));
+          vstate.vinyls = merged;
+          status.textContent = `Imported ${fresh.length} vinyl${fresh.length === 1 ? "" : "s"}${good.length - fresh.length ? ` (${good.length - fresh.length} already in your collection)` : ""}.`;
+          renderRpList();
+        } catch { status.textContent = "That file is not a vinyl set."; }
+      };
+      reader.readAsText(file);
     });
     loadVinyls().then(renderRpList);
     window.dispatchEvent(new CustomEvent("snug-sfx", { detail: { id: "ui-confirm" } }));
