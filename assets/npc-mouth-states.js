@@ -146,7 +146,26 @@
       ctx.lineWidth = 8;
       ctx.strokeStyle = INK;
       ctx.stroke();
-    }
+    } else if (state === 'tongue') {
+      arc(68, 50, 128, 108, 188, 50, 11);
+      ctx.beginPath();
+      ctx.moveTo(104, 74);
+      ctx.lineTo(152, 74);
+      ctx.quadraticCurveTo(152, 118, 128, 118);
+      ctx.quadraticCurveTo(104, 118, 104, 74);
+      ctx.closePath();
+      ctx.fillStyle = TONGUE;
+      ctx.fill();
+      ctx.lineWidth = 8;
+      ctx.strokeStyle = INK;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(128, 78);
+      ctx.lineTo(128, 110);
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = '#c85a5e';
+      ctx.stroke();
+    } else if (state === 'wink') arc(78, 62, 140, 86, 188, 42, 11);
     return canvas;
   }
 
