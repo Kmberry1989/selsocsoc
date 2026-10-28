@@ -1,0 +1,65 @@
+/* Selfie Social Society — village dock cluster.
+ * Groups the five floating village-mode buttons (Town Life, Garden,
+ * Build, Mailbox, Journal) into one expandable cluster button.
+ * The fan items keep their original behavior; only presentation changes.
+ */
+.snug-dock-cluster{
+  position:fixed;z-index:81;left:12px;bottom:230px;
+  width:56px;height:56px;border-radius:50%;
+  display:grid;place-items:center;
+  border:1px solid #ffffffa6;background:#fffdf8f2;color:#2c3437;
+  box-shadow:0 8px 24px #1720212e,0 0 0 2px #ffffff66;
+  font-size:30px;font-weight:900;line-height:1;cursor:pointer;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+.snug-dock-cluster[hidden]{display:none!important}
+/* While the directory sheet is open it covers the bottom of the screen,
+ * so the cluster button (and any fanned buttons) would sit on top of it.
+ * Hide both until the sheet closes; the fan keeps its open state and
+ * returns as it was. */
+body.snug-dir-open .snug-dock-cluster,
+body.snug-dir-open .snug-dock-fan{display:none!important}
+.snug-dock-cluster span{display:block;transform:translateY(-1px)}
+.snug-dock-cluster.open span{transform:translateY(-1px) rotate(45deg)}
+.snug-dock-fan{position:fixed;z-index:80;inset:0;pointer-events:none}
+/* NOTE: the fan container must cover the viewport (inset:0), not sit
+ * at 0x0 in the corner. The JS positions buttons with left/bottom
+ * viewport coordinates, and bottom is measured from the container's
+ * bottom edge — with a 0-height container that edge is the top of
+ * the screen, so bottom values would push every button above the
+ * viewport instead of fanning them around the cluster. The container
+ * itself never blocks taps (pointer-events:none); only its buttons
+ * take pointer events. */
+.snug-dock-fan.open{pointer-events:auto}
+/* Fan items: circular icon-only buttons, positioned by JS along an arc.
+ * NOTE: left/right/top/bottom must NOT be !important here — the JS sets
+ * them as inline styles per button, and an !important auto in this rule
+ * would override the inline values and pile every button at the
+ * container origin (top-left corner). The higher specificity of this
+ * rule (vs the dock buttons' own left/bottom) already neutralizes the
+ * docks' own coordinates without !important. */
+.snug-dock-fan .town-life-dock,
+.snug-dock-fan .garden-dock,
+.snug-dock-fan .housing-dock,
+.snug-dock-fan .mailbox-dock,
+.snug-dock-fan .society-dock{
+  position:absolute!important;left:auto;right:auto;
+  bottom:auto;top:auto;
+  width:48px!important;height:48px!important;
+  min-width:48px!important;min-height:48px!important;
+  margin:0!important;padding:0!important;border-radius:50%!important;
+  display:grid!important;place-items:center!important;
+  pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+.snug-dock-fan:not(.open) button{display:none!important}
+.snug-dock-fan button b{display:none!important}
+/* Keep badges pinned to the corner in fan mode. */
+.snug-dock-fan .garden-dock em,
+.snug-dock-fan .mailbox-dock em,
+.snug-dock-fan .society-dock span{
+  position:absolute!important;right:-4px!important;top:-4px!important;
+  left:auto!important;bottom:auto!important;margin:0!important;
+}
+@media (prefers-color-scheme:dark){
+  .snug-dock-cluster{background:#202728f2;border-color:#ffffff26;color:#f5f3ec}
+}

@@ -121,6 +121,70 @@
         }
       }
     },
+    "jam": {
+      "$roomId": {
+        ".read": "auth != null && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",
+        ".indexOn": [
+          "updatedAt"
+        ],
+        "$uid": {
+          ".write": "auth != null && $uid === auth.uid && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",
+          ".validate": "!newData.exists() || (newData.hasChildren(['uid','name','instrument','pattern','anchor','updatedAt']) && newData.child('uid').val() === auth.uid && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 18 && newData.child('instrument').isNumber() && newData.child('instrument').val() >= 0 && newData.child('instrument').val() <= 6 && newData.child('pattern').isString() && (newData.child('pattern').val().matches(/^([0-9a-f]{28})$/) || newData.child('pattern').val().matches(/^([0-9a-f]{16})$/)) && newData.child('anchor').isNumber() && newData.child('updatedAt').isNumber())",
+          "uid": {
+            ".validate": "newData.isString() && newData.val() === auth.uid"
+          },
+          "name": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 18"
+          },
+          "outfit": {
+            ".validate": "newData.isString() && newData.val().length <= 32"
+          },
+          "instrument": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 6"
+          },
+          "pattern": {
+            ".validate": "newData.isString() && (newData.val().matches(/^([0-9a-f]{28})$/) || newData.val().matches(/^([0-9a-f]{16})$/))"
+          },
+          "anchor": {
+            ".validate": "newData.isNumber()"
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
+    },
+    "jukebox": {
+      "$roomId": {
+        ".read": "auth != null && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",
+        ".write": "auth != null && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",
+        "queue": {
+          "$idx": {
+            ".validate": "newData.hasChildren(['qid','vinyl','byUid','byName','at']) && newData.child('qid').isString() && newData.child('qid').val().length > 0 && newData.child('qid').val().length <= 24 && newData.child('byUid').isString() && newData.child('byName').isString() && newData.child('byName').val().length > 0 && newData.child('byName').val().length <= 18 && newData.child('at').isNumber() && newData.child('vinyl').hasChildren(['id','title','artist','instrument','pattern','bpm']) && newData.child('vinyl').child('title').isString() && newData.child('vinyl').child('title').val().length <= 60 && newData.child('vinyl').child('artist').isString() && newData.child('vinyl').child('artist').val().length <= 18 && newData.child('vinyl').child('instrument').isNumber() && newData.child('vinyl').child('instrument').val() >= 0 && newData.child('vinyl').child('instrument').val() <= 6 && newData.child('vinyl').child('pattern').isString() && newData.child('vinyl').child('pattern').val().matches(/^([0-9a-f]{28})$/) && newData.child('vinyl').child('bpm').isNumber() && newData.child('vinyl').child('bpm').val() >= 40 && newData.child('vinyl').child('bpm').val() <= 220"
+          }
+        },
+        "current": {
+          ".validate": "!newData.exists() || newData.hasChildren(['entry','startedAt'])",
+          "entry": {
+            ".validate": "newData.hasChildren(['qid','vinyl','byUid','byName','at']) && newData.child('qid').isString() && newData.child('qid').val().length > 0 && newData.child('qid').val().length <= 24 && newData.child('byUid').isString() && newData.child('byName').isString() && newData.child('byName').val().length > 0 && newData.child('byName').val().length <= 18 && newData.child('at').isNumber() && newData.child('vinyl').hasChildren(['id','title','artist','instrument','pattern','bpm']) && newData.child('vinyl').child('title').isString() && newData.child('vinyl').child('title').val().length <= 60 && newData.child('vinyl').child('artist').isString() && newData.child('vinyl').child('artist').val().length <= 18 && newData.child('vinyl').child('instrument').isNumber() && newData.child('vinyl').child('instrument').val() >= 0 && newData.child('vinyl').child('instrument').val() <= 6 && newData.child('vinyl').child('pattern').isString() && newData.child('vinyl').child('pattern').val().matches(/^([0-9a-f]{28})$/) && newData.child('vinyl').child('bpm').isNumber() && newData.child('vinyl').child('bpm').val() >= 40 && newData.child('vinyl').child('bpm').val() <= 220"
+          },
+          "startedAt": {
+            ".validate": "newData.isNumber()"
+          }
+        },
+        "presence": {
+          "$uid": {
+            ".validate": "newData.hasChildren(['at']) && newData.child('at').isNumber()"
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
     "social": {
       "$roomId": {
         ".read": "auth != null && ($roomId === 'plaza' || root.child('rooms').child($roomId).child('members').child(auth.uid).val() === true)",

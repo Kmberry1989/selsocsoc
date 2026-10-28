@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 120" preserveAspectRatio="none">
+  <rect x="4" y="4" width="752" height="112" rx="30" fill="#fffdf8" fill-opacity=".4" stroke="#426d4b" stroke-width="8"/>
+  <rect x="18" y="18" width="724" height="84" rx="20" fill="none" stroke="#e4aa38" stroke-width="3" stroke-dasharray="10 8"/>
+  <g fill="#26383b" font-family="system-ui,sans-serif" text-anchor="middle">
+    <text x="380" y="58" font-size="24" font-weight="700">DECORATIVE EDGE AREA</text>
+    <text x="380" y="84" font-size="16">Keep center transparent • stretches horizontally</text>
+  </g>
+</svg>

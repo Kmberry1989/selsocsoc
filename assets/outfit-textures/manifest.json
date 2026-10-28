@@ -3,303 +3,306 @@
     {
       "id": "painted-pastel-tunic",
       "name": "Painted Pastel Tunic",
-      "path": "assets/outfit-textures/painted-pastel-tunic.png",
+      "path": "assets/outfit-textures/painted-pastel-tunic-v2.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
-      "description": "A flat toon-painted proof of the simple tunic template."
+      "description": "A flat toon-painted proof of the simple tunic template.",
+      "tint": "#6fb3a8"
     },
     {
       "id": "outfit-harvest-tunic",
       "name": "Harvest Tunic",
-      "path": "assets/outfit-textures/outfit-harvest-tunic.png",
-      "description": "A wheat-gold tunic with burnt-orange stripes, chocolate bands, and a wheat medallion."
+      "path": "assets/outfit-textures/outfit-harvest-tunic-v2.png",
+      "description": "A wheat-gold tunic with burnt-orange stripes, chocolate bands, and a wheat medallion.",
+      "tint": "#d9a441"
     },
     {
       "id": "outfit-tidepool-tunic",
       "name": "Tidepool Tunic",
-      "path": "assets/outfit-textures/outfit-tidepool-tunic.png",
-      "description": "A sea-teal tunic with scallop waves, bubble dots, and navy trim."
+      "path": "assets/outfit-textures/outfit-tidepool-tunic-v2.png",
+      "description": "A sea-teal tunic with scallop waves, bubble dots, and navy trim.",
+      "tint": "#2e8b8b"
     },
     {
       "id": "outfit-sunrise-poncho",
       "name": "Sunrise Poncho",
-      "path": "assets/outfit-textures/outfit-sunrise-poncho.png",
-      "description": "A sunrise-striped poncho with terracotta hem and cream fringe."
+      "path": "assets/outfit-textures/outfit-sunrise-poncho-v2.png",
+      "description": "A sunrise-striped poncho with terracotta hem and cream fringe.",
+      "tint": "#e07840"
     },
     {
       "id": "outfit-meadow-poncho",
       "name": "Meadow Poncho",
-      "path": "assets/outfit-textures/outfit-meadow-poncho.png",
-      "description": "A leaf-green poncho with daisy dots, diamond lattice, and bark-brown hem."
+      "path": "assets/outfit-textures/outfit-meadow-poncho-v2.png",
+      "description": "A leaf-green poncho with daisy dots, diamond lattice, and bark-brown hem.",
+      "tint": "#5a9e4b"
     },
     {
       "id": "outfit-starlight-cape",
       "name": "Starlight Cape",
-      "path": "assets/outfit-textures/outfit-starlight-cape.png",
-      "description": "A midnight-navy cape with gold stars, shoulder capelet, and gold clasp."
+      "path": "assets/outfit-textures/outfit-starlight-cape-v2.png",
+      "description": "A midnight-navy cape with gold stars, shoulder capelet, and gold clasp.",
+      "tint": "#232f5e"
     },
     {
       "id": "outfit-ember-tabard",
       "name": "Ember Tabard",
-      "path": "assets/outfit-textures/outfit-ember-tabard.png",
-      "description": "A crimson harlequin tabard with amber diamonds and gold trim."
+      "path": "assets/outfit-textures/outfit-ember-tabard-v2.png",
+      "description": "A crimson harlequin tabard with amber diamonds and gold trim.",
+      "tint": "#c0272d"
     },
     {
       "id": "outfit-royal-tabard",
       "name": "Royal Tabard",
-      "path": "assets/outfit-textures/outfit-royal-tabard.png",
-      "description": "A royal-purple tabard with gold border and cream fleur dots."
+      "path": "assets/outfit-textures/outfit-royal-tabard-v2.png",
+      "description": "A royal-purple tabard with gold border and cream fleur dots.",
+      "tint": "#5b2e91"
     },
     {
       "id": "outfit-dusk-wrap",
       "name": "Dusk Wrap",
-      "path": "assets/outfit-textures/outfit-dusk-wrap.png",
-      "description": "A slate wrap with diagonal plum and dusty-rose bands and a tie knot."
+      "path": "assets/outfit-textures/outfit-dusk-wrap-v2.png",
+      "description": "A slate wrap with diagonal plum and dusty-rose bands and a tie knot.",
+      "tint": "#5a4a6a"
     },
     {
       "id": "outfit-classic-tee-jeans",
       "name": "Classic Tee & Jeans",
-      "path": "assets/outfit-textures/outfit-classic-tee-jeans.png",
-      "description": "A white crew-neck tee with medium-wash blue jeans, brown belt, and orange stitching."
+      "path": "assets/outfit-textures/outfit-classic-tee-jeans-v2.png",
+      "description": "A white crew-neck tee with medium-wash blue jeans, brown belt, and orange stitching.",
+      "tint": "#ededed"
     },
     {
       "id": "outfit-hoodie-jeans",
       "name": "Hoodie & Dark Jeans",
-      "path": "assets/outfit-textures/outfit-hoodie-jeans.png",
-      "description": "A heather-gray pullover hoodie with kangaroo pocket and dark indigo jeans."
+      "path": "assets/outfit-textures/outfit-hoodie-jeans-v2.png",
+      "description": "A heather-gray pullover hoodie with kangaroo pocket and dark indigo jeans.",
+      "tint": "#9aa0a6"
     },
     {
       "id": "outfit-flannel-jeans",
       "name": "Flannel & Jeans",
-      "path": "assets/outfit-textures/outfit-flannel-jeans.png",
-      "description": "A red buffalo-plaid flannel shirt with rolled sleeves and medium-wash jeans."
+      "path": "assets/outfit-textures/outfit-flannel-jeans-v2.png",
+      "description": "A red buffalo-plaid flannel shirt with rolled sleeves and medium-wash jeans.",
+      "tint": "#b03030"
     },
     {
       "id": "outfit-striped-tee-khakis",
       "name": "Striped Tee & Khakis",
-      "path": "assets/outfit-textures/outfit-striped-tee-khakis.png",
-      "description": "A navy-and-white striped tee with khaki chinos and a brown leather belt."
+      "path": "assets/outfit-textures/outfit-striped-tee-khakis-v2.png",
+      "description": "A navy-and-white striped tee with khaki chinos and a brown leather belt.",
+      "tint": "#d8d8d8"
     },
     {
       "id": "outfit-pumpkin-patch-poncho",
       "name": "Pumpkin Patch Poncho",
-      "path": "assets/outfit-textures/outfit-pumpkin-patch-poncho.png",
+      "path": "assets/outfit-textures/outfit-pumpkin-patch-poncho-v2.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
       "description": "A burnt-orange poncho with pumpkin-vine embroidery, chocolate hem, and cream fringe.",
       "unlock": {
         "type": "festival",
         "season": "fall"
-      }
+      },
+      "tint": "#c65d21"
     },
     {
       "id": "outfit-woodland-cape",
       "name": "Woodland Cape",
-      "path": "assets/outfit-textures/outfit-woodland-cape.png",
+      "path": "assets/outfit-textures/outfit-woodland-cape-v2.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
       "description": "A forest-green cape with falling amber leaves, amber clasp, and darker shoulder capelet.",
       "unlock": {
         "type": "festival",
         "season": "fall"
-      }
+      },
+      "tint": "#2e5d33"
     },
     {
       "id": "outfit-cider-mill-tabard",
       "name": "Cider Mill Tabard",
-      "path": "assets/outfit-textures/outfit-cider-mill-tabard.png",
+      "path": "assets/outfit-textures/outfit-cider-mill-tabard-v2.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
       "description": "An apple-red tabard with cream stripes, cinnamon trim, and an embroidered apple emblem.",
       "unlock": {
         "type": "festival",
         "season": "fall"
-      }
+      },
+      "tint": "#c03a2b"
     },
     {
       "id": "outfit-bonfire-wrap",
       "name": "Bonfire Wrap",
-      "path": "assets/outfit-textures/outfit-bonfire-wrap.png",
+      "path": "assets/outfit-textures/outfit-bonfire-wrap-v2.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
       "description": "A charcoal wrap with diagonal ember-orange flame bands and a golden tie knot.",
       "unlock": {
         "type": "festival",
         "season": "fall"
-      }
+      },
+      "tint": "#4a4a4a"
     },
     {
       "id": "outfit-snowfall-cape",
       "name": "Snowfall Cape",
-      "path": "assets/outfit-textures/outfit-snowfall-cape.png",
+      "path": "assets/outfit-textures/outfit-snowfall-cape-v2.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
       "description": "A deep spruce-green cape with white snowflake motifs, cream faux-fur trim, and a gold clasp.",
       "unlock": {
         "type": "festival",
         "season": "winter"
-      }
+      },
+      "tint": "#3a6b4f"
     },
     {
       "id": "outfit-hearthside-wrap",
       "name": "Hearthside Wrap",
-      "path": "assets/outfit-textures/outfit-hearthside-wrap.png",
+      "path": "assets/outfit-textures/outfit-hearthside-wrap-v2.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
       "description": "A warm cranberry wrap with golden cable-knit pattern, cream fringe, and a wooden toggle.",
       "unlock": {
         "type": "festival",
         "season": "winter"
-      }
+      },
+      "tint": "#a83a4a"
     },
     {
       "id": "outfit-evergreen-tabard",
       "name": "Evergreen Tabard",
-      "path": "assets/outfit-textures/outfit-evergreen-tabard.png",
+      "path": "assets/outfit-textures/outfit-evergreen-tabard-v2.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
       "description": "A pine-green tabard with gold border trim and embroidered holly sprigs with red berries.",
       "unlock": {
         "type": "festival",
         "season": "winter"
-      }
+      },
+      "tint": "#2e6b34"
     },
     {
       "id": "outfit-frostlight-tunic",
       "name": "Frostlight Tunic",
-      "path": "assets/outfit-textures/outfit-frostlight-tunic.png",
+      "path": "assets/outfit-textures/outfit-frostlight-tunic-v2.png",
       "sourceModel": "assets/cosmetics/outfits/template-outfit.glb",
       "description": "An icy periwinkle tunic with silver snowflake embroidery, white fur trim, and a silver belt.",
       "unlock": {
         "type": "festival",
         "season": "winter"
-      }
+      },
+      "tint": "#9fb8dd"
     },
     {
       "id": "outfit-blossom-tunic",
       "name": "Blossom Tunic",
-      "path": "assets/outfit-textures/outfit-blossom-tunic.png",
+      "path": "assets/outfit-textures/outfit-blossom-tunic-v2.png",
       "description": "A cherry-blossom pink tunic with petal print and sage-green trim.",
       "unlock": {
         "type": "festival",
         "season": "spring"
-      }
+      },
+      "tint": "#f0a8b8"
     },
     {
       "id": "outfit-raindrop-cape",
       "name": "Raindrop Cape",
-      "path": "assets/outfit-textures/outfit-raindrop-cape.png",
+      "path": "assets/outfit-textures/outfit-raindrop-cape-v2.png",
       "description": "A periwinkle rain cape with a raindrop pattern and cloud-white collar.",
       "unlock": {
         "type": "festival",
         "season": "spring"
-      }
+      },
+      "tint": "#8fa8d8"
     },
     {
       "id": "outfit-seedling-poncho",
       "name": "Seedling Poncho",
-      "path": "assets/outfit-textures/outfit-seedling-poncho.png",
+      "path": "assets/outfit-textures/outfit-seedling-poncho-v2.png",
       "description": "A sprout-green poncho with a leaf-vein motif and cream fringe.",
       "unlock": {
         "type": "festival",
         "season": "spring"
-      }
+      },
+      "tint": "#7bc47f"
     },
     {
       "id": "outfit-dewdrop-wrap",
       "name": "Dewdrop Wrap",
-      "path": "assets/outfit-textures/outfit-dewdrop-wrap.png",
+      "path": "assets/outfit-textures/outfit-dewdrop-wrap-v2.png",
       "description": "A pale aqua morning-mist wrap with sparkling dewdrop dots.",
       "unlock": {
         "type": "festival",
         "season": "spring"
-      }
+      },
+      "tint": "#a8d8e0"
     },
     {
       "id": "outfit-sunflower-tabard",
       "name": "Sunflower Tabard",
-      "path": "assets/outfit-textures/outfit-sunflower-tabard.png",
+      "path": "assets/outfit-textures/outfit-sunflower-tabard-v2.png",
       "description": "A golden tabard with big sunflower heads and chocolate-brown trim.",
       "unlock": {
         "type": "festival",
         "season": "summer"
-      }
+      },
+      "tint": "#e0a82e"
     },
     {
       "id": "outfit-lakeside-wrap",
       "name": "Lakeside Wrap",
-      "path": "assets/outfit-textures/outfit-lakeside-wrap.png",
+      "path": "assets/outfit-textures/outfit-lakeside-wrap-v2.png",
       "description": "A cool lake-blue wrap with white wave ripples and a sandy hem.",
       "unlock": {
         "type": "festival",
         "season": "summer"
-      }
+      },
+      "tint": "#5b9bd5"
     },
     {
       "id": "outfit-firefly-cape",
       "name": "Firefly Cape",
-      "path": "assets/outfit-textures/outfit-firefly-cape.png",
+      "path": "assets/outfit-textures/outfit-firefly-cape-v2.png",
       "description": "A twilight indigo cape dotted with glowing fireflies.",
       "unlock": {
         "type": "festival",
         "season": "summer"
-      }
+      },
+      "tint": "#3a3f6b"
     },
     {
       "id": "outfit-summerberry-tunic",
       "name": "Summerberry Tunic",
-      "path": "assets/outfit-textures/outfit-summerberry-tunic.png",
+      "path": "assets/outfit-textures/outfit-summerberry-tunic-v2.png",
       "description": "A berry-red tunic with berry sprigs and leaf-green collar trim.",
       "unlock": {
         "type": "festival",
         "season": "summer"
-      }
+      },
+      "tint": "#c03040"
     },
     {
       "id": "outfit-button-up-chinos",
       "name": "Button-Up & Chinos",
       "description": "A crisp sky-blue button-up shirt with khaki chinos.",
-      "path": "assets/outfit-textures/outfit-button-up-chinos.png"
+      "path": "assets/outfit-textures/outfit-button-up-chinos-v2.png",
+      "tint": "#7fb2e5"
     },
     {
       "id": "outfit-graphic-tee-cargos",
       "name": "Graphic Tee & Cargos",
       "description": "A heather-gray tee with a sunset mountain graphic and olive cargo shorts.",
-      "path": "assets/outfit-textures/outfit-graphic-tee-cargos.png"
+      "path": "assets/outfit-textures/outfit-graphic-tee-cargos-v2.png",
+      "tint": "#9aa0a6"
     },
     {
       "id": "outfit-hoops-jersey-shorts",
       "name": "Hoops Jersey & Shorts",
       "description": "A royal-blue basketball jersey (number 23) with white mesh shorts.",
-      "path": "assets/outfit-textures/outfit-hoops-jersey-shorts.png"
+      "path": "assets/outfit-textures/outfit-hoops-jersey-shorts-v2.png",
+      "tint": "#2a4bd7"
     },
     {
       "id": "outfit-plaid-flannel-corduroys",
       "name": "Plaid Flannel & Corduroys",
       "description": "A green-and-navy plaid flannel shirt with chocolate-brown corduroys.",
-      "path": "assets/outfit-textures/outfit-plaid-flannel-corduroys.png"
-    },
-    {
-      "id": "outfit-zipup-hoodie-joggers",
-      "name": "Zip-Up Hoodie & Joggers",
-      "description": "An oversized zip-up hoodie with drawstrings and kangaroo pocket, paired with tapered joggers. Tint-ready.",
-      "path": "assets/outfit-textures/outfit-zipup-hoodie-joggers.png"
-    },
-    {
-      "id": "outfit-henley-dark-jeans",
-      "name": "Henley & Dark Jeans",
-      "description": "A ribbed-collar henley with a 3-button placket over dark jeans. Tint-ready.",
-      "path": "assets/outfit-textures/outfit-henley-dark-jeans.png"
-    },
-    {
-      "id": "outfit-polo-chino-shorts",
-      "name": "Polo & Chino Shorts",
-      "description": "A classic polo with folded collar over chino shorts with side pockets. Tint-ready.",
-      "path": "assets/outfit-textures/outfit-polo-chino-shorts.png"
-    },
-    {
-      "id": "outfit-denim-jacket-tee",
-      "name": "Denim Jacket & Tee",
-      "description": "An open denim-style trucker jacket with chest pockets over a plain crew-neck tee. Tint-ready.",
-      "path": "assets/outfit-textures/outfit-denim-jacket-tee.png"
-    },
-    {
-      "id": "outfit-sweater-vest-slacks",
-      "name": "Sweater Vest & Slacks",
-      "description": "A cable-knit V-neck sweater vest over a collared shirt with tailored slacks. Tint-ready.",
-      "path": "assets/outfit-textures/outfit-sweater-vest-slacks.png"
+      "path": "assets/outfit-textures/outfit-plaid-flannel-corduroys-v2.png",
+      "tint": "#3a5f3a"
     }
   ]
 }

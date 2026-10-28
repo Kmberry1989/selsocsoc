@@ -398,18 +398,17 @@ window.__snugDailyLoop = {
 window.__snugWardrobe = {
   inventory: () => inventory(),
   profile: () => ({ ...state.profile }),
+  updateGameplay: (patch) => {
+    const next = typeof patch === "function" ? patch(state.gameplay || {}) : patch;
+    state.gameplay = { ...(state.gameplay || {}), ...(next || {}) };
+    queueSave();
+  },
   owns: (id) => inventory().includes(id),
   activeSeason: () => activeSeason(),
   seasonalOutfits: (season) => seasonalOutfits(season),
   claimSeasonalOutfit,
   setPaintedOutfit: (id = "") => {
     patchPlayer(p => ({ ...p, equippedAppearance: { ...(p.equippedAppearance || {}), paintedOutfit: String(id || "") } }));
-  },
-  setPaintedFaceWear: (id = "") => {
-    patchPlayer(p => ({ ...p, equippedAppearance: { ...(p.equippedAppearance || {}), paintedFaceWear: String(id || "") } }));
-  },
-  setPaintedNeckwear: (id = "") => {
-    patchPlayer(p => ({ ...p, equippedAppearance: { ...(p.equippedAppearance || {}), paintedNeckwear: String(id || "") } }));
   },
 };
 

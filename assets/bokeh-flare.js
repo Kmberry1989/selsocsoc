@@ -18,7 +18,10 @@
     THREE: null,
   };
   let threePromise;
-  const getThree = () => threePromise ||= import("./vendor/three/three.module.js");
+  // Loaded as a plain script, a relative import would resolve against the
+  // page URL (site root) instead of this file, so load the real module by
+  // its full path from the page — the same fix npc-faces.js already uses.
+  const getThree = () => threePromise ||= import(new URL("assets/vendor/three/three.module.js", document.baseURI).href);
 
   const clamp01 = (value) => Math.max(0, Math.min(1, value));
   const smoothstep = (edge0, edge1, value) => {
@@ -52,8 +55,19 @@
   };
 
   const findSun = (scene) => {
+    // Prefer the VISIBLE sun disc: a mesh with "sun" in its name. The old
+    // code took the first directional light and used its raw position, which
+    // can project off-screen while the disc itself is on-screen — so the
+    // flare never appeared when looking at the actual sun.
     const namedSun = scene.getObjectByName?.("SnugRoundSun");
     if (namedSun) return namedSun;
+    let mesh = null;
+    scene.traverse((object) => {
+      if (mesh || !object.isMesh) return;
+      const name = object.name || "";
+      if (/sun/i.test(name) && !/biome|meadow|sky|gradient|ground/i.test(name)) mesh = object;
+    });
+    if (mesh) return mesh;
     let light = null;
     scene.traverse((object) => {
       if (!light && object.isDirectionalLight) light = object;
@@ -122,23 +136,29 @@
       setTimeout(init, 400);
       return;
     }
-    const THREE = state.THREE || await getThree();
-    state.THREE = THREE;
-    window.__snugThree = THREE;
+    try {
+      const THREE = state.THREE || await getThree();
+      state.THREE = THREE;
+      window.__snugThree = THREE;
 
-    if (!state.ready) {
-      state.ready = true;
-      state.tmp = {
-        sunWorld: new THREE.Vector3(),
-        ndc: new THREE.Vector3(),
-        camDir: new THREE.Vector3(),
-        toSun: new THREE.Vector3(),
-        ray: new THREE.Vector3(),
-      };
-      ensureBrightenLayer();
-      requestAnimationFrame(update);
+      if (!state.ready) {
+        state.ready = true;
+        state.tmp = {
+          sunWorld: new THREE.Vector3(),
+          ndc: new THREE.Vector3(),
+          camDir: new THREE.Vector3(),
+          toSun: new THREE.Vector3(),
+          ray: new THREE.Vector3(),
+        };
+        ensureBrightenLayer();
+        requestAnimationFrame(update);
+      }
+      installForWorld(THREE, world);
+    } catch (error) {
+      // A transient module/texture failure used to kill the flare for the
+      // whole session (no retry was scheduled on this path). Retry instead.
+      setTimeout(init, 1600);
     }
-    installForWorld(THREE, world);
   };
 
   const update = (now) => {
@@ -152,7 +172,15 @@
     const tmp = state.tmp;
     state.sun ||= findSun(world.scene);
 
-    if (state.sun?.getWorldPosition) {
+    if (state.sun?.isDirectionalLight) {
+      // Directional light: aim along its shine direction, not at its raw
+      // position (which can project off-screen while the sun disc is visible).
+      const targetPos = state.sun.target?.position || { x: 0, y: 0, z: 0 };
+      tmp.toSun.copy(state.sun.position).sub(targetPos);
+      if (tmp.toSun.lengthSq() < 0.0001) tmp.toSun.set(0.42, 0.62, -0.66);
+      tmp.toSun.normalize();
+      tmp.sunWorld.copy(camera.position).addScaledVector(tmp.toSun, 180);
+    } else if (state.sun?.getWorldPosition) {
       state.sun.getWorldPosition(tmp.sunWorld);
       tmp.toSun.copy(tmp.sunWorld).sub(camera.position);
     } else {

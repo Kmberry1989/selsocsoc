@@ -7,6 +7,6 @@
   },
   "painting": ["artist-palette.webp", "paint-bucket-rainbow-no-top-handle.webp", "paint-bucket-rainbow.webp", "paint-bucket-teal.webp", "paint-roller-yellow.webp", "paintbrush-rainbow.webp"],
   "fishing": ["shell-conch.webp", "shell-scallop.webp", "shell-spiral.webp"],
-  "worldSprites": ["prop-fence-garden-lattice.webp", "prop-fence-rustic-split-rail.webp", "prop-fence-white-picket-segment.webp", "prop-plant-fern.webp", "prop-plant-monstera.webp", "prop-plant-snake-plant.webp", "prop-rock-boulder.webp", "prop-rock-pebbles.webp", "prop-rock-stepping-stone.webp", "prop-tree-cherry-blossom.webp", "prop-tree-oak.webp", "prop-tree-pine.webp"],
+  "worldSprites": ["prop-fence-garden-lattice.webp", "prop-fence-rustic-split-rail.webp", "prop-fence-white-picket-segment.webp", "prop-plant-fern.webp", "prop-plant-monstera.webp", "prop-plant-snake-plant.webp", "prop-rock-boulder.webp", "prop-rock-pebbles.webp", "prop-rock-stepping-stone.webp"],
   "materials": ["carpet-braided-rag-coral-cream-teal.webp", "carpet-kilim-diamond-terracotta-navy.webp", "carpet-shag-oatmeal.webp", "fabric-corduroy-mustard.webp", "fabric-gingham-red.webp", "fabric-linen-teal.webp", "hardwood-barnwood-gray.webp", "hardwood-honey-oak.webp", "hardwood-walnut.webp", "metal-brass-brushed.webp", "metal-copper-patina.webp", "wallpaper-daisies-sage-cream.webp", "wallpaper-pinstripe-gold-cream.webp"]
 }

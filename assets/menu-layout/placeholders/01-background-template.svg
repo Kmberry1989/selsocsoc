@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#bfe1e3"/>
+  <path d="M0 650Q330 520 690 675T1600 590V900H0Z" fill="#b8d5ad"/>
+  <rect x="160" y="90" width="1280" height="720" rx="24" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="18 14"/>
+  <rect x="320" y="180" width="960" height="540" rx="24" fill="#fff" fill-opacity=".12" stroke="#426d4b" stroke-width="4" stroke-dasharray="12 12"/>
+  <g fill="#26383b" font-family="system-ui,sans-serif" text-anchor="middle">
+    <text x="800" y="420" font-size="58" font-weight="700">BACKGROUND ARTWORK</text>
+    <text x="800" y="478" font-size="28">1600 × 900 • keep center 60% quiet</text>
+    <text x="800" y="520" font-size="22">Outer dashed line: 10% crop-safe margin</text>
+  </g>
+</svg>

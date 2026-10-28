@@ -3,7 +3,7 @@
   position: fixed;
   z-index: 60;
   right: max(12px, env(safe-area-inset-right));
-  bottom: 118px;
+  bottom: 152px;
   width: 52px;
   height: 52px;
   border: 0;
@@ -84,8 +84,8 @@
   position: fixed;
   z-index: 60;
   right: max(12px, env(safe-area-inset-right));
-  bottom: 182px;
-  width: 44px; height: 44px;
+  bottom: 260px;
+  width: 48px; height: 48px;
   border: 0; border-radius: 50%;
   background: #fffdf8ee; color: #26383b;
   font-size: 20px;
@@ -98,7 +98,9 @@
 .snug-minimap-wrap {
   position: fixed;
   z-index: 60;
-  top: max(10px, env(safe-area-inset-top));
+  /* Below the season/weather pill (top 58px, ~30px tall) so the map
+   * never covers it. */
+  top: max(100px, calc(env(safe-area-inset-top) + 88px));
   right: max(10px, env(safe-area-inset-right));
   padding: 6px;
   border-radius: 18px;

@@ -73,6 +73,12 @@
       canvas, context, texture, mesh, level: 0, phase: Math.random() * TAU,
       morphTimer: 0, scaleTimer: 0, randScale: 1, scaleTarget: 1,
       morph: { ...REST_MORPH, target: { ...REST_MORPH } },
+      // Talking-mix state (user-directed 2026-10-28: a mix of all four
+      // demo styles). Word index / line / mood arrive from the dialogue
+      // speaker via window.__snugTalk* (see npc-roster.js y8); when they
+      // are absent the tick falls back to the plain lip-flap cadence.
+      lastWord: -1, wordStart: 0, wordSyllables: 1, avgWordMs: 400,
+      lastBoundaryAt: 0, popStart: 0,
     };
     paint(mouth, 0, 0);
     return mouth;
@@ -83,7 +89,37 @@
     const reduced = reducedMotion.matches;
     const cadence = 0.5 + 0.5 * Math.sin(now * 0.013 + mouth.phase);
     const breathPause = Math.sin(now * 0.0031 + mouth.phase * 1.7) < -0.72;
-    const target = speaking ? (breathPause ? 0.1 : reduced ? 0.32 : 0.55 + cadence * 0.45) : 0;
+    // --- talking mix: word-pop + syllable bounce + mood shape ---
+    // Word index comes from speech-synthesis boundary events; a new word
+    // pops the mouth (word-pop) and restarts the syllable clock.
+    let syllableBoost = 0, popBoost = 0;
+    const talkWord = window.__snugTalkWord;
+    const talkLine = window.__snugTalkLine;
+    if (speaking && !reduced && typeof talkWord === 'number' && talkLine) {
+      if (talkWord !== mouth.lastWord) {
+        if (mouth.lastWord >= 0 && mouth.lastBoundaryAt) {
+          const gap = now - mouth.lastBoundaryAt;
+          if (gap > 80 && gap < 2000) mouth.avgWordMs = mouth.avgWordMs * 0.7 + gap * 0.3;
+        }
+        mouth.lastBoundaryAt = now;
+        mouth.lastWord = talkWord;
+        mouth.popStart = now;
+        const words = String(talkLine).split(/\s+/).filter(Boolean);
+        const word = words[talkWord] || '';
+        const syl = (word.toLowerCase().match(/[aeiouy]+/g) || []).length;
+        mouth.wordSyllables = Math.max(1, syl);
+        mouth.wordStart = now;
+      }
+      const elapsed = now - mouth.wordStart;
+      const progress = Math.min(1, elapsed / Math.max(120, mouth.avgWordMs));
+      syllableBoost = 0.22 * Math.max(0, Math.sin(progress * mouth.wordSyllables * Math.PI * 2));
+      if (now - mouth.popStart < 180) {
+        popBoost = 0.30 * Math.sin(Math.PI * (now - mouth.popStart) / 180);
+      }
+    } else if (!speaking) {
+      mouth.lastWord = -1;
+    }
+    const target = speaking ? (breathPause ? 0.1 : reduced ? 0.32 : Math.min(1, 0.55 + cadence * 0.45 + syllableBoost)) : 0;
     const response = Math.min(1, Math.max(0.08, Number(delta) * (speaking ? 11 : 7)));
     mouth.level += (target - mouth.level) * response;
 
@@ -95,6 +131,11 @@
       if (mouth.morphTimer <= 0) {
         mouth.morphTimer = rand(0.35, 0.8);
         Object.assign(morph.target, newMorphTargets());
+        // Mood shape (expressive talk): excited lines go wide, questions
+        // go tall and narrow, everything else keeps the random shape.
+        const mood = window.__snugTalkMood;
+        if (mood === 'excited') { morph.target.wide = 1.38; morph.target.tall = 0.72; }
+        else if (mood === 'question') { morph.target.wide = 1.0; morph.target.tall = 1.06; }
       }
       if (mouth.scaleTimer <= 0) {
         mouth.scaleTimer = rand(0.3, 0.65);
@@ -112,7 +153,7 @@
     paint(mouth, reduced ? Math.min(0.3, mouth.level) : mouth.level, now);
     if (!reduced && speaking) mouth.mesh.rotation.z += Number(delta) * 0.62;
     else if (!speaking && Math.abs(mouth.mesh.rotation.z) > 0.001) mouth.mesh.rotation.z *= Math.pow(0.16, Number(delta));
-    const scale = (0.94 + mouth.level * 0.16) * mouth.randScale;
+    const scale = (0.94 + mouth.level * 0.16) * mouth.randScale * (1 + popBoost);
     mouth.mesh.scale.set(scale, scale, 1);
   }
 

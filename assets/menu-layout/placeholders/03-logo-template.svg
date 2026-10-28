@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 260">
+  <rect width="720" height="260" rx="30" fill="#fffdf8"/>
+  <rect x="36" y="36" width="648" height="188" rx="20" fill="none" stroke="#5c8d65" stroke-width="4" stroke-dasharray="12 10"/>
+  <g fill="#26383b" font-family="system-ui,sans-serif" text-anchor="middle">
+    <text x="360" y="123" font-size="46" font-weight="750">YOUR LOGO</text>
+    <text x="360" y="166" font-size="22">720 × 260 • 36 px safe area</text>
+  </g>
+</svg>

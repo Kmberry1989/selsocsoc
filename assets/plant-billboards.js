@@ -1,6 +1,6 @@
 (() => {
   const SPRITES = {
-    trees: ["tree-oak.webp", "tree-apple.webp", "tree-birch.webp", "tree-maple.webp", "tree-pine.webp", "tree-willow.webp", "prop-tree-cherry-blossom.webp", "prop-tree-oak.webp", "prop-tree-pine.webp"],
+    trees: ["tree-oak.webp", "tree-apple.webp", "tree-birch.webp", "tree-maple.webp", "tree-pine.webp", "tree-willow.webp"],
     bushes: ["bush-1.png", "bush-2.png", "bush-3.png", "bush-4.png", "prop-plant-fern.webp", "prop-plant-monstera.webp", "prop-plant-snake-plant.webp"],
     flowers: ["flower-mixed-1.png", "flower-mixed-2.png", "flower-mixed-3.png", "flower-mixed-4.png", "flower-mixed-5.png", "flower-branch-3.png", "flower-branch-5.png", "flower-branch-6.png"],
     grass: ["grass-tuft-1.webp"],
@@ -24,7 +24,10 @@
   let layoutPromise;
   let assetsPromise;
 
-  const getThree = () => threePromise ||= import("./vendor/three/three.module.js");
+  // Loaded as a plain script, a relative import would resolve against the
+  // page URL (site root) instead of this file, so load the real module by
+  // its full path from the page — the same fix npc-faces.js already uses.
+  const getThree = () => threePromise ||= import(new URL("assets/vendor/three/three.module.js", document.baseURI).href);
   const getLayout = () => layoutPromise ||= fetch("assets/world/default-layout.json", { cache: "no-store" })
     .then((response) => response.ok ? response.json() : Promise.reject(new Error(String(response.status))))
     .then((layout) => Array.isArray(layout?.objects) ? layout.objects : []);
@@ -95,36 +98,6 @@
     return sprite;
   }
 
-  function makeCrossPlaneTree(THREE, assets, name, record, height, label) {
-    const asset = assets.get(name);
-    if (!asset) return null;
-    const tree = new THREE.Group();
-    tree.name = label;
-    tree.position.set(Number(record.x) || 0, Number(record.y) || 0, Number(record.z) || 0);
-    const geometry = new THREE.PlaneGeometry(height * asset.aspect, height);
-    geometry.translate(0, height * 0.5, 0);
-    [0, Math.PI / 2].forEach((rotation, index) => {
-      const plane = new THREE.Mesh(geometry, asset.crossMaterial);
-      plane.name = `${label}_Plane_${index + 1}`;
-      plane.rotation.y = rotation;
-      plane.renderOrder = 1;
-      plane.raycast = () => {};
-      tree.add(plane);
-    });
-    tree.userData = {
-      crossPlaneTree: true,
-      matchedPlaneCount: 2,
-      layoutId: record.id || "",
-      source: record.props?.source || "",
-      spritePath: `assets/sprites/${name}`,
-      baseScale: [1, 1],
-      baseY: Number(record.y) || 0,
-      treeHeight: height,
-      bloom: 0.16,
-    };
-    return tree;
-  }
-
   function choose(list, index) {
     return list[Math.abs(Number(index) || 0) % list.length];
   }
@@ -136,12 +109,13 @@
 
     const expanded = scene.getObjectByName("SnugExpandedCountryside");
     (expanded?.children || []).forEach((object) => {
+      // Every instanced mesh in the countryside group is a plant (trunks,
+      // canopies, flower patches) — the old type/count/radius heuristic
+      // missed the live builders' sphere-cluster canopies, cone pines, and
+      // blossom blobs, so those low-poly originals stayed visible.
       if (!object.isInstancedMesh) return;
       const type = object.geometry?.type || "";
-      const radius = object.geometry?.parameters?.radius || 0;
-      const isTreePart = (type === "CylinderGeometry" && object.count > 30) || (type === "IcosahedronGeometry" && object.count > 30 && radius > 0.7);
-      const isFlower = type === "IcosahedronGeometry" && radius > 0.07 && radius < 0.14;
-      if (isTreePart || isFlower) object.visible = false;
+      if (["CylinderGeometry", "IcosahedronGeometry", "SphereGeometry", "ConeGeometry"].includes(type)) object.visible = false;
     });
 
     const upgrade = scene.getObjectByName("CylindricalCityEnvironmentUpgrade");
@@ -166,12 +140,14 @@
         const scale = Math.max(0.05, Number(record.scale) || 1);
         let sprite = null;
         if (source === "expanded-tree") {
-          sprite = makeCrossPlaneTree(THREE, assets, choose(SPRITES.trees, record.props?.instanceIndex), record, 3.45 * scale, `SnugTreeCrossPair_${record.id}`);
+          // Camera-facing picture, not crossed planes: from the game's high
+          // pulled-back camera, crossed planes read as flat slabs edge-on.
+          sprite = makeSprite(THREE, assets, choose(SPRITES.trees, record.props?.instanceIndex), record, 3.45 * scale, `SnugTreeSprite_${record.id}`);
           counters.trees += Boolean(sprite);
         } else if (source === "base-environment" && /^tree-/.test(record.props?.asset || "")) {
           const requested = `${record.props.asset}.webp`;
           const name = assets.has(requested) ? requested : "tree-oak.webp";
-          sprite = makeCrossPlaneTree(THREE, assets, name, record, 3.05 * scale, `SnugTreeCrossPair_${record.id}`);
+          sprite = makeSprite(THREE, assets, name, record, 3.05 * scale, `SnugTreeSprite_${record.id}`);
           counters.trees += Boolean(sprite);
         } else if (source === "base-environment" && record.props?.asset === "bush-round") {
           sprite = makeSprite(THREE, assets, choose(SPRITES.bushes, recordIndex), record, 1.3 * scale, `SnugBushSprite_${record.id}`);
@@ -206,9 +182,8 @@
         world: world.scene,
         ...counters,
         count: group.children.length,
-        cameraFacing: false,
-        treeConstruction: "matched-cross-plane-pairs",
-        treePlaneCount: counters.trees * 2,
+        cameraFacing: true,
+        treeConstruction: "camera-facing-sprites",
         textureFolder: "assets/sprites/",
       };
       window.dispatchEvent(new CustomEvent("snug-plant-billboards-ready", { detail: window.__snugPlantBillboards }));
@@ -229,9 +204,7 @@
       const heights = kind === "oak" ? [0, 0.7, 1.55, 2.75] : kind === "fern" ? [0, 0.38, 0.65, 0.9] : [0, 0.38, 0.62, 0.86];
       plant.children.forEach((child) => { child.visible = false; });
       const height = heights[stage] || heights[3];
-      const sprite = kind === "oak"
-        ? makeCrossPlaneTree(THREE, assets, name, { id: plant.name, x: 0, y: 0, z: 0, props: { source: "player-garden" } }, height, `SnugGardenTreeCrossPair_${index + 1}`)
-        : makeSprite(THREE, assets, name, { id: plant.name, x: 0, y: 0, z: 0, props: { source: "player-garden" } }, height, `SnugGardenSprite_${index + 1}`);
+      const sprite = makeSprite(THREE, assets, name, { id: plant.name, x: 0, y: 0, z: 0, props: { source: "player-garden" } }, height, `SnugGardenSprite_${index + 1}`);
       if (sprite) plant.add(sprite);
     });
     patchedGardens.add(garden);
@@ -277,6 +250,10 @@
   setInterval(() => {
     const world = window.__snugWorld;
     if (!world?.scene || world.mode !== "village") return;
+    // Self-healing retry: if the world was created before this chunk loaded
+    // (or an earlier build attempt failed partway), the one-shot event
+    // passes above never run for this scene, so rebuild until a group exists.
+    if (!sceneGroups.get(world.scene)) buildWorldSprites(world).catch(() => {});
     prepareAssets().then(({ THREE, assets }) => patchGarden(world.scene, THREE, assets)).catch(() => {});
   }, 1600);
   schedulePass();

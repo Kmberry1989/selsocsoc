@@ -311,6 +311,8 @@ async function switchRoom(roomId, roomName, isPrivate) {
   state.roomId = roomId;
   state.roomName = roomName;
   state.isPrivate = isPrivate;
+  window.__snugRoomId = roomId;
+  window.dispatchEvent(new CustomEvent("snug-room-changed", { detail: { roomId, roomName, isPrivate } }));
   if (!isPrivate) state.inviteArrival = false;
   state.players = [];
   state.messages = [];
@@ -1588,6 +1590,7 @@ async function startSoloGame(game) {
     showToast("Head to the village plaza to practice");
     return;
   }
+  if (game === "fishing" && window.__snugFirstCine && window.__snugFirstCine.play("fishing", null, () => startSoloGame(game))) return;
   state.rolling = true;
   state.soloResult = null;
   state.soloBalanceBefore = readCoinBalance();
@@ -2532,6 +2535,7 @@ function setupVillageShops() {
 
 function openExistingShop(shop) {
   if (!shop) return;
+  if (window.__snugFirstCine && window.__snugFirstCine.play("shop-" + shop.id, { title: shop.name }, () => openExistingShop(shop))) return;
   const closeRoom = $(".multiplayer-backdrop");
   if (closeRoom) closePanel();
   const tab = [...document.querySelectorAll(".tabbar button")].find((button) => button.textContent.trim() === "Style");
@@ -3039,7 +3043,37 @@ function setupEnvironment() {
   group.name = "SnugLivingWorld";
   const sun = new THREE.Mesh(new THREE.SphereGeometry(0.78, 48, 32), new THREE.MeshBasicMaterial({ color: 0xffd66f, toneMapped: false }));
   sun.name = "SnugRoundSun";
-  const moon = new THREE.Mesh(new THREE.SphereGeometry(0.55, 24, 18), new THREE.MeshBasicMaterial({ color: 0xd9e5ff, toneMapped: false }));
+  const moon = new THREE.Mesh(
+    new THREE.SphereGeometry(0.55, 24, 18),
+    new THREE.ShaderMaterial({
+      transparent: true,
+      uniforms: { uPhase: { value: 0.5 } },
+      vertexShader: `
+        varying vec3 vNormal;
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float uPhase;
+        varying vec3 vNormal;
+        void main() {
+          // uPhase: 0 = new moon, 0.5 = full moon, 1 = new moon.
+          // The terminator sweeps across the disc as the phase advances.
+          float phaseAngle = uPhase * 6.28318;
+          vec3 lightDir = normalize(vec3(cos(phaseAngle), 0.18, 0.35));
+          float lit = smoothstep(-0.12, 0.28, dot(normalize(vNormal), lightDir));
+          vec3 moonColor = vec3(0.85, 0.90, 1.0);
+          vec3 darkColor = vec3(0.05, 0.07, 0.13);
+          vec3 color = mix(darkColor, moonColor, lit);
+          float alpha = mix(0.18, 1.0, lit);
+          gl_FragColor = vec4(color, alpha);
+        }
+      `,
+    })
+  );
+  moon.name = "SnugPhasedMoon";
   const skyDome = makeSkyDome();
   const rainbow = makeRainbow();
   const shootingStars = makeShootingStars();
@@ -3066,7 +3100,42 @@ function setupEnvironment() {
     starPositions.push(Math.cos(angle) * radius, 14 + seeded(index * 8.4) * 18, Math.sin(angle) * radius);
   }
   starGeometry.setAttribute("position", new THREE.Float32BufferAttribute(starPositions, 3));
-  const stars = new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0xf6f3d0, size: 0.09, transparent: true, opacity: 0 }));
+  const starPhases = [];
+  const starSpeeds = [];
+  for (let index = 0; index < 180; index += 1) {
+    starPhases.push(seeded(index * 13.3 + 7.7) * Math.PI * 2);
+    starSpeeds.push(0.8 + seeded(index * 5.1 + 2.9) * 2.2);
+  }
+  starGeometry.setAttribute("twinklePhase", new THREE.Float32BufferAttribute(starPhases, 1));
+  starGeometry.setAttribute("twinkleSpeed", new THREE.Float32BufferAttribute(starSpeeds, 1));
+  const starMaterial = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    uniforms: { uTime: { value: 0 }, uOpacity: { value: 0 } },
+    vertexShader: `
+      attribute float twinklePhase;
+      attribute float twinkleSpeed;
+      uniform float uTime;
+      varying float vTwinkle;
+      void main() {
+        vTwinkle = 0.55 + 0.45 * sin(uTime * twinkleSpeed + twinklePhase);
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        gl_PointSize = 2.4 * (140.0 / -mvPosition.z);
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    `,
+    fragmentShader: `
+      varying float vTwinkle;
+      uniform float uOpacity;
+      void main() {
+        float dist = length(gl_PointCoord - 0.5);
+        float alpha = smoothstep(0.5, 0.12, dist) * vTwinkle * uOpacity;
+        gl_FragColor = vec4(0.96, 0.95, 0.82, alpha);
+      }
+    `,
+  });
+  const stars = new THREE.Points(starGeometry, starMaterial);
+  stars.name = "SnugTwinklingStars";
   group.add(stars);
   const clouds = [];
   const cloudPuffGeometry = new THREE.SphereGeometry(1, 10, 7);
@@ -3108,6 +3177,29 @@ function setupEnvironment() {
   const weather = new THREE.Points(weatherGeometry, new THREE.PointsMaterial({ color: 0xaed4e9, size: 0.045, transparent: true, opacity: 0, depthWrite: false, sizeAttenuation: true }));
   weather.name = "SnugWeatherParticles";
   group.add(weather);
+  // Autumn leaves: like snow, but colored and tied to the Autumn season (user 2026-10-18).
+  const leafCount = 420;
+  const leafGeometry = new THREE.BufferGeometry();
+  const leafPositions = new Float32Array(leafCount * 3);
+  const leafColors = new Float32Array(leafCount * 3);
+  const leafData = { baseX: new Float32Array(leafCount), baseZ: new Float32Array(leafCount), speed: new Float32Array(leafCount), phase: new Float32Array(leafCount) };
+  const leafPalette = [[0.85, 0.45, 0.15], [0.78, 0.28, 0.12], [0.92, 0.65, 0.2], [0.72, 0.35, 0.1], [0.88, 0.55, 0.25]];
+  for (let i = 0; i < leafCount; i += 1) {
+    const x = (seeded(i * 7.31 + 1.7) - 0.5) * 92;
+    const z = (seeded(i * 3.97 + 4.2) - 0.5) * 88;
+    leafPositions[i * 3] = leafData.baseX[i] = x;
+    leafPositions[i * 3 + 1] = -1.4 + seeded(i * 5.83 + 9.1) * 11;
+    leafPositions[i * 3 + 2] = leafData.baseZ[i] = z;
+    leafData.speed[i] = 0.55 + seeded(i * 9.17 + 3.3) * 0.5;
+    leafData.phase[i] = seeded(i * 4.61 + 8.8) * Math.PI * 2;
+    const c = leafPalette[Math.floor(seeded(i * 11.3 + 6.6) * leafPalette.length)];
+    leafColors[i * 3] = c[0]; leafColors[i * 3 + 1] = c[1]; leafColors[i * 3 + 2] = c[2];
+  }
+  leafGeometry.setAttribute("position", new THREE.BufferAttribute(leafPositions, 3));
+  leafGeometry.setAttribute("color", new THREE.BufferAttribute(leafColors, 3));
+  const leaves = new THREE.Points(leafGeometry, new THREE.PointsMaterial({ size: 0.09, vertexColors: true, transparent: true, opacity: 0, depthWrite: false, sizeAttenuation: true }));
+  leaves.name = "SnugAutumnLeaves";
+  group.add(leaves);
   const snowMaskTexture = makeSnowMaskTexture();
   const snowUniform = { value: 0 };
   const wildlife = makeWildlife();
@@ -3124,7 +3216,7 @@ function setupEnvironment() {
   const globeBaseColor = globe.material.color.clone();
   const startingPhase = environmentPhase();
   state.environment = {
-    group, skyDome, sun, moon, stars, shootingStars, rainbow, clouds, weather, weatherData, terrain, terrainBaseColor, globe, globeBaseColor,
+    group, skyDome, sun, moon, stars, shootingStars, rainbow, clouds, weather, weatherData, leaves, leafData, terrain, terrainBaseColor, globe, globeBaseColor,
     snowMaskTexture, snowUniform, snowVisualAmount: 0, snowSurfaceRefreshAt: 0,
     wildlife: wildlife.creatures, lights: ambient, lastLightning: 0, lightningUntil: 0,
     displayWeather: startingPhase.weather === "Clear" ? "Rain" : startingPhase.weather,
@@ -3241,7 +3333,15 @@ function tickEnvironment(time = performance.now()) {
   env.moon.position.set(-env.sun.position.x, 34 - env.sun.position.y, 28);
   env.sun.visible = !phase.isNight;
   env.moon.visible = phase.isNight;
-  env.stars.material.opacity = phase.isNight ? Math.min(0.9, (1 - phase.daylight) * 1.3) : 0;
+  // Lunar cycle: 8 game days per full cycle (game day = 2h, so 16h real time).
+  if (env.moon.material.uniforms?.uPhase) {
+    env.moon.material.uniforms.uPhase.value = (now / (8 * 7200000)) % 1;
+  }
+  // Twinkling stars: shader-driven twinkle, faded in at night.
+  if (env.stars.material.uniforms) {
+    env.stars.material.uniforms.uTime.value = elapsed;
+    env.stars.material.uniforms.uOpacity.value = phase.isNight ? Math.min(0.9, (1 - phase.daylight) * 1.3) : 0;
+  }
   env.lights.forEach(({ node, base }) => { node.intensity = base * (0.28 + phase.daylight * 0.72); });
   const stormMix = phase.weather === "Thunderstorm" ? env.weatherIntensity : 0;
   env.latestStormMix = stormMix;
@@ -3291,6 +3391,25 @@ function tickEnvironment(time = performance.now()) {
       particles.setZ(i, env.weatherData.baseZ[i] + Math.cos(phaseOffset * 0.73) * (isSnow ? 0.28 : 0.06));
     }
     particles.needsUpdate = true;
+  }
+  // Autumn leaves fall during Autumn (seasonIndex 2), like snow in Winter.
+  const leafParticles = env.leaves.geometry.attributes.position;
+  const isAutumn = phase.seasonIndex === 2;
+  env.leaves.visible = isAutumn;
+  const targetLeafOpacity = isAutumn ? 0.85 : 0;
+  env.leaves.material.opacity += (targetLeafOpacity - env.leaves.material.opacity) * (1 - Math.exp(-elapsed / 3));
+  if (isAutumn && env.leaves.material.opacity > 0.02) {
+    const lower = -1.4;
+    const span = 11;
+    for (let i = 0; i < leafParticles.count; i += 1) {
+      let y = leafParticles.getY(i) - env.leafData.speed[i] * 0.85 * elapsed;
+      while (y < lower) y += span;
+      const phaseOffset = time * 0.0009 + env.leafData.phase[i];
+      leafParticles.setY(i, y);
+      leafParticles.setX(i, env.leafData.baseX[i] + Math.sin(phaseOffset) * 0.65);
+      leafParticles.setZ(i, env.leafData.baseZ[i] + Math.cos(phaseOffset * 0.61) * 0.5);
+    }
+    leafParticles.needsUpdate = true;
   }
   env.wildlife.forEach((creature, index) => {
     const t = now * creature.userData.speed + creature.userData.phase;
@@ -3970,3 +4089,5 @@ if (window.__snugSession) attachSession(window.__snugSession);
 
 // Public entry for the Games Hub (and tutorial): open Snug Board directly.
 window.__snugBoard = { open: openBoardMode, close: closeBoardMode };
+// Current room id for feature modules (jam, etc.). Updated on every room switch.
+if (!window.__snugRoomId) window.__snugRoomId = state.roomId;

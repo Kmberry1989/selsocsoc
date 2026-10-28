@@ -99,6 +99,11 @@
       "id": "woven-rug",
       "name": "Woven Rug",
       "path": "assets/furniture/woven-rug.glb"
+    },
+    {
+      "id": "easel",
+      "name": "Artist's Easel",
+      "path": "assets/furniture/easel.glb"
     }
   ]
 }

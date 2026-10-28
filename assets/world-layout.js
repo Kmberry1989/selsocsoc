@@ -261,6 +261,45 @@ function gardenTarget(base) {
   return objectTransformTarget(matches, base);
 }
 
+function easelTarget(base) {
+  // Procedural artist's easel: three splayed wooden legs, a crossbar ledge,
+  // and a blank canvas board tilted back. Built fresh (no scene reuse).
+  const wood = new THREE.MeshStandardMaterial({ color: 0x9a6b3f, roughness: 0.85, metalness: 0 });
+  const canvasMat = new THREE.MeshStandardMaterial({ color: 0xf5efe0, roughness: 0.95, metalness: 0 });
+  const group = new THREE.Group();
+  group.name = `Easel_${base.id}`;
+  const legGeo = new THREE.CylinderGeometry(0.035, 0.045, 1.7, 8);
+  const legAngles = [0, 2.1, -2.1];
+  legAngles.forEach((angle) => {
+    const leg = new THREE.Mesh(legGeo, wood);
+    leg.position.set(Math.sin(angle) * 0.32, 0.78, Math.cos(angle) * 0.32 - 0.1);
+    leg.rotation.z = -Math.sin(angle) * 0.32;
+    leg.rotation.x = 0.18;
+    leg.castShadow = true;
+    group.add(leg);
+  });
+  const ledge = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.06, 0.12), wood);
+  ledge.position.set(0, 0.82, 0.28);
+  ledge.castShadow = true;
+  group.add(ledge);
+  const board = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.9, 0.04), canvasMat);
+  board.position.set(0, 1.28, 0.24);
+  board.rotation.x = -0.12;
+  board.castShadow = true;
+  group.add(board);
+  // Paint daub on the canvas so it reads as an artist's easel, not furniture.
+  const daub = new THREE.Mesh(
+    new THREE.CircleGeometry(0.12, 16),
+    new THREE.MeshBasicMaterial({ color: 0xe76854 })
+  );
+  daub.position.set(-0.12, 1.38, 0.265);
+  daub.rotation.x = -0.12;
+  group.add(daub);
+  state.scene.add(group);
+  const target = objectTransformTarget([group], base);
+  return target;
+}
+
 function pondTarget(base) {
   const matches = [];
   state.scene.traverse((object) => {
@@ -375,6 +414,7 @@ function resolveTarget(base) {
   if (source === 'pond-cluster') return pondTarget(base);
   if (source === 'district-marker') return districtMarkerTarget(base);
   if (source === 'garden-plot' || source === 'garden-sign') return gardenTarget(base);
+  if (source === 'prop-easel') return easelTarget(base);
   if (source === 'expanded-tree') return expandedTreeTarget(base);
   if (source === 'expanded-flower') return expandedFlowerTarget(base);
   if (source === 'ground-grass' || source === 'ground-flower') return groundDetailTarget(base);

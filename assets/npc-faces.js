@@ -1,113 +1,101 @@
-/* Unique painted faces for every NPC in Cyclical City.
-   Additive: the roster (assets/npc-roster.js) and the welcome bundle are never edited.
-   Each NPC's procedural PrimitiveFace texture is swapped for a hand-painted PNG
-   in the same cartoon/toon style. The animated speaking mouth is untouched —
-   every face keeps its mouth zone clear of static features. */
+/* snug-npc-faces-v1
+ * Gives each of the 13 roster NPCs their own unique face artwork.
+ * Replaces the generic procedural canvas face on `PrimitiveFace_<MARK>`
+ * with the NPC's painted face PNG from assets/npc-faces/.
+ * Mayor Mayor and Gideon are full 3D NPCs now; their welcome-cinematic
+ * figures still use window.__snugCinematicFaceDraw, hooked into the
+ * cinematic bundle.
+ */
 (() => {
-  "use strict";
+  if (window.__snugNpcFaces) return;
+  window.__snugNpcFaces = true;
 
-  const BASE = "assets/npc-faces/";
-
-  // In-town NPC id -> roster mark (PrimitiveFace_<mark> under the roster group).
-  const TOWN = {
-    "lyla-lens": "LL",
-    "chip-chance": "CC",
-    "barnaby-bargain": "BB",
-    "pip-parade": "PP",
-    "agnes-alley": "AA",
-    "dottie-daly": "DD",
-    "peggy-plank": "PG",
-    "mr-buck-coinsworth": "BC",
-    "fern-bramble": "FB",
-    "stanley-stamp": "SS",
-    "bobby-gill": "BG",
+  const FACES = {
+    'mayor-mayor': 'MM',
+    'gideon': 'GD',
+    'lyla-lens': 'LL',
+    'chip-chance': 'CC',
+    'barnaby-bargain': 'BB',
+    'pip-parade': 'PP',
+    'agnes-alley': 'AA',
+    'dottie-daly': 'DD',
+    'peggy-plank': 'PG',
+    'mr-buck-coinsworth': 'BC',
+    'fern-bramble': 'FB',
+    'stanley-stamp': 'SS',
+    'bobby-gill': 'BG',
   };
 
-  // Welcome-bundle face mesh names -> face file ids.
-  const WELCOME = {
-    "PrimitiveFace_MayorMayor": "mayor-mayor",
-    "PrimitiveFace_Gideon": "gideon",
-    "PrimitiveFace_LylaLens": "lyla-lens",
+  // The shared window.__snugThree can be a partial shim planted by the app
+  // bundle (no Texture constructor), so load the real Three module directly.
+  let realThreePromise = null;
+  const getRealThree = () => {
+    if (!realThreePromise) {
+      realThreePromise = import(new URL("assets/vendor/three/three.module.js", document.baseURI).href)
+        .catch(() => null);
+    }
+    return realThreePromise;
   };
 
-  function loadImage(src) {
-    return new Promise((resolve, reject) => {
-      const im = new Image();
-      im.onload = () => resolve(im);
-      im.onerror = reject;
-      im.src = src;
+  function loadImage(url) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+      img.src = url;
     });
   }
 
-  async function swapFace(mesh, file) {
-    if (!mesh || mesh.userData.snugFaceSwapped === file) return;
-    const mat = mesh.material;
-    const baseMap = mat && mat.map;
-    const TextureCtor =
-      (baseMap && baseMap.constructor) || (window.THREE && window.THREE.Texture);
-    if (!TextureCtor || !mat) return;
-    try {
-      const image = await loadImage(file);
-      if (mesh.userData.snugFaceSwapped) return; // re-fired while loading
-      const tex = new TextureCtor(image);
-      if (baseMap && baseMap.colorSpace !== undefined) tex.colorSpace = baseMap.colorSpace;
-      tex.needsUpdate = true;
-      mat.map = tex;
-      mat.needsUpdate = true;
-      mesh.userData.snugFaceSwapped = file;
-    } catch (err) {
-      /* keep the procedural face */
+  /* ---- Welcome-ceremony faces: see assets/ceremony-face-hook.js ----
+   * The ceremony builds BEFORE feature chunks load (loadFeatures waits
+   * for snug-start-entered, which fires after the ceremony closes), so
+   * a hook registered here could never reach the ceremony figures.
+   * The early script registers window.__snugCinematicFaceDraw at page
+   * parse time and preloads the three v2 face PNGs. This module keeps
+   * only the town-roster dressing below.
+   */
+  async function applyFaces(group) {
+    const THREE = (await getRealThree()) || window.__snugThree;
+    if (!THREE || !group) return;
+    for (const [id, mark] of Object.entries(FACES)) {
+      try {
+        const npc = (group.children || []).find((child) => child.userData?.npcId === id);
+        const mesh = npc ? npc.getObjectByName(`PrimitiveFace_${mark}`) : null;
+        if (!mesh || !mesh.material) continue;
+        const img = await loadImage(`assets/npc-faces/npc-${id}-face-v2.png`);
+        if (!img) continue;
+        const texture = new THREE.Texture(img);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.flipY = true;
+        texture.anisotropy = 4;
+        texture.needsUpdate = true;
+        if (mesh.material.map) mesh.material.map.dispose();
+        mesh.material.map = texture;
+        mesh.material.needsUpdate = true;
+      } catch (error) {
+        console.warn('[npc faces] could not apply face', id, error);
+      }
     }
   }
 
-  function findFace(root, name) {
-    let found = null;
-    if (root && root.traverse) {
-      root.traverse((o) => {
-        if (!found && o.name === name) found = o;
-      });
-    }
-    return found;
-  }
 
-  // In-town NPCs: the roster re-fires this event every time the village loads,
-  // so re-entries re-apply faces to the freshly built meshes.
-  window.addEventListener("snug-npc-roster-ready", (e) => {
-    const group = e.detail && e.detail.group;
-    if (!group) return;
-    for (const [id, mark] of Object.entries(TOWN)) {
-      const mesh = findFace(group, "PrimitiveFace_" + mark);
-      if (mesh) swapFace(mesh, BASE + "face-" + id + ".png");
-    }
+  window.addEventListener('snug-npc-roster-ready', (event) => {
+    applyFaces(event.detail?.group);
   });
 
-  // Welcome bundle: no ready event exists and its characters build lazily when
-  // the welcome starts, so poll for the face meshes. Cheap scene scan every 2s;
-  // stops once all three are swapped, or after 5 quiet minutes.
-  let welcomeTries = 0;
-  const welcomeTimer = setInterval(() => {
-    const scene = window.__snugWorld && window.__snugWorld.scene;
-    let remaining = 0;
-    if (scene) {
-      for (const [meshName, id] of Object.entries(WELCOME)) {
-        const mesh = findFace(scene, meshName);
-        const file = BASE + "face-welcome-" + id + ".png";
-        if (mesh && mesh.userData.snugFaceSwapped !== file) {
-          swapFace(mesh, file);
-          remaining += 1;
-        } else if (!mesh) {
-          remaining += 1;
-        }
-      }
-    } else {
-      remaining = 3;
-    }
-    if (remaining === 0 || (welcomeTries > 150 && !window.__snugWelcomeActive)) {
-      clearInterval(welcomeTimer);
-      return;
-    }
-    // While the welcome is (or may soon be) active, don't count down.
-    if (!window.__snugWelcomeActive) welcomeTries += 1;
-    else welcomeTries = 0;
+  // Fallback: the roster chunk can build the NPC group before this module
+  // loads (chunk order), missing the one-shot event. Poll the scene and
+  // dress any group instance that appears.
+  const dressedGroups = new WeakSet();
+  const dressWhenFound = () => {
+    const group = window.__snugWorld?.scene?.getObjectByName?.('CylindricalCityNPCs');
+    if (!group || dressedGroups.has(group)) return;
+    dressedGroups.add(group);
+    applyFaces(group);
+  };
+  let attempts = 0;
+  const timer = setInterval(() => {
+    dressWhenFound();
+    if (++attempts >= 90) clearInterval(timer);
   }, 2000);
 })();

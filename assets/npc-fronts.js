@@ -214,7 +214,7 @@
     section.setAttribute("aria-live", "polite");
     section.innerHTML =
       `<button type="button" class="city-npc-close" aria-label="Close conversation">×</button>` +
-      `<div class="city-npc-portrait" style="--npc-color:${front.color}" aria-hidden="true"><span>${front.mark}</span></div>` +
+      `<div class="city-npc-portrait" style="--npc-color:${front.color}" aria-hidden="true"><span>${front.mark}</span><img src="assets/npc-faces/npc-${front.id}-face-v2.png" alt="" onerror="this.remove()"></div>` +
       `<div class="city-npc-copy"><small>${front.role}</small><b>${frontName(front)}</b><p></p><em>Continue when you’re ready</em></div>` +
       `<button type="button" class="city-npc-action"></button>`;
     const lineEl = section.querySelector(".city-npc-copy p");

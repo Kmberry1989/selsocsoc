@@ -1,242 +1,363 @@
 {
-  "grass": {
-    "path": "assets/textures/grass.svg",
-    "appliedTo": "village ground"
-  },
-  "path": {
-    "path": "assets/textures/path.svg",
-    "appliedTo": "village central path"
-  },
-  "water": {
-    "path": "assets/textures/water.svg",
-    "appliedTo": "village pond"
-  },
-  "sky": {
-    "path": "assets/textures/sky.svg",
-    "appliedTo": "village scene background"
-  },
-  "soil": {
-    "path": "assets/textures/soil.svg",
-    "appliedTo": "reserved garden-bed material"
-  },
-  "grass-meadow": {
-    "path": "assets/textures/grass-meadow.webp",
-    "appliedTo": "default village ground"
-  },
-  "grass-lawn": {
-    "path": "assets/textures/grass-lawn.webp",
-    "appliedTo": "lawn / dry grass biome"
-  },
-  "grass-clover": {
-    "path": "assets/textures/grass-clover.webp",
-    "appliedTo": "clover meadow biome"
-  },
-  "grass-dry": {
-    "path": "assets/textures/grass-dry.webp",
-    "appliedTo": "dry mottled grass biome"
-  },
-  "grass-snow": {
-    "path": "assets/textures/grass-snow.webp",
-    "appliedTo": "snow-dusted grass"
-  },
-  "snow-sparkle": {
-    "path": "assets/textures/snow-sparkle.webp",
-    "appliedTo": "winter ground"
-  },
-  "snow-waves": {
-    "path": "assets/textures/snow-waves.webp",
-    "appliedTo": "snowdrift ground"
-  },
-  "water-pond-teal": {
-    "path": "assets/textures/water-pond-teal.webp",
-    "appliedTo": "pond water option"
-  },
-  "water-pond-blue": {
-    "path": "assets/textures/water-pond-blue.webp",
-    "appliedTo": "pond water option"
-  },
-  "sand-ripples": {
-    "path": "assets/textures/sand-ripples.webp",
-    "appliedTo": "beach ground"
-  },
-  "sand-waves": {
-    "path": "assets/textures/sand-waves.webp",
-    "appliedTo": "dune sand"
-  },
-  "sand-shells": {
-    "path": "assets/textures/sand-shells.webp",
-    "appliedTo": "shell beach detail"
-  },
-  "soil-garden": {
-    "path": "assets/textures/soil-garden.webp",
-    "appliedTo": "garden planting beds"
-  },
-  "dirt-path": {
-    "path": "assets/textures/dirt-path.webp",
-    "appliedTo": "dirt paths"
-  },
-  "dirt-grass-edge": {
-    "path": "assets/textures/dirt-grass-edge.webp",
-    "appliedTo": "path-to-grass transition"
-  },
-  "cobblestone": {
-    "path": "assets/textures/cobblestone.webp",
-    "appliedTo": "plaza and walkways"
-  },
-  "wood-planks": {
-    "path": "assets/textures/wood-planks.webp",
-    "appliedTo": "furniture and fencing"
-  },
-  "wood-planks-vertical": {
-    "path": "assets/textures/wood-planks-vertical.webp",
-    "appliedTo": "walls and fencing"
-  },
-  "wood-brick": {
-    "path": "assets/textures/wood-brick.webp",
-    "appliedTo": "cottage walls"
-  },
-  "thatch": {
-    "path": "assets/textures/thatch.webp",
-    "appliedTo": "thatched roofs and hay"
-  },
-  "foliage-bushes": {
-    "path": "assets/textures/foliage-bushes.webp",
-    "appliedTo": "bush and canopy decal (transparent)"
-  },
-  "rocks": {
-    "path": "assets/textures/rocks.webp",
-    "appliedTo": "rock cluster decal (transparent)"
-  },
-  "flowers-daisies": {
-    "path": "assets/textures/flowers-daisies.webp",
-    "appliedTo": "flower patch decal (transparent)"
-  },
-  "flowers-bouquets": {
-    "path": "assets/textures/flowers-bouquets.webp",
-    "appliedTo": "planter flower decal (transparent)"
-  },
-  "flowers-branches": {
-    "path": "assets/textures/flowers-branches.webp",
-    "appliedTo": "flowering branch decal (transparent)"
-  },
-  "flowers-mixed": {
-    "path": "assets/textures/flowers-mixed.webp",
-    "appliedTo": "mixed flower decal (transparent)"
-  },
-  "cloud-puff": {
-    "path": "assets/textures/cloud-puff.webp",
-    "appliedTo": "sky cloud sprite (transparent)"
-  },
-  "cloud-cluster": {
-    "path": "assets/textures/cloud-cluster.webp",
-    "appliedTo": "sky cloud cluster (transparent)"
-  },
-  "cloud-strip": {
-    "path": "assets/textures/cloud-strip.webp",
-    "appliedTo": "horizon cloud strip (transparent)"
-  },
-  "stars-sparkle": {
-    "path": "assets/textures/stars-sparkle.webp",
-    "appliedTo": "sparkle decal (transparent)"
-  },
-  "fabric-rug-diamond": {
-    "path": "assets/textures/fabric-rug-diamond.webp",
-    "appliedTo": "woven diamond area rug"
-  },
-  "fabric-rug-royal": {
-    "path": "assets/textures/fabric-rug-royal.webp",
-    "appliedTo": "patterned medallion area rug"
-  },
-  "fabric-rug-knit": {
-    "path": "assets/textures/fabric-rug-knit.webp",
-    "appliedTo": "chunky knitted rug"
-  },
-  "fabric-plaid-red": {
-    "path": "assets/textures/fabric-plaid-red.webp",
-    "appliedTo": "red plaid fabric"
-  },
-  "fabric-plaid-tartan": {
-    "path": "assets/textures/fabric-plaid-tartan.webp",
-    "appliedTo": "red tartan fabric"
-  },
-  "fabric-plaid-navy": {
-    "path": "assets/textures/fabric-plaid-navy.webp",
-    "appliedTo": "navy tartan fabric"
-  },
-  "fabric-awning-coral": {
-    "path": "assets/textures/fabric-awning-coral.webp",
-    "appliedTo": "coral striped awning fabric"
-  },
-  "fabric-burlap": {
-    "path": "assets/textures/fabric-burlap.webp",
-    "appliedTo": "burlap fabric"
-  },
-  "fabric-wicker": {
-    "path": "assets/textures/fabric-wicker.webp",
-    "appliedTo": "woven wicker"
-  },
-  "material-shingles": {
-    "path": "assets/textures/material-shingles.webp",
-    "appliedTo": "wood shingle roofing"
-  },
-  "material-plaster": {
-    "path": "assets/textures/material-plaster.webp",
-    "appliedTo": "plaster wall"
-  },
-  "material-bark": {
-    "path": "assets/textures/material-bark.webp",
-    "appliedTo": "tree bark"
-  },
-  "terrain-stone-path": {
-    "path": "assets/textures/terrain-stone-path.webp",
-    "appliedTo": "stepping-stone path"
-  },
-  "fx-lightning": {
-    "path": "assets/textures/fx-lightning.webp",
-    "appliedTo": "lightning bolt decal (transparent)"
-  },
-  "fx-snowflake": {
-    "path": "assets/textures/fx-snowflake.webp",
-    "appliedTo": "snowflake decal (transparent)"
-  },
-  "fx-grass-tufts": {
-    "path": "assets/textures/fx-grass-tufts.webp",
-    "appliedTo": "grass tuft decals (transparent)"
-  },
-  "pattern-snowflake": {
-    "path": "assets/textures/pattern-snowflake.webp",
-    "appliedTo": "snowflake pattern overlay (transparent)"
-  },
-  "hardwood-honey-oak": {
-    "path": "assets/textures/hardwood-honey-oak.webp",
-    "appliedTo": "home flooring"
-  },
-  "hardwood-barnwood-gray": {
-    "path": "assets/textures/hardwood-barnwood-gray.webp",
-    "appliedTo": "home flooring"
-  },
-  "hardwood-walnut": {
-    "path": "assets/textures/hardwood-walnut.webp",
-    "appliedTo": "home flooring"
-  },
-  "carpet-kilim-diamond-terracotta-navy": {
-    "path": "assets/textures/carpet-kilim-diamond-terracotta-navy.webp",
-    "appliedTo": "home carpet"
-  },
-  "carpet-braided-rag-coral-cream-teal": {
-    "path": "assets/textures/carpet-braided-rag-coral-cream-teal.webp",
-    "appliedTo": "home carpet"
-  },
-  "carpet-shag-oatmeal": {
-    "path": "assets/textures/carpet-shag-oatmeal.webp",
-    "appliedTo": "home carpet"
-  },
-  "wallpaper-daisies-sage-cream": {
-    "path": "assets/textures/wallpaper-daisies-sage-cream.webp",
-    "appliedTo": "home wallpaper"
-  },
-  "wallpaper-pinstripe-gold-cream": {
-    "path": "assets/textures/wallpaper-pinstripe-gold-cream.webp",
-    "appliedTo": "home wallpaper"
-  }
+ "grass": {
+  "path": "assets/textures/grass.svg",
+  "appliedTo": "village ground",
+  "seamNote": "tileable by construction: solid background, no motif crosses the tile edge"
+ },
+ "path": {
+  "path": "assets/textures/path.svg",
+  "appliedTo": "village central path",
+  "seamNote": "NOT tileable by construction: stone polygons cross the tile edges and do not continue on the opposite side; redrawing the vector layout is required"
+ },
+ "water": {
+  "path": "assets/textures/water.svg",
+  "appliedTo": "village pond",
+  "seamNote": "NOT tileable by construction: wave curves cross the tile edges with non-periodic phase; redrawing the vector layout is required"
+ },
+ "sky": {
+  "path": "assets/textures/sky.svg",
+  "appliedTo": "village scene background"
+ },
+ "soil": {
+  "path": "assets/textures/soil.svg",
+  "appliedTo": "reserved garden-bed material",
+  "seamNote": "tileable by construction: solid background, no motif crosses the tile edge"
+ },
+ "grass-meadow": {
+  "path": "assets/textures/grass-meadow.webp",
+  "appliedTo": "default village ground",
+  "seamless": "1.1 / 1.0 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "grass-lawn": {
+  "path": "assets/textures/grass-lawn.webp",
+  "appliedTo": "lawn / dry grass biome",
+  "seamless": "1.8 / 1.2 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "grass-clover": {
+  "path": "assets/textures/grass-clover.webp",
+  "appliedTo": "clover meadow biome",
+  "seamless": "1.4 / 1.2 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "grass-dry": {
+  "path": "assets/textures/grass-dry.webp",
+  "appliedTo": "dry mottled grass biome",
+  "seamless": "1.3 / 1.1 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "grass-snow": {
+  "path": "assets/textures/grass-snow.webp",
+  "appliedTo": "snow-dusted grass",
+  "seamless": "1.1 / 1.0 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "snow-sparkle": {
+  "path": "assets/textures/snow-sparkle.webp",
+  "appliedTo": "winter ground",
+  "seamless": "1.4 / 1.0 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "snow-waves": {
+  "path": "assets/textures/snow-waves.webp",
+  "appliedTo": "snowdrift ground",
+  "seamless": "0.9 / 1.0 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "water-pond-teal": {
+  "path": "assets/textures/water-pond-teal.webp",
+  "appliedTo": "pond water option",
+  "seamless": "1.1 / 1.0 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "water-pond-blue": {
+  "path": "assets/textures/water-pond-blue.webp",
+  "appliedTo": "pond water option",
+  "seamless": "1.4 / 1.4 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "sand-ripples": {
+  "path": "assets/textures/sand-ripples.webp",
+  "appliedTo": "beach ground",
+  "seamless": "1.3 / 0.8 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "sand-waves": {
+  "path": "assets/textures/sand-waves.webp",
+  "appliedTo": "dune sand",
+  "seamless": "1.1 / 1.0 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "sand-shells": {
+  "path": "assets/textures/sand-shells.webp",
+  "appliedTo": "shell beach detail",
+  "seamless": "1.1 / 0.9 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "soil-garden": {
+  "path": "assets/textures/soil-garden.webp",
+  "appliedTo": "garden planting beds",
+  "seamless": "1.1 / 0.8 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "dirt-path": {
+  "path": "assets/textures/dirt-path.webp",
+  "appliedTo": "dirt paths",
+  "seamless": "1.0 / 0.8 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "dirt-grass-edge": {
+  "path": "assets/textures/dirt-grass-edge.webp",
+  "appliedTo": "path-to-grass transition",
+  "seamless": "L/R only 1.0; T/B differs by design (dirt-to-grass transition strip)"
+ },
+ "cobblestone": {
+  "path": "assets/textures/cobblestone.webp",
+  "appliedTo": "plaza and walkways",
+  "seamless": "1.2 / 1.2 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "wood-planks": {
+  "path": "assets/textures/wood-planks.webp",
+  "appliedTo": "furniture and fencing",
+  "seamless": "1.6 / 0.8 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "wood-planks-vertical": {
+  "path": "assets/textures/wood-planks-vertical.webp",
+  "appliedTo": "walls and fencing",
+  "seamless": "1.1 / 1.5 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "wood-brick": {
+  "path": "assets/textures/wood-brick.webp",
+  "appliedTo": "cottage walls",
+  "seamless": "1.5 / 0.8 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "thatch": {
+  "path": "assets/textures/thatch.webp",
+  "appliedTo": "thatched roofs and hay",
+  "seamless": "1.3 / 1.3 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "foliage-bushes": {
+  "path": "assets/textures/foliage-bushes.webp",
+  "appliedTo": "bush and canopy decal (transparent)"
+ },
+ "rocks": {
+  "path": "assets/textures/rocks.webp",
+  "appliedTo": "rock cluster decal (transparent)"
+ },
+ "flowers-daisies": {
+  "path": "assets/textures/flowers-daisies.webp",
+  "appliedTo": "flower patch decal (transparent)"
+ },
+ "flowers-bouquets": {
+  "path": "assets/textures/flowers-bouquets.webp",
+  "appliedTo": "planter flower decal (transparent)"
+ },
+ "flowers-branches": {
+  "path": "assets/textures/flowers-branches.webp",
+  "appliedTo": "flowering branch decal (transparent)"
+ },
+ "flowers-mixed": {
+  "path": "assets/textures/flowers-mixed.webp",
+  "appliedTo": "mixed flower decal (transparent)"
+ },
+ "cloud-puff": {
+  "path": "assets/textures/cloud-puff.webp",
+  "appliedTo": "sky cloud sprite (transparent)"
+ },
+ "cloud-cluster": {
+  "path": "assets/textures/cloud-cluster.webp",
+  "appliedTo": "sky cloud cluster (transparent)"
+ },
+ "cloud-strip": {
+  "path": "assets/textures/cloud-strip.webp",
+  "appliedTo": "horizon cloud strip (transparent)"
+ },
+ "stars-sparkle": {
+  "path": "assets/textures/stars-sparkle.webp",
+  "appliedTo": "sparkle decal (transparent)"
+ },
+ "fabric-rug-diamond": {
+  "path": "assets/textures/fabric-rug-diamond.webp",
+  "appliedTo": "woven diamond area rug",
+  "seamless": "0.5 / 0.9 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "fabric-rug-royal": {
+  "path": "assets/textures/fabric-rug-royal.webp",
+  "appliedTo": "patterned medallion area rug",
+  "seamless": "1.5 / 1.2 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "fabric-rug-knit": {
+  "path": "assets/textures/fabric-rug-knit.webp",
+  "appliedTo": "chunky knitted rug",
+  "seamless": "0.8 / 0.6 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "fabric-plaid-red": {
+  "path": "assets/textures/fabric-plaid-red.webp",
+  "appliedTo": "red plaid fabric",
+  "seamless": "1.7 / 1.3 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "fabric-plaid-tartan": {
+  "path": "assets/textures/fabric-plaid-tartan.webp",
+  "appliedTo": "red tartan fabric",
+  "seamless": "1.9 / 1.3 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "fabric-plaid-navy": {
+  "path": "assets/textures/fabric-plaid-navy.webp",
+  "appliedTo": "navy tartan fabric",
+  "seamless": "1.4 / 1.2 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "fabric-awning-coral": {
+  "path": "assets/textures/fabric-awning-coral.webp",
+  "appliedTo": "coral striped awning fabric",
+  "seamless": "1.2 / 1.3 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "fabric-burlap": {
+  "path": "assets/textures/fabric-burlap.webp",
+  "appliedTo": "burlap fabric",
+  "seamless": "1.1 / 1.1 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "fabric-wicker": {
+  "path": "assets/textures/fabric-wicker.webp",
+  "appliedTo": "woven wicker",
+  "seamless": "1.4 / 1.2 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "material-shingles": {
+  "path": "assets/textures/material-shingles.webp",
+  "appliedTo": "wood shingle roofing",
+  "seamless": "1.3 / 1.2 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "material-plaster": {
+  "path": "assets/textures/material-plaster.webp",
+  "appliedTo": "plaster wall",
+  "seamless": "1.1 / 1.0 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "material-bark": {
+  "path": "assets/textures/material-bark.webp",
+  "appliedTo": "tree bark",
+  "seamless": "1.6 / 1.3 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "terrain-stone-path": {
+  "path": "assets/textures/terrain-stone-path.webp",
+  "appliedTo": "stepping-stone path",
+  "seamless": "1.1 / 1.0 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "fx-lightning": {
+  "path": "assets/textures/fx-lightning.webp",
+  "appliedTo": "lightning bolt decal (transparent)"
+ },
+ "fx-snowflake": {
+  "path": "assets/textures/fx-snowflake.webp",
+  "appliedTo": "snowflake decal (transparent)"
+ },
+ "fx-grass-tufts": {
+  "path": "assets/textures/fx-grass-tufts.webp",
+  "appliedTo": "grass tuft decals (transparent)"
+ },
+ "pattern-snowflake": {
+  "path": "assets/textures/pattern-snowflake.webp",
+  "appliedTo": "snowflake pattern overlay (transparent)",
+  "seamless": "premultiplied-visible 0.4 / 1.0 (raw RGB edge value is transparent-pixel colour data and does not show)"
+ },
+ "hardwood-honey-oak": {
+  "path": "assets/textures/hardwood-honey-oak.webp",
+  "appliedTo": "home flooring",
+  "seamless": "1.3 / 0.5 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "hardwood-barnwood-gray": {
+  "path": "assets/textures/hardwood-barnwood-gray.webp",
+  "appliedTo": "home flooring",
+  "seamless": "1.4 / 0.9 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "hardwood-walnut": {
+  "path": "assets/textures/hardwood-walnut.webp",
+  "appliedTo": "home flooring",
+  "seamless": "1.4 / 0.7 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "carpet-kilim-diamond-terracotta-navy": {
+  "path": "assets/textures/carpet-kilim-diamond-terracotta-navy.webp",
+  "appliedTo": "home carpet",
+  "seamless": "1.6 / 1.6 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "carpet-braided-rag-coral-cream-teal": {
+  "path": "assets/textures/carpet-braided-rag-coral-cream-teal.webp",
+  "appliedTo": "home carpet",
+  "seamless": "1.7 / 1.4 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "carpet-shag-oatmeal": {
+  "path": "assets/textures/carpet-shag-oatmeal.webp",
+  "appliedTo": "home carpet",
+  "seamless": "1.1 / 1.0 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "wallpaper-daisies-sage-cream": {
+  "path": "assets/textures/wallpaper-daisies-sage-cream.webp",
+  "appliedTo": "home wallpaper",
+  "seamless": "2.4 / 1.1 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "wallpaper-pinstripe-gold-cream": {
+  "path": "assets/textures/wallpaper-pinstripe-gold-cream.webp",
+  "appliedTo": "home wallpaper",
+  "seamless": "0.7 / 1.4 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "material-tin": {
+  "path": "assets/textures/material-tin.webp",
+  "appliedTo": "reserved housing roofing material",
+  "seamless": "1.2 / 1.3 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "material-tile": {
+  "path": "assets/textures/material-tile.webp",
+  "appliedTo": "reserved housing flooring material",
+  "seamless": "1.1 / 1.0 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "material-stone-wall": {
+  "path": "assets/textures/material-stone-wall.webp",
+  "appliedTo": "reserved housing wall material",
+  "seamless": "1.2 / 1.0 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "wallpaper-damask-burgundy": {
+  "path": "assets/textures/wallpaper-damask-burgundy.webp",
+  "appliedTo": "reserved housing wallpaper material",
+  "seamless": "1.2 / 1.1 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "material-slate": {
+  "path": "assets/textures/material-slate.webp",
+  "appliedTo": "reserved housing flooring/roofing material",
+  "seamless": "1.3 / 0.9 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "material-brick": {
+  "path": "assets/textures/material-brick.webp",
+  "appliedTo": "reserved housing wall material",
+  "seamless": "1.6 / 1.0 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "material-stucco": {
+  "path": "assets/textures/material-stucco.webp",
+  "appliedTo": "reserved housing wall material",
+  "seamless": "1.5 / 1.2 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "ground-autumn": {
+  "path": "assets/textures/ground-autumn.webp",
+  "appliedTo": "autumn biome ground texture",
+  "seamless": "1.5 / 1.4 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "fabric-corduroy-mustard": {
+  "path": "assets/textures/fabric-corduroy-mustard.webp",
+  "appliedTo": "corduroy fabric",
+  "seamless": "0.9 / 1.5 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "fabric-gingham-red": {
+  "path": "assets/textures/fabric-gingham-red.webp",
+  "appliedTo": "red gingham fabric",
+  "seamless": "2.8 / 1.8 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "fabric-linen-teal": {
+  "path": "assets/textures/fabric-linen-teal.webp",
+  "appliedTo": "teal linen fabric",
+  "seamless": "1.1 / 1.0 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "fabric-stars-blue": {
+  "path": "assets/textures/fabric-stars-blue.webp",
+  "appliedTo": "blue star fabric",
+  "seamless": "0.9 / 0.8 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "material-charcoal": {
+  "path": "assets/textures/material-charcoal.webp",
+  "appliedTo": "charcoal material",
+  "seamless": "0.0 / 0.0 (already seamless before this fix)"
+ },
+ "metal-brass-brushed": {
+  "path": "assets/textures/metal-brass-brushed.webp",
+  "appliedTo": "brushed brass metal",
+  "seamless": "1.0 / 1.2 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ },
+ "metal-copper-patina": {
+  "path": "assets/textures/metal-copper-patina.webp",
+  "appliedTo": "copper patina metal",
+  "seamless": "1.9 / 1.6 (WebP q90 noise floor; edges forced exactly equal before encoding)"
+ }
 }

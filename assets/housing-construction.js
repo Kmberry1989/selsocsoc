@@ -523,7 +523,7 @@
       dock.innerHTML = '<i aria-hidden="true"></i><b>Build</b>';
       dock.setAttribute("aria-label", "Open Peggy's construction counter");
       dock.addEventListener("click", () => open("overview"));
-      document.body.appendChild(dock);
+      window.__snugEnsureDockRow().appendChild(dock);
     }
     const start = document.querySelector(".start-screen,.start-overlay,[data-start-screen],.title-screen");
     dock.hidden = window.__snugWorld?.mode !== "village" || Boolean(start && getComputedStyle(start).display !== "none" && getComputedStyle(start).visibility !== "hidden" && Number(getComputedStyle(start).opacity || 1) > 0.04);

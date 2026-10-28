@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 180">
+  <rect x="4" y="4" width="212" height="172" rx="24" fill="#f5f0e7" stroke="#5c8d65" stroke-width="7"/>
+  <circle cx="110" cy="73" r="32" fill="#5c8d65"/><path d="M91 72h38M110 53v38" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+  <text x="110" y="143" text-anchor="middle" fill="#30433d" font-family="sans-serif" font-size="20" font-weight="900">SOLO</text>
+</svg>

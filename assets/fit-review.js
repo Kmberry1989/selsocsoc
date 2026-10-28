@@ -420,7 +420,12 @@ function refreshLauncher() {
 function reviewIsBlocked() {
   return !gameplayReady
     || document.documentElement.classList.contains('snug-start-open')
-    || Boolean(document.querySelector('.welcome-cinematic'));
+    || Boolean(document.querySelector('.welcome-cinematic'))
+    // The portraits appointment runs right after the ceremony, when the
+    // ceremony overlay is already gone: keep the automatic review from
+    // barging in over it too (the flag lives on the sheet backdrop and
+    // disappears with the sheet, so the gate reopens in free town).
+    || Boolean(document.querySelector('[data-portrait-step-flow="true"]'));
 }
 
 function syncReviewGate() {
@@ -563,12 +568,15 @@ window.addEventListener('snug-world-ready', (event) => {
   sourceAvatar = event.detail?.player || sourceAvatar;
   gameplayReady = Boolean(sourceAvatar);
   syncReviewGate();
-  if (queue.some((item) => item.fitPending)) scheduleAutomaticReview();
+  // No automatic popup: the review opens only from the "Fit review" button.
+  // Auto-opening barged into town (and, before the portraits gate, into
+  // onboarding); the button stays as the way in.
 });
 
 const gateObserver = new MutationObserver(syncReviewGate);
 gateObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'], childList: true, subtree: true });
 syncReviewGate();
 refreshCloudMode();
-if (gameplayReady && queue.length) scheduleAutomaticReview();
+// No automatic popup on load either (see the snug-world-ready note above);
+// the "Fit review" button is the only way in.
 })();

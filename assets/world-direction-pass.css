@@ -1,5 +1,6 @@
 .snug-arrival-fade{position:fixed;z-index:720;pointer-events:none;inset:0;background:#0b1112;opacity:0;transition:opacity .42s ease}
 .snug-arrival-fade.is-black{opacity:1}.snug-arrival-fade.is-out{opacity:0}
+.snug-arrival-fade span{position:absolute;left:50%;top:50%;translate:-50% -50%;color:#fff7e3;font:800 clamp(15px,2vw,20px)/1.2 system-ui,sans-serif;letter-spacing:.02em;opacity:0;transition:opacity .2s ease;white-space:nowrap}.snug-arrival-fade.is-black span{opacity:1}
 html.snug-arrival-active .snug-start-screen{opacity:0;visibility:hidden;pointer-events:none}
 .snug-bloom-word{display:inline-block;opacity:0;transform:scale(.6);filter:blur(2px)}
 .snug-bloom-word.is-bloomed{animation:snugWordBloom .28s ease-out forwards}

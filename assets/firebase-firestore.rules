@@ -49,6 +49,23 @@ service cloud.firestore {
           || (request.resource.data.want is string
             && request.resource.data.want.size() > 0
             && request.resource.data.want.size() <= 120));
+      // System messages: the game delivers daily Social Society checks
+      // to the player's own mailbox. Only the owner may create these for
+      // themselves, and only in the exact system shape.
+      allow create: if isOwner(uid)
+        && request.resource.data.type == 'social-society'
+        && request.resource.data.from == 'cyclical-city'
+        && request.resource.data.fromName == 'Cyclical City'
+        && request.resource.data.item == '__social_society__'
+        && request.resource.data.shells is int
+        && request.resource.data.shells >= 0
+        && request.resource.data.shells <= 100
+        && request.resource.data.day is int
+        && request.resource.data.day >= 1
+        && request.resource.data.day <= 7
+        && request.resource.data.multiplier is number
+        && request.resource.data.createdAt is int
+        && request.resource.data.keys().hasOnly(['type', 'from', 'fromName', 'item', 'shells', 'day', 'multiplier', 'createdAt']);
       allow delete: if isOwner(uid);
       allow update: if false;
     }

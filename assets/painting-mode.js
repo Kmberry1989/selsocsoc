@@ -44,8 +44,42 @@
   function renderStatus(){const node=$(".paint-status",state.root);if(node)node.textContent=state.status;}
   function input(event){if(event.target.matches("[data-paint-color]")){state.color=event.target.value;state.tool=state.tool==="eraser"?"round":state.tool;}if(event.target.matches("[data-paint-size]")){state.size=Number(event.target.value);event.target.previousElementSibling.querySelector("b").textContent=`${state.size}px`;}if(event.target.matches("[data-paint-opacity]")){state.opacity=Number(event.target.value)/100;event.target.previousElementSibling.querySelector("b").textContent=`${Math.round(state.opacity*100)}%`;}}
   function click(event){const button=event.target.closest("button");if(!button)return;if(button.matches("[data-paint-close]")){close();return;}if(button.dataset.paintTool){state.tool=button.dataset.paintTool;state.root.querySelectorAll("[data-paint-tool]").forEach(item=>item.classList.toggle("active",item.dataset.paintTool===state.tool));return;}if(button.dataset.paintSwatch){state.color=button.dataset.paintSwatch;state.tool=state.tool==="eraser"?"round":state.tool;const picker=state.root.querySelector("[data-paint-color]");if(picker)picker.value=state.color;state.root.querySelectorAll("[data-paint-swatch]").forEach(item=>item.classList.toggle("active",item.dataset.paintSwatch===state.color));state.root.querySelectorAll("[data-paint-tool]").forEach(item=>item.classList.toggle("active",item.dataset.paintTool===state.tool));return;}if(button.matches("[data-paint-undo]")){undo();return;}if(button.matches("[data-paint-redo]")){redo();return;}if(button.matches("[data-paint-clear]")){clearCanvas();return;}if(button.matches("[data-paint-save]")){savePainting();return;}if(button.matches("[data-paint-gallery]")){state.view="gallery";render();refreshGallery();return;}if(button.matches("[data-paint-studio]")){state.view="studio";state.status="";render();return;}if(button.matches("[data-paint-refresh]")){refreshGallery();return;}if(button.dataset.paintHang){toggleHang(button.dataset.paintHang);return;}if(button.dataset.paintGift){gift(button.dataset.paintGift);return;}if(button.dataset.paintAccept){acceptGift(button.dataset.paintAccept);return;}}
-  function install(root=document){root.querySelectorAll?.(".style-panel,.play-panel").forEach(panel=>{if(panel.querySelector("[data-paint-open]"))return;const button=document.createElement("button");button.type="button";button.className="paint-launch";button.setAttribute("data-paint-open","");button.innerHTML=`<i aria-hidden="true"></i><span><b>Painting Studio</b><small>Create canvas art for home walls</small></span><strong>Paint</strong>`;panel.appendChild(button);});root.querySelectorAll?.("nav[aria-label='Game navigation']").forEach(nav=>{if(document.querySelector(".paint-fab"))return;const button=document.createElement("button");button.type="button";button.className="paint-fab";button.setAttribute("data-paint-open","");button.setAttribute("aria-label","Open Painting Studio");button.textContent="Paint";document.body.appendChild(button);});root.querySelectorAll?.(".home-banner").forEach(panel=>{if(panel.querySelector("[data-paint-wall]"))return;const button=document.createElement("button");button.type="button";button.setAttribute("data-paint-wall","");button.textContent="Wall art";panel.appendChild(button);});}
-  document.addEventListener("click",event=>{if(event.target.closest("[data-paint-open]")){event.preventDefault();open("studio");}if(event.target.closest("[data-paint-wall]")){event.preventDefault();open("gallery");}},true);
+  // Paint is only offered near an easel (user-directed 2026-10-17).
+  const EASEL_SPOTS = [[11, 8], [-9, 10], [5, 11]];
+  const EASEL_RANGE = 3.2;
+  function nearEasel() {
+    const player = window.__snugWorld?.player;
+    if (!player?.position) return false;
+    if (EASEL_SPOTS.some(([x, z]) => Math.hypot(player.position.x - x, player.position.z - z) < EASEL_RANGE)) return true;
+    // Also detect player-placed easel furniture in the 3D scene (home or town).
+    const scene = window.__snugWorld?.scene;
+    if (scene) {
+      let found = false;
+      scene.traverse((obj) => {
+        if (found || !obj.isMesh) return;
+        const name = (obj.name || '').toLowerCase();
+        const uid = String(obj.userData?.itemId || obj.userData?.furnitureId || '').toLowerCase();
+        if (!name.includes('easel') && !uid.includes('easel')) return;
+        obj.updateWorldMatrix(true, false);
+        const px = obj.matrixWorld.elements[12];
+        const pz = obj.matrixWorld.elements[14];
+        if (Math.hypot(player.position.x - px, player.position.z - pz) < EASEL_RANGE) found = true;
+      });
+      if (found) return true;
+    }
+    return false;
+  }
+  function syncPaintFab() {
+    const fab = document.querySelector('.paint-fab');
+    if (fab) fab.style.display = nearEasel() ? '' : 'none';
+    // Panel Paint buttons also gate on easel proximity.
+    document.querySelectorAll('.paint-launch').forEach((button) => {
+      button.style.display = nearEasel() ? '' : 'none';
+    });
+  }
+  setInterval(syncPaintFab, 800);
+  function install(root=document){root.querySelectorAll?.(".style-panel,.play-panel").forEach(panel=>{if(panel.querySelector("[data-paint-open]"))return;const button=document.createElement("button");button.type="button";button.className="paint-launch";button.setAttribute("data-paint-open","");button.innerHTML=`<i aria-hidden="true"></i><span><b>Painting Studio</b><small>Create canvas art for home walls</small></span><strong>Paint</strong>`;if(!nearEasel())button.style.display="none";panel.appendChild(button);});root.querySelectorAll?.("nav[aria-label='Game navigation']").forEach(nav=>{if(document.querySelector(".paint-fab"))return;const button=document.createElement("button");button.type="button";button.className="paint-fab";button.setAttribute("data-paint-open","");button.setAttribute("aria-label","Open Painting Studio");button.textContent="Paint";document.body.appendChild(button);});root.querySelectorAll?.(".home-banner").forEach(panel=>{if(panel.querySelector("[data-paint-wall]"))return;const button=document.createElement("button");button.type="button";button.setAttribute("data-paint-wall","");button.textContent="Wall art";panel.appendChild(button);});}
+  document.addEventListener("click",event=>{if(event.target.closest("[data-paint-open]")){event.preventDefault();if(window.__snugFirstCine&&window.__snugFirstCine.play("paint-studio",null,()=>open("studio")))return;open("studio");}if(event.target.closest("[data-paint-wall]")){event.preventDefault();open("gallery");}},true);
   window.addEventListener("snug-session",event=>{state.session=event.detail;});
   const observer=new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{if(node.nodeType===1)install(node);})));observer.observe(document.documentElement,{childList:true,subtree:true});build();install();if(window.__snugSession)state.session=window.__snugSession;
   window.__snugPaintingMode={open,close,refresh:refreshGallery};
