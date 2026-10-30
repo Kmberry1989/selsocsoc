@@ -134,17 +134,27 @@
     savePortraitSet();
   }
 
+  let worldPausedForCamera = null;
   function stopCamera() {
     state.cameraStream?.getTracks?.().forEach((track) => track.stop());
     state.cameraStream = null;
     state.cameraBusy = false;
     document.querySelector(".portrait-camera-backdrop")?.remove();
+    // Restore whatever the town renderer was doing before the camera opened.
+    if (worldPausedForCamera !== null) {
+      window.__snugWorldRenderPaused = worldPausedForCamera;
+      worldPausedForCamera = null;
+    }
   }
 
   async function openCamera(studio) {
     if (state.cameraBusy) return;
     if (!navigator.mediaDevices?.getUserMedia) return studio.querySelector(".portrait-upload-label input")?.click();
     state.cameraBusy = true;
+    // The town's 3D renderer + a 1080p camera stream together are what push
+    // phones over the edge into a reload; park the town while shooting.
+    if (worldPausedForCamera === null) worldPausedForCamera = window.__snugWorldRenderPaused === true;
+    window.__snugWorldRenderPaused = true;
     const expression = selectedExpression(studio);
     const backdrop = document.createElement("div");
     backdrop.className = "portrait-camera-backdrop";
@@ -215,6 +225,10 @@
     const current = tabs.findIndex((button) => button.classList.contains("active"));
     const next = tabs.slice(current + 1).find((button) => !/ready/i.test(button.textContent || ""));
     next?.click();
+    // Land the user on the guided camera button for the next expression,
+    // not on the sheet's own capture input (which opens the phone's
+    // fullscreen camera with no face guide).
+    setTimeout(() => studio.querySelector("[data-live-camera]")?.focus({ preventScroll: true }), 60);
   }
 
   let contactSignature = "";
@@ -261,7 +275,10 @@
       };
       savePortraitSet();
     };
-    sliders.forEach((input) => input.addEventListener("change", saveCrop));
+    sliders.forEach((input) => {
+      input.addEventListener("change", saveCrop);
+      input.addEventListener("input", saveCrop); // a reload mid-drag keeps the edit
+    });
     let origin = null;
     head.addEventListener("pointerdown", (event) => { origin = { x: event.clientX, y: event.clientY, hx: Number(horizontal?.value || 0), vy: Number(vertical?.value || 0) }; head.setPointerCapture?.(event.pointerId); });
     head.addEventListener("pointermove", (event) => {
@@ -292,6 +309,26 @@
     if (!studio || studio.dataset.partyUpgrade) return;
     studio.dataset.partyUpgrade = "true";
     state.portraitStudio = studio;
+    // Horizontal slider drags near the screen edge are what iOS Safari
+    // mistakes for its back-swipe (which reloads the whole game). Keep
+    // slider/head drags inside the page, with room at the sheet edges.
+    if (!document.querySelector("#snug-portrait-touch-style")) {
+      const style = document.createElement("style");
+      style.id = "snug-portrait-touch-style";
+      style.textContent = ".sheet[aria-label='Town Hall portraits'] .face-editor input[type=range]{touch-action:pan-y}.sheet[aria-label='Town Hall portraits'] .portrait-head{touch-action:none}.sheet[aria-label='Town Hall portraits'] .face-editor{padding-inline:6px}";
+      document.head.appendChild(style);
+    }
+    // The sheet's own capture inputs (quick-capture + selfie-capture) use
+    // the phone's native fullscreen camera, which has no face guide — the
+    // reason step 2 felt like a blind fullscreen jump. Route them all
+    // through Lyla's guided in-page camera instead. The "Choose photo"
+    // upload input has no capture attribute and is left alone.
+    studio.addEventListener("click", (event) => {
+      const input = event.target.closest("input[type=file][capture]");
+      if (!input || !input.closest(".selfie-capture, .quick-capture")) return;
+      event.preventDefault();
+      openCamera(studio);
+    });
     const tabs = studio.querySelector(".expression-photo-tabs");
     if (!tabs) return;
     const intro = document.createElement("section");
@@ -329,7 +366,9 @@
       if (shareControl) portraitSet.sharing = shareControl.checked === true;
       savePortraitSet();
       const progressEl = intro.querySelector(".portrait-progress");
-      const progressText = `${count} of ${EXPRESSIONS.length} portraits ready${count === EXPRESSIONS.length ? " · set complete" : " · progress saves as you go"}`;
+      const progressText = count === EXPRESSIONS.length
+        ? `${count} of ${EXPRESSIONS.length} portraits ready · set complete`
+        : `${count} of ${EXPRESSIONS.length} portraits ready · now photographing: ${LABELS[selectedExpression(studio)]} · progress saves as you go`;
       if (progressEl.textContent !== progressText) progressEl.textContent = progressText;
       addDirectEditor(studio);
       buildContactSheet(studio);

@@ -4,10 +4,12 @@
    the side, and Lyla Lens joins with her camera. Dialogue is the approved
    verbatim script; the DOM overlay reuses the existing welcome-cinematic
    CSS (the .is-three / .is-three-dimensional hooks already in index.html).
-   Characters are charming primitive builds (cube body, disc head, matching
-   the game's avatar style) with the named attachment slots from
-   assets/welcome-committee/README.md so developer-authored art can replace
-   each primitive later without changing cinematic code. */
+   Characters use the same roster look as everywhere else in town: capsule
+   body with the real v2 outfit texture wrapped around it (offset.x 0.25,
+   capsule UV remap), coin head with the real v2 face portrait, an animated
+   speaking mouth, and the real accessory GLBs (Mayor's gavel, Gideon's
+   tour cap, Lyla's camera) with primitive fallbacks if a GLB fails to load.
+   Attachment slots from assets/welcome-committee/README.md are kept. */
 (() => {
   "use strict";
 
@@ -64,7 +66,9 @@
   /* ---------- speech ---------- */
   let voiceEnabled = true;
   let speechTimer = 0;
+  let speaking = false; // drives the speaker's animated mouth
   const stopSpeech = () => {
+    speaking = false;
     clearTimeout(speechTimer);
     if ("speechSynthesis" in window) {
       try { window.speechSynthesis.cancel(); } catch { /* noop */ }
@@ -91,9 +95,10 @@
       utterance.volume = 0.93;
       const v = pickVoice(voice.voiceIndex);
       if (v) utterance.voice = v;
-      utterance.onend = () => clearTimeout(speechTimer);
-      utterance.onerror = () => clearTimeout(speechTimer);
+      utterance.onend = () => { speaking = false; clearTimeout(speechTimer); };
+      utterance.onerror = () => { speaking = false; clearTimeout(speechTimer); };
       window.speechSynthesis.speak(utterance);
+      speaking = true;
       speechTimer = setTimeout(() => { try { window.speechSynthesis.cancel(); } catch { /* noop */ } },
         Math.max(6000, String(text).length * 160));
     } catch { /* voice is optional */ }
@@ -103,30 +108,100 @@
   const mat = (THREE, color, opts = {}) =>
     new THREE.MeshStandardMaterial({ color, roughness: 0.85, metalness: 0, ...opts });
 
+  // Same capsule UV remap as assets/npc-outfits.js: the cylinder section
+  // (local y -0.27..+0.27) gets the full outfit image height, caps clamp.
+  function remapCapsuleUVs(geometry) {
+    const pos = geometry?.attributes?.position;
+    const uv = geometry?.attributes?.uv;
+    if (!pos || !uv) return;
+    for (let i = 0; i < pos.count; i++) {
+      uv.setY(i, Math.min(1, Math.max(0, (pos.getY(i) + 0.27) / 0.54)));
+    }
+    uv.needsUpdate = true;
+  }
+
+  // Animated mouth: smile when idle, opening ellipse while speaking.
+  function makeMouth(THREE) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 256; canvas.height = 160;
+    const ctx = canvas.getContext("2d");
+    const texture = new THREE.CanvasTexture(canvas);
+    const draw = (open) => {
+      ctx.clearRect(0, 0, 256, 160);
+      if (open < 0.12) {
+        ctx.strokeStyle = "#5b3a2a"; ctx.lineWidth = 10; ctx.lineCap = "round";
+        ctx.beginPath(); ctx.arc(128, 62, 52, Math.PI * 0.15, Math.PI * 0.85); ctx.stroke();
+      } else {
+        ctx.fillStyle = "#5b3a2a";
+        ctx.beginPath(); ctx.ellipse(128, 80, 52, 12 + open * 52, 0, 0, Math.PI * 2); ctx.fill();
+      }
+      texture.needsUpdate = true;
+    };
+    draw(0);
+    const plane = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.36, 0.22),
+      new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+    );
+    return { plane, draw, open: -1 };
+  }
+
+  // Face portrait: crop the v2 skin sheet to the same centre window the
+  // roster/showcase use (x 0.125..0.875, y 0.145..0.895) so the face reads
+  // exactly like it does in town.
+  function loadFaceTexture(THREE, url, onDone) {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 512; canvas.height = 512;
+      canvas.getContext("2d").drawImage(img,
+        img.width * 0.125, img.height * 0.145, img.width * 0.75, img.height * 0.75,
+        0, 0, 512, 512);
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.colorSpace = THREE.SRGBColorSpace || undefined;
+      onDone(tex);
+    };
+    img.onerror = () => onDone(null);
+    img.src = url;
+  }
+
   function buildCharacter(THREE, spec) {
     const group = new THREE.Group();
     group.name = spec.prefix;
     const skin = mat(THREE, spec.skin);
-    const outfit = mat(THREE, spec.outfit);
+    const outfitMat = mat(THREE, spec.outfit);
 
-    // Cube body (game avatar style).
-    const body = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.78, 0.36), outfit);
-    body.position.y = 0.98;
+    // Roster capsule body, wrapped in the real v2 outfit texture.
+    const bodyGeo = new THREE.CapsuleGeometry(0.29, 0.54, 4, 12);
+    remapCapsuleUVs(bodyGeo);
+    const body = new THREE.Mesh(bodyGeo, outfitMat);
+    body.position.y = 0.66;
     body.name = `PrimitiveOutfit_${spec.prefix}`;
     group.add(body);
+    new THREE.TextureLoader().load(
+      `assets/npc-outfits/npc-${spec.id}-outfit-v2.png`,
+      (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace || undefined;
+        tex.offset.x = 0.25; // FRONT at image centre, like npc-outfits.js
+        outfitMat.map = tex; outfitMat.color.set(0xffffff); outfitMat.needsUpdate = true;
+      }
+    );
 
-    // Disc head (game avatar style): cylinder facing the camera.
-    const head = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.24, 24), skin);
+    // Roster coin head.
+    const head = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 0.15, 24), skin);
     head.rotation.x = Math.PI / 2;
-    head.position.y = 1.75;
+    head.position.y = 1.66;
     head.name = `PrimitiveFace_${spec.prefix}`;
     group.add(head);
 
-    // Face slot: front-facing plane for developer-authored face art.
+    // Face slot: real v2 portrait on the roster 0.30 face circle, with the
+    // placeholder eyes/smile only until the portrait loads.
     const faceSlot = new THREE.Group();
     faceSlot.name = `FaceSlot_${spec.prefix}`;
-    faceSlot.position.set(0, 1.75, 0.13);
-    // Placeholder eyes + smile so the primitive reads as a face.
+    faceSlot.position.set(0, 1.66, 0.083);
+    const faceMat = new THREE.MeshStandardMaterial({ color: spec.skin, roughness: 0.9 });
+    const faceCircle = new THREE.Mesh(new THREE.CircleGeometry(0.30, 24), faceMat);
+    faceSlot.add(faceCircle);
+    const placeholder = new THREE.Group();
     const eyeGeo = new THREE.SphereGeometry(0.035, 10, 10);
     const eyeMat = mat(THREE, 0x2b2b2b, { roughness: 0.4 });
     const eyeL = new THREE.Mesh(eyeGeo, eyeMat); eyeL.position.set(-0.1, 0.05, 0.02);
@@ -137,7 +212,17 @@
     );
     smile.position.set(0, -0.05, 0.02);
     smile.rotation.z = Math.PI * 1.05;
-    faceSlot.add(eyeL, eyeR, smile);
+    placeholder.add(eyeL, eyeR, smile);
+    faceSlot.add(placeholder);
+    loadFaceTexture(THREE, `assets/npc-faces/npc-${spec.id}-face-v2.png`, (tex) => {
+      if (!tex) return;
+      faceMat.map = tex; faceMat.color.set(0xffffff); faceMat.needsUpdate = true;
+      placeholder.visible = false;
+    });
+    // Animated mouth at the roster anchor (head centre - 0.175).
+    const mouth = makeMouth(THREE);
+    mouth.plane.position.set(0, -0.175, 0.09);
+    faceSlot.add(mouth.plane);
     group.add(faceSlot);
 
     // Outfit slot wraps the body so accessories can replace it.
@@ -145,15 +230,16 @@
     outfitSlot.name = `OutfitSlot_${spec.prefix}`;
     group.add(outfitSlot);
 
-    // Arms: pivoted at the shoulder for swing animation.
-    const armGeo = new THREE.BoxGeometry(0.15, 0.6, 0.15);
+    // Arms: pivoted at the shoulder for swing animation (roster hands
+    // are spheres at +/-0.46, y 0.68; the pivot sits above them).
+    const armGeo = new THREE.BoxGeometry(0.15, 0.55, 0.15);
     const mkArm = (side) => {
       const pivot = new THREE.Group();
-      pivot.position.set(0.37 * side, 1.32, 0);
-      const armMesh = new THREE.Mesh(armGeo, outfit);
+      pivot.position.set(0.42 * side, 1.02, 0);
+      const armMesh = new THREE.Mesh(armGeo, outfitMat);
       armMesh.position.y = -0.26;
-      const hand = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 10), skin);
-      hand.position.y = -0.58;
+      const hand = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 10), skin);
+      hand.position.y = -0.34;
       pivot.add(armMesh, hand);
       pivot.name = `HandSlot_${spec.prefix}_${side < 0 ? "Left" : "Right"}`;
       group.add(pivot);
@@ -162,15 +248,16 @@
     const armL = mkArm(-1);
     const armR = mkArm(1);
 
-    // Legs: pivoted at the hip for walk animation.
-    const legGeo = new THREE.BoxGeometry(0.17, 0.55, 0.17);
+    // Legs: pivoted at the hip for walk animation; roster feet are boxes
+    // at +/-0.19, y 0.15.
+    const legGeo = new THREE.BoxGeometry(0.17, 0.5, 0.17);
     const mkLeg = (side) => {
       const pivot = new THREE.Group();
-      pivot.position.set(0.15 * side, 0.62, 0);
+      pivot.position.set(0.19 * side, 0.60, 0);
       const legMesh = new THREE.Mesh(legGeo, mat(THREE, spec.trousers));
       legMesh.position.y = -0.26;
-      const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.12, 0.3), mat(THREE, 0x3a3f45));
-      shoe.position.set(0, -0.55, 0.05);
+      const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.14, 0.42), mat(THREE, 0x3a3f45));
+      shoe.position.set(0, -0.50, 0.05);
       shoe.name = `ShoeSlot_${spec.prefix}_${side < 0 ? "Left" : "Right"}`;
       pivot.add(legMesh, shoe);
       group.add(pivot);
@@ -179,23 +266,23 @@
     const legL = mkLeg(-1);
     const legR = mkLeg(1);
 
-    // Head accessory slot (hats, hair).
+    // Head accessory slot at the roster anchor (head centre + 0.27).
     const headSlot = new THREE.Group();
     headSlot.name = `HeadAccessorySlot_${spec.prefix}`;
-    headSlot.position.y = 1.91;
+    headSlot.position.y = 1.93;
     group.add(headSlot);
 
     // Held-item slot, parented to the right hand.
     const heldSlot = new THREE.Group();
     heldSlot.name = `HeldItemSlot_${spec.prefix}`;
-    heldSlot.position.set(0, -0.62, 0.12);
+    heldSlot.position.set(0, -0.38, 0.12);
     armR.add(heldSlot);
 
     group.userData.attachmentSlots = {
       face: faceSlot, outfit: outfitSlot, head: headSlot,
       handL: armL, handR: armR, held: heldSlot,
     };
-    group.userData.rig = { body, head, faceSlot, armL, armR, legL, legR, headSlot, heldSlot };
+    group.userData.rig = { body, head, faceSlot, armL, armR, legL, legR, headSlot, heldSlot, mouth };
     group.userData.spec = spec;
     return group;
   }
@@ -205,62 +292,112 @@
     const dark = mat(THREE, 0x313c42);
     const band = mat(THREE, 0xe76854);
     const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.3, 18), dark);
-    crown.position.y = 0.15;
+    crown.position.y = -0.04;
     const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.05, 18), dark);
-    brim.position.y = 0.0;
+    brim.position.y = -0.19;
     const ribbon = new THREE.Mesh(new THREE.CylinderGeometry(0.205, 0.205, 0.07, 18), band);
-    ribbon.position.y = 0.04;
+    ribbon.position.y = -0.15;
     headSlot.add(crown, brim, ribbon);
     // Gold epaulets on the shoulders.
     const gold = mat(THREE, 0xd9a441, { roughness: 0.5 });
     [-1, 1].forEach((side) => {
       const ep = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.06, 0.24), gold);
-      ep.position.set(0.36 * side, 1.4, 0);
+      ep.position.set(0.42 * side, 1.12, 0);
       character.add(ep);
     });
   }
 
-  function addGideonBeard(THREE, character) {
-    const { faceSlot } = character.userData.rig;
-    const beard = new THREE.Mesh(
-      new THREE.ConeGeometry(0.16, 0.34, 12),
-      mat(THREE, 0xf3eee3, { roughness: 1 })
-    );
-    beard.position.set(0, -0.2, 0.03);
-    beard.rotation.x = Math.PI;
-    faceSlot.add(beard);
-    // Walking cane in the left hand.
-    const cane = new THREE.Mesh(
+  function addGideonCane(THREE, character) {
+    // Walking cane in the left hand (primitive fallback; the real cane.glb
+    // replaces it when loadAccessories() succeeds).
+    const cane = new THREE.Group();
+    cane.name = "PrimitiveCane";
+    const shaft = new THREE.Mesh(
       new THREE.CylinderGeometry(0.03, 0.03, 1.1, 8),
       mat(THREE, 0x6b4a2f)
     );
-    cane.position.set(0, -0.5, 0.1);
+    cane.add(shaft);
+    cane.position.set(0, -0.34, 0.1);
     character.userData.rig.armL.add(cane);
+  }
+
+  function addMayorGavel(THREE, character) {
+    // Upright ceremonial gavel (the redesigned town gavel: vertical handle,
+    // head on top, gold bands) in the right held slot. The real gavel.glb
+    // replaces it when loadAccessories() succeeds.
+    const gavel = new THREE.Group();
+    gavel.name = "PrimitiveGavel";
+    const handle = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.025, 0.025, 0.42, 10),
+      mat(THREE, 0x411a09)
+    );
+    handle.position.y = 0.08;
+    const head = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.075, 0.075, 0.22, 14),
+      mat(THREE, 0x280f05)
+    );
+    head.rotation.z = Math.PI / 2;
+    head.position.y = 0.30;
+    const gold = mat(THREE, 0xc6670a, { roughness: 0.4 });
+    [-0.075, 0.075].forEach((x) => {
+      const band = new THREE.Mesh(new THREE.CylinderGeometry(0.078, 0.078, 0.03, 14), gold);
+      band.rotation.z = Math.PI / 2;
+      band.position.set(x, 0.30, 0);
+      gavel.add(band);
+    });
+    gavel.add(handle, head);
+    character.userData.rig.heldSlot.add(gavel);
   }
 
   function addLylaCamera(THREE, character) {
     const { heldSlot } = character.userData.rig;
+    const cam = new THREE.Group();
+    cam.name = "PrimitiveCamera";
     const body = new THREE.Mesh(
-      new THREE.BoxGeometry(0.3, 0.2, 0.16),
+      new THREE.BoxGeometry(0.23, 0.16, 0.11),
       mat(THREE, 0x2e3c40, { roughness: 0.5 })
     );
     const lens = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.07, 0.08, 0.14, 14),
+      new THREE.CylinderGeometry(0.055, 0.065, 0.12, 14),
       mat(THREE, 0x506268, { roughness: 0.35 })
     );
     lens.rotation.x = Math.PI / 2;
-    lens.position.z = 0.14;
+    lens.position.z = 0.11;
     const flash = new THREE.Mesh(
-      new THREE.BoxGeometry(0.1, 0.06, 0.04),
+      new THREE.BoxGeometry(0.08, 0.05, 0.04),
       mat(THREE, 0xfff6d9, { emissive: 0xfff2b0, emissiveIntensity: 0 })
     );
-    flash.position.set(0, 0.14, 0);
+    flash.position.set(0, 0.11, 0);
     flash.name = "LylaFlash";
-    heldSlot.add(body, lens, flash);
+    cam.add(body, lens, flash);
+    heldSlot.add(cam);
     character.userData.flash = flash;
   }
 
-  /* ---------- set dressing ---------- */
+    // Swap the primitive held/head items for the real town accessory GLBs.
+  // Any load failure simply keeps the primitive, so the scene never breaks.
+  function loadAccessories(THREE, mayor, gideon, lyla) {
+    import("./assets/vendor/three/GLTFLoader.js")
+      .then(({ GLTFLoader }) => {
+        const loader = new GLTFLoader();
+        const swap = (url, slot, primitiveName, position) => {
+          loader.load(url, (glb) => {
+            const old = slot.getObjectByName(primitiveName);
+            if (old) slot.remove(old);
+            const model = glb.scene;
+            if (position) model.position.set(...position);
+            slot.add(model);
+          }, undefined, () => { /* keep the primitive */ });
+        };
+        swap("assets/npc-accessories/gavel.glb", mayor.userData.rig.heldSlot, "PrimitiveGavel");
+        swap("assets/npc-accessories/cane.glb", gideon.userData.rig.armL, "PrimitiveCane", [0, -0.30, 0.10]);
+        swap("assets/npc-accessories/camera.glb", lyla.userData.rig.heldSlot, "PrimitiveCamera");
+        swap("assets/npc-accessories/tourcap.glb", gideon.userData.rig.headSlot, null);
+      })
+      .catch(() => { /* primitives stay */ });
+  }
+
+/* ---------- set dressing ---------- */
   function buildSet(THREE) {
     const set = new THREE.Group();
     set.name = "WelcomeSet";
@@ -389,17 +526,19 @@
 
     // Cast.
     const mayor = buildCharacter(THREE, {
-      prefix: "MayorMayor", skin: 0xedc16c, outfit: 0x8a2f3c, trousers: 0x313c42,
+      prefix: "MayorMayor", id: "mayor-mayor", skin: 0xc98f66, outfit: 0x8a2f3c, trousers: 0x313c42,
     });
     addMayorHat(THREE, mayor);
+    addMayorGavel(THREE, mayor);
     const gideon = buildCharacter(THREE, {
-      prefix: "Gideon", skin: 0xdca56f, outfit: 0x8a6749, trousers: 0x4a3b2c,
+      prefix: "Gideon", id: "gideon", skin: 0xb0825e, outfit: 0x8a6749, trousers: 0x4a3b2c,
     });
-    addGideonBeard(THREE, gideon);
+    addGideonCane(THREE, gideon);
     const lyla = buildCharacter(THREE, {
-      prefix: "LylaLens", skin: 0xc78257, outfit: 0x9a8f5a, trousers: 0x5c5640,
+      prefix: "LylaLens", id: "lyla-lens", skin: 0xb97958, outfit: 0x9a8f5a, trousers: 0x5c5640,
     });
     addLylaCamera(THREE, lyla);
+    loadAccessories(THREE, mayor, gideon, lyla);
 
     // Blocking: mayor starts just inside the hall doors, the others off-screen.
     const MARK = { mayor: [0, 0, -1.2], gideon: [-1.9, 0, -0.6], lyla: [1.9, 0, -0.6] };
@@ -521,13 +660,13 @@
           const sw = Math.sin(t * 11) * 0.55;
           legL.rotation.x = sw; legR.rotation.x = -sw;
           armL.rotation.x = -sw * 0.7; armR.rotation.x = sw * 0.7;
-          body.position.y = 0.98 + Math.abs(Math.sin(t * 11)) * 0.05;
+          body.position.y = 0.66 + Math.abs(Math.sin(t * 11)) * 0.05;
         }
         if (k >= 1) {
           const { legL, legR, armL, armR, body } = w.char.userData.rig;
           legL.rotation.x = legR.rotation.x = 0;
           armL.rotation.x = armR.rotation.x = 0;
-          body.position.y = 0.98;
+          body.position.y = 0.66;
           return false;
         }
         return true;
@@ -537,13 +676,19 @@
       if (!still) {
         [mayor, gideon, lyla].forEach((c, i) => {
           if (!c.visible) return;
-          const { body, head, armL, armR } = c.userData.rig;
+          const { body, head, armL, armR, mouth } = c.userData.rig;
+          // Animated mouth: the speaker's mouth opens and closes while
+          // speaking, everyone else holds a smile — like town dialogue.
+          if (mouth) {
+            const open = (c === state.speaker && speaking) ? 0.25 + 0.75 * Math.abs(Math.sin(t * 9)) : 0;
+            if (Math.abs(open - mouth.open) > 0.06) { mouth.draw(open); mouth.open = open; }
+          }
           const ph = t * 1.6 + i * 2.1;
           body.rotation.z = Math.sin(ph) * 0.02;
           head.rotation.y = Math.sin(t * 0.7 + i * 1.3) * (c === state.speaker ? 0.08 : 0.3);
           // Speaker bobs gently while talking.
           if (c === state.speaker) {
-            body.position.y = 0.98 + Math.abs(Math.sin(t * 5)) * 0.03;
+            body.position.y = 0.66 + Math.abs(Math.sin(t * 5)) * 0.03;
             armR.rotation.x = -0.5 + Math.sin(t * 5) * 0.18;
             armL.rotation.x = -0.15 + Math.cos(t * 4.2) * 0.12;
           } else {
