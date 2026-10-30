@@ -1,5 +1,10 @@
 import * as THREE from "./vendor/three/three.module.js";
 import { loadSnugAssetPipeline } from "./snug-asset-pipeline.js";
+import {
+  boardMoveForTile,
+  boardReachableTiles,
+  createBoard3dController,
+} from "./snug-board-3d.js";
 
 const WAVE0_CONTRACT = Object.freeze({
   lifecycle: ["lobby", "countdown", "play", "results", "payout"],
@@ -1099,6 +1104,8 @@ function startBoardGame() {
   } finally { state.boardBusy = false; renderBoardMode(); }
 }
 function closeBoardMode() {
+  state.board3d?.dispose();
+  state.board3d = null;
   const lobby = state.boardLobby;
   if (lobby?.joined.some((entry) => entry.uid === boardUid()) && !state.boardGame) {
     postBoardLobbyEvent("board-leave", { lobbyId: lobby.id });
@@ -1181,7 +1188,7 @@ function boardActionMarkup(game) {
   if (shopper?.bot) return `<div class="snug-board-card"><h3>${escapeHtml(shopper.name)} is shopping</h3><p>The town player is weighing up a useful item.</p></div>`;
   if (current?.bot) return `<div class="snug-board-card"><h3>${escapeHtml(current.name)} is rolling</h3><p>The town player is choosing an item and planning a move.</p></div>`;
   if (current?.uid !== me.uid) return `<div class="snug-board-card"><h3>${escapeHtml(current?.name || "Another player")} is up</h3><p>After everyone moves, the whole room faces off in a coin-paying minigame.</p></div>`;
-  return `<div class="snug-board-card"><h3>Your turn</h3><p>Choose which path to take at the next junction, then roll. Both paths rejoin before every prize pavilion.</p><div class="snug-board-routes" role="group" aria-label="Choose a route"><button type="button" data-board-route="neighborhood" aria-pressed="${state.boardRouteChoice === "neighborhood"}"><b>Neighborhood path</b><small>Safer · 5 spaces · more coins</small></button><button type="button" data-board-route="market" aria-pressed="${state.boardRouteChoice === "market"}"><b>Market shortcut</b><small>Shorter · 3 spaces · more events</small></button></div><div class="snug-board-items"><button type="button" data-board-boost class="${state.boardUseBoost ? "active" : ""}" ${me.items.boost < 1 ? "disabled" : ""}>Boost ×${me.items.boost}<br>+3 roll</button><button type="button" data-board-item="trap" ${me.items.trap < 1 ? "disabled" : ""}>Trap ×${me.items.trap}<br>Lay ahead</button><button type="button" data-board-item="steal" ${me.items.steal < 1 || !richest ? "disabled" : ""}>Swap ×${me.items.steal}<br>Steal 5</button></div><button type="button" class="snug-board-primary" data-board-roll ${state.boardBusy || !state.boardRouteChoice ? "disabled" : ""}>${!state.boardRouteChoice ? "Choose a route first" : state.boardUseBoost ? "Roll with +3" : `Roll via ${state.boardRouteChoice === "market" ? "market" : "neighborhood"}`}</button></div>`;
+  return `<div class="snug-board-card"><h3>Your turn</h3><p>Tap a glowing tile or drag your piece to move. The glow shows every space you can reach.</p><div class="snug-board-items"><button type="button" data-board-boost class="${state.boardUseBoost ? "active" : ""}" ${me.items.boost < 1 ? "disabled" : ""}>Boost ×${me.items.boost}<br>+3 reach</button><button type="button" data-board-item="trap" ${me.items.trap < 1 ? "disabled" : ""}>Trap ×${me.items.trap}<br>Lay ahead</button><button type="button" data-board-item="steal" ${me.items.steal < 1 || !richest ? "disabled" : ""}>Swap ×${me.items.steal}<br>Steal 5</button></div></div>`;
 }
 
 function boardLobbyMarkup(lobby) {
@@ -1195,6 +1202,41 @@ function boardLobbyMarkup(lobby) {
   return `<div class="snug-board-lobby"><div class="board-lobby-copy"><small>Waiting room</small><h3>${isHost ? "You’re hosting the board" : "The host is gathering players"}</h3><p>Choose the party size, ready up, then the host starts. Any open seats become capable town players.</p></div><div class="board-count-row"><span><b>Total players</b><small>Humans first, bots fill the rest</small></span><div class="board-count-picker" role="group" aria-label="Total players">${[2,3,4].map((count) => `<button type="button" data-board-count="${count}" class="${lobby.totalPlayers === count ? "active" : ""}" ${!isHost || count < lobby.joined.length ? "disabled" : ""}>${count}</button>`).join("")}</div></div><div class="snug-board-stats board-lobby-people">${seats}</div>${full ? `<p class="snug-board-status">This lobby is full. You can watch, or return when a seat opens.</p>` : me ? `<button type="button" class="snug-board-ready ${me.ready ? "is-ready" : ""}" data-board-ready>${me.ready ? "Ready ✓" : "Ready up"}</button>` : `<p class="snug-board-status">Joining the waiting room…</p>`}${isHost ? `<button type="button" class="snug-board-primary" data-board-start ${!allReady || state.boardBusy ? "disabled" : ""}>${state.boardBusy ? "Starting…" : allReady ? `Start with ${lobby.joined.length} player${lobby.joined.length === 1 ? "" : "s"} + ${botCount} bot${botCount === 1 ? "" : "s"}` : "Waiting for everyone to ready up"}</button>` : `<p class="snug-board-status">${allReady ? "Everyone’s ready. Waiting for the host to start." : "Ready when you are — the host starts the game."}</p>`}</div>`;
 }
 
+function postBoardMove(tileIndex) {
+  const game = state.boardGame;
+  if (!game || state.boardBusy) return;
+  const move = boardMoveForTile(game, boardUid(), tileIndex, state.boardUseBoost);
+  if (!move) return;
+  state.boardBusy = true;
+  renderBoardMode();
+  window.dispatchEvent(new CustomEvent("snug-sfx", { detail: { id: "dice-roll" } }));
+  postBoardEvent("board-roll", { round: game.round, roll: move.roll, usedBoost: move.usedBoost, route: move.route });
+  state.boardUseBoost = false;
+  state.boardBusy = false;
+  renderBoardMode();
+}
+
+function mountBoard3dView(wrap, shell, game) {
+  if (!state.board3d) {
+    state.board3d = createBoard3dController({
+      fallbackHtml: (fallbackGame) => `<div class="snug-board-map">${BOARD_SPACES.map((type, index) => boardSpaceMarkup(type, index, fallbackGame)).join("")}</div>`,
+      onMove: (tile) => postBoardMove(tile),
+    });
+  }
+  const me = game.players.find((entry) => entry.uid === boardUid());
+  const current = game.players[game.turnIndex];
+  const canMove = game.phase === "movement" && current?.uid === boardUid() && game.shopUid !== boardUid();
+  const reachable = canMove && me
+    ? boardReachableTiles(me.pos, 6 + (state.boardUseBoost && me.items.boost > 0 ? 3 : 0))
+    : new Map();
+  state.board3d.sync(wrap, shell.querySelector("[data-board-3d-readout]"), game, {
+    tileTypes: BOARD_SPACES,
+    canMove,
+    myUid: boardUid(),
+    reachable,
+  });
+}
+
 function renderBoardMode() {
   const shell = state.boardOverlay?.querySelector(".snug-board-shell");
   if (!shell) return;
@@ -1205,7 +1247,7 @@ function renderBoardMode() {
     const setup = window.__snugPartySettings || { rounds: 5, rules: "casual" };
     shell.innerHTML = `<div class="snug-board-head"><div><small>${Math.max(5, Math.min(15, Number(setup.rounds || 5)))}-round ${setup.rules === "strategic" ? "strategic" : "casual"} party</small><h2 id="snug-board-title">Snug Board</h2></div>${close}</div>${error}${boardLobbyMarkup(state.boardLobby)}`;
   } else {
-    shell.innerHTML = `<div class="snug-board-head"><div><small>Round ${game.round} of ${game.rounds} · ${game.rules === "strategic" ? "Strategic" : "Casual"} · ${state.isPrivate ? "Family room" : "Village plaza"}</small><h2 id="snug-board-title">Snug Board</h2></div>${close}</div>${error}<div class="snug-board-layout"><div><div class="snug-board-route-heading"><span>Neighborhood path · safer</span><span>Market shortcut · event-heavy</span></div><div class="snug-board-map">${BOARD_SPACES.map((type, index) => boardSpaceMarkup(type, index, game)).join("")}</div><div class="snug-board-legend"><span>Gold: coins</span><span>Blue: events</span><span>Coral: minigames</span><span>Green: shops</span><span>Dark: prize stops</span></div></div><aside class="snug-board-side"><div class="snug-board-card"><div class="snug-board-stats">${game.players.map((entry) => boardPlayerMarkup(entry, game)).join("")}</div></div>${boardActionMarkup(game)}<div class="snug-board-card"><h3>Town chatter</h3><ul class="snug-board-log">${game.log.slice(-5).reverse().map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul></div></aside></div>`;
+    shell.innerHTML = `<div class="snug-board-head"><div><small>Round ${game.round} of ${game.rounds} · ${game.rules === "strategic" ? "Strategic" : "Casual"} · ${state.isPrivate ? "Family room" : "Village plaza"}</small><h2 id="snug-board-title">Snug Board</h2></div>${close}</div>${error}<div class="snug-board-layout"><div><div class="snug-board-route-heading"><span>Neighborhood path · safer</span><span>Market shortcut · event-heavy</span></div><div class="snug-board-3d-wrap" data-board-3d role="application" aria-label="3D Snug Board"></div><div class="snug-board-3d-readout" data-board-3d-readout></div><div class="snug-board-legend"><span>Gold: coins</span><span>Blue: events</span><span>Coral: minigames</span><span>Green: shops</span><span>Dark: prize stops</span></div></div><aside class="snug-board-side"><div class="snug-board-card"><div class="snug-board-stats">${game.players.map((entry) => boardPlayerMarkup(entry, game)).join("")}</div></div>${boardActionMarkup(game)}<div class="snug-board-card"><h3>Town chatter</h3><ul class="snug-board-log">${game.log.slice(-5).reverse().map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul></div></aside></div>`;
   }
   shell.querySelector(".snug-board-close")?.addEventListener("click", closeBoardMode);
   shell.querySelector("[data-board-ready]")?.addEventListener("click", () => setBoardReady());
@@ -1247,6 +1289,8 @@ function renderBoardMode() {
     const score = Math.max(0, Math.round(100 - Math.abs(triangle - .5) * 200));
     postBoardEvent("board-score", { round: state.boardGame.round, score });
   });
+  const wrap3d = shell.querySelector("[data-board-3d]");
+  if (wrap3d && game) mountBoard3dView(wrap3d, shell, game);
   scheduleBoardAutomation();
 }
 
