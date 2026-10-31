@@ -507,10 +507,12 @@
       new THREE.MeshStandardMaterial({ color: 0x2c3838, roughness: 1 }));
     ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
 
-    // Roster unification: stage the studio's set props for the only set
-    // the studio exports today (cyclical-city-gate), using the game's
-    // environment-props GLBs at the studio's positions. Any failure is
-    // non-fatal: figures still play on the bare ground.
+    // Roster unification: stage the studio's set props for the sets
+    // the studio exports (cyclical-city-gate, cyclical-city-plaza),
+    // using the game's environment-props GLBs at the studio's
+    // positions. Any failure is non-fatal: figures still play on the
+    // bare ground. The gate block below is byte-identical to before —
+    // existing gate scenes stage exactly as they always did.
     if (seq.set && seq.set.id === 'cyclical-city-gate') {
       try {
         var gltfMod = await import(new URL('assets/vendor/three/GLTFLoader.js', document.baseURI).href);
@@ -535,12 +537,43 @@
           } catch (e) { console.warn('[cinematic-player] set prop failed', propDefs[pi].file, e); }
         }
       } catch (e) { console.warn('[cinematic-player] set props unavailable', e); }
+    } else if (seq.set && seq.set.id === 'cyclical-city-plaza') {
+      // Plaza set: canonical data in assets/cinematics/sets/ (same file
+      // the studio loads), positions verbatim from the game layout.
+      // A failed prop is logged and skipped — never replaced with a
+      // placeholder mesh.
+      try {
+        var gltfModP = await import(new URL('assets/vendor/three/GLTFLoader.js', document.baseURI).href);
+        var loaderP = new gltfModP.GLTFLoader();
+        var setRes = await fetch(new URL('assets/cinematics/sets/cyclical-city-plaza.json', document.baseURI).href);
+        if (!setRes.ok) throw new Error('plaza set ' + setRes.status);
+        var setDoc = await setRes.json();
+        var propsP = Array.isArray(setDoc.props) ? setDoc.props : [];
+        for (var pp = 0; pp < propsP.length; pp++) {
+          var pd = propsP[pp];
+          try {
+            var pUrl = 'assets/environment-props/' + (pd.category === 'trees' ? 'trees/' : 'props/') + pd.file;
+            var pGltf = await loaderP.loadAsync(new URL(pUrl, document.baseURI).href);
+            var pObj = pGltf.scene;
+            pObj.position.set(pd.pos[0], pd.pos[1], pd.pos[2]);
+            pObj.rotation.y = pd.rotY;
+            pObj.scale.setScalar(pd.scale || 1);
+            pObj.traverse(function (n) { if (n.isMesh) { n.castShadow = true; n.receiveShadow = true; } });
+            scene.add(pObj);
+          } catch (e) { console.warn('[cinematic-player] set prop failed', pd.id, pd.file, e); }
+        }
+        ground.scale.setScalar(1.25);
+      } catch (e) { console.warn('[cinematic-player] plaza set unavailable', e); }
     }
 
     // Cast: one figure per actor. Roster NPCs resolve through the manifest;
     // 'player' now wears a real outfit (see buildFigure) and keeps the
     // skin face circle unless a sequence supplies a selfie faceUrl.
-    // Spawn positions are studio-stage spots.
+    // Spawn positions are studio-stage spots. Each actor gets its own
+    // home spot for move:true beats: the first actor walks to centre
+    // (0, 0, 0) exactly as before; later actors home 0.9 m to the side
+    // (alternating sides for a hypothetical third), so two actors with
+    // move beats never end up standing inside each other.
     var actors = [];
     var list = Array.isArray(seq.actors) ? seq.actors : [];
     for (var ai = 0; ai < list.length; ai++) {
@@ -551,8 +584,9 @@
         fig.group.position.set(spawn[0], spawn[1], spawn[2]);
         fig.base = { x: spawn[0], y: spawn[1], z: spawn[2], rotY: 0 };
         fig.home = snapshot(fig);
+        var homeX = actors.length === 0 ? 0 : (actors.length % 2 ? 0.9 : -0.9);
         actors.push({
-          spec: spec, fig: fig,
+          spec: spec, fig: fig, home: [homeX, 0, 0],
           beats: (spec.beats || []).slice().sort(function (a, b) { return (a.time || 0) - (b.time || 0); }),
           movedHome: false
         });
@@ -624,7 +658,7 @@
         updateLivingFace(a.fig, t, now, reducedMotion);
         var g = a.fig.group;
         // Start from the spawn spot; a beat with move:true walks the actor
-        // to center stage over its duration, and they stay there after.
+        // to its home spot over its duration, and they stay there after.
         g.position.set(a.fig.base.x, a.fig.base.y, a.fig.base.z);
         var active = null;
         for (var i = 0; i < a.beats.length; i++) {
@@ -632,7 +666,7 @@
           if (t >= (b.time || 0) && t <= (b.time || 0) + (b.duration || 0)) { active = b; break; }
           if (t > (b.time || 0) + (b.duration || 0) && b.move) a.movedHome = true;
         }
-        if (a.movedHome) g.position.set(0, 0, 0);
+        if (a.movedHome) g.position.set(a.home[0], a.home[1], a.home[2]);
         if (active) {
           var local = t - (active.time || 0);
           var dur = active.duration || 0;
@@ -640,9 +674,9 @@
           if (active.move && dur > 0) {
             var f = easeValue(active.easing, clamp01(local / dur));
             g.position.set(
-              lerp(a.fig.base.x, 0, f),
-              lerp(a.fig.base.y, 0, f),
-              lerp(a.fig.base.z, 0, f));
+              lerp(a.fig.base.x, a.home[0], f),
+              lerp(a.fig.base.y, a.home[1], f),
+              lerp(a.fig.base.z, a.home[2], f));
           }
           if (active.hop) g.position.y += Math.abs(Math.sin(local * 8)) * 0.3 * env;
           applyPose(a.fig, active.action || active.pose || 'neutral', local, env, a.fig.base);

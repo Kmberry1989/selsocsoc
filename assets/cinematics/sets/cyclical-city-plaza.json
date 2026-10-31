@@ -1,0 +1,478 @@
+{
+  "id": "cyclical-city-plaza",
+  "source": {
+    "layout": "assets/world/default-layout.json",
+    "rule": "layout objects within 18 m of the origin (euclid) whose type maps to a real GLB; positions/scales verbatim, rotY degrees -> negated radians",
+    "layoutObjects": 254
+  },
+  "props": [
+    {
+      "id": "gate-town-south",
+      "file": "fence-gate.glb",
+      "category": "props",
+      "pos": [
+        0,
+        0,
+        10.25
+      ],
+      "rotY": 0,
+      "scale": 1
+    },
+    {
+      "id": "rock-plaza-west",
+      "file": "rock-cluster.glb",
+      "category": "props",
+      "pos": [
+        -8.35,
+        0,
+        7.65
+      ],
+      "rotY": -5.933186,
+      "scale": 1
+    },
+    {
+      "id": "fence-garden-east",
+      "file": "fence-segment.glb",
+      "category": "props",
+      "pos": [
+        9.15,
+        0,
+        8
+      ],
+      "rotY": -0.35,
+      "scale": 1
+    },
+    {
+      "id": "lantern-plaza-center",
+      "file": "lantern-post.glb",
+      "category": "props",
+      "pos": [
+        3.4,
+        0,
+        -3.35
+      ],
+      "rotY": 0,
+      "scale": 0.8
+    },
+    {
+      "id": "flowers-plaza-west",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        -3.7,
+        0,
+        -4.45
+      ],
+      "rotY": -6.083185,
+      "scale": 1
+    },
+    {
+      "id": "bush-plaza-east",
+      "file": "bush-round.glb",
+      "category": "props",
+      "pos": [
+        8.45,
+        0,
+        2.8
+      ],
+      "rotY": -0.249999,
+      "scale": 1
+    },
+    {
+      "id": "garden-sign",
+      "file": "signpost.glb",
+      "category": "props",
+      "pos": [
+        3.15,
+        0,
+        8.1
+      ],
+      "rotY": 0,
+      "scale": 1
+    },
+    {
+      "id": "flowers-meadow-1-03",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        9.3551,
+        0.12,
+        11.8297
+      ],
+      "rotY": -5.381503,
+      "scale": 0.8977
+    },
+    {
+      "id": "flowers-meadow-1-06",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        -15.0232,
+        0.12,
+        -4.492
+      ],
+      "rotY": -2.851051,
+      "scale": 1.3544
+    },
+    {
+      "id": "flowers-meadow-1-18",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        12.282,
+        0.12,
+        10.2993
+      ],
+      "rotY": -5.585364,
+      "scale": 0.8625
+    },
+    {
+      "id": "flowers-meadow-2-01",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        10.1051,
+        0.12,
+        -8.5709
+      ],
+      "rotY": -0.703434,
+      "scale": 0.7839
+    },
+    {
+      "id": "flowers-meadow-2-06",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        9.0996,
+        0.12,
+        -11.2009
+      ],
+      "rotY": -0.888544,
+      "scale": 0.8638
+    },
+    {
+      "id": "flowers-meadow-2-09",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        12.9106,
+        0.12,
+        -11.0676
+      ],
+      "rotY": -0.708684,
+      "scale": 1.1499
+    },
+    {
+      "id": "flowers-meadow-2-15",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        10.1143,
+        0.12,
+        11.6425
+      ],
+      "rotY": -5.427663,
+      "scale": 0.7722
+    },
+    {
+      "id": "flowers-meadow-2-18",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        5.1432,
+        0.12,
+        12.0851
+      ],
+      "rotY": -5.114752,
+      "scale": 1.1692
+    },
+    {
+      "id": "flowers-meadow-2-23",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        -2.6017,
+        0.12,
+        12.2082
+      ],
+      "rotY": -4.502421,
+      "scale": 1.2446
+    },
+    {
+      "id": "flowers-meadow-3-01",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        -9.7997,
+        0.12,
+        10.308
+      ],
+      "rotY": -3.952265,
+      "scale": 0.8102
+    },
+    {
+      "id": "flowers-meadow-3-08",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        -6.0645,
+        0.12,
+        13.3779
+      ],
+      "rotY": -4.286778,
+      "scale": 0.8655
+    },
+    {
+      "id": "flowers-meadow-4-04",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        5.3165,
+        0.12,
+        14.044
+      ],
+      "rotY": -5.074274,
+      "scale": 1.3016
+    },
+    {
+      "id": "flowers-meadow-4-16",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        6.6114,
+        0.12,
+        -13.5852
+      ],
+      "rotY": -1.117875,
+      "scale": 1.2587
+    },
+    {
+      "id": "flowers-meadow-4-18",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        6.3424,
+        0.12,
+        11.987
+      ],
+      "rotY": -5.199053,
+      "scale": 1.0662
+    },
+    {
+      "id": "flowers-meadow-4-19",
+      "file": "flower-patch.glb",
+      "category": "props",
+      "pos": [
+        16.7306,
+        0.12,
+        -2.4319
+      ],
+      "rotY": -0.144347,
+      "scale": 1.3831
+    },
+    {
+      "id": "lantern-town-01",
+      "file": "lantern-post.glb",
+      "category": "props",
+      "pos": [
+        -7.1,
+        0,
+        -3.1
+      ],
+      "rotY": 0,
+      "scale": 1
+    },
+    {
+      "id": "lantern-town-02",
+      "file": "lantern-post.glb",
+      "category": "props",
+      "pos": [
+        7.1,
+        0,
+        -3.1
+      ],
+      "rotY": 0,
+      "scale": 1
+    },
+    {
+      "id": "lantern-town-03",
+      "file": "lantern-post.glb",
+      "category": "props",
+      "pos": [
+        -7.1,
+        0,
+        3.1
+      ],
+      "rotY": 0,
+      "scale": 1
+    },
+    {
+      "id": "lantern-town-04",
+      "file": "lantern-post.glb",
+      "category": "props",
+      "pos": [
+        7.1,
+        0,
+        3.1
+      ],
+      "rotY": 0,
+      "scale": 1
+    },
+    {
+      "id": "lantern-town-05",
+      "file": "lantern-post.glb",
+      "category": "props",
+      "pos": [
+        13,
+        0,
+        1
+      ],
+      "rotY": 0,
+      "scale": 1
+    },
+    {
+      "id": "lantern-town-06",
+      "file": "lantern-post.glb",
+      "category": "props",
+      "pos": [
+        13,
+        0,
+        9
+      ],
+      "rotY": 0,
+      "scale": 1
+    },
+    {
+      "id": "lantern-town-09",
+      "file": "lantern-post.glb",
+      "category": "props",
+      "pos": [
+        7.5,
+        0,
+        -5.1
+      ],
+      "rotY": 0,
+      "scale": 1
+    },
+    {
+      "id": "lantern-town-10",
+      "file": "lantern-post.glb",
+      "category": "props",
+      "pos": [
+        17,
+        0,
+        -5.1
+      ],
+      "rotY": 0,
+      "scale": 1
+    },
+    {
+      "id": "lantern-town-11",
+      "file": "lantern-post.glb",
+      "category": "props",
+      "pos": [
+        7.5,
+        0,
+        1.15
+      ],
+      "rotY": 0,
+      "scale": 1
+    },
+    {
+      "id": "lantern-town-12",
+      "file": "lantern-post.glb",
+      "category": "props",
+      "pos": [
+        17,
+        0,
+        1.15
+      ],
+      "rotY": 0,
+      "scale": 1
+    },
+    {
+      "id": "lantern-town-13",
+      "file": "lantern-post.glb",
+      "category": "props",
+      "pos": [
+        -10.2,
+        0,
+        4.3
+      ],
+      "rotY": 0,
+      "scale": 1
+    },
+    {
+      "id": "lantern-town-14",
+      "file": "lantern-post.glb",
+      "category": "props",
+      "pos": [
+        -16.8,
+        0,
+        4.3
+      ],
+      "rotY": 0,
+      "scale": 1
+    },
+    {
+      "id": "lantern-town-15",
+      "file": "lantern-post.glb",
+      "category": "props",
+      "pos": [
+        -10.2,
+        0,
+        8.1
+      ],
+      "rotY": 0,
+      "scale": 1
+    },
+    {
+      "id": "tree-plaza-01",
+      "file": "tree-oak.glb",
+      "category": "trees",
+      "pos": [
+        -10.55,
+        0,
+        -5.8
+      ],
+      "rotY": -6.083185,
+      "scale": 1.05
+    },
+    {
+      "id": "tree-plaza-02",
+      "file": "tree-oak.glb",
+      "category": "trees",
+      "pos": [
+        10.65,
+        0,
+        -4.9
+      ],
+      "rotY": -0.4,
+      "scale": 0.92
+    },
+    {
+      "id": "tree-plaza-04",
+      "file": "tree-oak.glb",
+      "category": "trees",
+      "pos": [
+        10.45,
+        0,
+        5.85
+      ],
+      "rotY": -0.8,
+      "scale": 1
+    },
+    {
+      "id": "tree-plaza-06",
+      "file": "tree-oak.glb",
+      "category": "trees",
+      "pos": [
+        5.45,
+        0,
+        -10.15
+      ],
+      "rotY": -0.249999,
+      "scale": 1.08
+    }
+  ]
+}
