@@ -9,7 +9,10 @@
    capsule UV remap), coin head with the real v2 face portrait, an animated
    speaking mouth, and the real accessory GLBs (Mayor's gavel, Gideon's
    tour cap, Lyla's camera) with primitive fallbacks if a GLB fails to load.
-   Attachment slots from assets/welcome-committee/README.md are kept. */
+   Attachment slots from assets/welcome-committee/README.md are kept.
+   Face and outfit URLs are read from the live NPC manifest
+   (assets/npc/manifest.json) by NPC id, with the npc-<id>-...-v2.png
+   pattern as fallback if the manifest is unreachable. */
 (() => {
   "use strict";
 
@@ -62,6 +65,43 @@
       return false;
     }
   };
+
+  /* ---------- NPC manifest (face/outfit URLs for the cast) ---------- */
+  // The cast's face/outfit textures come from the live NPC manifest
+  // (assets/npc/manifest.json), the same file the town roster, the NPC
+  // showcase and the suite hub read — so a renamed or re-shot portrait
+  // reaches the welcome without a code change. Any failure resolves to
+  // null and the cinematic falls back to the hardcoded v2 PNG pattern,
+  // exactly as before.
+  let manifestPromise = null;
+  function getManifest() {
+    if (!manifestPromise) {
+      const timeout = new Promise((resolve) => setTimeout(() => resolve(null), 1500));
+      let fetched;
+      try {
+        fetched = fetch(new URL("assets/npc/manifest.json", document.baseURI).href)
+          .then((r) => { if (!r.ok) throw new Error("manifest " + r.status); return r.json(); })
+          .catch(() => null);
+      } catch { fetched = Promise.resolve(null); }
+      manifestPromise = Promise.race([fetched, timeout]);
+    }
+    return manifestPromise;
+  }
+
+  // { npcId: { faceUrl, outfitUrl } } for every manifest entry that
+  // carries at least one of them. Never rejects.
+  async function getCastTextures() {
+    const manifest = await getManifest();
+    const byId = {};
+    const list = manifest && Array.isArray(manifest.characters) ? manifest.characters : [];
+    for (const c of list) {
+      if (!c || typeof c.id !== "string") continue;
+      const faceUrl = typeof c.faceUrl === "string" && c.faceUrl ? c.faceUrl : null;
+      const outfitUrl = typeof c.outfitUrl === "string" && c.outfitUrl ? c.outfitUrl : null;
+      if (faceUrl || outfitUrl) byId[c.id] = { faceUrl, outfitUrl };
+    }
+    return byId;
+  }
 
   /* ---------- speech ---------- */
   let voiceEnabled = true;
@@ -186,7 +226,7 @@
     body.name = `PrimitiveOutfit_${spec.prefix}`;
     group.add(body);
     new THREE.TextureLoader().load(
-      `assets/npc-outfits/npc-${spec.id}-outfit-v2.png`,
+      spec.outfitUrl || `assets/npc-outfits/npc-${spec.id}-outfit-v2.png`,
       (tex) => {
         tex.colorSpace = THREE.SRGBColorSpace || undefined;
         tex.offset.x = 0.25; // FRONT at image centre, like npc-outfits.js
@@ -222,7 +262,7 @@
     smile.rotation.z = Math.PI * 1.05;
     placeholder.add(eyeL, eyeR, smile);
     faceSlot.add(placeholder);
-    loadFaceTexture(THREE, `assets/npc-faces/npc-${spec.id}-face-v2.png`, (tex) => {
+    loadFaceTexture(THREE, spec.faceUrl || `assets/npc-faces/npc-${spec.id}-face-v2.png`, (tex) => {
       if (!tex) return;
       faceMat.map = tex; faceMat.color.set(0xffffff); faceMat.needsUpdate = true;
       placeholder.visible = false;
@@ -517,8 +557,13 @@
 
     // All failure-prone setup happens BEFORE any DOM is created so the
     // caller can fall back to the lightweight ceremony cleanly.
+    // Start the manifest fetch up front so it downloads in parallel with
+    // Three.js; the cast build below awaits it (bounded by the timeout),
+    // and a failure just falls back to the hardcoded v2 PNGs.
+    const castTexturesPromise = getCastTextures();
     const THREE = await getThree();
     if (!THREE) throw new Error("Three.js unavailable");
+    const castTextures = await castTexturesPromise;
     const still = reducedMotion();
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -532,18 +577,25 @@
 
     const camera = new THREE.PerspectiveCamera(46, 1, 0.1, 100);
 
-    // Cast.
+    // Cast. Face/outfit URLs come from the live NPC manifest (looked up
+    // by id); a missing entry falls back to the hardcoded v2 PNG pattern
+    // in buildCharacter. Who the three are, their colours, blocking and
+    // dialogue are unchanged.
+    const castTex = (id) => castTextures[id] || {};
     const mayor = buildCharacter(THREE, {
       prefix: "MayorMayor", id: "mayor-mayor", skin: 0xc98f66, outfit: 0x8a2f3c, trousers: 0x313c42,
+      faceUrl: castTex("mayor-mayor").faceUrl, outfitUrl: castTex("mayor-mayor").outfitUrl,
     });
     addMayorHat(THREE, mayor);
     addMayorGavel(THREE, mayor);
     const gideon = buildCharacter(THREE, {
       prefix: "Gideon", id: "gideon", skin: 0xb0825e, outfit: 0x8a6749, trousers: 0x4a3b2c,
+      faceUrl: castTex("gideon").faceUrl, outfitUrl: castTex("gideon").outfitUrl,
     });
     addGideonCane(THREE, gideon);
     const lyla = buildCharacter(THREE, {
       prefix: "LylaLens", id: "lyla-lens", skin: 0xb97958, outfit: 0x9a8f5a, trousers: 0x5c5640,
+      faceUrl: castTex("lyla-lens").faceUrl, outfitUrl: castTex("lyla-lens").outfitUrl,
     });
     addLylaCamera(THREE, lyla);
     loadAccessories(THREE, mayor, gideon, lyla);
