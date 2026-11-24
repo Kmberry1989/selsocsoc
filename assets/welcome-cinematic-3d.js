@@ -12,7 +12,10 @@
    Attachment slots from assets/welcome-committee/README.md are kept.
    Face and outfit URLs are read from the live NPC manifest
    (assets/npc/manifest.json) by NPC id, with the npc-<id>-...-v2.png
-   pattern as fallback if the manifest is unreachable. */
+   pattern as fallback if the manifest is unreachable. Accessory GLB
+   URLs are read from the accessories manifest
+   (assets/npc-accessories/manifest.json) by accessory id and slot,
+   with the hardcoded GLB paths as fallback. */
 (() => {
   "use strict";
 
@@ -72,7 +75,10 @@
   // showcase and the suite hub read — so a renamed or re-shot portrait
   // reaches the welcome without a code change. Any failure resolves to
   // null and the cinematic falls back to the hardcoded v2 PNG pattern,
-  // exactly as before.
+  // exactly as before. The accessory GLBs come from the accessories
+  // manifest (assets/npc-accessories/manifest.json) the same way, by
+  // accessory id and slot; that file is a catalog no runtime code reads
+  // today, so the welcome is its first runtime reader.
   let manifestPromise = null;
   function getManifest() {
     if (!manifestPromise) {
@@ -101,6 +107,43 @@
       if (faceUrl || outfitUrl) byId[c.id] = { faceUrl, outfitUrl };
     }
     return byId;
+  }
+
+  // { gavel, cane, camera, tourcap } GLB URLs from the accessories
+  // manifest, looked up by accessory id and slot. The manifest is a
+  // catalog: most entries carry no npc field, so the lookup is by id,
+  // not by character. A missing entry resolves to null and the caller
+  // falls back to the hardcoded GLB path. Never rejects.
+  let accessoryManifestPromise = null;
+  function getAccessoryManifest() {
+    if (!accessoryManifestPromise) {
+      const timeout = new Promise((resolve) => setTimeout(() => resolve(null), 1500));
+      let fetched;
+      try {
+        fetched = fetch(new URL("assets/npc-accessories/manifest.json", document.baseURI).href)
+          .then((r) => { if (!r.ok) throw new Error("accessory manifest " + r.status); return r.json(); })
+          .catch(() => null);
+      } catch { fetched = Promise.resolve(null); }
+      accessoryManifestPromise = Promise.race([fetched, timeout]);
+    }
+    return accessoryManifestPromise;
+  }
+
+  async function getCastAccessories() {
+    const manifest = await getAccessoryManifest();
+    const list = manifest && Array.isArray(manifest.accessories) ? manifest.accessories : [];
+    const byId = {};
+    for (const a of list) {
+      if (!a || typeof a.id !== "string" || typeof a.file !== "string" || !a.file) continue;
+      byId[a.id + "|" + (a.slot || "")] = a.file;
+    }
+    const pick = (id, slot) => byId[id + "|" + slot] || null;
+    return {
+      gavel: pick("gavel", "hand"),
+      cane: pick("cane", "handL"),
+      camera: pick("camera", "hand"),
+      tourcap: pick("tourcap", "head"),
+    };
   }
 
   /* ---------- speech ---------- */
@@ -424,7 +467,12 @@
 
     // Swap the primitive held/head items for the real town accessory GLBs.
   // Any load failure simply keeps the primitive, so the scene never breaks.
-  function loadAccessories(THREE, mayor, gideon, lyla) {
+  // Accessory GLB URLs come from the accessories manifest (see
+  // getCastAccessories); a null entry falls back to the hardcoded path,
+  // so a staged accessory never disappears if the manifest is
+  // unreachable or an entry goes missing.
+  function loadAccessories(THREE, mayor, gideon, lyla, accessories) {
+    const acc = accessories || {};
     import("./assets/vendor/three/GLTFLoader.js")
       .then(({ GLTFLoader }) => {
         const loader = new GLTFLoader();
@@ -437,10 +485,10 @@
             slot.add(model);
           }, undefined, () => { /* keep the primitive */ });
         };
-        swap("assets/npc-accessories/gavel.glb", mayor.userData.rig.heldSlot, "PrimitiveGavel");
-        swap("assets/npc-accessories/cane.glb", gideon.userData.rig.armL, "PrimitiveCane", [0, -0.30, 0.10]);
-        swap("assets/npc-accessories/camera.glb", lyla.userData.rig.heldSlot, "PrimitiveCamera");
-        swap("assets/npc-accessories/tourcap.glb", gideon.userData.rig.headSlot, null);
+        swap(acc.gavel || "assets/npc-accessories/gavel.glb", mayor.userData.rig.heldSlot, "PrimitiveGavel");
+        swap(acc.cane || "assets/npc-accessories/cane.glb", gideon.userData.rig.armL, "PrimitiveCane", [0, -0.30, 0.10]);
+        swap(acc.camera || "assets/npc-accessories/camera.glb", lyla.userData.rig.heldSlot, "PrimitiveCamera");
+        swap(acc.tourcap || "assets/npc-accessories/tourcap.glb", gideon.userData.rig.headSlot, null);
       })
       .catch(() => { /* primitives stay */ });
   }
@@ -557,13 +605,15 @@
 
     // All failure-prone setup happens BEFORE any DOM is created so the
     // caller can fall back to the lightweight ceremony cleanly.
-    // Start the manifest fetch up front so it downloads in parallel with
-    // Three.js; the cast build below awaits it (bounded by the timeout),
-    // and a failure just falls back to the hardcoded v2 PNGs.
+    // Start both manifest fetches up front so they download in parallel
+    // with Three.js; the cast build below awaits them (bounded by the
+    // timeout), and a failure just falls back to the hardcoded URLs.
     const castTexturesPromise = getCastTextures();
+    const castAccessoriesPromise = getCastAccessories();
     const THREE = await getThree();
     if (!THREE) throw new Error("Three.js unavailable");
     const castTextures = await castTexturesPromise;
+    const castAccessories = await castAccessoriesPromise;
     const still = reducedMotion();
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -579,8 +629,10 @@
 
     // Cast. Face/outfit URLs come from the live NPC manifest (looked up
     // by id); a missing entry falls back to the hardcoded v2 PNG pattern
-    // in buildCharacter. Who the three are, their colours, blocking and
-    // dialogue are unchanged.
+    // in buildCharacter. Accessory GLBs come from the accessories
+    // manifest (see getCastAccessories); a missing entry falls back to
+    // the hardcoded GLB path in loadAccessories. Who the three are,
+    // their colours, blocking and dialogue are unchanged.
     const castTex = (id) => castTextures[id] || {};
     const mayor = buildCharacter(THREE, {
       prefix: "MayorMayor", id: "mayor-mayor", skin: 0xc98f66, outfit: 0x8a2f3c, trousers: 0x313c42,
@@ -598,7 +650,7 @@
       faceUrl: castTex("lyla-lens").faceUrl, outfitUrl: castTex("lyla-lens").outfitUrl,
     });
     addLylaCamera(THREE, lyla);
-    loadAccessories(THREE, mayor, gideon, lyla);
+    loadAccessories(THREE, mayor, gideon, lyla, castAccessories);
 
     // Blocking: mayor starts just inside the hall doors, the others off-screen.
     const MARK = { mayor: [0, 0, -1.2], gideon: [-1.9, 0, -0.6], lyla: [1.9, 0, -0.6] };
