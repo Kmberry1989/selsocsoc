@@ -635,12 +635,38 @@
     return set;
   }
 
-  /* ---------- camera shots ---------- */
+  /* ---------- camera shots ----------
+     establish is the opening wide. mayor / duo / group are the staged
+     wides, now kept as the fallback destinations for the computed
+     speaking close-ups (see closeUpFor). */
   const SHOTS = {
     establish: { pos: [0, 2.6, 10.5], look: [0, 1.4, -6] },
     mayor: { pos: [0.4, 1.7, 4.6], look: [0, 1.35, -0.5] },
     duo: { pos: [-2.2, 1.9, 5.6], look: [-0.6, 1.25, -0.5] },
     group: { pos: [0, 2.1, 7.2], look: [0, 1.3, -0.5] },
+  };
+
+  /* ---------- speaking close-up ----------
+     Front close-up of the speaking NPC, computed from their MARK and
+     the audience point the walkers settle facing (0, 0, 6) — the same
+     faceTo the walkTo entrances use. The speaker's rotation.y at beat
+     time is NOT used: the side characters start turned toward centre
+     stage (rotation.y ±π/2.4) and only settle toward the audience as
+     they walk in, so their rotation.y would put the camera at their
+     side instead of their front. */
+  const CLOSEUP_DIST = 2.5; // camera metres in front of the speaker
+  const CLOSEUP_CAM_Y = 1.6; // camera height (head height)
+  const CLOSEUP_LOOK_Y = 1.5; // look target (head / upper body)
+  const AUDIENCE_POINT = [0, 0, 6];
+  const closeUpFor = (mark, faceTo = AUDIENCE_POINT) => {
+    const dx = faceTo[0] - mark[0], dz = faceTo[2] - mark[2];
+    const len = Math.hypot(dx, dz);
+    if (!Number.isFinite(len) || len <= 0) return null;
+    const fx = dx / len, fz = dz / len;
+    const pos = [mark[0] + fx * CLOSEUP_DIST, CLOSEUP_CAM_Y, mark[2] + fz * CLOSEUP_DIST];
+    const look = [mark[0], CLOSEUP_LOOK_Y, mark[2]];
+    if (![...pos, ...look].every(Number.isFinite)) return null;
+    return { pos, look };
   };
 
   /* ---------- the cinematic ---------- */
@@ -798,15 +824,15 @@
       camera.lookAt(state.lookCur);
       state.camT = 1;
     };
-    const moveCamera = (shot, dur = 1.4) => {
-      const s = SHOTS[shot];
+    const moveCameraTo = (dest, dur = 1.4) => {
       state.camFrom = camera.position.clone();
-      state.camTo = new THREE.Vector3(...s.pos);
+      state.camTo = new THREE.Vector3(...dest.pos);
       state.lookFrom.copy(state.lookCur);
-      state.lookTo.set(...s.look);
+      state.lookTo.set(...dest.look);
       state.camT = 0;
       state.camDur = still ? 0.01 : dur;
     };
+    const moveCamera = (shot, dur = 1.4) => moveCameraTo(SHOTS[shot], dur);
 
     /* ----- walking ----- */
     const walkTo = (char, to, faceTo, dur = 1.6) => {
@@ -934,18 +960,21 @@
       nextEl.textContent = last ? "Enter Cyclical City" : "Continue";
       overlay.className = `welcome-cinematic is-three-dimensional gesture-${d.gesture}` +
         (state.index === 0 ? " is-mayor" : state.index === 1 ? " is-gideon" : " is-press");
-      // Stage the shot + entrances for this beat.
+      // Stage the shot + entrances for this beat. Each speaker gets a
+      // smooth pan + dolly to a front close-up computed from their MARK;
+      // if that computation fails, fall back to the staged wide shot
+      // for the beat so the scene still plays.
       state.speaker = state.index === 0 ? mayor : state.index === 1 ? gideon : lyla;
       if (state.index === 0) {
-        moveCamera("mayor", 1.6);
+        moveCameraTo(closeUpFor(MARK.mayor) || SHOTS.mayor, 1.6);
       } else if (state.index === 1) {
         gideon.visible = true;
         walkTo(gideon, MARK.gideon, new THREE.Vector3(0, 0, 6), 1.4);
-        moveCamera("duo", 1.6);
+        moveCameraTo(closeUpFor(MARK.gideon) || SHOTS.duo, 1.6);
       } else {
         lyla.visible = true;
         walkTo(lyla, MARK.lyla, new THREE.Vector3(0, 0, 6), 1.4);
-        moveCamera("group", 1.8);
+        moveCameraTo(closeUpFor(MARK.lyla) || SHOTS.group, 1.8);
       }
       speak(d.voice, d.line);
     };
