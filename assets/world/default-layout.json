@@ -418,20 +418,6 @@
       }
     },
     {
-      "id": "flowers-meadow-1-09",
-      "type": "flower-patch",
-      "x": -8.3112,
-      "y": 0.12,
-      "z": 16.0336,
-      "rotY": 242.5995,
-      "scale": 1.2187,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 0,
-        "instanceIndex": 8
-      }
-    },
-    {
       "id": "flowers-meadow-1-10",
       "type": "flower-patch",
       "x": 21.0599,
@@ -457,20 +443,6 @@
         "source": "expanded-flower",
         "meshIndex": 0,
         "instanceIndex": 10
-      }
-    },
-    {
-      "id": "flowers-meadow-1-12",
-      "type": "flower-patch",
-      "x": -7.5202,
-      "y": 0.12,
-      "z": -20.8325,
-      "rotY": 109.8488,
-      "scale": 0.8323,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 0,
-        "instanceIndex": 11
       }
     },
     {
@@ -530,20 +502,6 @@
       }
     },
     {
-      "id": "flowers-meadow-1-18",
-      "type": "flower-patch",
-      "x": 12.282,
-      "y": 0.12,
-      "z": 10.2993,
-      "rotY": 320.0178,
-      "scale": 0.8625,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 0,
-        "instanceIndex": 17
-      }
-    },
-    {
       "id": "flowers-meadow-2-01",
       "type": "flower-patch",
       "x": 10.1051,
@@ -597,20 +555,6 @@
         "source": "expanded-flower",
         "meshIndex": 1,
         "instanceIndex": 4
-      }
-    },
-    {
-      "id": "flowers-meadow-2-06",
-      "type": "flower-patch",
-      "x": 9.0996,
-      "y": 0.12,
-      "z": -11.2009,
-      "rotY": 50.9098,
-      "scale": 0.8638,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 1,
-        "instanceIndex": 5
       }
     },
     {
@@ -670,20 +614,6 @@
       }
     },
     {
-      "id": "flowers-meadow-2-12",
-      "type": "flower-patch",
-      "x": -22.8836,
-      "y": 0.12,
-      "z": -20.0979,
-      "rotY": 138.7082,
-      "scale": 1.2675,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 1,
-        "instanceIndex": 11
-      }
-    },
-    {
       "id": "flowers-meadow-2-13",
       "type": "flower-patch",
       "x": -18.3745,
@@ -712,20 +642,6 @@
       }
     },
     {
-      "id": "flowers-meadow-2-15",
-      "type": "flower-patch",
-      "x": 10.1143,
-      "y": 0.12,
-      "z": 11.6425,
-      "rotY": 310.9822,
-      "scale": 0.7722,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 1,
-        "instanceIndex": 14
-      }
-    },
-    {
       "id": "flowers-meadow-2-16",
       "type": "flower-patch",
       "x": -14.9085,
@@ -737,20 +653,6 @@
         "source": "expanded-flower",
         "meshIndex": 1,
         "instanceIndex": 15
-      }
-    },
-    {
-      "id": "flowers-meadow-2-17",
-      "type": "flower-patch",
-      "x": 7.105,
-      "y": 0.12,
-      "z": -21.5356,
-      "rotY": 71.7413,
-      "scale": 0.8207,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 1,
-        "instanceIndex": 16
       }
     },
     {
@@ -796,34 +698,6 @@
       }
     },
     {
-      "id": "flowers-meadow-2-21",
-      "type": "flower-patch",
-      "x": -14.5455,
-      "y": 0.12,
-      "z": 26.8896,
-      "rotY": 241.5895,
-      "scale": 1.1468,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 1,
-        "instanceIndex": 20
-      }
-    },
-    {
-      "id": "flowers-meadow-2-22",
-      "type": "flower-patch",
-      "x": -17.6664,
-      "y": 0.12,
-      "z": 15.7321,
-      "rotY": 221.6853,
-      "scale": 1.0844,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 1,
-        "instanceIndex": 21
-      }
-    },
-    {
       "id": "flowers-meadow-2-23",
       "type": "flower-patch",
       "x": -2.6017,
@@ -866,20 +740,6 @@
       }
     },
     {
-      "id": "flowers-meadow-3-04",
-      "type": "flower-patch",
-      "x": 15.0234,
-      "y": 0.12,
-      "z": -12.2174,
-      "rotY": 39.1189,
-      "scale": 1.1696,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 2,
-        "instanceIndex": 3
-      }
-    },
-    {
       "id": "flowers-meadow-3-05",
       "type": "flower-patch",
       "x": -4.4483,
@@ -894,34 +754,6 @@
       }
     },
     {
-      "id": "flowers-meadow-3-06",
-      "type": "flower-patch",
-      "x": 10.2044,
-      "y": 0.12,
-      "z": -24.4034,
-      "rotY": 67.3076,
-      "scale": 0.8551,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 2,
-        "instanceIndex": 5
-      }
-    },
-    {
-      "id": "flowers-meadow-3-07",
-      "type": "flower-patch",
-      "x": 35.778,
-      "y": 0.12,
-      "z": -3.4154,
-      "rotY": 5.4531,
-      "scale": 1.3621,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 2,
-        "instanceIndex": 6
-      }
-    },
-    {
       "id": "flowers-meadow-3-08",
       "type": "flower-patch",
       "x": -6.0645,
@@ -933,20 +765,6 @@
         "source": "expanded-flower",
         "meshIndex": 2,
         "instanceIndex": 7
-      }
-    },
-    {
-      "id": "flowers-meadow-3-09",
-      "type": "flower-patch",
-      "x": -18.2798,
-      "y": 0.12,
-      "z": 15.0914,
-      "rotY": 219.5424,
-      "scale": 0.8321,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 2,
-        "instanceIndex": 8
       }
     },
     {
@@ -992,20 +810,6 @@
       }
     },
     {
-      "id": "flowers-meadow-3-13",
-      "type": "flower-patch",
-      "x": -21.0778,
-      "y": 0.12,
-      "z": 20.1995,
-      "rotY": 223.7812,
-      "scale": 1.1306,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 2,
-        "instanceIndex": 12
-      }
-    },
-    {
       "id": "flowers-meadow-3-14",
       "type": "flower-patch",
       "x": -14.0761,
@@ -1034,62 +838,6 @@
       }
     },
     {
-      "id": "flowers-meadow-3-16",
-      "type": "flower-patch",
-      "x": 11.291,
-      "y": 0.12,
-      "z": -30.0957,
-      "rotY": 69.4353,
-      "scale": 1.3361,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 2,
-        "instanceIndex": 15
-      }
-    },
-    {
-      "id": "flowers-meadow-3-17",
-      "type": "flower-patch",
-      "x": 24.7288,
-      "y": 0.12,
-      "z": 3.1576,
-      "rotY": 352.7233,
-      "scale": 0.8588,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 2,
-        "instanceIndex": 16
-      }
-    },
-    {
-      "id": "flowers-meadow-4-01",
-      "type": "flower-patch",
-      "x": 17.2307,
-      "y": 0.12,
-      "z": -18.103,
-      "rotY": 46.4142,
-      "scale": 0.9339,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 3,
-        "instanceIndex": 0
-      }
-    },
-    {
-      "id": "flowers-meadow-4-02",
-      "type": "flower-patch",
-      "x": -10.9919,
-      "y": 0.12,
-      "z": -21.2637,
-      "rotY": 117.3359,
-      "scale": 1.3995,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 3,
-        "instanceIndex": 1
-      }
-    },
-    {
       "id": "flowers-meadow-4-03",
       "type": "flower-patch",
       "x": 16.5808,
@@ -1101,20 +849,6 @@
         "source": "expanded-flower",
         "meshIndex": 3,
         "instanceIndex": 2
-      }
-    },
-    {
-      "id": "flowers-meadow-4-04",
-      "type": "flower-patch",
-      "x": 5.3165,
-      "y": 0.12,
-      "z": 14.044,
-      "rotY": 290.7345,
-      "scale": 1.3016,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 3,
-        "instanceIndex": 3
       }
     },
     {
@@ -1132,20 +866,6 @@
       }
     },
     {
-      "id": "flowers-meadow-4-06",
-      "type": "flower-patch",
-      "x": 8.7767,
-      "y": 0.12,
-      "z": -26.2833,
-      "rotY": 71.5344,
-      "scale": 0.8895,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 3,
-        "instanceIndex": 5
-      }
-    },
-    {
       "id": "flowers-meadow-4-07",
       "type": "flower-patch",
       "x": 34.9402,
@@ -1157,20 +877,6 @@
         "source": "expanded-flower",
         "meshIndex": 3,
         "instanceIndex": 6
-      }
-    },
-    {
-      "id": "flowers-meadow-4-08",
-      "type": "flower-patch",
-      "x": 33.0311,
-      "y": 0.12,
-      "z": -9.2845,
-      "rotY": 15.6998,
-      "scale": 0.949,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 3,
-        "instanceIndex": 7
       }
     },
     {
@@ -1202,34 +908,6 @@
       }
     },
     {
-      "id": "flowers-meadow-4-11",
-      "type": "flower-patch",
-      "x": 21.0751,
-      "y": 0.12,
-      "z": 11.3288,
-      "rotY": 331.74,
-      "scale": 0.8108,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 3,
-        "instanceIndex": 10
-      }
-    },
-    {
-      "id": "flowers-meadow-4-12",
-      "type": "flower-patch",
-      "x": 3.9631,
-      "y": 0.12,
-      "z": 27.7257,
-      "rotY": 278.1346,
-      "scale": 1.066,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 3,
-        "instanceIndex": 11
-      }
-    },
-    {
       "id": "flowers-meadow-4-13",
       "type": "flower-patch",
       "x": 29.3951,
@@ -1258,20 +936,6 @@
       }
     },
     {
-      "id": "flowers-meadow-4-15",
-      "type": "flower-patch",
-      "x": -6.6636,
-      "y": 0.12,
-      "z": -20.4564,
-      "rotY": 108.0428,
-      "scale": 1.3462,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 3,
-        "instanceIndex": 14
-      }
-    },
-    {
       "id": "flowers-meadow-4-16",
       "type": "flower-patch",
       "x": 6.6114,
@@ -1297,20 +961,6 @@
         "source": "expanded-flower",
         "meshIndex": 3,
         "instanceIndex": 16
-      }
-    },
-    {
-      "id": "flowers-meadow-4-18",
-      "type": "flower-patch",
-      "x": 6.3424,
-      "y": 0.12,
-      "z": 11.987,
-      "rotY": 297.8838,
-      "scale": 1.0662,
-      "props": {
-        "source": "expanded-flower",
-        "meshIndex": 3,
-        "instanceIndex": 17
       }
     },
     {
@@ -1778,32 +1428,6 @@
       }
     },
     {
-      "id": "grass-edge-008",
-      "type": "grass-tuft",
-      "x": -1.4251,
-      "y": 0.13,
-      "z": -21.9183,
-      "rotY": 294.0694,
-      "scale": 1.0594,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 7
-      }
-    },
-    {
-      "id": "grass-edge-009",
-      "type": "grass-tuft",
-      "x": 1.5067,
-      "y": 0.13,
-      "z": -19.695,
-      "rotY": 279.7733,
-      "scale": 1.321,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 8
-      }
-    },
-    {
       "id": "grass-edge-012",
       "type": "grass-tuft",
       "x": -1.5302,
@@ -1843,19 +1467,6 @@
       }
     },
     {
-      "id": "grass-edge-023",
-      "type": "grass-tuft",
-      "x": 1.5459,
-      "y": 0.13,
-      "z": -4.1317,
-      "rotY": 313.6787,
-      "scale": 1.3313,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 22
-      }
-    },
-    {
       "id": "grass-edge-024",
       "type": "grass-tuft",
       "x": -1.4354,
@@ -1879,32 +1490,6 @@
       "props": {
         "source": "ground-grass",
         "instanceIndex": 24
-      }
-    },
-    {
-      "id": "grass-edge-026",
-      "type": "grass-tuft",
-      "x": -1.6494,
-      "y": 0.13,
-      "z": -1.9083,
-      "rotY": 185.0395,
-      "scale": 0.9181,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 25
-      }
-    },
-    {
-      "id": "grass-edge-027",
-      "type": "grass-tuft",
-      "x": 1.4901,
-      "y": 0.13,
-      "z": 0.315,
-      "rotY": 321.4991,
-      "scale": 1.0861,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 26
       }
     },
     {
@@ -2025,32 +1610,6 @@
       }
     },
     {
-      "id": "grass-edge-058",
-      "type": "grass-tuft",
-      "x": -1.6134,
-      "y": 0.13,
-      "z": 33.665,
-      "rotY": 287.2441,
-      "scale": 1.126,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 57
-      }
-    },
-    {
-      "id": "grass-edge-059",
-      "type": "grass-tuft",
-      "x": 1.5788,
-      "y": 0.13,
-      "z": 35.8883,
-      "rotY": 208.447,
-      "scale": 0.7948,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 58
-      }
-    },
-    {
       "id": "grass-edge-060",
       "type": "grass-tuft",
       "x": -1.4104,
@@ -2103,19 +1662,6 @@
       }
     },
     {
-      "id": "grass-edge-072",
-      "type": "grass-tuft",
-      "x": -22.8,
-      "y": 0.13,
-      "z": 1.4978,
-      "rotY": 189.3768,
-      "scale": 1.1699,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 71
-      }
-    },
-    {
       "id": "grass-edge-075",
       "type": "grass-tuft",
       "x": -18.0,
@@ -2126,32 +1672,6 @@
       "props": {
         "source": "ground-grass",
         "instanceIndex": 74
-      }
-    },
-    {
-      "id": "grass-edge-076",
-      "type": "grass-tuft",
-      "x": -18.0,
-      "y": 0.13,
-      "z": 1.6159,
-      "rotY": 197.736,
-      "scale": 1.1034,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 75
-      }
-    },
-    {
-      "id": "grass-edge-087",
-      "type": "grass-tuft",
-      "x": -3.6,
-      "y": 0.13,
-      "z": -1.4756,
-      "rotY": 305.5219,
-      "scale": 0.9702,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 86
       }
     },
     {
@@ -2168,45 +1688,6 @@
       }
     },
     {
-      "id": "grass-edge-089",
-      "type": "grass-tuft",
-      "x": -1.2,
-      "y": 0.13,
-      "z": -1.6205,
-      "rotY": 224.488,
-      "scale": 1.3301,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 88
-      }
-    },
-    {
-      "id": "grass-edge-092",
-      "type": "grass-tuft",
-      "x": 1.2,
-      "y": 0.13,
-      "z": 1.5847,
-      "rotY": 229.0001,
-      "scale": 1.2137,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 91
-      }
-    },
-    {
-      "id": "grass-edge-093",
-      "type": "grass-tuft",
-      "x": 3.6,
-      "y": 0.13,
-      "z": -1.6477,
-      "rotY": 223.1827,
-      "scale": 0.8304,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 92
-      }
-    },
-    {
       "id": "grass-edge-097",
       "type": "grass-tuft",
       "x": 8.4,
@@ -2217,19 +1698,6 @@
       "props": {
         "source": "ground-grass",
         "instanceIndex": 96
-      }
-    },
-    {
-      "id": "grass-edge-098",
-      "type": "grass-tuft",
-      "x": 8.4,
-      "y": 0.13,
-      "z": 1.4083,
-      "rotY": 302.4773,
-      "scale": 1.0565,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 97
       }
     },
     {
@@ -2311,32 +1779,6 @@
       }
     },
     {
-      "id": "grass-edge-140",
-      "type": "grass-tuft",
-      "x": -17.5526,
-      "y": 0.13,
-      "z": -11.0867,
-      "rotY": 225.0248,
-      "scale": 1.2834,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 139
-      }
-    },
-    {
-      "id": "grass-edge-142",
-      "type": "grass-tuft",
-      "x": -18.7561,
-      "y": 0.13,
-      "z": -12.1494,
-      "rotY": 261.3529,
-      "scale": 0.8919,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 141
-      }
-    },
-    {
       "id": "grass-edge-144",
       "type": "grass-tuft",
       "x": -19.9617,
@@ -2347,71 +1789,6 @@
       "props": {
         "source": "ground-grass",
         "instanceIndex": 143
-      }
-    },
-    {
-      "id": "grass-edge-148",
-      "type": "grass-tuft",
-      "x": -22.459,
-      "y": 0.13,
-      "z": -15.2336,
-      "rotY": 318.4154,
-      "scale": 1.1234,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 147
-      }
-    },
-    {
-      "id": "grass-edge-151",
-      "type": "grass-tuft",
-      "x": 6.7437,
-      "y": 0.13,
-      "z": -1.3697,
-      "rotY": 251.9092,
-      "scale": 1.1521,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 150
-      }
-    },
-    {
-      "id": "grass-edge-152",
-      "type": "grass-tuft",
-      "x": 8.5138,
-      "y": 0.13,
-      "z": 0.2141,
-      "rotY": 251.9092,
-      "scale": 0.9287,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 151
-      }
-    },
-    {
-      "id": "grass-edge-154",
-      "type": "grass-tuft",
-      "x": 9.5327,
-      "y": 0.13,
-      "z": -1.1549,
-      "rotY": 348.6222,
-      "scale": 1.2278,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 153
-      }
-    },
-    {
-      "id": "grass-edge-155",
-      "type": "grass-tuft",
-      "x": 8.8876,
-      "y": 0.13,
-      "z": -4.0129,
-      "rotY": 199.4435,
-      "scale": 1.1603,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 154
       }
     },
     {
@@ -2441,19 +1818,6 @@
       }
     },
     {
-      "id": "grass-edge-165",
-      "type": "grass-tuft",
-      "x": 14.6385,
-      "y": 0.13,
-      "z": -10.2708,
-      "rotY": 209.7094,
-      "scale": 0.7378,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 164
-      }
-    },
-    {
       "id": "grass-edge-167",
       "type": "grass-tuft",
       "x": 15.7859,
@@ -2477,19 +1841,6 @@
       "props": {
         "source": "ground-grass",
         "instanceIndex": 173
-      }
-    },
-    {
-      "id": "grass-edge-176",
-      "type": "grass-tuft",
-      "x": 22.0311,
-      "y": 0.13,
-      "z": -15.0599,
-      "rotY": 257.6246,
-      "scale": 0.8405,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 175
       }
     },
     {
@@ -2519,19 +1870,6 @@
       }
     },
     {
-      "id": "grass-edge-188",
-      "type": "grass-tuft",
-      "x": -11.7739,
-      "y": 0.13,
-      "z": 3.3639,
-      "rotY": 186.8454,
-      "scale": 0.9574,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 187
-      }
-    },
-    {
       "id": "grass-edge-189",
       "type": "grass-tuft",
       "x": -11.1959,
@@ -2545,45 +1883,6 @@
       }
     },
     {
-      "id": "grass-edge-190",
-      "type": "grass-tuft",
-      "x": -12.9932,
-      "y": 0.13,
-      "z": 4.462,
-      "rotY": 206.9997,
-      "scale": 1.2702,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 189
-      }
-    },
-    {
-      "id": "grass-edge-191",
-      "type": "grass-tuft",
-      "x": -12.3696,
-      "y": 0.13,
-      "z": 7.3061,
-      "rotY": 320.6046,
-      "scale": 0.7829,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 190
-      }
-    },
-    {
-      "id": "grass-edge-192",
-      "type": "grass-tuft",
-      "x": -14.0858,
-      "y": 0.13,
-      "z": 5.6802,
-      "rotY": 320.6046,
-      "scale": 1.3047,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 191
-      }
-    },
-    {
       "id": "grass-edge-195",
       "type": "grass-tuft",
       "x": -14.5078,
@@ -2594,32 +1893,6 @@
       "props": {
         "source": "ground-grass",
         "instanceIndex": 194
-      }
-    },
-    {
-      "id": "grass-edge-198",
-      "type": "grass-tuft",
-      "x": -17.3632,
-      "y": 0.13,
-      "z": 9.3352,
-      "rotY": 352.888,
-      "scale": 1.2011,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 197
-      }
-    },
-    {
-      "id": "grass-edge-199",
-      "type": "grass-tuft",
-      "x": -16.8993,
-      "y": 0.13,
-      "z": 12.028,
-      "rotY": 297.0183,
-      "scale": 1.1597,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 198
       }
     },
     {
@@ -2646,19 +1919,6 @@
       "props": {
         "source": "ground-grass",
         "instanceIndex": 206
-      }
-    },
-    {
-      "id": "grass-edge-208",
-      "type": "grass-tuft",
-      "x": -23.1512,
-      "y": 0.13,
-      "z": 15.1183,
-      "rotY": 201.6866,
-      "scale": 1.0704,
-      "props": {
-        "source": "ground-grass",
-        "instanceIndex": 207
       }
     },
     {
