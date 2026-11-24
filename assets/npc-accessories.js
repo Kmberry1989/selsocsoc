@@ -1,9 +1,12 @@
-/* snug-npc-accessories-v1
- * Gives the 10 roster NPCs who lack one a signature held accessory.
- * Lyla (camera), Chip (die) and Peggy (hammer) already have theirs from
- * the roster bundle; this adds Mayor Mayor, Gideon, Barnaby, Pip, Agnes,
- * Dottie, Buck, Fern, Stanley and Bobby. Built from primitives in the
- * game's toon style, attached to each NPC's HeldItemSlot_<MARK> (right hand).
+/* snug-npc-accessories-v2
+ * Dresses every roster NPC with their real accessory GLBs from
+ * assets/npc-accessories/manifest.json (head + right hand + left hand
+ * + back). The v1 primitive held items are built first as the fallback;
+ * each GLB swaps its primitive in on load, so a failed load simply
+ * keeps the primitive and the scene never breaks. Kyle's guitar GLB
+ * keeps its v1 placement; the double-add race is fixed with a pending
+ * flag on the slot. Kyle has no hat (his portrait has hair) — his
+ * generic head cone is removed.
  */
 (() => {
   if (window.__snugNpcAccessories) return;
@@ -157,15 +160,209 @@
   const MARKS = {
     'mayor-mayor': 'MM',
     'gideon': 'GD',
+    'lyla-lens': 'LL',
+    'chip-chance': 'CC',
     'barnaby-bargain': 'BB',
     'pip-parade': 'PP',
     'agnes-alley': 'AA',
     'dottie-daly': 'DD',
+    'peggy-plank': 'PG',
     'mr-buck-coinsworth': 'BC',
     'fern-bramble': 'FB',
     'stanley-stamp': 'SS',
     'bobby-gill': 'BG',
+    'kyle-busker': 'KB',
   };
+
+  // Real accessory GLBs per NPC, from assets/npc-accessories/manifest.json.
+  // head: replaces the generic PrimitiveHeadAccessory cone in
+  // HeadAccessorySlot_<MARK>. y lifts the hat so its base sits on the coin
+  // head top (slot is 0.27 above head centre; GLB bases sit 0..-0.09 below
+  // their origin, measured 2026-11-22).
+  // hand: replaces the primitive held item in HeldItemSlot_<MARK>.
+  // handL: left-hand item, in a HeldItemSlotLeft_<MARK> created under
+  // HandSlot_<MARK>_Left. cane y lowers it so the tip touches the ground.
+  // back: in a BackSlot_<MARK> created on the NPC group at (0, 0.66, -0.30),
+  // just behind the torso; y/z tune each piece onto the back.
+  const DRESS = {
+    'mayor-mayor': { head: { file: 'tophat.glb' }, hand: { file: 'gavel.glb' }, back: { file: 'cape.glb', y: -0.29, z: -0.02 } },
+    'gideon': { head: { file: 'tourcap.glb', y: -0.01 }, hand: { file: 'flag.glb' }, handL: { file: 'cane.glb', y: -0.44 }, back: { file: 'tour-backpack.glb', y: -0.15 } },
+    'lyla-lens': { head: { file: 'press-fedora.glb' }, hand: { file: 'camera.glb' }, back: { file: 'press-satchel.glb' } },
+    'chip-chance': { head: { file: 'showman-bowler.glb', y: 0.06 }, hand: { file: 'die.glb' }, handL: { file: 'microphone.glb' }, back: { file: 'dice-pouch.glb' } },
+    'barnaby-bargain': { head: { file: 'bargain-bowler.glb', y: 0.06 }, hand: { file: 'coin.glb' }, back: { file: 'merchant-satchel.glb' } },
+    'pip-parade': { head: { file: 'confetti-crown.glb' }, hand: { file: 'balloon.glb' }, back: { file: 'festival-banner.glb' } },
+    'agnes-alley': { head: { file: 'cat-ears.glb' }, hand: { file: 'yarn.glb' }, back: { file: 'cat-carrier.glb' } },
+    'dottie-daly': { head: { file: 'quest-beret.glb', y: 0.05 }, hand: { file: 'scroll.glb' }, back: { file: 'quest-tube.glb' } },
+    'peggy-plank': { head: { file: 'hardhat.glb', y: 0.08 }, hand: { file: 'hammer.glb' }, back: { file: 'tool-roll.glb' } },
+    'mr-buck-coinsworth': { head: { file: 'banker-bowler.glb', y: 0.06 }, hand: { file: 'goldbar.glb' }, back: { file: 'money-bag.glb' } },
+    'fern-bramble': { head: { file: 'strawhat.glb', y: -0.01 }, hand: { file: 'flower.glb' }, back: { file: 'seed-pack.glb' } },
+    'stanley-stamp': { head: { file: 'mailcap.glb' }, hand: { file: 'envelope.glb' }, back: { file: 'mailbag.glb' } },
+    'bobby-gill': { head: { file: 'buckethat.glb', y: 0.01 }, hand: { file: 'rod.glb' }, back: { file: 'creel.glb' } },
+    'kyle-busker': { hand: { file: 'guitar.glb', guitar: true } },
+  };
+
+  // The real guitar GLB (the game's own guitar instrument, exported by
+  // selsocsoc-instrument-export). Loaded once and attached to Kyle's hand.
+  let gltfLoaderPromise = null;
+  const getGLTFLoader = () => {
+    if (!gltfLoaderPromise) {
+      gltfLoaderPromise = import(new URL('assets/vendor/three/GLTFLoader.js', document.baseURI).href)
+        .then((mod) => new mod.GLTFLoader())
+        .catch(() => null);
+    }
+    return gltfLoaderPromise;
+  };
+
+  async function dressGuitar(group, THREE) {
+    const npc = (group.children || []).find((child) => child.userData?.npcId === 'kyle-busker');
+    const slot = npc ? npc.getObjectByName('HeldItemSlot_KB') : null;
+    if (!slot || slot.getObjectByName('NPCAccessory_KB') || slot.userData?.__guitarPending) return;
+    if (slot.userData) slot.userData.__guitarPending = true;
+    try {
+      const loader = await getGLTFLoader();
+      if (!loader) return;
+      const loaded = await loader.loadAsync('assets/npc-accessories/guitar.glb');
+      const guitar = loaded.scene;
+      guitar.name = 'NPCAccessory_KB';
+      // The GLB is ~1.4 m tall, Y-up, body at the bottom. Shrink it to hand
+      // size and lean it across the body like a busker holding it to play:
+      // body at the right hand, neck up across the chest toward the left.
+      guitar.scale.setScalar(0.7);
+      guitar.rotation.set(-0.18, 0.15, 0.65);
+      guitar.position.set(0, -0.3, 0.14);
+      guitar.traverse((child) => { if (child.isMesh) child.castShadow = true; });
+      slot.add(guitar);
+    } catch (error) {
+      console.warn('[npc accessories] could not dress kyle-busker guitar', error);
+    } finally {
+      if (slot.userData) slot.userData.__guitarPending = false;
+    }
+  }
+
+  // The die GLB now carries its own pips in its texture (swapped in
+  // 2026-11-23 from the optimized set), so no code pips are added.
+  // addDiePips below is unused since then; kept in case the plain
+  // cube ever comes back. The die is a ~0.2 cube centred on the slot
+  // origin, faces at about ±0.1.
+  function addDiePips(THREE, model) {
+    const geo = new THREE.SphereGeometry(0.014, 10, 8);
+    const material = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.6 });
+    const group = new THREE.Group();
+    group.name = 'DiePips';
+    const half = 0.05;
+    const layouts = {
+      1: [[0, 0]],
+      2: [[-half, half], [half, -half]],
+      3: [[-half, half], [0, 0], [half, -half]],
+      4: [[-half, half], [half, half], [-half, -half], [half, -half]],
+      5: [[-half, half], [half, half], [0, 0], [-half, -half], [half, -half]],
+      6: [[-half, half], [half, half], [-half, 0], [half, 0], [-half, -half], [half, -half]],
+    };
+    // [value, normal, u axis, v axis]
+    const faces = [
+      [1, [1, 0, 0], [0, 1, 0], [0, 0, 1]],
+      [6, [-1, 0, 0], [0, 1, 0], [0, 0, -1]],
+      [2, [0, 1, 0], [1, 0, 0], [0, 0, 1]],
+      [5, [0, -1, 0], [1, 0, 0], [0, 0, -1]],
+      [3, [0, 0, 1], [1, 0, 0], [0, 1, 0]],
+      [4, [0, 0, -1], [-1, 0, 0], [0, 1, 0]],
+    ];
+    for (const [value, n, u, v] of faces) {
+      for (const [a, b] of layouts[value]) {
+        const pip = new THREE.Mesh(geo, material);
+        pip.position.set(
+          n[0] * 0.0945 + u[0] * a + v[0] * b,
+          n[1] * 0.0945 + u[1] * a + v[1] * b,
+          n[2] * 0.0945 + u[2] * a + v[2] * b
+        );
+        pip.castShadow = true;
+        group.add(pip);
+      }
+    }
+    model.add(group);
+  }
+
+  // Swap one real GLB into a slot, removing the primitive it replaces.
+  // On any load failure the primitive stays, so the scene never breaks.
+  async function swapGlb(loader, THREE, slot, name, file, pos, onLoad) {
+    if (!slot || slot.getObjectByName(name)) return;
+    try {
+      const loaded = await loader.loadAsync('assets/npc-accessories/' + file);
+      if (slot.getObjectByName(name)) return; // dressed while loading
+      const model = loaded.scene;
+      model.name = name;
+      if (pos) model.position.set(pos[0] || 0, pos[1] || 0, pos[2] || 0);
+      model.traverse((child) => { if (child.isMesh) child.castShadow = true; });
+      if (onLoad) onLoad(model);
+      // Remove the primitive this GLB replaces (all children for the hand
+      // slot, the named cone for the head slot); back/left slots are new.
+      if (name.endsWith('_hand')) {
+        [...slot.children].forEach((child) => slot.remove(child));
+      } else if (name.endsWith('_head')) {
+        const old = slot.children.find((child) => child.name.startsWith('PrimitiveHeadAccessory_'));
+        if (old) slot.remove(old);
+      }
+      slot.add(model);
+    } catch (error) {
+      console.warn('[npc accessories] could not load', file, error);
+    }
+  }
+
+  async function dressGlbs(group, THREE) {
+    const loader = await getGLTFLoader();
+    if (!loader) return;
+    for (const [id, cfg] of Object.entries(DRESS)) {
+      try {
+        const mark = MARKS[id];
+        const npc = (group.children || []).find((child) => child.userData?.npcId === id);
+        if (!npc) continue;
+        if (cfg.head) {
+          const slot = npc.getObjectByName(`HeadAccessorySlot_${mark}`);
+          swapGlb(loader, THREE, slot, `NPCAccessoryGLB_${mark}_head`, cfg.head.file,
+            [0, cfg.head.y || 0, cfg.head.z || 0], null);
+        } else {
+          // No hat for this NPC: drop the generic cone (Kyle's portrait
+          // has hair; the cone reads as a hat he doesn't wear).
+          const slot = npc.getObjectByName(`HeadAccessorySlot_${mark}`);
+          const old = slot && slot.children.find((child) => child.name.startsWith('PrimitiveHeadAccessory_'));
+          if (old) slot.remove(old);
+        }
+        if (cfg.hand && !cfg.hand.guitar) {
+          const slot = npc.getObjectByName(`HeldItemSlot_${mark}`);
+          swapGlb(loader, THREE, slot, `NPCAccessoryGLB_${mark}_hand`, cfg.hand.file,
+            [0, cfg.hand.y || 0, cfg.hand.z || 0],
+            cfg.hand.pips ? (model) => addDiePips(THREE, model) : null);
+        }
+        if (cfg.handL) {
+          let slot = npc.getObjectByName(`HeldItemSlotLeft_${mark}`);
+          if (!slot) {
+            const hand = npc.getObjectByName(`HandSlot_${mark}_Left`);
+            if (hand) {
+              slot = new THREE.Group();
+              slot.name = `HeldItemSlotLeft_${mark}`;
+              slot.position.set(0, -0.04, 0.14);
+              hand.add(slot);
+            }
+          }
+          swapGlb(loader, THREE, slot, `NPCAccessoryGLB_${mark}_handL`, cfg.handL.file,
+            [0, cfg.handL.y || 0, cfg.handL.z || 0], null);
+        }
+        if (cfg.back) {
+          let slot = npc.getObjectByName(`BackSlot_${mark}`);
+          if (!slot) {
+            slot = new THREE.Group();
+            slot.name = `BackSlot_${mark}`;
+            slot.position.set(0, 0.66, -0.30);
+            npc.add(slot);
+          }
+          swapGlb(loader, THREE, slot, `NPCAccessoryGLB_${mark}_back`, cfg.back.file,
+            [0, cfg.back.y || 0, cfg.back.z || 0], null);
+        }
+      } catch (error) {
+        console.warn('[npc accessories] could not dress', id, error);
+      }
+    }
+  }
 
   async function dress(group) {
     const THREE = (await getRealThree()) || window.__snugThree;
@@ -184,6 +381,10 @@
         console.warn('[npc accessories] could not dress', id, error);
       }
     }
+    // Kyle (busker): the real guitar GLB, not a primitive.
+    await dressGuitar(group, THREE);
+    // Everyone: the real accessory GLBs (head, hand, left hand, back).
+    dressGlbs(group, THREE);
   }
 
   window.addEventListener('snug-npc-roster-ready', (event) => {

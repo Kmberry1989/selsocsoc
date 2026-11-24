@@ -48,23 +48,29 @@
     });
   }
 
-  // Capsule UV fix (2026-10-27): the capsule's built-in v runs the full
-  // meridian (bottom pole -> top pole, arc length 1.45m), so only the
-  // middle ~37% of the outfit image lands on the cylindrical torso and
-  // the shoulders/hem are squeezed over the caps — the outfit reads
-  // stretched and does not fit the figure. Remap v from the vertex
-  // height instead: the cylinder section (local y -0.27..+0.27, body
-  // centre 0.66) gets the full image height, and the caps clamp to the
-  // image's top/bottom edge colours. Computed from position, so
-  // re-dressing is idempotent. u is untouched (offset.x = 0.25 already
-  // puts FRONT at the image centre, facing +z).
+  // Capsule UV fix (2026-10-27, garment inset 2026-11-22): the capsule's
+  // built-in v runs the full meridian (bottom pole -> top pole, arc length
+  // 1.45m), so only the middle ~37% of the outfit image lands on the
+  // cylindrical torso and the shoulders/hem are squeezed over the caps —
+  // the outfit reads stretched and does not fit the figure. Remap v from
+  // the vertex height instead: the cylinder section (local y -0.27..+0.27,
+  // body centre 0.66) gets the garment rows, and the caps clamp to the
+  // same edge rows. The outfit PNGs are flat-garment art on a white
+  // background and the garment reaches to within ~2.6% of the top/bottom
+  // edges on every outfit (measured 2026-11-22), so the extreme edge rows
+  // are white: mapping the full 0..1 range left the shoulders and hips
+  // bare white and the outfit read as a band around the belly. Inset v
+  // to 0.05..0.95 so the torso edges and both caps sample garment, not
+  // the white margin. Computed from position, so re-dressing is
+  // idempotent. u is untouched (offset.x = 0.25 already puts FRONT at
+  // the image centre, facing +z).
   function remapCapsuleUVs(mesh) {
     const pos = mesh.geometry?.attributes?.position;
     const uv = mesh.geometry?.attributes?.uv;
     if (!pos || !uv) return;
     for (let i = 0; i < pos.count; i++) {
       const y = pos.getY(i);
-      const v = Math.min(1, Math.max(0, (y + 0.27) / 0.54));
+      const v = 0.05 + 0.90 * Math.min(1, Math.max(0, (y + 0.27) / 0.54));
       uv.setY(i, v);
     }
     uv.needsUpdate = true;
