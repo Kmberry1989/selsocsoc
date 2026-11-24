@@ -15,7 +15,12 @@
    pattern as fallback if the manifest is unreachable. Accessory GLB
    URLs are read from the accessories manifest
    (assets/npc-accessories/manifest.json) by accessory id and slot,
-   with the hardcoded GLB paths as fallback. */
+   with the hardcoded GLB paths as fallback. The same NPC manifest
+   also supplies each member's skin/outfit/trouser colours, voice and
+   speaker label, and the top-level welcomeCommittee list names the
+   trio in order; every one of those falls back to the hardcoded
+   values below if the manifest is unreachable or a field is missing.
+   The lines, shots and gestures stay the verbatim script. */
 (() => {
   "use strict";
 
@@ -107,6 +112,48 @@
       if (faceUrl || outfitUrl) byId[c.id] = { faceUrl, outfitUrl };
     }
     return byId;
+  }
+
+  // { npcId: { skin, outfit, trousers, voice, speakerLabel } } — the
+  // remaining per-character data the cinematic used to hardcode, now
+  // read from the NPC manifest. Colours are "#rrggbb" strings in the
+  // manifest and parsed to numbers here; anything missing or invalid
+  // resolves to null and the caller falls back to the hardcoded
+  // values. Never rejects.
+  async function getCastDetails() {
+    const manifest = await getManifest();
+    const byId = {};
+    const list = manifest && Array.isArray(manifest.characters) ? manifest.characters : [];
+    for (const c of list) {
+      if (!c || typeof c.id !== "string") continue;
+      const hex = (v) => (typeof v === "string" && /^#[0-9a-fA-F]{6}$/.test(v)
+        ? parseInt(v.slice(1), 16) : null);
+      const skin = hex(c.skin);
+      const outfit = hex(c.outfit);
+      const trousers = hex(c.trousers);
+      const voice = (c.voice && typeof c.voice === "object"
+        && Number.isFinite(c.voice.pitch) && Number.isFinite(c.voice.rate)
+        && Number.isFinite(c.voice.voiceIndex))
+        ? { pitch: c.voice.pitch, rate: c.voice.rate, voiceIndex: c.voice.voiceIndex } : null;
+      const speakerLabel = typeof c.speakerLabel === "string" && c.speakerLabel ? c.speakerLabel : null;
+      if (skin !== null || outfit !== null || trousers !== null || voice || speakerLabel) {
+        byId[c.id] = { skin, outfit, trousers, voice, speakerLabel };
+      }
+    }
+    return byId;
+  }
+
+  // Committee membership, in order, from the manifest's top-level
+  // welcomeCommittee list. Only a list of exactly three ids that all
+  // exist in the manifest is honoured; anything else resolves to null
+  // and the caller falls back to the hardcoded trio. Never rejects.
+  async function getWelcomeCommittee() {
+    const manifest = await getManifest();
+    const list = manifest && Array.isArray(manifest.welcomeCommittee) ? manifest.welcomeCommittee : [];
+    const ids = new Set((manifest && Array.isArray(manifest.characters) ? manifest.characters : [])
+      .filter((c) => c && typeof c.id === "string").map((c) => c.id));
+    const valid = list.filter((id) => typeof id === "string" && id && ids.has(id));
+    return valid.length === 3 ? valid : null;
   }
 
   // { gavel, cane, camera, tourcap } GLB URLs from the accessories
@@ -610,10 +657,14 @@
     // timeout), and a failure just falls back to the hardcoded URLs.
     const castTexturesPromise = getCastTextures();
     const castAccessoriesPromise = getCastAccessories();
+    const castDetailsPromise = getCastDetails();
+    const committeePromise = getWelcomeCommittee();
     const THREE = await getThree();
     if (!THREE) throw new Error("Three.js unavailable");
     const castTextures = await castTexturesPromise;
     const castAccessories = await castAccessoriesPromise;
+    const castDetails = await castDetailsPromise;
+    const committee = await committeePromise;
     const still = reducedMotion();
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
@@ -627,30 +678,59 @@
 
     const camera = new THREE.PerspectiveCamera(46, 1, 0.1, 100);
 
-    // Cast. Face/outfit URLs come from the live NPC manifest (looked up
-    // by id); a missing entry falls back to the hardcoded v2 PNG pattern
-    // in buildCharacter. Accessory GLBs come from the accessories
-    // manifest (see getCastAccessories); a missing entry falls back to
-    // the hardcoded GLB path in loadAccessories. Who the three are,
-    // their colours, blocking and dialogue are unchanged.
+    // Cast. Face/outfit URLs, colours, voices and speaker labels come
+    // from the live NPC manifest (looked up by id); a missing entry
+    // falls back to the hardcoded values in each spec below.
+    // Accessory GLBs come from the accessories manifest (see
+    // getCastAccessories); a missing entry falls back to the hardcoded
+    // GLB path in loadAccessories. Committee membership comes from the
+    // manifest's welcomeCommittee list, in order; anything invalid
+    // falls back to the hardcoded trio. Blocking and the dialogue
+    // lines stay exactly as staged.
+    const committeeIds = committee || ["mayor-mayor", "gideon", "lyla-lens"];
     const castTex = (id) => castTextures[id] || {};
+    const castDet = (id) => castDetails[id] || {};
+    // A manifest colour of 0x000000 is valid, so fall back only on
+    // null/undefined, never on a falsy number.
+    const col = (v, fb) => (v === null || v === undefined ? fb : v);
     const mayor = buildCharacter(THREE, {
-      prefix: "MayorMayor", id: "mayor-mayor", skin: 0xc98f66, outfit: 0x8a2f3c, trousers: 0x313c42,
-      faceUrl: castTex("mayor-mayor").faceUrl, outfitUrl: castTex("mayor-mayor").outfitUrl,
+      prefix: "MayorMayor", id: committeeIds[0],
+      skin: col(castDet(committeeIds[0]).skin, 0xc98f66),
+      outfit: col(castDet(committeeIds[0]).outfit, 0x8a2f3c),
+      trousers: col(castDet(committeeIds[0]).trousers, 0x313c42),
+      faceUrl: castTex(committeeIds[0]).faceUrl, outfitUrl: castTex(committeeIds[0]).outfitUrl,
     });
     addMayorHat(THREE, mayor);
     addMayorGavel(THREE, mayor);
     const gideon = buildCharacter(THREE, {
-      prefix: "Gideon", id: "gideon", skin: 0xb0825e, outfit: 0x8a6749, trousers: 0x4a3b2c,
-      faceUrl: castTex("gideon").faceUrl, outfitUrl: castTex("gideon").outfitUrl,
+      prefix: "Gideon", id: committeeIds[1],
+      skin: col(castDet(committeeIds[1]).skin, 0xb0825e),
+      outfit: col(castDet(committeeIds[1]).outfit, 0x8a6749),
+      trousers: col(castDet(committeeIds[1]).trousers, 0x4a3b2c),
+      faceUrl: castTex(committeeIds[1]).faceUrl, outfitUrl: castTex(committeeIds[1]).outfitUrl,
     });
     addGideonCane(THREE, gideon);
     const lyla = buildCharacter(THREE, {
-      prefix: "LylaLens", id: "lyla-lens", skin: 0xb97958, outfit: 0x9a8f5a, trousers: 0x5c5640,
-      faceUrl: castTex("lyla-lens").faceUrl, outfitUrl: castTex("lyla-lens").outfitUrl,
+      prefix: "LylaLens", id: committeeIds[2],
+      skin: col(castDet(committeeIds[2]).skin, 0xb97958),
+      outfit: col(castDet(committeeIds[2]).outfit, 0x9a8f5a),
+      trousers: col(castDet(committeeIds[2]).trousers, 0x5c5640),
+      faceUrl: castTex(committeeIds[2]).faceUrl, outfitUrl: castTex(committeeIds[2]).outfitUrl,
     });
     addLylaCamera(THREE, lyla);
     loadAccessories(THREE, mayor, gideon, lyla, castAccessories);
+
+    // Speaker labels and voices come from the manifest per committee
+    // member (by slot order); the lines, shots and gestures stay the
+    // verbatim script in DIALOGUE. Missing fields fall back.
+    const dialogue = DIALOGUE.map((d, i) => {
+      const det = castDet(committeeIds[i]);
+      return {
+        ...d,
+        speaker: det.speakerLabel || d.speaker,
+        voice: det.voice || d.voice,
+      };
+    });
 
     // Blocking: mayor starts just inside the hall doors, the others off-screen.
     const MARK = { mayor: [0, 0, -1.2], gideon: [-1.9, 0, -0.6], lyla: [1.9, 0, -0.6] };
@@ -845,12 +925,12 @@
 
     /* ----- dialogue flow ----- */
     const renderScene = () => {
-      const d = DIALOGUE[state.index];
+      const d = dialogue[state.index];
       speakerEl.textContent = d.speaker;
       lineEl.textContent = d.line;
-      progressEl.innerHTML = DIALOGUE.map((_, i) =>
+      progressEl.innerHTML = dialogue.map((_, i) =>
         `<i class="${i === state.index ? "active" : ""}"></i>`).join("");
-      const last = state.index >= DIALOGUE.length - 1;
+      const last = state.index >= dialogue.length - 1;
       nextEl.textContent = last ? "Enter Cyclical City" : "Continue";
       overlay.className = `welcome-cinematic is-three-dimensional gesture-${d.gesture}` +
         (state.index === 0 ? " is-mayor" : state.index === 1 ? " is-gideon" : " is-press");
@@ -873,7 +953,7 @@
     const advance = () => {
       if (state.finished) return;
       stopSpeech();
-      if (state.index >= DIALOGUE.length - 1) { finish(); return; }
+      if (state.index >= dialogue.length - 1) { finish(); return; }
       state.index += 1;
       renderScene();
     };
@@ -920,7 +1000,7 @@
       voiceEl.setAttribute("aria-pressed", String(voiceEnabled));
       voiceEl.textContent = voiceEnabled ? "Voice: on" : "Voice: off";
       if (!voiceEnabled) stopSpeech();
-      else if (state.index >= 0) speak(DIALOGUE[state.index].voice, DIALOGUE[state.index].line);
+      else if (state.index >= 0) speak(dialogue[state.index].voice, dialogue[state.index].line);
     });
     helpEl.addEventListener("click", () => {
       const help = document.createElement("div");

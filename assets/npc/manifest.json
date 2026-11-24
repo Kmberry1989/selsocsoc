@@ -10,7 +10,12 @@
       "outfitNotes": "Formal tailcoat, bow tie, sash of office with medallion; colored wraparound texture",
       "outfitUrl": "assets/npc-outfits/npc-mayor-mayor-outfit-v2.png",
       "role": "mayor",
-      "accessoryGlb": "assets/npc-accessories/gavel.glb"
+      "accessoryGlb": "assets/npc-accessories/gavel.glb",
+      "skin": "#c98f66",
+      "outfit": "#8a2f3c",
+      "trousers": "#313c42",
+      "voice": { "pitch": 0.7, "rate": 0.9, "voiceIndex": 3 },
+      "speakerLabel": "MAYOR MAYOR"
     },
     {
       "accessory": "tour pennant flag",
@@ -21,7 +26,12 @@
       "outfitNotes": "Multi-pocket field vest, neckerchief, tour badge; colored wraparound texture",
       "outfitUrl": "assets/npc-outfits/npc-gideon-outfit-v2.png",
       "role": "tour guide",
-      "accessoryGlb": "assets/npc-accessories/flag.glb"
+      "accessoryGlb": "assets/npc-accessories/flag.glb",
+      "skin": "#b0825e",
+      "outfit": "#8a6749",
+      "trousers": "#4a3b2c",
+      "voice": { "pitch": 0.58, "rate": 0.85, "voiceIndex": 10 },
+      "speakerLabel": "GIDEON GAZETTE"
     },
     {
       "accessory": "camera (in roster bundle)",
@@ -32,7 +42,12 @@
       "outfitNotes": "Photographer vest, colored wraparound texture",
       "outfitUrl": "assets/npc-outfits/npc-lyla-lens-outfit-v2.png",
       "role": "newspaper photographer",
-      "accessoryGlb": "assets/npc-accessories/camera.glb"
+      "accessoryGlb": "assets/npc-accessories/camera.glb",
+      "skin": "#b97958",
+      "outfit": "#9a8f5a",
+      "trousers": "#5c5640",
+      "voice": { "pitch": 1.12, "rate": 1.0, "voiceIndex": 5 },
+      "speakerLabel": "LYLA LENS"
     },
     {
       "accessory": "die (in roster bundle)",
@@ -159,5 +174,6 @@
   "game": "Selfie Social Society",
   "note": "Face PNGs are 1600x1600 grayscale-stylized, no mouths (animated speaking-mouth mesh sits separately). Outfit PNGs are grayscale on the 4-island UV layout (multiplicative tint renderer). All 14 NPCs are full 3D in-world characters. Mayor Mayor and Gideon's welcome-cinematic figures still use procedural canvas faces (window.__snugCinematicFaceDraw in assets/npc-faces.js).",
   "town": "Cyclical City",
-  "version": 7
+  "version": 7,
+  "welcomeCommittee": ["mayor-mayor", "gideon", "lyla-lens"]
 }
