@@ -19,17 +19,24 @@
   const FACE_ANGLE = Math.atan2(-4.8 - STUDIO.x, -25.4 - STUDIO.z);
 
   // ---------- re-shoot entry ----------
+  function clickPortraitButton() {
+    const button = [...document.querySelectorAll("button")]
+      .find((entry) => /portrait|expression photos/i.test((entry.textContent || "").trim()));
+    if (button) button.click();
+    return !!button;
+  }
+
   function openReshoot() {
     const chip = document.querySelector(".profile-chip");
     if (!chip) return false;
     chip.click();
+    // Try at once: when the profile sheet is already open the button is
+    // there immediately and there is no reason to wait for the poll.
+    if (clickPortraitButton()) return true;
     const started = Date.now();
     const poll = setInterval(() => {
-      const button = [...document.querySelectorAll("button")]
-        .find((entry) => /portrait|expression photos/i.test((entry.textContent || "").trim()));
-      if (button) {
+      if (clickPortraitButton()) {
         clearInterval(poll);
-        button.click();
       } else if (Date.now() - started >= 3000) {
         clearInterval(poll);
       }

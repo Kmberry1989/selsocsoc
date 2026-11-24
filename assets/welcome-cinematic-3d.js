@@ -109,13 +109,18 @@
     new THREE.MeshStandardMaterial({ color, roughness: 0.85, metalness: 0, ...opts });
 
   // Same capsule UV remap as assets/npc-outfits.js: the cylinder section
-  // (local y -0.27..+0.27) gets the full outfit image height, caps clamp.
+  // (local y -0.27..+0.27) gets the garment rows, caps clamp to the same
+  // edge rows. v is inset to 0.05..0.95 because the outfit PNGs are
+  // flat-garment art on a white background and the garment reaches to
+  // within ~2.6% of the top/bottom edges — the extreme edge rows are
+  // white, and mapping the full 0..1 range left the shoulders and hips
+  // bare white.
   function remapCapsuleUVs(geometry) {
     const pos = geometry?.attributes?.position;
     const uv = geometry?.attributes?.uv;
     if (!pos || !uv) return;
     for (let i = 0; i < pos.count; i++) {
-      uv.setY(i, Math.min(1, Math.max(0, (pos.getY(i) + 0.27) / 0.54)));
+      uv.setY(i, 0.05 + 0.90 * Math.min(1, Math.max(0, (pos.getY(i) + 0.27) / 0.54)));
     }
     uv.needsUpdate = true;
   }
@@ -126,6 +131,9 @@
     canvas.width = 256; canvas.height = 160;
     const ctx = canvas.getContext("2d");
     const texture = new THREE.CanvasTexture(canvas);
+    // The canvas is drawn in sRGB; without this the renderer treats it as
+    // linear and the dark brown mouth renders washed-out grey.
+    texture.colorSpace = THREE.SRGBColorSpace || undefined;
     const draw = (open) => {
       ctx.clearRect(0, 0, 256, 160);
       if (open < 0.12) {

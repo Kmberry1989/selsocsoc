@@ -1,9 +1,11 @@
 /* Headless test: mayor + gideon join the NPC identity pass.
  * Mocks window/THREE/DOM enough for npc-faces.js, npc-outfits.js and
  * npc-accessories.js, fires snug-npc-roster-ready, and asserts:
- *  - 13/13 face swaps applied
- *  - 13/13 outfit textures applied
+ *  - 14/14 face swaps applied
+ *  - 14/14 outfit textures applied
  *  - 10/10 accessories built (mayor gavel, gideon pennant + the 8 existing)
+ *    (kyle-busker's guitar is a real GLB loaded by dynamic import — it is
+ *    verified in the browser smoke test, not here)
  */
 const fs = require('fs');
 const vm = require('vm');
@@ -13,7 +15,7 @@ const ROSTER = [
   ['mayor-mayor', 'MM'], ['gideon', 'GD'], ['lyla-lens', 'LL'], ['chip-chance', 'CC'],
   ['barnaby-bargain', 'BB'], ['pip-parade', 'PP'], ['agnes-alley', 'AA'], ['dottie-daly', 'DD'],
   ['peggy-plank', 'PG'], ['mr-buck-coinsworth', 'BC'], ['fern-bramble', 'FB'],
-  ['stanley-stamp', 'SS'], ['bobby-gill', 'BG'],
+  ['stanley-stamp', 'SS'], ['bobby-gill', 'BG'], ['kyle-busker', 'KB'],
 ];
 
 // ---- mocks ----
@@ -22,7 +24,7 @@ class FakeImage {
   set src(v) { loadedImages.push(v); setTimeout(() => this.onload && this.onload(), 0); }
 }
 class FakeTexture {
-  constructor(img) { this.image = img; this.needsUpdate = false; }
+  constructor(img) { this.image = img; this.needsUpdate = false; this.offset = { x: 0, y: 0 }; }
 }
 function fakeMesh() {
   return {
@@ -82,8 +84,10 @@ const listeners = {};
 const sandbox = {
   console,
   setTimeout, clearTimeout,
+  setInterval, clearInterval,
+  URL,
   window: null,
-  document: { createElement: () => ({}), querySelector: () => null },
+  document: { baseURI: 'http://localhost/', createElement: () => ({}), querySelector: () => null },
   Image: FakeImage,
 };
 // window === global proxy for these scripts
@@ -118,9 +122,10 @@ setTimeout(() => {
     ok(npc.__face.material.map instanceof FakeTexture, `face swap ${id}`);
   }
   const faceUrls = loadedImages.filter((u) => u.includes('npc-faces'));
-  ok(faceUrls.length === 13, `13 face PNGs requested (got ${faceUrls.length})`);
-  ok(faceUrls.includes('assets/npc-faces/npc-mayor-mayor-face.png'), 'mayor face URL requested');
-  ok(faceUrls.includes('assets/npc-faces/npc-gideon-face.png'), 'gideon face URL requested');
+  ok(faceUrls.length === 14, `14 face PNGs requested (got ${faceUrls.length})`);
+  ok(faceUrls.includes('assets/npc-faces/npc-mayor-mayor-face-v2.png'), 'mayor face URL requested');
+  ok(faceUrls.includes('assets/npc-faces/npc-gideon-face-v2.png'), 'gideon face URL requested');
+  ok(faceUrls.includes('assets/npc-faces/npc-kyle-busker-face-v2.png'), 'kyle-busker face URL requested');
 
   // outfits
   for (const [id] of ROSTER) {
@@ -128,7 +133,8 @@ setTimeout(() => {
     ok(npc.__outfit.material.map instanceof FakeTexture, `outfit applied ${id}`);
   }
   const outfitUrls = loadedImages.filter((u) => u.includes('npc-outfits'));
-  ok(outfitUrls.length === 13, `13 outfit PNGs requested (got ${outfitUrls.length})`);
+  ok(outfitUrls.length === 14, `14 outfit PNGs requested (got ${outfitUrls.length})`);
+  ok(outfitUrls.includes('assets/npc-outfits/npc-kyle-busker-outfit-v2.png'), 'kyle-busker outfit URL requested');
 
   // accessories: 10 builders (mayor, gideon + 8)
   const accMarks = { 'mayor-mayor': 'MM', 'gideon': 'GD', 'barnaby-bargain': 'BB', 'pip-parade': 'PP', 'agnes-alley': 'AA', 'dottie-daly': 'DD', 'mr-buck-coinsworth': 'BC', 'fern-bramble': 'FB', 'stanley-stamp': 'SS', 'bobby-gill': 'BG' };

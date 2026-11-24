@@ -26,6 +26,7 @@
     'fern-bramble': 'FB',
     'stanley-stamp': 'SS',
     'bobby-gill': 'BG',
+    'kyle-busker': 'KB',
   };
 
   // The shared window.__snugThree can be a partial shim planted by the app

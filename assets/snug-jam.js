@@ -1453,4 +1453,8 @@
     open: openPanel, close: closePanel, get state() { return state; },
     util: { expandPattern, validVinyl, validEntry, validQueueEntry, computeJukebox, gridToPattern, patternToGrid, countSteps, bitSet },
   };
+  // NPC action hook: the busker's "Sit in on the jam" opens the jam panel
+  // on the guitar track (6). The roster bundle calls this when present and
+  // falls back to the normal talk flow when the jam module is not loaded.
+  window.__snugJamOpen = openPanel;
 })();

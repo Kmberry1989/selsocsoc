@@ -143,10 +143,21 @@
       "outfitUrl": "assets/npc-outfits/npc-bobby-gill-outfit-v2.png",
       "role": "fishing mentor",
       "accessoryGlb": "assets/npc-accessories/rod.glb"
+    },
+    {
+      "accessory": "acoustic guitar",
+      "faceNotes": "Young Kyle: short brown hair, big smile in the eyes and cheeks, brown eyes with glints",
+      "faceUrl": "assets/npc-faces/npc-kyle-busker-face-v2.png",
+      "id": "kyle-busker",
+      "name": "Kyle",
+      "outfitNotes": "Plaid shirt over a dark tee; colored wraparound texture",
+      "outfitUrl": "assets/npc-outfits/npc-kyle-busker-outfit-v2.png",
+      "role": "busker",
+      "accessoryGlb": "assets/npc-accessories/guitar.glb"
     }
   ],
   "game": "Selfie Social Society",
-  "note": "Face PNGs are 1600x1600 grayscale-stylized, no mouths (animated speaking-mouth mesh sits separately). Outfit PNGs are grayscale on the 4-island UV layout (multiplicative tint renderer). All 13 NPCs are full 3D in-world characters. Mayor Mayor and Gideon's welcome-cinematic figures still use procedural canvas faces (window.__snugCinematicFaceDraw in assets/npc-faces.js).",
+  "note": "Face PNGs are 1600x1600 grayscale-stylized, no mouths (animated speaking-mouth mesh sits separately). Outfit PNGs are grayscale on the 4-island UV layout (multiplicative tint renderer). All 14 NPCs are full 3D in-world characters. Mayor Mayor and Gideon's welcome-cinematic figures still use procedural canvas faces (window.__snugCinematicFaceDraw in assets/npc-faces.js).",
   "town": "Cyclical City",
-  "version": 6
+  "version": 7
 }
